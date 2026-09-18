@@ -74,6 +74,7 @@ web_modules/
 
 # dotenv environment variable files
 .env
+.env.local
 .env.development.local
 .env.test.local
 .env.production.local
@@ -104,6 +105,12 @@ dist
 .temp
 .cache
 
+# vitepress build output
+**/.vitepress/dist
+
+# vitepress cache directory
+**/.vitepress/cache
+
 # Docusaurus cache and generated files
 .docusaurus
 
@@ -128,3 +135,10 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+# Local AI runtime state
+.atl/
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/

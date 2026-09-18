@@ -1,0 +1,70 @@
+# OpenSpec SDD config — ui-user
+schema: spec-driven
+
+context: |
+  Project: countergank/ui-user
+  Role: The countergank user management WEB APPLICATION for countergank/api-user,
+  bootstrapped from the countergank standard frontend mold
+  (countergank/frontend-standard-project) that defines its technologies, tools,
+  architecture, and conventions.
+  Current state: bootstrapped from countergank/frontend-standard-project with
+  countergank skills integrated: .agents/skills/ (react-frontend,
+  github-conventions, git-environment-flow), .claude/skills/ symlinks,
+  skills-lock.json, openspec/ plan artifacts.
+  Stack: Node >=22 / pnpm 9.15.9 / Vite 6 / React 19 / TypeScript strict /
+  Tailwind + shadcn/ui / TanStack Query 5 / Zustand 5 / React Router 7 /
+  Biome + ESLint.
+  Architecture: features-first src/features/<feature>/ with container/presentational
+  components; typed error handling; accessible shell (docs/folder-structure.md,
+  docs/component-patterns.md, docs/accessibility.md).
+  Testing: Vitest + Testing Library + axe (80% coverage floor) + Playwright e2e
+  (docs/testing.md).
+  Conventions: conversation in Spanish; technical artifacts (specs, tasks, code, docs)
+  in English. Work planned via SDD, executed incrementally via Linear tickets
+  (project named exactly "ui-user", all tickets assigned to
+  Leandro Cepeda, one ticket per fundamental part).
+
+layout:
+  orchestrator: openspec/changes/{change-name}/state.yaml
+  init: openspec/config.yaml
+  explore: openspec/changes/{change-name}/exploration.md
+  propose: openspec/changes/{change-name}/proposal.md
+  spec: openspec/changes/{change-name}/specs/{domain}/spec.md
+  design: openspec/changes/{change-name}/design.md
+  tasks: openspec/changes/{change-name}/tasks.md
+  apply: openspec/changes/{change-name}/tasks.md
+  verify: openspec/changes/{change-name}/verify-report.md
+  archive: openspec/changes/archive/{date}-{change-name}/
+
+rules:
+  proposal:
+    - State intent, scope, non-goals, and the enabled/disabled skill integrations.
+    - Reference the countergank/skills repository and the react-frontend skill.
+  specs:
+    - Use Given/When/Then for scenarios.
+    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY).
+  design:
+    - Document architecture decisions with rationale (ADR style).
+    - Include folder structure, component patterns, atomic design, container/presentational.
+  tasks:
+    - Group by phase, use hierarchical numbering.
+    - Keep tasks completable in one Linear-ticket-sized increment.
+    - One task group per fundamental part (skills, stack setup, architecture, testing,
+      CI/CD, tooling, documentation).
+  apply:
+    guidelines:
+      - Follow the countergank skills once integrated (react-frontend skill).
+    tdd: true
+    test_command: "pnpm test"
+  verify:
+    test_command: "pnpm test"
+    build_command: "pnpm build"
+    coverage_threshold: 80
+  archive:
+    - Warn before merging destructive deltas.
+
+testing:
+  strict_tdd: true
+  detected: "2026-08-29"
+  runner: "vitest (jsdom, @testing-library/react, @testing-library/user-event, vitest-axe, axe-core)"
+  note: "Runner confirmed (COU-126). Unit + component + a11y tests run via pnpm test; e2e via pnpm test:e2e (Playwright). Coverage measured with @vitest/coverage-v8 at 80/80/80/80 thresholds; measured 98.68% stmts, 94.28% branch, 92.3% funcs, 98.68% lines."

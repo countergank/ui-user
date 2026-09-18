@@ -1,0 +1,189 @@
+# .github/workflows/ci.yml
+#
+# CI/CD for the standard frontend template (spec CI-1..CI-3, design.md CI/CD
+# section). Pipeline order: pnpm install → lint → typecheck → test+coverage →
+# build → e2e → preview.
+#
+# Quality gates (CI-2): the run fails on lint errors, type errors, test
+# failures, E2E failures, and coverage below the configured threshold. Coverage
+# thresholds (80/80/80/80) are enforced by vitest.config.ts, so `pnpm
+# test:coverage` already exits non-zero below the threshold.
+name: CI
+
+on:
+  push:
+    branches:
+      - develop
+      - staging
+      - main
+  pull_request:
+    branches:
+      - develop
+      - staging
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality-gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint (Biome + ESLint)
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      # Unit + component + a11y tests with coverage; fails below the configured
+      # vitest threshold (CI-2).
+      - name: Test with coverage
+        run: pnpm test:coverage
+
+      - name: Build
+        run: pnpm build
+
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: quality-gates
+    # The Playwright webServer runs `pnpm build && pnpm preview`; env.ts fails fast
+    # when VITE_API_BASE_URL is missing (ADR-11), so the preview needs a dummy value.
+    # Real secrets come from Doppler in deployed environments, not from CI previews.
+    env:
+      VITE_API_BASE_URL: https://ci.invalid
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      # The playwright.config.ts webServer runs `pnpm build && pnpm preview`,
+      # so the production build is exercised here as well (E2E on the PR/merge
+      # pipeline per CI-1).
+      - name: Run E2E tests
+        run: pnpm test:e2e
+
+      - name: Upload Playwright artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7
+
+  # CI-3 preview deployment. This repository has no GitHub Pages site and no
+  # Netlify/Vercel project configured yet, so this job is the template's
+  # documented default: it builds the rendered app and publishes `dist/` as a
+  # downloadable artifact named `preview-dist` that PR reviewers inspect.
+  #
+  # To promote this to a live preview URL later, replace this job body with:
+  #   - GitHub Pages (repo: Settings → Pages, enable "GitHub Actions" source):
+  #     actions/upload-pages-artifact@v3 (path: dist/, then actions/deploy-pages)
+  #     with `permissions: pages: write, id-token: write`,
+  #     `environment: github-pages` and build/`gh-pages` branch settings; or
+  #   - Vercel/Netlify: their official action + a preview-site comment.
+  preview:
+    name: Preview build (PR artifact)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: quality-gates
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build preview
+        run: pnpm build
+
+      - name: Upload preview artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-dist
+          path: dist/
+          retention-days: 7
+
+  # MA-3 commitlint PR gate: validates the PR's commits (base→head) against
+  # Conventional Commits and rejects Co-Authored-By / AI-attribution trailers.
+  # Job key == display name == required status-check context "commitlint".
+  commitlint:
+    name: commitlint
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint commit messages
+        run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --git-log-args="--first-parent" --verbose
