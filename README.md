@@ -47,8 +47,8 @@ make ci               # lint + typecheck + test:coverage + build
 The `Dockerfile` builds `dist/` and serves it with nginx (port 80, SPA fallback):
 
 ```bash
-docker build -t standard-frontend-template .
-docker run -p 8080:80 standard-frontend-template
+docker build -t ui-user .
+docker run -p 8080:80 ui-user
 # → http://localhost:8080
 ```
 

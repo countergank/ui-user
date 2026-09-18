@@ -1,5 +1,5 @@
 services:
-  frontend-standard:
+  ui-user:
     build:
       context: .
       dockerfile: Dockerfile
@@ -10,7 +10,7 @@ services:
       args:
         VITE_API_BASE_URL: ${VITE_API_BASE_URL:-}
         VITE_MODE: ${VITE_MODE:-production}
-    container_name: frontend-standard
+    container_name: ui-user
     ports:
       - "8080:80"
     restart: unless-stopped

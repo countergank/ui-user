@@ -1,4 +1,4 @@
-# Frontend Standard Template Makefile
+# UI User Makefile
 # Mirrors the package.json scripts for common development and CI tasks.
 # See the backend standard Makefile for the project-wide convention.
 #
@@ -99,7 +99,7 @@ docker-redeploy: ## Rebuild and restart in one command
 	$(COMPOSE) up --build -d
 
 doppler-setup: ## Link local project to Doppler (interactive)
-	doppler setup --project frontend-standard-project --no-interactive
+	doppler setup --project ui-user --no-interactive
 
 doppler-secrets: ## Show secrets for the current Doppler config
 	doppler secrets
