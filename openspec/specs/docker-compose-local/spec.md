@@ -12,14 +12,14 @@ manual `up`/HTTP 200), not unit tests.
 ### Requirement: DCL-1 — Root compose file with single service
 
 The repo MUST ship `docker-compose.yml` at the repository root declaring exactly one service
-`frontend-standard`. The service MUST build from the existing `Dockerfile` using
+`ui-user`. The service MUST build from the existing `Dockerfile` using
 `build: { context: ., dockerfile: Dockerfile }` without duplicating the Dockerfile.
 
 #### Scenario: Compose file exists and validates
 
 - GIVEN the repository root
 - WHEN `docker compose config` is run
-- THEN compose validates with no errors and a single service `frontend-standard` is declared
+- THEN compose validates with no errors and a single service `ui-user` is declared
 - AND the service's build context is `.` and its dockerfile is `Dockerfile`
 
 ### Requirement: DCL-2 — Host port mapping 8080:80
@@ -42,7 +42,7 @@ MUST respond HTTP 200 at `http://localhost:8080`.
 
 - GIVEN Docker and Compose v2 are installed and no `.env` is present
 - WHEN `docker compose up --build` is run
-- THEN the `frontend-standard` container starts without error
+- THEN the `ui-user` container starts without error
 - AND `curl -o /dev/null -s -w "%{http_code}" http://localhost:8080` returns `200`
 
 ### Requirement: DCL-4 — Environment via defaults an optional env_file
@@ -96,7 +96,7 @@ hanging processes.
 
 #### Scenario: Teardown removes the container
 
-- GIVEN a running `frontend-standard` container
+- GIVEN a running `ui-user` container
 - WHEN `docker compose down` is run
 - THEN the container is stopped and removed with no orphans reported
 
