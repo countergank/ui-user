@@ -1,7 +1,10 @@
-// Component tests for the presentational FeatureCards list (ARCH-3).
+// Component tests for the presentational FeatureCards list (ARCH-3). The list's
+// accessible name is asserted against the i18n resource (COU-253).
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { axe } from "vitest-axe";
+
+import { i18n } from "@/lib/i18n";
 
 import type { FeatureHighlight } from "../api";
 import { FeatureCards } from "./feature-cards";
@@ -12,11 +15,13 @@ const FEATURES: FeatureHighlight[] = [
   { id: "c", title: "Lazy routes", description: "Per-route code splitting." },
 ];
 
+const listLabel = i18n.t("home.highlights.listLabel");
+
 describe("FeatureCards", () => {
   it("renders one list item per feature with an accessible name", () => {
     render(<FeatureCards features={FEATURES} />);
 
-    const list = screen.getByRole("list", { name: "Template highlights" });
+    const list = screen.getByRole("list", { name: listLabel });
     const items = within(list).getAllByRole("listitem");
 
     expect(items).toHaveLength(3);
@@ -28,7 +33,7 @@ describe("FeatureCards", () => {
   it("renders an empty list when no features are provided", () => {
     render(<FeatureCards features={[]} />);
 
-    const list = screen.getByRole("list", { name: "Template highlights" });
+    const list = screen.getByRole("list", { name: listLabel });
     expect(within(list).queryAllByRole("listitem")).toHaveLength(0);
   });
 

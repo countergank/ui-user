@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import { ErrorView } from "@/components/error/error-view";
 import { env, envMode } from "@/lib/env";
 import { useHighlights } from "./api";
@@ -13,13 +15,14 @@ import { useGreeting } from "./hooks/use-greeting";
  * owns runtime env access) and passed down to the pure `AppEnvBadge`.
  */
 export function HomePage() {
+  const { t } = useTranslation();
   const greeting = useGreeting();
   const { data, isPending, isError, error, refetch } = useHighlights();
 
   if (isPending) {
     return (
       <p aria-busy="true" className="text-muted-foreground">
-        Loading highlights…
+        {t("home.loading")}
       </p>
     );
   }
@@ -27,7 +30,7 @@ export function HomePage() {
   if (isError) {
     return (
       <ErrorView
-        title="Could not load template highlights"
+        title={t("home.error.highlightsUnavailable")}
         message={error.message}
         onRetry={() => void refetch()}
       />
@@ -36,10 +39,7 @@ export function HomePage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <Hero
-        title={`${greeting}! This is the standard frontend template`}
-        subtitle="A screaming, feature-based React 19 architecture with an accessible shell, server state, and typed error handling."
-      />
+      <Hero title={t("home.hero.title", { greeting })} subtitle={t("home.hero.subtitle")} />
       <AppEnvBadge mode={envMode} apiBaseUrl={env.apiBaseUrl} />
       <FeatureCards features={data} />
     </div>

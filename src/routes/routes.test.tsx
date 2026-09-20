@@ -1,8 +1,11 @@
 // Route module coverage (STACK-7, ARCH-5): the data router is constructed at
 // module scope and each lazy route module exports a renderable `Component`.
+// Copy assertions are derived from the i18n resources (COU-253).
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+
+import { i18n } from "@/lib/i18n";
 
 import { Component as AboutRoute } from "./about-route";
 import { Component as HomeRoute } from "./home-route";
@@ -23,14 +26,17 @@ describe("routes", () => {
       </QueryClientProvider>,
     );
 
-    expect(
-      await screen.findByRole("heading", { name: /standard frontend template/i }),
-    ).toBeInTheDocument();
+    // The hero title interpolates a time-based greeting; assert the resource's
+    // static portion so the expectation stays derived from translations.
+    const heroTitleTail = i18n.t("home.hero.title", { greeting: "" }).replace(/^!\s*/, "");
+    const heading = await screen.findByRole("heading", { level: 1 });
+    expect(heading).toHaveTextContent(heroTitleTail);
   });
 
   it("renders the lazy about route component", () => {
     render(<AboutRoute />);
-    expect(screen.getByRole("heading", { name: "About" })).toBeInTheDocument();
-    expect(screen.getByText(/feature-based \(screaming\)/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: i18n.t("about.heading") })).toBeInTheDocument();
+    expect(screen.getByText(i18n.t("about.title"))).toBeInTheDocument();
+    expect(screen.getByText(i18n.t("about.description"))).toBeInTheDocument();
   });
 });
