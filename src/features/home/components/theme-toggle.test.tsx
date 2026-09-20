@@ -1,7 +1,13 @@
+// Component tests for the theme toggle (a11y, dark mode rule). Copy assertions
+// are derived from the i18n resources (COU-253), the readable name stays the
+// role-based /theme/i query, and the accessible name/aria-pressed contract is
+// preserved exactly.
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { axe } from "vitest-axe";
+
+import { i18n } from "@/lib/i18n";
 
 import { selectTheme, uiStore } from "@/stores/use-ui-store";
 
@@ -11,9 +17,14 @@ describe("ThemeToggle", () => {
   it("renders the current theme from the store", () => {
     render(<ThemeToggle />);
     const toggle = screen.getByRole("button", { name: /theme/i });
-    expect(toggle).toHaveTextContent("Light");
+    expect(toggle).toHaveTextContent(
+      i18n.t("home.theme.current", { theme: i18n.t("home.theme.light") }),
+    );
     expect(toggle).toHaveAttribute("aria-pressed", "false");
-    expect(toggle).toHaveAttribute("aria-label", "Switch to dark theme");
+    expect(toggle).toHaveAttribute(
+      "aria-label",
+      i18n.t("home.theme.switchTo", { theme: i18n.t("home.theme.dark") }),
+    );
   });
 
   it("re-renders when the store theme changes", async () => {
@@ -23,9 +34,14 @@ describe("ThemeToggle", () => {
 
     expect(selectTheme(uiStore.getState())).toBe("dark");
     const toggle = screen.getByRole("button", { name: /theme/i });
-    expect(toggle).toHaveTextContent("Dark");
+    expect(toggle).toHaveTextContent(
+      i18n.t("home.theme.current", { theme: i18n.t("home.theme.dark") }),
+    );
     expect(toggle).toHaveAttribute("aria-pressed", "true");
-    expect(toggle).toHaveAttribute("aria-label", "Switch to light theme");
+    expect(toggle).toHaveAttribute(
+      "aria-label",
+      i18n.t("home.theme.switchTo", { theme: i18n.t("home.theme.light") }),
+    );
   });
 
   it("follows an external setTheme dispatch", () => {
@@ -35,7 +51,9 @@ describe("ThemeToggle", () => {
     });
 
     const toggle = screen.getByRole("button", { name: /theme/i });
-    expect(toggle).toHaveTextContent("Dark");
+    expect(toggle).toHaveTextContent(
+      i18n.t("home.theme.current", { theme: i18n.t("home.theme.dark") }),
+    );
     expect(toggle).toHaveAttribute("aria-pressed", "true");
   });
 

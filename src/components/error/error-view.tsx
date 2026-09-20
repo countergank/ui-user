@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import { Button } from "@/components/ui/button";
 
 interface ErrorViewProps {
@@ -9,9 +11,11 @@ interface ErrorViewProps {
 /**
  * Accessible, reusable error presentation (ARCH-4, a11y).
  * Announced to screen readers via `role="alert"`, keeps focus/announcement
- * semantics, and exposes an optional retry action.
+ * semantics, and exposes an optional retry action whose copy is
+ * resource-driven (COU-253).
  */
 export function ErrorView({ title, message, onRetry }: ErrorViewProps) {
+  const { t } = useTranslation();
   return (
     <section
       role="alert"
@@ -24,7 +28,7 @@ export function ErrorView({ title, message, onRetry }: ErrorViewProps) {
       </div>
       {onRetry ? (
         <Button type="button" variant="outline" onClick={onRetry}>
-          Try again
+          {t("error.retry")}
         </Button>
       ) : null}
     </section>
