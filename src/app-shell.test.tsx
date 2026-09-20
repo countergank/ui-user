@@ -6,6 +6,8 @@ import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import { axe } from "vitest-axe";
 
+import "@/lib/i18n";
+
 import { AppShell } from "./app-shell";
 
 function renderShell(initialPath = "/") {
