@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-10-10
+
+User management UI with internationalization: typed i18next foundation and all
+user-facing copy resource-driven.
+
+### Added
+
+- add typed i18next foundation (#3)
+- migrate shell and router chrome copy to i18n resources (#3)
+- migrate home/about feature copy to i18n resources (#4)
+- migrate shared controls and error copy to i18n resources (#4)
+
+### Fixed
+
+- make useGreeting greeting resource-driven (#4)
+
 ## [1.0.0] - 2026-09-08
 
 First production release of the countergank standard frontend template.
