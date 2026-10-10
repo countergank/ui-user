@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 interface AppEnvBadgeProps {
   mode: "development" | "staging" | "production";
   apiBaseUrl: string;
@@ -9,16 +11,18 @@ interface AppEnvBadgeProps {
  * Receives values as props (ARCH-2) so it stays pure; the container imports
  * `env`/`envMode` from `@/lib/env` and passes them down. Rendered as a plain
  * list item labelled "Environment" so it is announced to assistive tech.
+ * Labels are resource-driven (COU-253).
  */
 export function AppEnvBadge({ mode, apiBaseUrl }: AppEnvBadgeProps) {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 rounded-md border bg-muted px-3 py-2 text-xs text-foreground">
       <span>
-        <span className="font-semibold">Environment:</span> {mode}
+        <span className="font-semibold">{t("home.environment.modeLabel")}</span> {mode}
       </span>
       <span aria-hidden="true">·</span>
       <span>
-        <span className="font-semibold">API base:</span> {apiBaseUrl}
+        <span className="font-semibold">{t("home.environment.apiBaseLabel")}</span> {apiBaseUrl}
       </span>
     </div>
   );

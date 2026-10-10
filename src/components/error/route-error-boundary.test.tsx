@@ -1,8 +1,12 @@
 import { render, screen } from "@testing-library/react";
 // Integration tests for the route error boundary (ARCH-4, react-router v7
 // errorElement pattern): HTTP error responses, domain errors, and raw errors.
+// Boundary copy assertions are derived from the i18n resources (COU-253);
+// statusText and thrown messages remain server/error-owned content.
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
+
+import { i18n } from "@/lib/i18n";
 
 import { DataFetchError } from "@/lib/errors";
 import { RouteErrorBoundary } from "./route-error-boundary";
@@ -27,7 +31,7 @@ describe("RouteErrorBoundary", () => {
     });
 
     const alert = await screen.findByRole("alert");
-    expect(alert).toHaveTextContent("Error 404");
+    expect(alert).toHaveTextContent(i18n.t("error.statusTitle", { status: "404" }));
     expect(alert).toHaveTextContent("Not Found");
   });
 
@@ -37,7 +41,7 @@ describe("RouteErrorBoundary", () => {
     });
 
     const alert = await screen.findByRole("alert");
-    expect(alert).toHaveTextContent("Could not load data");
+    expect(alert).toHaveTextContent(i18n.t("error.dataFetchTitle"));
     expect(alert).toHaveTextContent("Network boom");
   });
 
@@ -47,7 +51,7 @@ describe("RouteErrorBoundary", () => {
     });
 
     const alert = await screen.findByRole("alert");
-    expect(alert).toHaveTextContent("Something went wrong");
+    expect(alert).toHaveTextContent(i18n.t("error.genericTitle"));
     expect(alert).toHaveTextContent("unexpected");
   });
 });

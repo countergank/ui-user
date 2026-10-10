@@ -1,7 +1,10 @@
 // Component tests for the presentational AppEnvBadge (COU-125/ADR-11, ARCH-2, a11y).
+// Label assertions are derived from the i18n resources (COU-253).
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { axe } from "vitest-axe";
+
+import { i18n } from "@/lib/i18n";
 
 import { AppEnvBadge } from "./env-badge";
 
@@ -9,9 +12,9 @@ describe("AppEnvBadge", () => {
   it("renders the environment and api base url", () => {
     render(<AppEnvBadge mode="staging" apiBaseUrl="https://stg-api.countergank.com" />);
 
-    expect(screen.getByText("Environment:")).toBeInTheDocument();
+    expect(screen.getByText(i18n.t("home.environment.modeLabel"))).toBeInTheDocument();
     expect(screen.getByText("staging")).toBeInTheDocument();
-    expect(screen.getByText("API base:")).toBeInTheDocument();
+    expect(screen.getByText(i18n.t("home.environment.apiBaseLabel"))).toBeInTheDocument();
     expect(screen.getByText("https://stg-api.countergank.com")).toBeInTheDocument();
   });
 
