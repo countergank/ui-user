@@ -1,0 +1,11 @@
+# COU-253 — Add i18n to ui-user
+
+Mirror of `odd/tasks/COU-253-anadir-i18n.md` for ODD task recovery.
+
+- [x] Task 1 — Install and initialize i18n foundation.
+  - Evidence: `pnpm test -- src/lib/i18n/i18n.test.ts` passed; `pnpm typecheck` passed; `pnpm lint` passed; `pnpm test -- src/main.test.tsx` passed with existing React act/HydrateFallback stderr warnings.
+- [x] Task 2 — Migrate shell and router chrome copy.
+  - Evidence: `pnpm vitest run src/app-shell.test.tsx src/lib/i18n/i18n.test.ts` passed; `pnpm typecheck` passed.
+- [ ] Task 3 — Migrate home/about feature copy.
+- [ ] Task 4 — Migrate shared controls and error copy.
+- [ ] Task 5 — Verify and prepare review handoff.

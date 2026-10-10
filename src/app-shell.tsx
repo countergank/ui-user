@@ -1,4 +1,6 @@
+import type { TFunction } from "i18next";
 import { type ReactNode, Suspense } from "react";
+import { useTranslation } from "react-i18next";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 
 import { RouteAnnouncer } from "@/components/a11y/route-announcer";
@@ -6,22 +8,22 @@ import { useFocusManagement } from "@/hooks/use-focus-management";
 
 interface NavItem {
   to: string;
-  label: string;
+  labelKey: "shell.nav.home" | "shell.nav.about";
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { to: "/", label: "Home" },
-  { to: "/about", label: "About" },
+  { to: "/", labelKey: "shell.nav.home" },
+  { to: "/about", labelKey: "shell.nav.about" },
 ];
 
-const PAGE_TITLES: Record<string, string> = {
-  "/": "Home",
-  "/about": "About",
+const PAGE_TITLE_KEYS: Record<string, "routes.home.title" | "routes.about.title"> = {
+  "/": "routes.home.title",
+  "/about": "routes.about.title",
 };
 
-/** Compute a human-readable title for the route announcer. */
-function getPageTitle(pathname: string): string {
-  return PAGE_TITLES[pathname] ?? "Page";
+/** Compute a localized title for the route announcer. */
+function getPageTitle(pathname: string, t: TFunction): string {
+  return t(PAGE_TITLE_KEYS[pathname] ?? "routes.fallback.title");
 }
 
 function navLinkClass({ isActive }: { isActive: boolean }): string {
@@ -30,14 +32,14 @@ function navLinkClass({ isActive }: { isActive: boolean }): string {
   }`;
 }
 
-function renderNav(items: NavItem[], ariaLabel: string): ReactNode {
+function renderNav(items: NavItem[], ariaLabel: string, t: TFunction): ReactNode {
   return (
     <nav aria-label={ariaLabel}>
       <ul className="flex items-center gap-1">
         {items.map((item) => (
           <li key={item.to}>
             <NavLink to={item.to} end className={navLinkClass}>
-              {item.label}
+              {t(item.labelKey)}
             </NavLink>
           </li>
         ))}
@@ -53,23 +55,24 @@ function renderNav(items: NavItem[], ariaLabel: string): ReactNode {
  */
 export function AppShell() {
   const location = useLocation();
+  const { t } = useTranslation();
   const { containerRef } = useFocusManagement(location.pathname);
-  const title = getPageTitle(location.pathname);
+  const title = getPageTitle(location.pathname, t);
   const routeKey = location.pathname;
 
   return (
     <>
       {/* First focusable element: skip link (a11y skip-links rule) */}
       <a href="#main-content" className="skip-link">
-        Skip to main content
+        {t("shell.skipLink")}
       </a>
 
-      <RouteAnnouncer message={`${title} page loaded`} />
+      <RouteAnnouncer message={t("shell.routeAnnouncer.loaded", { title })} />
 
       <header className="border-b bg-background">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
-          <span className="text-sm font-semibold">Standard Frontend</span>
-          {renderNav(NAV_ITEMS, "Main navigation")}
+          <span className="text-sm font-semibold">{t("shell.productLabel")}</span>
+          {renderNav(NAV_ITEMS, t("shell.navigation.main"), t)}
         </div>
       </header>
 
@@ -82,7 +85,7 @@ export function AppShell() {
         <Suspense
           fallback={
             <p aria-busy="true" className="text-muted-foreground">
-              Loading page…
+              {t("shell.loading")}
             </p>
           }
         >
@@ -95,12 +98,12 @@ export function AppShell() {
 
       <footer className="border-t bg-background">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-6 text-sm text-muted-foreground">
-          <span>Frontend Standard Template</span>
-          <nav aria-label="Footer navigation">
+          <span>{t("shell.footerLabel")}</span>
+          <nav aria-label={t("shell.navigation.footer")}>
             <ul className="flex items-center gap-4">
               <li>
                 <a className="hover:text-foreground underline-offset-4 hover:underline" href="/">
-                  Home
+                  {t("shell.nav.home")}
                 </a>
               </li>
               <li>
@@ -108,7 +111,7 @@ export function AppShell() {
                   className="hover:text-foreground underline-offset-4 hover:underline"
                   href="/about"
                 >
-                  About
+                  {t("shell.nav.about")}
                 </a>
               </li>
             </ul>
