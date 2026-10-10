@@ -1,0 +1,70 @@
+# SDD Change State — standard-frontend-template
+schema: spec-driven
+
+change: standard-frontend-template
+created: "2026-08-29"
+project: frontend-standard-project
+
+# Dependency graph state (ABCDE checkpoints)
+phases:
+  explore: done
+  propose: done
+  spec: done
+  design: done
+  tasks: done
+  apply: done
+  verify: done
+  archive: done
+
+review_workload:
+  estimated_changed_lines: "~3500-4500"
+  budget_risk: High
+  chained_prs_recommended: true
+  chain_strategy: pending
+  decision_needed_before_apply: true  # ask-on-risk; apply waits for explicit user approval
+
+stack_decisions:
+  language: typescript-5-strict
+  ui: react-19
+  build: vite
+  styling: tailwind-css + shadcn-ui (radix + css-vars + cva)
+  server_state: tanstack-query
+  global_state: react-hooks + context (minimal)
+  routing: react-router
+  testing_unit: vitest
+  testing_component: testing-library + user-event
+  testing_e2e: playwright
+  testing_a11y: axe
+  lint_format: biome + eslint-a11y
+  ci: github-actions
+  package_manager: pnpm
+  commits: conventional-commits + commitlint + husky
+
+delivery:
+  strategy: ask-on-risk (resolved: single-pr with size:exception per user decision)
+  review_budget_lines: 400
+
+execution_mode: interactive
+
+artifacts:
+  openspec: true
+  engram: true
+
+# Linear integration (user rules)
+linear:
+  project_name: frontend-standard-project
+  project_id: 60d6aa4f-339f-44cf-b98f-cf4871824857  # existed; reused
+  team_id: 88939ce8-cf53-4fd6-afb9-49f8116fa0ee
+  assignee: "Leandro Javier Cepeda (a403d9f0-1294-4a79-92aa-53682a1c79fa)"
+  one_ticket_per_fundamental_part: true
+  ticket_ordering: by-dependency
+  reconciliation: reuse-existing
+  tickets:
+    "1": COU-121  # skills (urgent, runs first)
+    "2": COU-122  # stack
+    "3": COU-248  # architecture (NEW)
+    "4": COU-126  # testing
+    "5": COU-128  # ci/cd
+    "6": [COU-123, COU-124, COU-125, COU-127]  # tooling
+    "7": COU-129  # documentation
+  other: [COU-171 (branch protection, backported assignee), COU-175 (done)]
