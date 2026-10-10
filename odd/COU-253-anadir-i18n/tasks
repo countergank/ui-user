@@ -1,0 +1,14 @@
+# COU-253 — Add i18n to ui-user
+
+Mirror of `odd/tasks/COU-253-anadir-i18n.md` for ODD task recovery.
+
+- [x] Task 1 — Install and initialize i18n foundation.
+  - Evidence: `pnpm test -- src/lib/i18n/i18n.test.ts` passed; `pnpm typecheck` passed; `pnpm lint` passed; `pnpm test -- src/main.test.tsx` passed with existing React act/HydrateFallback stderr warnings.
+- [x] Task 2 — Migrate shell and router chrome copy.
+  - Evidence: `pnpm vitest run src/app-shell.test.tsx src/lib/i18n/i18n.test.ts` passed; `pnpm typecheck` passed.
+- [x] Task 3 — Migrate home/about feature copy.
+  - Evidence: 6 affected files → 21 tests passed; full suite 75 passed; gap closed 2026-10-10 (`useGreeting` now resource-driven via `home.greeting.*`, `use-greeting.test.tsx` rewritten `i18n.t(...)`).
+- [x] Task 4 — Migrate shared controls and error copy.
+  - Evidence: 9 affected files → 31 tests passed; remaining literals (`errors.ts` fallback, HTTP statusText, main.tsx invariant) are documented non-goals.
+- [x] Task 5 — Verify and prepare review handoff.
+  - Evidence: `make ci` passed 2026-09-20 (lint, typecheck, test:coverage, build); local e2e is CI-only (documented limitation, template default).
