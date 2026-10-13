@@ -1,111 +1,22 @@
+import { type TranslationTree, en } from "./locales/en";
+import { es } from "./locales/es";
+import { pt } from "./locales/pt";
+
 export const defaultLanguage = "en";
 
-export const languages = [defaultLanguage] as const;
+export const languages = ["en", "es", "pt"] as const;
 export type AppLanguage = (typeof languages)[number];
 
 export const defaultNamespace = "common";
 export const namespaces = [defaultNamespace] as const;
 export type AppNamespace = (typeof namespaces)[number];
 
-export const resources = {
-  en: {
-    common: {
-      meta: {
-        productName: "Countergank User",
-      },
-      routes: {
-        home: {
-          title: "Home",
-        },
-        about: {
-          title: "About",
-        },
-        fallback: {
-          title: "Page",
-        },
-      },
-      shell: {
-        skipLink: "Skip to main content",
-        productLabel: "Standard Frontend",
-        navigation: {
-          main: "Main navigation",
-          footer: "Footer navigation",
-        },
-        nav: {
-          home: "Home",
-          about: "About",
-        },
-        loading: "Loading page…",
-        footerLabel: "Frontend Standard Template",
-        routeAnnouncer: {
-          loaded: "{{title}} page loaded",
-        },
-      },
-      home: {
-        loading: "Loading highlights…",
-        error: {
-          highlightsUnavailable: "Could not load template highlights",
-          demoFailure: "Demo failure",
-        },
-        greeting: {
-          morning: "Good morning",
-          afternoon: "Good afternoon",
-          evening: "Good evening",
-        },
-        hero: {
-          title: "{{greeting}}! This is the standard frontend template",
-          subtitle:
-            "A screaming, feature-based React 19 architecture with an accessible shell, server state, and typed error handling.",
-        },
-        environment: {
-          modeLabel: "Environment:",
-          apiBaseLabel: "API base:",
-        },
-        theme: {
-          switchTo: "Switch to {{theme}} theme",
-          current: "{{theme}} theme",
-          dark: "dark",
-          light: "light",
-        },
-        highlights: {
-          listLabel: "Template highlights",
-          items: {
-            shell: {
-              title: "Accessible shell",
-              description:
-                "Landmarks, skip link, route announcer, and focus management baked into the layout.",
-            },
-            data: {
-              title: "Server state",
-              description:
-                "TanStack Query wired through a QueryClientProvider with typed hooks and errors.",
-            },
-            routing: {
-              title: "Lazy routes",
-              description: "React Router with per-route code splitting and Suspense boundaries.",
-            },
-          },
-        },
-      },
-      about: {
-        heading: "About",
-        title: "Standard Frontend Template",
-        description:
-          "A feature-based (screaming) React 19 architecture with an accessible shell, typed error handling, TanStack Query for server state, and lazy React Router routes.",
-      },
-      error: {
-        genericTitle: "Something went wrong",
-        genericMessage: "An unexpected error occurred.",
-        statusTitle: "Error {{status}}",
-        routeFallbackMessage: "The requested page could not be loaded.",
-        dataFetchTitle: "Could not load data",
-        retry: "Try again",
-      },
-      sample: {
-        initialized: "Internationalization is ready.",
-      },
-    },
-  },
-} as const;
+/**
+ * Composed language bundles. `satisfies` keeps the exported type precise while forcing
+ * every declared language to ship a complete `TranslationTree`.
+ */
+const bundles = { en, es, pt } satisfies Record<AppLanguage, { common: TranslationTree }>;
+
+export const resources = bundles;
 
 export type I18nResources = (typeof resources)[typeof defaultLanguage];
