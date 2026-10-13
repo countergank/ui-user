@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 
 import { RouteAnnouncer } from "@/components/a11y/route-announcer";
+import { ThemeSwitcher } from "@/components/theme/theme-switcher";
 import { useFocusManagement } from "@/hooks/use-focus-management";
 
 interface NavItem {
@@ -72,7 +73,12 @@ export function AppShell() {
       <header className="border-b bg-background">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
           <span className="text-sm font-semibold">{t("shell.productLabel")}</span>
-          {renderNav(NAV_ITEMS, t("shell.navigation.main"), t)}
+          <div className="flex items-center gap-3">
+            {renderNav(NAV_ITEMS, t("shell.navigation.main"), t)}
+            {/* Theme control lives in the shell header, in plain sight: switching
+                the theme is a frequent action, not a buried user-menu preference. */}
+            <ThemeSwitcher />
+          </div>
         </div>
       </header>
 

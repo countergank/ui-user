@@ -8,6 +8,8 @@ import { axe } from "vitest-axe";
 
 import "@/lib/i18n";
 
+import { uiStore } from "@/stores/use-ui-store";
+
 import { AppShell } from "./app-shell";
 
 function renderShell(initialPath = "/") {
@@ -43,6 +45,33 @@ describe("AppShell", () => {
 
     const skip = screen.getByRole("link", { name: "Skip to main content" });
     expect(skip).toHaveAttribute("href", "#main-content");
+  });
+
+  it("mounts the single-button theme control inside the header landmark", () => {
+    renderShell();
+
+    const header = screen.getByRole("banner");
+    // Default preference is `system`, so the button announces `light` as its action.
+    const themeButton = within(header).getByRole("button", { name: "Switch to Light" });
+
+    expect(within(header).getAllByRole("button")).toHaveLength(1);
+    expect(themeButton).toHaveAttribute("title", "Switch to Light");
+  });
+
+  it("cycles the stored theme preference from the header control", async () => {
+    const user = userEvent.setup();
+    renderShell();
+
+    const header = screen.getByRole("banner");
+
+    await user.click(within(header).getByRole("button", { name: "Switch to Light" }));
+    expect(uiStore.getState().theme).toBe("light");
+
+    await user.click(within(header).getByRole("button", { name: "Switch to Dark" }));
+    expect(uiStore.getState().theme).toBe("dark");
+
+    await user.click(within(header).getByRole("button", { name: "Switch to Automatic" }));
+    expect(uiStore.getState().theme).toBe("system");
   });
 
   it("does not steal focus on initial load so the skip link stays first in the tab order", () => {

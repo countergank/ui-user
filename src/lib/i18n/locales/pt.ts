@@ -27,6 +27,12 @@ export const pt: { common: TranslationTree } = {
         home: "Início",
         about: "Sobre",
       },
+      theme: {
+        switchTo: "Mudar para {{mode}}",
+        system: "Automático",
+        light: "Claro",
+        dark: "Escuro",
+      },
       loading: "Carregando página…",
       footerLabel: "Modelo de frontend padrão",
       routeAnnouncer: {

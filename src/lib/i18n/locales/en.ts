@@ -25,6 +25,12 @@ export const en = {
         home: "Home",
         about: "About",
       },
+      theme: {
+        switchTo: "Switch to {{mode}}",
+        system: "Automatic",
+        light: "Light",
+        dark: "Dark",
+      },
       loading: "Loading page…",
       footerLabel: "Frontend Standard Template",
       routeAnnouncer: {
