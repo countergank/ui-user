@@ -1,0 +1,975 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Countergank Admin — Identidad visual · boceto v1</title>
+<style>
+/* ============================================================
+   COUNTERGANK ADMIN — BOCETO DE IDENTIDAD v1
+   ------------------------------------------------------------
+   Convención de color: canales HSL sin envoltorio, igual que
+   src/styles/tokens.css. Eso hace que estos tokens se copien
+   tal cual al repo (hsl(var(--x))).
+   Grid: 4px.  Radios: 8px base.
+   ============================================================ */
+
+:root{
+  /* --- superficies (claro) --- */
+  --bg:            0 0% 100%;
+  --fg:            222 47% 11%;
+  --card:          0 0% 100%;
+  --card-fg:       222 47% 11%;
+  --muted:         210 40% 96%;
+  --muted-fg:      215 16% 47%;
+  --border:        214 32% 91%;
+  --input:         214 32% 91%;
+  --ring:          262 83% 58%;
+  /* Pulgar de control segmentado. Token propio y no --card: con --card el
+     seleccionado queda elevado en claro (100% sobre riel 96%) pero hundido en
+     oscuro (13% sobre riel 17%). El pulgar tiene que leerse igual en ambos modos. */
+  --seg-thumb:     0 0% 100%;
+
+  /* --- marca --- */
+  --primary:       262 83% 58%;   /* violet-600  #7C3AED  → 5.7:1 sobre blanco */
+  --primary-fg:    0 0% 100%;
+  --primary-hover: 263 70% 50%;   /* violet-700 */
+  --accent:        251 100% 96%;  /* violet-100  */
+  --accent-fg:     262 83% 58%;
+
+  /* --- semánticos --- */
+  --success:       160 84% 39%;   /* emerald-600 */
+  --warning:       38 92% 50%;    /* amber-500   */
+  --danger:        350 89% 60%;   /* rose-500    */
+  --info:          199 89% 48%;   /* sky-500     */
+
+  /* --- forma --- */
+  --radius:        0.5rem;
+  --radius-lg:     0.75rem;
+  --radius-sm:     0.375rem;
+  --shadow-sm:     0 1px 2px 0 hsl(222 47% 11% / .05);
+  --shadow:        0 1px 3px 0 hsl(222 47% 11% / .08), 0 1px 2px -1px hsl(222 47% 11% / .08);
+  --shadow-lg:     0 10px 24px -6px hsl(222 47% 11% / .14), 0 4px 8px -4px hsl(222 47% 11% / .08);
+
+  --font-sans: "Inter var", Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, Consolas, monospace;
+}
+
+/* --- oscuro --- */
+.dark{
+  --bg:            222 47% 9%;
+  --fg:            210 40% 98%;
+  --card:          222 47% 13%;
+  --card-fg:       210 40% 98%;
+  --muted:         217 33% 17%;
+  --muted-fg:      215 20% 65%;
+  --border:        217 33% 20%;
+  --input:         217 33% 20%;
+  --ring:          255 92% 76%;
+  --seg-thumb:     217 33% 24%;   /* > --muted (17%): el pulgar queda elevado, no hundido */
+
+  --primary:       255 92% 76%;   /* violet-400  #A78BFA  → 6.7:1 sobre slate-900 */
+  --primary-fg:    222 47% 9%;
+  --primary-hover: 258 90% 66%;   /* violet-500 */
+  --accent:        263 69% 20%;
+  --accent-fg:     255 92% 76%;
+
+  --success:       160 84% 45%;
+  --warning:       43 96% 56%;
+  --danger:        350 89% 65%;
+  --info:          199 89% 60%;
+
+  --shadow-sm:     0 1px 2px 0 hsl(0 0% 0% / .4);
+  --shadow:        0 1px 3px 0 hsl(0 0% 0% / .5), 0 1px 2px -1px hsl(0 0% 0% / .4);
+  --shadow-lg:     0 10px 24px -6px hsl(0 0% 0% / .6);
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  font-family:var(--font-sans);
+  background:hsl(var(--bg));
+  color:hsl(var(--fg));
+  font-size:14px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- layout del documento ---------- */
+.topbar{
+  position:sticky; top:0; z-index:10;
+  display:flex; align-items:center; gap:12px;
+  padding:14px 28px;
+  background:hsl(var(--bg) / .85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid hsl(var(--border));
+}
+.topbar-brand{ display:flex; align-items:center; gap:10px; font-weight:650; letter-spacing:-.01em; }
+.topbar-brand small{ display:block; font-weight:450; font-size:11px; color:hsl(var(--muted-fg)); letter-spacing:0; }
+.topbar .spacer{ flex:1; }
+.toggle{
+  display:inline-flex; align-items:center; gap:6px;
+  height:32px; padding:0 12px; font-size:12px; font-weight:550;
+  color:hsl(var(--fg)); background:hsl(var(--muted));
+  border:1px solid hsl(var(--border)); border-radius:var(--radius-sm);
+  cursor:pointer; font-family:inherit;
+}
+.toggle:hover{ background:hsl(var(--accent)); color:hsl(var(--accent-fg)); }
+
+main{ max-width:1180px; margin:0 auto; padding:36px 28px 96px; }
+
+section{ margin-bottom:56px; scroll-margin-top:80px; }
+h2{
+  font-size:13px; font-weight:650; letter-spacing:.08em; text-transform:uppercase;
+  color:hsl(var(--muted-fg)); margin:0 0 4px;
+}
+.lead{ margin:0 0 24px; font-size:15px; color:hsl(var(--fg)); max-width:78ch; }
+.lead strong{ font-weight:650; }
+
+h3{ font-size:13px; font-weight:600; margin:28px 0 12px; letter-spacing:-.005em; }
+p.note{ font-size:12.5px; color:hsl(var(--muted-fg)); margin:8px 0 0; max-width:80ch; }
+code{
+  font-family:var(--font-mono); font-size:.86em;
+  background:hsl(var(--muted)); padding:1px 5px; border-radius:4px;
+  border:1px solid hsl(var(--border));
+}
+
+/* ---------- rationale ---------- */
+.cards3{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
+.rc{
+  padding:16px 18px; background:hsl(var(--card)); border:1px solid hsl(var(--border));
+  border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);
+}
+.rc h4{ margin:0 0 6px; font-size:13px; font-weight:650; }
+.rc p{ margin:0; font-size:12.5px; color:hsl(var(--muted-fg)); line-height:1.6; }
+
+/* ---------- candidatos de acento ---------- */
+.cand{
+  border:1px solid hsl(var(--border)); border-radius:var(--radius-lg);
+  background:hsl(var(--card)); overflow:hidden; box-shadow:var(--shadow-sm);
+}
+.cand .strip{ height:56px; }
+.cand .body{ padding:14px 16px; }
+.cand .name{ font-size:13px; font-weight:650; display:flex; align-items:center; justify-content:space-between; }
+.cand .hex{ font-family:var(--font-mono); font-size:11px; color:hsl(var(--muted-fg)); font-weight:400; }
+.cand .verdict{ font-size:11.5px; color:hsl(var(--muted-fg)); margin:8px 0 12px; }
+.sample{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.cand.pick{ outline:2px solid hsl(var(--primary)); outline-offset:2px; }
+.tagpick{
+  display:inline-flex; align-items:center; justify-content:center;
+  height:18px; padding:0 8px; border-radius:999px; flex-shrink:0;
+  background:hsl(var(--primary)); color:hsl(var(--primary-fg));
+  font-size:10px; font-weight:650; letter-spacing:.06em; text-transform:uppercase;
+  white-space:nowrap;
+}
+
+/* ---------- swatches ---------- */
+.scale{ display:grid; grid-template-columns:repeat(11,minmax(0,1fr)); gap:0;
+  border-radius:var(--radius); overflow:hidden; border:1px solid hsl(var(--border)); }
+.scale div{ padding:14px 4px 8px; font-size:9.5px; font-family:var(--font-mono);
+  text-align:center; border-right:1px solid hsl(0 0% 100% / .08); }
+.scale div:last-child{ border-right:0; }
+.scale b{ display:block; font-weight:600; font-size:10px; }
+.semantic{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; }
+.sw{ border:1px solid hsl(var(--border)); border-radius:var(--radius); overflow:hidden; background:hsl(var(--card)); }
+.sw .chip{ height:44px; }
+.sw .lbl{ padding:8px 10px; font-size:11.5px; }
+.sw .lbl b{ display:block; font-weight:600; }
+.sw .lbl span{ font-family:var(--font-mono); font-size:10px; color:hsl(var(--muted-fg)); }
+
+/* ---------- tabla de tokens ---------- */
+table.tokens{ width:100%; border-collapse:collapse; font-size:12px;
+  border:1px solid hsl(var(--border)); border-radius:var(--radius); overflow:hidden; }
+table.tokens th{
+  text-align:left; font-weight:600; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase;
+  color:hsl(var(--muted-fg)); background:hsl(var(--muted)); padding:9px 12px;
+  border-bottom:1px solid hsl(var(--border));
+}
+table.tokens td{ padding:9px 12px; border-bottom:1px solid hsl(var(--border)); vertical-align:middle; }
+table.tokens tr:last-child td{ border-bottom:0; }
+table.tokens td.mono{ font-family:var(--font-mono); font-size:11px; color:hsl(var(--muted-fg)); }
+.dot{ display:inline-block; width:14px; height:14px; border-radius:4px;
+  border:1px solid hsl(var(--border)); vertical-align:-2px; margin-right:8px; }
+
+.grid2{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+@media (max-width:760px){ .grid2{ grid-template-columns:1fr; } }
+
+/* ---------- tipografía ---------- */
+.type-row{ display:flex; align-items:baseline; gap:20px; padding:12px 0; border-bottom:1px dashed hsl(var(--border)); }
+.type-row:last-child{ border-bottom:0; }
+.type-meta{ flex:0 0 190px; font-family:var(--font-mono); font-size:10.5px; color:hsl(var(--muted-fg)); }
+.type-demo{ flex:1; letter-spacing:-.02em; }
+
+/* ---------- forma ---------- */
+.radii{ display:flex; gap:18px; flex-wrap:wrap; }
+.radii figure{ margin:0; text-align:center; }
+.radii .box{ width:74px; height:74px; background:hsl(var(--accent)); border:1px solid hsl(var(--primary) / .35); }
+.radii figcaption{ font-family:var(--font-mono); font-size:10.5px; color:hsl(var(--muted-fg)); margin-top:7px; }
+.shadows{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:20px; }
+.shadows figure{ margin:0; }
+.shadows .box{ height:70px; background:hsl(var(--card)); border:1px solid hsl(var(--border)); border-radius:var(--radius); }
+.shadows figcaption{ font-family:var(--font-mono); font-size:10.5px; color:hsl(var(--muted-fg)); margin-top:7px; }
+.space-bar{ display:flex; align-items:center; gap:10px; font-family:var(--font-mono); font-size:11px;
+  color:hsl(var(--muted-fg)); margin-bottom:8px; }
+.space-bar i{ display:block; height:14px; background:hsl(var(--primary) / .22); border:1px solid hsl(var(--primary) / .45); border-radius:2px; }
+
+/* ---------- componentes ---------- */
+.panel{
+  border:1px solid hsl(var(--border)); border-radius:var(--radius-lg);
+  background:hsl(var(--card)); padding:22px; margin-bottom:16px;
+}
+.panel > h3{ margin-top:0; }
+.row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:7px;
+  font-family:inherit; font-size:13px; font-weight:550; line-height:1;
+  height:36px; padding:0 15px; border-radius:var(--radius-sm);
+  border:1px solid transparent; cursor:pointer; white-space:nowrap; flex-shrink:0;
+  transition:background-color .12s, border-color .12s, color .12s;
+}
+.btn.sm{ height:30px; padding:0 11px; font-size:12px; }
+.btn.lg{ height:42px; padding:0 20px; font-size:14px; }
+.btn[disabled]{ opacity:.45; cursor:not-allowed; }
+.btn.primary{ background:hsl(var(--primary)); color:hsl(var(--primary-fg)); }
+.btn.primary:hover:not([disabled]){ background:hsl(var(--primary-hover)); }
+.btn.outline{ background:transparent; color:hsl(var(--fg)); border-color:hsl(var(--border)); }
+.btn.outline:hover{ background:hsl(var(--muted)); }
+.btn.ghost{ background:transparent; color:hsl(var(--fg)); }
+.btn.ghost:hover{ background:hsl(var(--muted)); }
+.btn.danger{ background:hsl(var(--danger)); color:hsl(0 0% 100%); }
+.btn.success{ background:hsl(var(--success)); color:hsl(0 0% 100%); }
+
+/* Altura fija + nowrap: el badge mide lo mismo sin importar el texto.
+   Sin esto, un texto largo lo estiraba en alto y desalineaba toda la fila. */
+.badge{
+  display:inline-flex; align-items:center; justify-content:center; gap:5px;
+  /* width:auto explicito. La utilidad .dot (muestra de color) declara width:14px
+     y, a igual especificidad y por venir antes en la hoja, se filtraba a cualquier
+     badge que llevara .dot: el badge quedaba de 14px y el texto se desbordaba. */
+  width:auto; height:22px; padding:0 9px;
+  font-size:11px; font-weight:600; line-height:1;
+  border-radius:999px; border:1px solid transparent;
+  white-space:nowrap; flex-shrink:0; vertical-align:middle;
+}
+/* Tonos: vocabulario COMPARTIDO entre componentes (.badge.ok, .alert.ok).
+   Van como clase plana a proposito. Las banderas que son propias de un solo
+   componente van namespaceadas (.badge--dot). Nunca al reves: .dot, .brand y
+   sus primos ya existen como componente/utilidad suelta, y a igual
+   especificidad la cascada filtra sus propiedades al badge. */
+.badge.neutral{ background:hsl(var(--muted)); color:hsl(var(--muted-fg)); }
+.badge.brand  { background:hsl(var(--accent)); color:hsl(var(--accent-fg)); }
+.badge.ok     { background:hsl(var(--success) / .14); color:hsl(var(--success)); border-color:hsl(var(--success) / .3); }
+.badge.warn   { background:hsl(var(--warning) / .16); color:hsl(var(--warning)); border-color:hsl(var(--warning) / .3); }
+.badge.err    { background:hsl(var(--danger) / .14); color:hsl(var(--danger)); border-color:hsl(var(--danger) / .3); }
+.badge.info   { background:hsl(var(--info) / .14);  color:hsl(var(--info));  border-color:hsl(var(--info) / .3); }
+/* Modificador con namespace: .badge--dot, NUNCA .dot a secas.
+   .dot ya es la utilidad de muestra de color y sus propiedades (width:14px,
+   margin-right:8px) se filtraban al badge. Con nombre propio no puede volver. */
+.badge--dot::before{ content:""; width:5px; height:5px; border-radius:999px; background:currentColor; flex-shrink:0; }
+
+/* Selector de tema: control segmentado de 3 estados. Va en el shell, a la vista,
+   no escondido dentro de un menú de usuario. */
+.themectl{
+  display:inline-flex; align-items:center; gap:2px; flex-shrink:0;
+  padding:2px; border-radius:var(--radius-sm);
+  background:hsl(var(--muted)); border:1px solid hsl(var(--border));
+}
+.themectl button{
+  display:inline-flex; align-items:center; justify-content:center; gap:5px;
+  height:26px; padding:0 10px; border:0; border-radius:4px;
+  background:transparent; cursor:pointer; white-space:nowrap;
+  font-family:inherit; font-size:11.5px; font-weight:550;
+  color:hsl(var(--muted-fg));
+}
+.themectl button:hover{ color:hsl(var(--fg)); }
+.themectl button:focus-visible{ outline:2px solid hsl(var(--ring)); outline-offset:1px; }
+.themectl button[aria-pressed="true"]{
+  background:hsl(var(--seg-thumb)); color:hsl(var(--fg));
+  box-shadow:var(--shadow-sm);
+}
+
+.field{ display:flex; flex-direction:column; gap:6px; min-width:220px; }
+.field label{ font-size:12px; font-weight:550; }
+.field .hint{ font-size:11.5px; color:hsl(var(--muted-fg)); }
+.field .err{ font-size:11.5px; color:hsl(var(--danger)); }
+.input, .select{
+  height:36px; padding:0 11px; font-family:inherit; font-size:13px;
+  color:hsl(var(--fg)); background:hsl(var(--card));
+  border:1px solid hsl(var(--input)); border-radius:var(--radius-sm); width:100%;
+}
+.input:focus, .select:focus{
+  outline:none; border-color:hsl(var(--ring)); box-shadow:0 0 0 3px hsl(var(--ring) / .18);
+}
+.input.invalid{ border-color:hsl(var(--danger)); }
+.input.invalid:focus{ box-shadow:0 0 0 3px hsl(var(--danger) / .18); }
+.input[disabled]{ background:hsl(var(--muted)); color:hsl(var(--muted-fg)); cursor:not-allowed; }
+
+.alert{
+  display:flex; gap:11px; padding:12px 14px; border-radius:var(--radius);
+  border:1px solid hsl(var(--border)); background:hsl(var(--muted));
+  font-size:12.5px;
+}
+.alert b{ display:block; font-weight:600; margin-bottom:2px; }
+.alert.ok  { background:hsl(var(--success) / .09); border-color:hsl(var(--success) / .3); }
+.alert.warn{ background:hsl(var(--warning) / .10); border-color:hsl(var(--warning) / .3); }
+.alert.err { background:hsl(var(--danger) / .09);  border-color:hsl(var(--danger) / .3); }
+.alert .ico{ font-weight:700; font-size:13px; }
+.alert.ok .ico{ color:hsl(var(--success)); }
+.alert.warn .ico{ color:hsl(var(--warning)); }
+.alert.err .ico{ color:hsl(var(--danger)); }
+.alert .txt{ flex:1; }
+.alert .txt p{ margin:0; color:hsl(var(--muted-fg)); }
+
+/* data table */
+.dtable{ width:100%; border-collapse:collapse; font-size:12.5px; }
+.dtable th{
+  text-align:left; font-size:10.5px; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+  color:hsl(var(--muted-fg)); padding:9px 12px; border-bottom:1px solid hsl(var(--border));
+  background:hsl(var(--muted)); vertical-align:middle;
+}
+.dtable td{ padding:10px 12px; border-bottom:1px solid hsl(var(--border)); vertical-align:middle; }
+.dtable tr:last-child td{ border-bottom:0; }
+.dtable tr:hover td{ background:hsl(var(--muted) / .5); }
+.dtable .num{ font-variant-numeric:tabular-nums; }
+.avatar{
+  width:26px; height:26px; border-radius:999px; display:inline-flex; align-items:center; justify-content:center;
+  font-size:10.5px; font-weight:650; line-height:1; background:hsl(var(--accent)); color:hsl(var(--accent-fg));
+  vertical-align:middle; margin-right:8px; flex-shrink:0;
+}
+.tablewrap{ border:1px solid hsl(var(--border)); border-radius:var(--radius); overflow:hidden; }
+.pager{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 12px; border-top:1px solid hsl(var(--border)); font-size:12px;
+  color:hsl(var(--muted-fg)); background:hsl(var(--card));
+}
+
+/* kpi */
+.kpis{ display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; }
+.kpi{
+  border:1px solid hsl(var(--border)); border-radius:var(--radius-lg);
+  background:hsl(var(--card)); padding:16px; box-shadow:var(--shadow-sm);
+}
+.kpi .k{ font-size:11.5px; font-weight:550; color:hsl(var(--muted-fg)); }
+.kpi .v{ font-size:26px; font-weight:650; letter-spacing:-.03em; margin:4px 0 0;
+  font-variant-numeric:tabular-nums; }
+.kpi .d{ font-size:11.5px; margin-top:4px; display:flex; align-items:center; gap:5px; }
+.kpi .d.up{ color:hsl(var(--success)); }
+.kpi .d.down{ color:hsl(var(--danger)); }
+
+/* shell: sidebar + contenido */
+.shell{ display:grid; grid-template-columns:216px 1fr; border:1px solid hsl(var(--border));
+  border-radius:var(--radius-lg); overflow:hidden; background:hsl(var(--bg)); min-height:380px; }
+.side{ background:hsl(var(--card)); border-right:1px solid hsl(var(--border)); padding:14px 10px; }
+.side .grp{ font-size:10px; font-weight:650; letter-spacing:.08em; text-transform:uppercase;
+  color:hsl(var(--muted-fg)); padding:10px 10px 6px; }
+.nav-item{
+  display:flex; align-items:center; gap:9px; padding:8px 10px; border-radius:var(--radius-sm);
+  font-size:13px; font-weight:500; color:hsl(var(--muted-fg)); margin-bottom:2px;
+}
+.nav-item .ic{ width:15px; text-align:center; opacity:.85; }
+.nav-item.active{ background:hsl(var(--accent)); color:hsl(var(--accent-fg)); font-weight:600; }
+.nav-item:not(.active):hover{ background:hsl(var(--muted)); color:hsl(var(--fg)); }
+.content{ padding:20px; }
+.content .hd{ display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.content .hd h5{ margin:0; font-size:15px; font-weight:650; letter-spacing:-.01em; }
+.content .hd p{ margin:2px 0 0; font-size:12px; color:hsl(var(--muted-fg)); }
+.fake-rows{ display:flex; flex-direction:column; gap:9px; }
+.fake{ height:38px; border-radius:var(--radius-sm); background:hsl(var(--muted)); border:1px solid hsl(var(--border)); }
+.fake.tall{ height:96px; }
+
+footer{ max-width:1180px; margin:0 auto; padding:0 28px 60px; font-size:12px; color:hsl(var(--muted-fg)); }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-brand">
+    <svg width="26" height="26" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+      <rect width="28" height="28" rx="8" fill="hsl(var(--primary))"/>
+      <path d="M8.5 18.5 14 9.5l5.5 9" stroke="hsl(var(--primary-fg))" stroke-width="2.2"
+            stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span>Countergank Admin<small>boceto de identidad · v1</small></span>
+  </div>
+  <div class="spacer"></div>
+  <!-- Control del DOCUMENTO (para revisar el boceto). No confundir con el control
+       de la app, que se especifica más abajo en la sección "Tema de la aplicación". -->
+  <button class="toggle" onclick="document.documentElement.classList.toggle('dark')">
+    ◐ Previsualizar oscuro
+  </button>
+</header>
+
+<main>
+
+  <!-- ============ POR QUÉ ============ -->
+  <section id="intro">
+    <h2>El criterio</h2>
+    <p class="lead">
+      Esto <strong>no</strong> es una propuesta de gusto. Son decisiones derivadas de dos cosas
+      verificables: el violeta <code>#8B5CF6</code> que ya está en el logo real de la marca, y la
+      personalidad escrita en <code>branding/mvv.md</code>.
+    </p>
+    <div class="cards3">
+      <div class="rc">
+        <h4>Consola, no landing</h4>
+        <p>El operador pasa horas acá. Manda la densidad, la jerarquía y el contraste — no el efecto.
+           El violeta es <em>acento</em>, nunca superficie.</p>
+      </div>
+      <div class="rc">
+        <h4>Neutro dominante</h4>
+        <p>Base de grises fríos (slate) que armonizan con el violeta. Sin esto, una consola saturada
+           cansa la vista y arruina la legibilidad de tablas.</p>
+      </div>
+      <div class="rc">
+        <h4>Oscuro de primera</h4>
+        <p>No es un extra. Casi todo operador vive en modo oscuro. Se diseñó en los dos modos desde
+           el arranque, no como inversión automática.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CANDIDATOS ============ -->
+  <section id="candidatos">
+    <h2>Decisión pendiente</h2>
+    <p class="lead">
+      Los tres acentos, aplicados al mismo botón, badge y navegación activa. Mirá y elegí.
+      Sin necesidad de argumentar: se ve.
+    </p>
+    <div class="cards3">
+
+      <div class="cand pick">
+        <div class="strip" style="background:#7C3AED"></div>
+        <div class="body">
+          <div class="name">
+            A · Violeta de marca <span class="tagpick">Elegido</span>
+          </div>
+          <div class="hex">#7C3AED · violet-600</div>
+          <p class="verdict">Deriva del logo real. La consola queda dentro de la familia
+            Countergank en vez de flotar suelta.</p>
+          <div class="sample">
+            <button class="btn primary sm" style="background:#7C3AED">Guardar</button>
+            <span class="badge brand" style="background:#EDE9FE;color:#7C3AED">Activo</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cand">
+        <div class="strip" style="background:#4F46E5"></div>
+        <div class="body">
+          <div class="name">B · Índigo</div>
+          <div class="hex">#4F46E5 · indigo-600</div>
+          <p class="verdict">Más azul, más “corporativo”. Seguro y aburrido: se pierde el vínculo
+            con la marca.</p>
+          <div class="sample">
+            <button class="btn primary sm" style="background:#4F46E5">Guardar</button>
+            <span class="badge brand" style="background:#E0E7FF;color:#4F46E5">Activo</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cand">
+        <div class="strip" style="background:#0D9488"></div>
+        <div class="body">
+          <div class="name">C · Teal</div>
+          <div class="hex">#0D9488 · teal-600</div>
+          <p class="verdict">Contraste fuerte contra el violeta. Riesgo: choca con el color de
+            “éxito”, que es justo este rango.</p>
+          <div class="sample">
+            <button class="btn primary sm" style="background:#0D9488">Guardar</button>
+            <span class="badge brand" style="background:#CCFBF1;color:#0D9488">Activo</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ PALETA ============ -->
+  <section id="paleta">
+    <h2>Paleta</h2>
+    <p class="lead">
+      Una rampa de marca completa, una rampa neutra fría y cuatro semánticos.
+      Nada más. Todo lo demás se construye combinando estas tres familias.
+    </p>
+
+    <h3>Marca — Violeta</h3>
+    <div class="scale">
+      <div style="background:#F5F3FF;color:#4C1D95"><b>50</b>F5F3FF</div>
+      <div style="background:#EDE9FE;color:#4C1D95"><b>100</b>EDE9FE</div>
+      <div style="background:#DDD6FE;color:#4C1D95"><b>200</b>DDD6FE</div>
+      <div style="background:#C4B5FD;color:#2E1065"><b>300</b>C4B5FD</div>
+      <div style="background:#A78BFA;color:#2E1065"><b>400</b>A78BFA</div>
+      <div style="background:#8B5CF6;color:#fff"><b>500</b>8B5CF6</div>
+      <div style="background:#7C3AED;color:#fff"><b>600</b>7C3AED</div>
+      <div style="background:#6D28D9;color:#fff"><b>700</b>6D28D9</div>
+      <div style="background:#5B21B6;color:#fff"><b>800</b>5B21B6</div>
+      <div style="background:#4C1D95;color:#fff"><b>900</b>4C1D95</div>
+      <div style="background:#2E1065;color:#fff"><b>950</b>2E1065</div>
+    </div>
+    <p class="note">
+      El <b>500</b> (#8B5CF6) es el color que aparece en el logo: es la referencia de marca.
+      Pero para <em>texto sobre color</em> no alcanza (3.6:1). Por eso los botones usan el
+      <b>600</b>, que llega a 5.7:1 y pasa AA.
+    </p>
+
+    <h3>Neutra — Gris frío</h3>
+    <div class="scale">
+      <div style="background:#F8FAFC;color:#0F172A"><b>50</b>F8FAFC</div>
+      <div style="background:#F1F5F9;color:#0F172A"><b>100</b>F1F5F9</div>
+      <div style="background:#E2E8F0;color:#0F172A"><b>200</b>E2E8F0</div>
+      <div style="background:#CBD5E1;color:#0F172A"><b>300</b>CBD5E1</div>
+      <div style="background:#94A3B8;color:#fff"><b>400</b>94A3B8</div>
+      <div style="background:#64748B;color:#fff"><b>500</b>64748B</div>
+      <div style="background:#475569;color:#fff"><b>600</b>475569</div>
+      <div style="background:#334155;color:#fff"><b>700</b>334155</div>
+      <div style="background:#1E293B;color:#fff"><b>800</b>1E293B</div>
+      <div style="background:#0F172A;color:#fff"><b>900</b>0F172A</div>
+      <div style="background:#020617;color:#fff"><b>950</b>020617</div>
+    </div>
+
+    <h3>Semánticos</h3>
+    <div class="semantic">
+      <div class="sw"><div class="chip" style="background:hsl(var(--success))"></div>
+        <div class="lbl"><b>Éxito</b><span>--success</span></div></div>
+      <div class="sw"><div class="chip" style="background:hsl(var(--warning))"></div>
+        <div class="lbl"><b>Atención</b><span>--warning</span></div></div>
+      <div class="sw"><div class="chip" style="background:hsl(var(--danger))"></div>
+        <div class="lbl"><b>Error / Destructivo</b><span>--danger</span></div></div>
+      <div class="sw"><div class="chip" style="background:hsl(var(--info))"></div>
+        <div class="lbl"><b>Información</b><span>--info</span></div></div>
+    </div>
+  </section>
+
+  <!-- ============ TOKENS ============ -->
+  <section id="tokens">
+    <h2>Tokens semánticos</h2>
+    <p class="lead">
+      Los componentes nunca usan un hex directo: usan estos nombres. Así el modo oscuro se activa
+      solo, y cambiar la marca es cambiar once líneas.
+    </p>
+    <div class="grid2">
+      <div>
+        <h3>Modo claro</h3>
+        <table class="tokens">
+          <tr><th style="width:44%">Token</th><th>Valor HSL</th></tr>
+          <tr><td><span class="dot" style="background:hsl(262 83% 58%)"></span>--primary</td><td class="mono">262 83% 58%</td></tr>
+          <tr><td><span class="dot" style="background:hsl(0 0% 100%)"></span>--background</td><td class="mono">0 0% 100%</td></tr>
+          <tr><td><span class="dot" style="background:hsl(222 47% 11%)"></span>--foreground</td><td class="mono">222 47% 11%</td></tr>
+          <tr><td><span class="dot" style="background:hsl(210 40% 96%)"></span>--muted</td><td class="mono">210 40% 96%</td></tr>
+          <tr><td><span class="dot" style="background:hsl(214 32% 91%)"></span>--border</td><td class="mono">214 32% 91%</td></tr>
+          <tr><td><span class="dot" style="background:hsl(251 100% 96%)"></span>--accent</td><td class="mono">251 100% 96%</td></tr>
+        </table>
+      </div>
+      <div class="dark" style="background:hsl(var(--bg));padding:0;border-radius:var(--radius)">
+        <h3 style="color:hsl(var(--fg));padding-top:0">Modo oscuro</h3>
+        <table class="tokens">
+          <tr><th style="width:44%">Token</th><th>Valor HSL</th></tr>
+          <tr><td><span class="dot" style="background:hsl(255 92% 76%)"></span>--primary</td><td class="mono">255 92% 76%</td></tr>
+          <tr><td><span class="dot" style="background:hsl(222 47% 9%)"></span>--background</td><td class="mono">222 47% 9%</td></tr>
+          <tr><td><span class="dot" style="background:hsl(210 40% 98%)"></span>--foreground</td><td class="mono">210 40% 98%</td></tr>
+          <tr><td><span class="dot" style="background:hsl(217 33% 17%)"></span>--muted</td><td class="mono">217 33% 17%</td></tr>
+          <tr><td><span class="dot" style="background:hsl(217 33% 20%)"></span>--border</td><td class="mono">217 33% 20%</td></tr>
+          <tr><td><span class="dot" style="background:hsl(263 69% 20%)"></span>--accent</td><td class="mono">263 69% 20%</td></tr>
+        </table>
+        <p class="note" style="color:hsl(var(--muted-fg))">
+          En oscuro el primario sube a violet-400 y el texto pasa a oscuro sobre él: 6.7:1.
+          Invertir el mismo color no alcanzaba.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TIPOGRAFÍA ============ -->
+  <section id="tipografia">
+    <h2>Tipografía</h2>
+    <p class="lead">
+      Una sola familia (<b>Inter</b>, variable, gratuita, sobria) y una rampa corta. Los números
+      de tablas y métricas van <code>tabular-nums</code> para que las columnas no bailen.
+    </p>
+    <div class="panel">
+      <div class="type-row"><div class="type-meta">26 / 650 · KPI</div>
+        <div class="type-demo" style="font-size:26px;font-weight:650;font-variant-numeric:tabular-nums">1.927</div></div>
+      <div class="type-row"><div class="type-meta">20 / 650 · título de página</div>
+        <div class="type-demo" style="font-size:20px;font-weight:650">Usuarios</div></div>
+      <div class="type-row"><div class="type-meta">15 / 650 · título de sección</div>
+        <div class="type-demo" style="font-size:15px;font-weight:650">Permisos efectivos</div></div>
+      <div class="type-row"><div class="type-meta">14 / 400 · cuerpo</div>
+        <div class="type-demo" style="font-size:14px">El rol resuelve sus permisos por unión de roles heredados.</div></div>
+      <div class="type-row"><div class="type-meta">13 / 500 · UI / controles</div>
+        <div class="type-demo" style="font-size:13px;font-weight:500">Guardar cambios</div></div>
+      <div class="type-row"><div class="type-meta">12.5 / 400 · secundario</div>
+        <div class="type-demo" style="font-size:12.5px;color:hsl(var(--muted-fg))">Actualizado hace 4 minutos</div></div>
+      <div class="type-row"><div class="type-meta">10.5 / 600 · etiqueta</div>
+        <div class="type-demo" style="font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:hsl(var(--muted-fg))">Estado</div></div>
+      <div class="type-row"><div class="type-meta">11 / mono · dato técnico</div>
+        <div class="type-demo" style="font-family:var(--font-mono);font-size:11px">user:update</div></div>
+    </div>
+  </section>
+
+  <!-- ============ FORMA ============ -->
+  <section id="forma">
+    <h2>Forma y ritmo</h2>
+    <p class="lead">Grid de 4px. Radios moderados: ni cuadrados ni burbujas. Sombras al mínimo —
+      en una consola el relieve lo da el borde, no la sombra.</p>
+
+    <h3>Radios</h3>
+    <div class="radii">
+      <figure><div class="box" style="border-radius:4px"></div><figcaption>4 · sm</figcaption></figure>
+      <figure><div class="box" style="border-radius:6px"></div><figcaption>6 · md</figcaption></figure>
+      <figure><div class="box" style="border-radius:8px"></div><figcaption>8 · base</figcaption></figure>
+      <figure><div class="box" style="border-radius:12px"></div><figcaption>12 · lg</figcaption></figure>
+      <figure><div class="box" style="border-radius:999px"></div><figcaption>full</figcaption></figure>
+    </div>
+
+    <h3>Sombras</h3>
+    <div class="shadows">
+      <figure><div class="box" style="box-shadow:var(--shadow-sm)"></div><figcaption>sm · reposo</figcaption></figure>
+      <figure><div class="box" style="box-shadow:var(--shadow)"></div><figcaption>base · tarjeta</figcaption></figure>
+      <figure><div class="box" style="box-shadow:var(--shadow-lg)"></div><figcaption>lg · overlay</figcaption></figure>
+    </div>
+
+    <h3>Espaciado</h3>
+    <div style="margin-top:14px">
+      <div class="space-bar"><i style="width:4px"></i>4</div>
+      <div class="space-bar"><i style="width:8px"></i>8</div>
+      <div class="space-bar"><i style="width:12px"></i>12</div>
+      <div class="space-bar"><i style="width:16px"></i>16</div>
+      <div class="space-bar"><i style="width:24px"></i>24</div>
+      <div class="space-bar"><i style="width:32px"></i>32</div>
+      <div class="space-bar"><i style="width:48px"></i>48</div>
+    </div>
+  </section>
+
+  <!-- ============ COMPONENTES ============ -->
+  <section id="componentes">
+    <h2>Componentes</h2>
+    <p class="lead">Los mínimos que necesita la consola. Todo con estados de foco visibles —
+      requisito de accesibilidad, no adorno.</p>
+
+    <div class="panel">
+      <h3>Botones</h3>
+      <div class="row">
+        <button class="btn primary">Guardar</button>
+        <button class="btn outline">Cancelar</button>
+        <button class="btn ghost">Ver detalle</button>
+        <button class="btn danger">Eliminar</button>
+        <button class="btn success">Aprobar</button>
+        <button class="btn primary" disabled>Deshabilitado</button>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn primary sm">sm</button>
+        <button class="btn primary">md</button>
+        <button class="btn primary lg">lg</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Etiquetas de estado</h3>
+      <div class="row">
+        <span class="badge neutral">Borrador</span>
+        <span class="badge brand">Admin</span>
+        <span class="badge ok badge--dot">Activo</span>
+        <span class="badge warn badge--dot">Pendiente</span>
+        <span class="badge err badge--dot">Bloqueado</span>
+        <span class="badge info">Invitado</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Campos</h3>
+      <div class="row" style="align-items:flex-start">
+        <div class="field">
+          <label for="e1">Correo</label>
+          <input class="input" id="e1" value="operador@countergank.com">
+          <span class="hint">Se usa para el acceso y las notificaciones.</span>
+        </div>
+        <div class="field">
+          <label for="e2">Rol</label>
+          <select class="select" id="e2">
+            <option>Administrador</option>
+            <option>Editor</option>
+            <option>Lector</option>
+          </select>
+          <span class="hint">Define los permisos efectivos.</span>
+        </div>
+        <div class="field">
+          <label for="e3">Teléfono</label>
+          <input class="input invalid" id="e3" value="++54 11">
+          <span class="err">Formato inválido.</span>
+        </div>
+        <div class="field">
+          <label for="e4">ID externo</label>
+          <input class="input" id="e4" value="no editable" disabled>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Avisos</h3>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="alert ok"><span class="ico">✓</span><div class="txt"><b>Permisos actualizados</b>
+          <p>El rol Editor ahora incluye <code>user:update</code>.</p></div></div>
+        <div class="alert warn"><span class="ico">!</span><div class="txt"><b>Cambio sin guardar</b>
+          <p>Salir ahora descarta las modificaciones.</p></div></div>
+        <div class="alert err"><span class="ico">✕</span><div class="txt"><b>No se pudo conectar con la API</b>
+          <p>Reintentá en unos segundos. La sesión sigue activa.</p></div></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Tabla de datos</h3>
+      <div class="tablewrap">
+        <table class="dtable">
+          <thead>
+            <tr><th style="width:34%">Usuario</th><th>Rol</th><th>Estado</th><th class="num">Último acceso</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="avatar">LC</span>Leandro Cepeda</td>
+                <td><span class="badge brand">Admin</span></td>
+                <td><span class="badge ok badge--dot">Activo</span></td>
+                <td class="num">hace 2 min</td></tr>
+            <tr><td><span class="avatar">TB</span>Tomás Bidegain</td>
+                <td><span class="badge neutral">Editor</span></td>
+                <td><span class="badge ok badge--dot">Activo</span></td>
+                <td class="num">ayer</td></tr>
+            <tr><td><span class="avatar">MU</span>María Uriarte</td>
+                <td><span class="badge neutral">Lector</span></td>
+                <td><span class="badge warn badge--dot">Pendiente</span></td>
+                <td class="num">—</td></tr>
+            <tr><td><span class="avatar">JP</span>Julián Pérez</td>
+                <td><span class="badge neutral">Editor</span></td>
+                <td><span class="badge err badge--dot">Bloqueado</span></td>
+                <td class="num">hace 12 días</td></tr>
+          </tbody>
+        </table>
+        <div class="pager"><span>4 de 128 usuarios</span><span>‹ 1 2 3 ›</span></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Métricas</h3>
+      <div class="kpis">
+        <div class="kpi"><div class="k">Usuarios activos</div><div class="v">1.284</div>
+          <div class="d up">▲ 4,2% esta semana</div></div>
+        <div class="kpi"><div class="k">Bloqueados</div><div class="v">17</div>
+          <div class="d down">▼ 3 desde ayer</div></div>
+        <div class="kpi"><div class="k">Roles</div><div class="v">6</div>
+          <div class="d">sin cambios</div></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Estructura de la consola</h3>
+      <div class="shell">
+        <aside class="side">
+          <div class="grp">General</div>
+          <div class="nav-item active"><span class="ic">▦</span> Panel</div>
+          <div class="nav-item"><span class="ic">◍</span> Usuarios</div>
+          <div class="nav-item"><span class="ic">⬡</span> Roles y permisos</div>
+          <div class="grp">Sistema</div>
+          <div class="nav-item"><span class="ic">≡</span> Auditoría</div>
+          <div class="nav-item"><span class="ic">⚙</span> Parámetros</div>
+          <div class="nav-item"><span class="ic">✉</span> Correos</div>
+          <div class="nav-item"><span class="ic">⇄</span> Traducciones</div>
+        </aside>
+        <div class="content">
+          <div class="hd">
+            <div><h5>Panel</h5><p>Resumen operativo de la plataforma</p></div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div class="themectl" role="group" aria-label="Tema de la aplicación">
+                <button type="button" aria-pressed="false">Claro</button>
+                <button type="button" aria-pressed="true">Oscuro</button>
+                <button type="button" aria-pressed="false">Sistema</button>
+              </div>
+              <button class="btn outline sm">Actualizar</button>
+            </div>
+          </div>
+          <div class="fake-rows">
+            <div class="fake tall"></div>
+            <div class="fake"></div>
+            <div class="fake"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TEMA ============ -->
+  <section id="tema">
+    <h2>Tema de la aplicación</h2>
+    <p class="lead">
+      El boceto mostraba claro y oscuro como dos fotos sueltas. Faltaba la pieza que las conecta:
+      el control que el operador realmente usa. Va a la vista en el header del shell, no escondido
+      dentro de un menú de usuario — cambiar de tema es una acción frecuente, no una preferencia
+      enterrada.
+    </p>
+
+    <div class="panel">
+      <h3>Control segmentado — 3 estados</h3>
+      <div class="row">
+        <div class="themectl" role="group" aria-label="Tema de la aplicación">
+          <button type="button" aria-pressed="false">Claro</button>
+          <button type="button" aria-pressed="true">Oscuro</button>
+          <button type="button" aria-pressed="false">Sistema</button>
+        </div>
+        <span class="badge neutral">densidad cómoda</span>
+        <span class="badge brand">recomendado</span>
+      </div>
+      <ul style="margin:14px 0 0;padding-left:20px;font-size:12.5px;line-height:1.75">
+        <li><b>Claro / Oscuro</b> — elección explícita del operador. Gana sobre el sistema y persiste.</li>
+        <li><b>Sistema</b> — sigue <code>prefers-color-scheme</code> y reacciona en vivo si el SO cambia
+          mientras la app está abierta. Es el <i>default</i> para quien nunca eligió.</li>
+        <li>El estado no es binario: <code>theme</code> guarda la <i>preferencia</i>
+          (<code>light | dark | system</code>) y el <i>tema resuelto</i>
+          (<code>light | dark</code>) se deriva. Confundir ambos es lo que rompe el modo "sistema".</li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h3>Cómo tiene que comportarse</h3>
+      <div class="grid2">
+        <div>
+          <p class="type-meta">APLICACIÓN</p>
+          <ul style="margin:6px 0 0;padding-left:20px;font-size:12.5px;line-height:1.75">
+            <li>Se aplica la clase <code>.dark</code> sobre <code>&lt;html&gt;</code> — no sobre
+              <code>body</code> ni un contenedor: los tokens viven en <code>:root</code>.</li>
+            <li><code>color-scheme: light dark</code> para que los controles nativos (scrollbars,
+              selects, autofill) acompañen.</li>
+            <li>Sin parpadeo: la clase se resuelve <b>antes</b> del primer paint, con un script inline
+              en el <code>&lt;head&gt;</code> que lee la preferencia guardada.</li>
+          </ul>
+        </div>
+        <div>
+          <p class="type-meta">PERSISTENCIA</p>
+          <ul style="margin:6px 0 0;padding-left:20px;font-size:12.5px;line-height:1.75">
+            <li>Se guarda la preferencia, no el resultado: guardar "oscuro" cuando el sistema estaba
+              oscuro impide volver a seguir al sistema.</li>
+            <li>Un valor corrupto o desconocido en el storage cae a <code>system</code>, nunca rompe.</li>
+            <li>El primer render en servidor/cliente debe coincidir para no disparar hidratación
+              distinta — acá es SPA pura, así que alcanza con resolver antes del paint.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" style="border-color:hsl(var(--danger) / .35)">
+      <h3 style="color:hsl(var(--danger))">Lo que el código actual NO hace</h3>
+      <p class="lead" style="margin-bottom:12px">
+        No es una hipótesis: esto salió de leer el repo. El toggle de tema de
+        <code>src/features/home/</code> está <b>a medio cablear</b> — cambia el estado, pero el
+        estado no cambia nada.
+      </p>
+      <div class="tablewrap">
+        <table class="dtable">
+          <thead>
+            <tr><th style="width:30%">Pieza</th><th>Estado real</th><th style="width:16%">Severidad</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Nadie aplica <code>.dark</code></b></td>
+              <td><code>tokens.css:25</code> define <code>.dark</code> y no hay una sola referencia que
+                lo active. Un <code>grep</code> de <code>documentElement|classList</code> en todo
+                <code>src/</code> devuelve <b>cero</b> resultados.</td>
+              <td><span class="badge err badge--dot">Roto</span></td>
+            </tr>
+            <tr>
+              <td><b>Sin persistencia</b></td>
+              <td><code>initialState</code> fija <code>theme: "light"</code>. Recargar la página revierte
+                la elección del operador.</td>
+              <td><span class="badge err badge--dot">Roto</span></td>
+            </tr>
+            <tr>
+              <td><b>Sin estado "sistema"</b></td>
+              <td>El tipo es <code>"light" | "dark"</code> y no existe <code>matchMedia</code>. La app
+                arranca clara aunque el SO esté oscuro.</td>
+              <td><span class="badge warn badge--dot">Falta</span></td>
+            </tr>
+            <tr>
+              <td><b>Sin guarda de parpadeo</b></td>
+              <td>Al cargar en oscuro se ve un destello blanco antes de aplicar el tema.</td>
+              <td><span class="badge warn badge--dot">Falta</span></td>
+            </tr>
+            <tr>
+              <td><b>Accesibilidad del botón</b></td>
+              <td><code>theme-toggle.tsx</code> ya usa <code>aria-pressed</code> y etiqueta por i18n.
+                Esto <b>está bien</b> y se conserva.</td>
+              <td><span class="badge ok badge--dot">OK</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="lead" style="margin:12px 0 0">
+        Consecuencia: hoy el toggle es decorativo. Eso no es un detalle de diseño — es un defecto
+        del producto que conviene arreglar antes de montar pantallas nuevas encima.
+      </p>
+    </div>
+
+    <div class="panel dark" style="background:hsl(var(--bg));border-radius:var(--radius-lg)">
+      <h3>El mismo control en oscuro</h3>
+      <div class="row">
+        <div class="themectl" role="group" aria-label="Tema de la aplicación">
+          <button type="button" aria-pressed="false">Claro</button>
+          <button type="button" aria-pressed="true">Oscuro</button>
+          <button type="button" aria-pressed="false">Sistema</button>
+        </div>
+      </div>
+      <p class="lead" style="margin:12px 0 0">
+        El control no se invierte por magia: consume los mismos tokens. El pulgar usa
+        <code>--seg-thumb</code>, definido en cada modo para quedar por encima del riel
+        (<code>--muted</code>). Uso un token propio justamente porque <code>--card</code> no sirve:
+        en claro queda más claro que el riel, pero en oscuro queda más oscuro, y el estado
+        seleccionado se leería hundido en un modo y elevado en el otro.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ OSCURO ============ -->
+  <section id="oscuro" class="dark" style="background:hsl(var(--bg));padding:28px;border-radius:var(--radius-lg);border:1px solid hsl(var(--border))">
+    <h2>Modo oscuro</h2>
+    <p class="lead">El mismo sistema, sin reinterpretar nada. Notá que el violeta se aclara y el
+      texto sobre él se invierte.</p>
+    <div class="row" style="margin-bottom:16px">
+      <button class="btn primary">Guardar</button>
+      <button class="btn outline">Cancelar</button>
+      <button class="btn danger">Eliminar</button>
+      <span class="badge ok badge--dot">Activo</span>
+      <span class="badge brand">Admin</span>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="k">Usuarios activos</div><div class="v">1.284</div>
+        <div class="d up">▲ 4,2%</div></div>
+      <div class="kpi"><div class="k">Peticiones / min</div><div class="v">8.940</div>
+        <div class="d">pico 12.100</div></div>
+      <div class="kpi"><div class="k">Errores 24h</div><div class="v">0,4%</div>
+        <div class="d up">▼ 0,2%</div></div>
+    </div>
+    <div style="margin-top:16px" class="tablewrap">
+      <table class="dtable">
+        <thead><tr><th>Servicio</th><th>Estado</th><th class="num">Latencia</th></tr></thead>
+        <tbody>
+          <tr><td>api-user</td><td><span class="badge ok badge--dot">Operativo</span></td><td class="num">42 ms</td></tr>
+          <tr><td>message-service</td><td><span class="badge warn badge--dot">Degradado</span></td><td class="num">310 ms</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Boceto v1 — las decisiones están justificadas arriba y derivan del logo real (<code>#8B5CF6</code>)
+  y de <code>branding/mvv.md</code>. No es un template: la estructura la tomamos de un template libre,
+  la identidad es de la marca.
+</footer>
+
+<script>
+  // Arranca en el modo del sistema para que se vea lo que el operador realmente va a ver.
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.documentElement.classList.add('dark');
+  }
+</script>
+
+</body>
+</html>
