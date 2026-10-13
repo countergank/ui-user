@@ -32,6 +32,14 @@
   html {
     scroll-behavior: smooth;
   }
+  /* Native UI (scrollbars, form controls, canvas) follows the active theme.
+     Tailwind's class strategy toggles `.dark` on <html>. */
+  :root {
+    color-scheme: light;
+  }
+  .dark {
+    color-scheme: dark;
+  }
   /* Respect reduced-motion preference (WCAG 2.2 — prefers-reduced-motion) */
   @media (prefers-reduced-motion: reduce) {
     html {
