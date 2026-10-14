@@ -12,6 +12,7 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        "seg-thumb": "hsl(var(--seg-thumb))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -40,11 +41,37 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        success: {
+          DEFAULT: "hsl(var(--success) / <alpha-value>)",
+          foreground: "hsl(var(--success-foreground) / <alpha-value>)",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning) / <alpha-value>)",
+          foreground: "hsl(var(--warning-foreground) / <alpha-value>)",
+        },
+        danger: {
+          DEFAULT: "hsl(var(--danger) / <alpha-value>)",
+          foreground: "hsl(var(--danger-foreground) / <alpha-value>)",
+        },
+        info: {
+          DEFAULT: "hsl(var(--info) / <alpha-value>)",
+          foreground: "hsl(var(--info-foreground) / <alpha-value>)",
+        },
       },
       borderRadius: {
-        lg: "var(--radius)",
+        DEFAULT: "var(--radius)",
+        lg: "var(--radius-lg)",
         md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        sm: "var(--radius-sm)",
+      },
+      boxShadow: {
+        DEFAULT: "var(--shadow)",
+        lg: "var(--shadow-lg)",
+        sm: "var(--shadow-sm)",
+      },
+      fontFamily: {
+        sans: ["var(--font-sans)"],
+        mono: ["var(--font-mono)"],
       },
       keyframes: {
         "accordion-down": {

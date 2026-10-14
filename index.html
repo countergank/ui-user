@@ -6,6 +6,32 @@
     <meta name="description" content="Countergank user management web application" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <title>UI User</title>
+    <!-- Pre-paint theme bootstrap. MUST stay in sync with src/lib/theme/theme.ts
+         (storage key, preference vocabulary, media query) — this script runs
+         before first paint so a dark user never sees a light flash, and it cannot
+         import the module, so theme.test.ts guards the drift. -->
+    <script>
+      (function () {
+        var preference = "system";
+        try {
+          var stored = window.localStorage.getItem("countergank.ui.theme");
+          if (stored === "light" || stored === "dark" || stored === "system") preference = stored;
+        } catch (error) {
+          // Storage blocked (private mode, disabled cookies): fall back to "system".
+        }
+        try {
+          var dark =
+            preference === "dark" ||
+            (preference === "system" &&
+              typeof window.matchMedia === "function" &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.classList.toggle("dark", dark);
+          document.documentElement.style.colorScheme = dark ? "dark" : "light";
+        } catch (error) {
+          // matchMedia or DOM unavailable: the stylesheet default (light) stands.
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

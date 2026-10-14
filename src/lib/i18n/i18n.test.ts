@@ -13,7 +13,8 @@ describe("i18n foundation", () => {
   });
 
   it("falls back to English resources for unsupported requested languages", () => {
-    const unsupportedLanguage = "es";
+    // "es" is a supported language, so it cannot prove fallback behavior anymore.
+    const unsupportedLanguage = "de";
     const instance = createI18nInstance({ lng: unsupportedLanguage });
 
     expect(instance.isInitialized).toBe(true);
