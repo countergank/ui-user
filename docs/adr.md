@@ -36,6 +36,7 @@ configs at the repo root:
 | ADR-9 | CI-gated merge acceptance + branch protection |
 | ADR-10 | Zustand for client/UI state |
 | ADR-11 | Typed, fail-fast env handling via Doppler/Vite |
+| ADR-12 | Supported languages `en|es|pt` + mandatory key parity |
 
 ## ADR-1: Feature-based (screaming) source layout
 
@@ -225,6 +226,45 @@ runtime 404; one gateway that is trivially unit-testable; env files stay out of 
 container cannot override them — changing an env requires a rebuild for the target mode, and
 the Docker build stage must receive the env (see `Makefile`/compose). Teams must keep
 `ImportMetaEnv`, `.env.example`, and Doppler in sync manually.
+
+## ADR-12: Supported languages and mandatory key parity
+
+**Context**: the console is user-facing copy in three product languages — English, Spanish,
+and Brazilian Portuguese. The sibling API (`countergank/api-user`) already localizes its
+error messages per `Accept-Language`, so a UI that ships only one language injects untranslated
+text into an otherwise localized product. Before COU-270 the app declared
+`languages = [defaultLanguage] as const`, i.e. **only `en` existed**: a key added to English
+had no Spanish or Portuguese counterpart and nothing detected the gap. i18next silently falls
+back to the raw key, so the failure surfaced as a literal `home.greeting.morning` in the UI,
+never as a build error.
+
+**Decision**: `en`, `es`, and `pt` are the supported languages, with mandatory key parity.
+
+- **Source of truth**: `languages = ["en", "es", "pt"]` in `src/lib/i18n/resources.ts`.
+- `defaultLanguage = "en"` and `fallbackLng = "en"` (`src/lib/i18n/index.ts`). English is the
+  reference every other bundle mirrors.
+- Every user-visible string **MUST** exist in all three bundles
+  (`src/lib/i18n/locales/{en,es,pt}.ts`). Parity is mandatory and non-negotiable.
+- **Types enforce it**: `es` and `pt` are typed `{ common: TranslationTree }` where
+  `TranslationTree = typeof en.common`. A key present in English and missing in Spanish or
+  Portuguese is a **TypeScript compile error** naming the key. `en.ts` therefore must **not**
+  use `as const` (which would literalize every value and make no other language satisfiable).
+  `bundles` uses `satisfies Record<AppLanguage, { common: TranslationTree }>`.
+- **The test enforces what types cannot** (`src/lib/i18n/parity.test.ts`): exactly the declared
+  languages with no duplicates; a bundle per declared language; key parity with English **in
+  both directions** (no missing and no extra keys); identical `{{...}}` interpolation tokens
+  per key; and no empty/whitespace-only translations.
+- **`pt` is pt-BR**, matching the API's Portuguese wording (`Usuário`/`Solicitação`), not
+  pt-PT (`Utilizador`/`Pedido`).
+
+**Consequences**: adding a language is a three-place change — a new bundle, `languages`, and
+the parity test's expected set. A missing key fails the build (type error) *and* the test; an
+extra key, drifted interpolation token, or blank value fails the test. The cost is that the
+three bundles must be updated together; a string cannot be added to English alone.
+
+**Example**: adding `common.home.hero.cta` to `en.ts` but not to `es.ts` fails twice —
+`pnpm typecheck` reports `Property 'cta' is missing in type ...` and
+`pnpm test -- src/lib/i18n/parity.test.ts` reports the missing key path.
 
 ## Adding a new ADR
 

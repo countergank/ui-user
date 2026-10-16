@@ -291,12 +291,84 @@ on disk. Far above the ~400 review budget → delivery strategy applies (see Del
     rebuild (`make docker-up`, which passes `--build`) is required before the new control is visible at
     http://localhost:8080.
 
-- [ ] Task 5 — Docs: `docs/design-system.md`, the languages ADR, `component-patterns.md` reference.
+- [x] Task 5 — Docs: `docs/design-system.md`, the languages ADR, `component-patterns.md` reference.
   - Must include the naming convention from the `.dot`/`.brand` bug and the token-name mapping.
+  - Delivered on its own branch after the main PR merged — see "Follow-up: Task 5" below.
 
-- [ ] Task 6 — Version the boceto and run the full local gate.
+- [x] Task 6 — Version the boceto and run the full local gate.
   - Commit `designs/identity/index.html` so the ticket's source of truth exists in git.
   - Run `make ci`; record failed/skipped checks honestly (local e2e is CI-only).
+  - Done in the main PR: the boceto is slice C0 (`77841a8`) and `make ci` was green. Evidence is
+    recorded under "Delivery" below; the follow-up does not touch build output, so it is not re-run.
+
+## Follow-up: Task 5 delivered on its own branch (2026-10-16)
+
+Branch `docs/COU-270-documentar-el-sistema-de-diseno`, cut from `develop` at `e9c5fff` (the COU-270
+merge). Task 5 was deliberately excluded from the main PR, so it lands as its own reviewable PR and
+COU-270 closes here.
+
+- [x] `docs/design-system.md` (new, 263 lines) — palette (surfaces and chrome, brand, status tones,
+      destructive), typography, spacing, radii and shadows, focus, the "tokens only, never hex" rule,
+      the boceto → shadcn token-name mapping, the modifier-naming convention from the `.dot`/`.brand`
+      bug, and an enforcement table that maps each claim to the guard that actually holds it.
+- [x] ADR-12 in `docs/adr.md` (+40 lines) — `en|es|pt` with mandatory key parity, plus its row in the
+      ADR summary table. Records the policy as verified in code, not as described: `defaultLanguage`
+      and `fallbackLng` are both `en`, the language list lives in `src/lib/i18n/resources.ts`, and
+      `src/lib/i18n/parity.test.ts` enforces key parity with English **in both directions** plus
+      identical `{{...}}` interpolation tokens.
+- [x] `docs/component-patterns.md` (+5 / −1) — links the design system from the primitives section and
+      adds a tokens-only item to the review checklist.
+- [x] Hex guard, delivered in two halves — the ticket asked for a "lint rule", and that is **not
+      implementable as written**: `@biomejs/biome` 1.9.4 ships no hex rule (`nursery/noHexColors` and
+      `suspicious/noHexColors` both answer `This rule doesn't exist`) and ESLint cannot lint CSS — a
+      hole that matters because CSS is exactly where a raw color would land. The surface is therefore
+      covered by two mechanisms working as one guard:
+  - `eslint.config.js` (+32 lines) — `no-restricted-syntax` with `Literal[value=…]` and
+    `TemplateElement[value.raw=…]` selectors, scoped to `src/**/*.{ts,tsx}`, carrying a message that
+    points the developer at the tokens and at `docs/design-system.md`.
+  - `src/styles/no-hardcoded-hex.test.ts` (new, 80 lines) — dependency-free walk of every `.ts`,
+    `.tsx`, `.css`, `.js`, `.jsx`, `.mjs`, `.cjs` and `.html` file under `src/`, failing on any hex
+    literal. It strips CSS block comments first, because `src/styles/tokens.css:39` legitimately
+    quotes `#F43E5C` inside the comment that documents why light `--destructive` is rose-600 and not
+    the boceto's rose-500. Follows the disk-read precedent of `src/styles/tokens.test.ts`.
+
+**Size**: 421 authored lines (343 new, 77 edited, 1 deleted) across 5 paths — marginally over the ~400
+line review-budget heuristic. The heuristic is advisory and explicitly not a task acceptance criterion,
+and the `chained-pr` failure mode it warns about is artificial splitting: this is one coherent
+docs-plus-guard deliverable, and chaining it would produce two PRs for a single purpose. The cached
+delivery choice for this feature is `single-pr` (see Delivery), so the follow-up inherits it. Reported
+rather than hidden.
+
+**Verification** — parent-run on the working tree. `strict_tdd: true` (`openspec/config.yaml:67`),
+runner `vitest`:
+
+| Command | Observed |
+|---|---|
+| `pnpm test -- src/styles/no-hardcoded-hex.test.ts` | 1 file, 2 tests passed |
+| `pnpm test` | 24 files, 165 tests passed |
+| `pnpm typecheck` | `tsc -b --noEmit`, exit 0 |
+| `pnpm build` | 1699 modules transformed, built in 3.62s |
+| `pnpm lint` | `biome check . && eslint .` → 76 files checked, no fixes applied |
+
+**RED/GREEN, observed by the parent, not taken from the writer's report**: a temporary
+`src/styles/__red-probe.ts` holding `export const probe = "#ff00ff";` made the guard test fail
+(`found #ff00ff  →  export const probe = "#ff00ff";`, 1 failed | 1 passed) **and** made
+`eslint` report `1:22 error Hardcoded hex color … no-restricted-syntax`; removing the probe returned
+the test to green with `git status` showing no residue. The two docs have no runnable deterministic
+RED — that exception is declared, not dressed up as test-first.
+
+**Acceptance criterion 2 (doc values match the boceto)**: one deviation exists and it is **deliberate
+and pre-existing**, documented in both `tokens.css` and `docs/design-system.md` — light
+`--muted-foreground` is `45%`, not the boceto's `47%`, because at 47% the pairing with `--muted`
+measured 4.299:1, below AA. No undocumented value mismatch was found between
+`designs/identity/index.html` and `src/styles/tokens.css`.
+
+**Gap carried honestly, not papered over**: `docs/design-system.md` states that the `.dot`/`.brand`
+modifier-naming convention is enforced **by review only** — no automated guard exists. Criterion 6
+explicitly permits that ("via a rule or test, **or** documented as convention"), so the criterion is
+met, but the document says what is actually true rather than implying a guard that is not there.
+
+**RDD**: `on, decided by global`. This follow-up PR slice is the native review candidate.
 
 ## Cross-cutting requirements discovered while running the stack (2026-10-13)
 
@@ -374,6 +446,10 @@ Verified live against the running containers, not inferred:
   native review candidate is this PR slice.
 - Skills resolved by registry name before PR planning: `work-unit-commits`, `chained-pr`,
   `branch-pr`, `github-conventions`, `git-environment-flow`.
+- **Follow-up delivery (2026-10-16)**: Task 5 lands on `docs/COU-270-documentar-el-sistema-de-diseno`,
+  a second PR into `develop` under the same cached `single-pr` choice. It is a docs-plus-guard slice
+  and does **not** inherit the main PR's `size:exception` — at 421 authored lines it is a normal-sized
+  review, not a 3,161-line one. Details and evidence under "Follow-up: Task 5" above.
 
 ## Exploration notes
 

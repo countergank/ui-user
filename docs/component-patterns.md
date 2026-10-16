@@ -77,7 +77,9 @@ Button.displayName = "Button";
 ```
 
 Use these primitives to compose feature components; extend the design system by adding a new
-primitive here, not a one-off styled tag.
+primitive here, not a one-off styled tag. The tokens these primitives consume — palette,
+typography, spacing, radii, shadows, focus, and the "tokens only, never hex" rule — are
+documented in [design-system.md](design-system.md); never hardcode a color in a component.
 
 ## Colocated tests
 
@@ -130,6 +132,7 @@ between tests follow the convention in `src/test/setup.ts` (register each store'
 - [ ] Container decides; presentational component renders props
 - [ ] Feature logic extracted into custom hooks (`hooks/`) or query hooks (`api.ts`)
 - [ ] Design-system primitives only in `src/components/ui/`
+- [ ] Colors and spacing come from design tokens (see [design-system.md](design-system.md))
 - [ ] Test colocated, named `<component>.test.tsx`
 - [ ] Queries are role/name-based from the user's perspective
 - [ ] Keyboard and screen-reader usability checked before merge (see
