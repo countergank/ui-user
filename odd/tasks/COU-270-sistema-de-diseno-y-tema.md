@@ -332,14 +332,24 @@ COU-270 closes here.
     quotes `#F43E5C` inside the comment that documents why light `--destructive` is rose-600 and not
     the boceto's rose-500. Follows the disk-read precedent of `src/styles/tokens.test.ts`.
 
-**Size**: 500 authored lines across 6 paths (497 added, 3 deleted). Of those, **420 are the deliverable
-itself** (343 new, 76 edited, 1 deleted, across the 5 paths listed above) and **80 are the bookkeeping in
-this document**. Slightly over the ~400 line review-budget heuristic. The heuristic is advisory and
-explicitly not a task acceptance criterion, and the `chained-pr` failure mode it warns about is artificial
-splitting: this is one coherent docs-plus-guard deliverable, and chaining it would produce two PRs for a
-single purpose. The cached delivery choice for this feature is `single-pr` (see Delivery), so the
-follow-up inherits it. Reported rather than hidden — including the 80 lines that are this document rather
-than shipped behaviour.
+**Size**: the deliverable is **420 authored changed lines across 5 files** (419 added, 1 deleted) — the
+paths listed above, excluding this document. That figure is stable: editing this plan cannot change it.
+
+**This document's own bookkeeping is deliberately kept out of that number.** The plan ships inside the PR,
+so a total quoted *by* the document changes the moment it is written — a whole-PR figure that includes
+the document is self-referential and wrong by construction. The whole-PR figure is therefore the branch
+diff (`git diff --numstat origin/develop...HEAD`), stated in the PR body where it cannot shift by being
+written down. Read it there; do not expect it here.
+
+A counting note worth keeping: summing per-commit `--numstat` gives a different, wrong total here. Both
+commits touch the same file, so lines the later commit rewrote get counted once as added and once as
+deleted. The branch diff is the number that matters, because it is what a reviewer and a size gate
+actually read.
+
+The heuristic is advisory and explicitly not a task acceptance criterion, and the `chained-pr` failure
+mode it warns about is artificial splitting: this is one coherent docs-plus-guard deliverable, and
+chaining it would produce two PRs for a single purpose. The cached delivery choice for this feature is
+`single-pr` (see Delivery), so the follow-up inherits it. Reported rather than hidden.
 
 **Verification** — parent-run on the working tree. `strict_tdd: true` (`openspec/config.yaml:67`),
 runner `vitest`:
@@ -450,8 +460,9 @@ Verified live against the running containers, not inferred:
   `branch-pr`, `github-conventions`, `git-environment-flow`.
 - **Follow-up delivery (2026-10-16)**: Task 5 lands on `docs/COU-270-documentar-el-sistema-de-diseno`,
   a second PR into `develop` under the same cached `single-pr` choice. It is a docs-plus-guard slice
-  and does **not** inherit the main PR's `size:exception` — at 500 authored lines (420 of them shipped
-  docs and guard, 80 this document's bookkeeping) it is a normal-sized review, not a 3,161-line one.
+  and does **not** inherit the main PR's `size:exception` — the deliverable is 420 authored lines, a
+  normal-sized review, not a 3,161-line one. The whole-PR total is in the PR body, not here; see the
+  Size note above for why this document does not quote it.
   Details and evidence under "Follow-up: Task 5" above.
 
 ## Exploration notes
