@@ -332,12 +332,14 @@ COU-270 closes here.
     quotes `#F43E5C` inside the comment that documents why light `--destructive` is rose-600 and not
     the boceto's rose-500. Follows the disk-read precedent of `src/styles/tokens.test.ts`.
 
-**Size**: 421 authored lines (343 new, 77 edited, 1 deleted) across 5 paths — marginally over the ~400
-line review-budget heuristic. The heuristic is advisory and explicitly not a task acceptance criterion,
-and the `chained-pr` failure mode it warns about is artificial splitting: this is one coherent
-docs-plus-guard deliverable, and chaining it would produce two PRs for a single purpose. The cached
-delivery choice for this feature is `single-pr` (see Delivery), so the follow-up inherits it. Reported
-rather than hidden.
+**Size**: 500 authored lines across 6 paths (497 added, 3 deleted). Of those, **420 are the deliverable
+itself** (343 new, 76 edited, 1 deleted, across the 5 paths listed above) and **80 are the bookkeeping in
+this document**. Slightly over the ~400 line review-budget heuristic. The heuristic is advisory and
+explicitly not a task acceptance criterion, and the `chained-pr` failure mode it warns about is artificial
+splitting: this is one coherent docs-plus-guard deliverable, and chaining it would produce two PRs for a
+single purpose. The cached delivery choice for this feature is `single-pr` (see Delivery), so the
+follow-up inherits it. Reported rather than hidden — including the 80 lines that are this document rather
+than shipped behaviour.
 
 **Verification** — parent-run on the working tree. `strict_tdd: true` (`openspec/config.yaml:67`),
 runner `vitest`:
@@ -448,8 +450,9 @@ Verified live against the running containers, not inferred:
   `branch-pr`, `github-conventions`, `git-environment-flow`.
 - **Follow-up delivery (2026-10-16)**: Task 5 lands on `docs/COU-270-documentar-el-sistema-de-diseno`,
   a second PR into `develop` under the same cached `single-pr` choice. It is a docs-plus-guard slice
-  and does **not** inherit the main PR's `size:exception` — at 421 authored lines it is a normal-sized
-  review, not a 3,161-line one. Details and evidence under "Follow-up: Task 5" above.
+  and does **not** inherit the main PR's `size:exception` — at 500 authored lines (420 of them shipped
+  docs and guard, 80 this document's bookkeeping) it is a normal-sized review, not a 3,161-line one.
+  Details and evidence under "Follow-up: Task 5" above.
 
 ## Exploration notes
 
