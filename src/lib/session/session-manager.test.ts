@@ -1,0 +1,121 @@
+// Unit tests for the session manager (COU-273, T4).
+//
+// The coordinator owns the two refresh paths the ticket asks for: proactive (before the
+// token dies, S3) and reactive (after a 401), both funnelled through ONE in-flight
+// promise so N concurrent 401s produce a single refresh (S5).
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { initialSessionState, sessionStore } from "./session-store";
+import { createSessionManager } from "./session-manager";
+
+const AUTH = {
+  user: {
+    id: "u1",
+    email: "user@example.com",
+    userName: "user",
+    name: "Ada",
+    lastName: "Lovelace",
+  },
+  accessToken: "access-1",
+  refreshToken: "refresh-1",
+};
+
+function makeApi(overrides: Partial<{ refresh: () => Promise<typeof AUTH>; logout: () => Promise<void> }> = {}) {
+  return {
+    refresh: vi.fn(overrides.refresh ?? (async () => ({ ...AUTH, accessToken: "access-2", refreshToken: "refresh-2" }))),
+    logout: vi.fn(overrides.logout ?? (async () => undefined)),
+  };
+}
+
+beforeEach(() => {
+  window.localStorage.clear();
+  sessionStore.setState(initialSessionState);
+  sessionStore.getState().startSession(AUTH);
+});
+
+afterEach(() => {
+  vi.useRealTimers();
+});
+
+describe("session manager — refresh", () => {
+  it("funnels N concurrent 401s into a single refresh and rotates the stored pair", async () => {
+    const api = makeApi();
+    const manager = createSessionManager({ api });
+
+    const results = await Promise.all(
+      Array.from({ length: 5 }, () => manager.handleUnauthorized()),
+    );
+
+    expect(api.refresh).toHaveBeenCalledTimes(1);
+    expect(api.refresh).toHaveBeenCalledWith("refresh-1");
+    expect(results).toEqual([true, true, true, true, true]);
+    expect(sessionStore.getState().accessToken).toBe("access-2");
+    expect(sessionStore.getState().refreshToken).toBe("refresh-2");
+  });
+
+  it("marks the session expired and reports failure when the refresh fails", async () => {
+    const onExpired = vi.fn();
+    const api = makeApi({
+      refresh: async () => {
+        throw new Error("UA-AUTH-009");
+      },
+    });
+    const manager = createSessionManager({ api, onExpired });
+
+    const renewed = await manager.handleUnauthorized();
+
+    expect(renewed).toBe(false);
+    expect(sessionStore.getState().status).toBe("expired");
+    expect(sessionStore.getState().refreshToken).toBeNull();
+    expect(onExpired).toHaveBeenCalledTimes(1);
+  });
+
+  it("clears the in-flight promise so a later 401 starts a new refresh", async () => {
+    const api = makeApi();
+    const manager = createSessionManager({ api });
+
+    await manager.handleUnauthorized();
+    await manager.handleUnauthorized();
+
+    expect(api.refresh).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not call the API when there is no session at all", async () => {
+    sessionStore.getState().clearSession();
+    const api = makeApi();
+    const manager = createSessionManager({ api });
+
+    expect(await manager.handleUnauthorized()).toBe(false);
+    expect(api.refresh).not.toHaveBeenCalled();
+  });
+
+  it("refreshes ahead of expiry, at the safety margin, exactly once", async () => {
+    vi.useFakeTimers();
+    const now = 1_700_000_000_000;
+    vi.setSystemTime(now);
+    const api = makeApi();
+    const manager = createSessionManager({ api, now: () => Date.now() });
+    const expiresAt = now + 60_000;
+
+    manager.scheduleProactiveRefresh(expiresAt);
+    await vi.advanceTimersByTimeAsync(44_000);
+    expect(api.refresh).not.toHaveBeenCalled();
+
+    await vi.advanceTimersByTimeAsync(2_000);
+    expect(api.refresh).toHaveBeenCalledTimes(1);
+  });
+
+  it("cancels a scheduled refresh, so a logout does not resurrect the session", async () => {
+    vi.useFakeTimers();
+    const now = 1_700_000_000_000;
+    vi.setSystemTime(now);
+    const api = makeApi();
+    const manager = createSessionManager({ api, now: () => Date.now() });
+
+    manager.scheduleProactiveRefresh(now + 60_000);
+    manager.cancelProactiveRefresh();
+    await vi.advanceTimersByTimeAsync(120_000);
+
+    expect(api.refresh).not.toHaveBeenCalled();
+  });
+});
