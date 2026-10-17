@@ -96,5 +96,18 @@ export const pt: { common: TranslationTree } = {
     sample: {
       initialized: "A internacionalização está pronta.",
     },
+    ui: {
+      close: "Fechar",
+      breadcrumb: {
+        label: "Trilha de navegação",
+        more: "Mais",
+      },
+      pagination: {
+        label: "Paginação",
+        previous: "Anterior",
+        next: "Próxima",
+        morePages: "Mais páginas",
+      },
+    },
   },
 };
