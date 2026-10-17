@@ -7,7 +7,7 @@
 // - DOM/storage hygiene so a theme test never leaks the `dark` class or a stored key
 import "@testing-library/jest-dom/vitest";
 import "vitest-axe/extend-expect";
-import { afterEach, beforeEach, expect } from "vitest";
+import { afterAll, afterEach, beforeAll, beforeEach, expect, vi } from "vitest";
 import * as axeMatchers from "vitest-axe/matchers";
 
 import { initialState as uiInitialState, uiStore } from "@/stores/use-ui-store";
@@ -149,3 +149,43 @@ if (typeof HTMLCanvasElement !== "undefined") {
     measureText: () => ({ width: 0 }),
   })) as unknown as typeof HTMLCanvasElement.prototype.getContext;
 }
+
+// --- jsdom shims for Radix surfaces -----------------------------------------
+// jsdom's selector engine (nwsapi) cannot evaluate the CSS top-layer pseudo-classes
+// `:popover-open` / `:modal`: it recurses ~50M times before the error is swallowed, so a
+// single popper position update "hangs" for ~20s. `@floating-ui/dom` asks for both on
+// every update and jsdom has no top layer, so answering "no" is the truthful stub. Any
+// Radix popper (dropdown, popover, tooltip) opened in jsdom needs this.
+//
+// Radix's ScrollArea also measures with a `ResizeObserver` jsdom does not implement. The
+// stub only satisfies the constructor: jsdom reports every box as 0x0, so there is
+// nothing real to measure and the tests assert what mounts, not what it measures.
+type NativeMatches = (this: Element, selector: string) => boolean;
+
+const UNSUPPORTED_TOP_LAYER_SELECTORS = new Set([":popover-open", ":modal"]);
+const nativeMatches: NativeMatches = Reflect.get(Element.prototype, "matches");
+
+class ResizeObserverStub {
+  readonly observe = vi.fn();
+  readonly unobserve = vi.fn();
+  readonly disconnect = vi.fn();
+}
+
+beforeAll(() => {
+  Element.prototype.matches = function matchesWithoutTopLayer(this: Element, selector: string) {
+    if (UNSUPPORTED_TOP_LAYER_SELECTORS.has(selector)) {
+      return false;
+    }
+
+    return nativeMatches.call(this, selector);
+  };
+
+  if (typeof globalThis.ResizeObserver === "undefined") {
+    vi.stubGlobal("ResizeObserver", ResizeObserverStub);
+  }
+});
+
+afterAll(() => {
+  Element.prototype.matches = nativeMatches;
+  vi.unstubAllGlobals();
+});
