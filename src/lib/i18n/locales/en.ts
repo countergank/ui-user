@@ -94,6 +94,19 @@ export const en = {
     sample: {
       initialized: "Internationalization is ready.",
     },
+    ui: {
+      close: "Close",
+      breadcrumb: {
+        label: "Breadcrumb",
+        more: "More",
+      },
+      pagination: {
+        label: "Pagination",
+        previous: "Previous",
+        next: "Next",
+        morePages: "More pages",
+      },
+    },
   },
 };
 
