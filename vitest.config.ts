@@ -37,6 +37,10 @@ export default defineConfig({
       // Exclude test files, config, entry bootstrap and build artifacts from coverage
       exclude: [
         "node_modules/",
+        // Review candidate views live under `.git/gentle-ai/...` and are full repository
+        // copies: without this the `all` scan counts their untouched `src/` as 0% and the
+        // global gate collapses no matter how well the real suite covers the code.
+        ".git/**",
         ".agents/",
         ".claude/",
         "src/test/",
