@@ -246,3 +246,25 @@ restored, the helper is non-vacuous for modals, and `button.tsx`/`card.tsx`/`but
 
 Re-verified after both fixes: `pnpm vitest run` 48 files / 301 tests passed; `pnpm test:coverage`
 exit 0 with 98.06 / 95.94 / 93.54 / 98.06; `pnpm lint`, `pnpm typecheck` and `pnpm build` exit 0.
+
+## Review chain (user decision: chained review per work unit)
+
+The whole branch cannot be reviewed natively: `review.start` for the accumulated candidate
+(57 paths, 5,652 lines) failed preflight with `lens_context_budget_exceeded`,
+`mutation_outcome: not_started` — no authority was created, so nothing was abandoned or repaired.
+The user chose a chained review, one work unit per candidate with `HEAD` at the unit's tip and
+`baseRef` at the previous tip.
+
+| Unit | Range | Lines | Lineage | Outcome |
+|---|---|---|---|---|
+| R1 support (deps, plan, i18n, test infra) | `develop..22029f0` | 1,650 | `review-afbf2d3deca75164` | approved, acknowledged, authority burned |
+
+R1 lenses: risk, readability, reliability (resilience not pertinent). 7 advisory findings, all
+non-blocking and informational: `R2-guard-regex-gaps`, `R2-matches-capture`, `R2-mirror-doc-drift`,
+`R3-inline-guard-longhand-gaps`, `R3-jsdom-toplayer-selector-exactness` (WARNING, still
+non-blocking), `R3-suite-wide-matches-override`, `R3-unstub-all-globals`.
+
+Remaining units, unchanged from the commit map: T1 `22029f0..f8cf520`, T2 `..7d79a0c`,
+T3 `..87bc9de`, T4 `..0784496`, T5 `..04d0aa8`, T6 `..bb2b90d`, T7 `..07add52`,
+T8 `..be4733f`, fixes `..54319e3`.
+
