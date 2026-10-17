@@ -9,26 +9,34 @@ Read the feature doc first; this file only tracks task state and evidence.
   existed before this session (audit in L3 of the feature doc).
 - Individual `@radix-ui/react-*` packages, hand-written primitives following `button.tsx`, no
   shadcn CLI, no `components.json`.
-- Tailwind 3.4 sources; semantic tokens only; i18n copy in `en`/`es`/`pt` under `common.ui.*`.
-- No changes to `button.tsx` / `card.tsx`.
+- Tailwind 3.4 sources; semantic tokens only; i18n copy in `en`/`es`/`pt` under the `common`
+  namespace (`ui.*` keys, not `common.ui.*`).
+- No changes to `button.tsx`, `card.tsx`, or the shared ESLint config.
+- Delivery (one PR + `size:exception` vs chained PRs) is the user's open decision.
 
 ## Tasks
 
-- [ ] T1 — S1: `input`, `label`, `textarea`, `checkbox`, `switch`.
-  - Evidence:
-- [ ] T2 — S2: `select`.
-  - Evidence:
-- [ ] T3 — S3: `form` (`react-hook-form` + `zod`).
-  - Evidence:
-- [ ] T4 — S4: `badge`, `separator`, `skeleton`, `avatar`, `table`.
-  - Evidence:
-- [ ] T5 — S5: `alert`, `sonner`.
-  - Evidence:
-- [ ] T6 — S6: `dialog`, `alert-dialog`, `sheet` + close-label copy.
-  - Evidence:
-- [ ] T7 — S7: `dropdown-menu`, `popover`, `tooltip`.
-  - Evidence:
-- [ ] T8 — S8: `tabs`, `breadcrumb`, `pagination`, `scroll-area` + pagination copy.
-  - Evidence:
-- [ ] T9 — Full gate: `lint`, `typecheck`, `test:coverage`, `build`.
-  - Evidence:
+- [x] T1 — S1: `input`, `label`, `textarea`, `checkbox`, `switch` — `f8cf520`.
+  - Evidence: RED (5 files, module not found) → GREEN 6 files / 29 tests.
+- [x] T2 — S2: `select` — `7d7a0c`.
+  - Evidence: RED → GREEN 5/5; forced the shared inline-style guard (finding 5).
+- [x] T3 — S3: `form` (`react-hook-form` + `zod`) — `87bc9de`.
+  - Evidence: RED → GREEN 5/5 through a real zod resolver and a real submit.
+- [x] T4 — S4: `badge`, `separator`, `skeleton`, `avatar`, `table` — `0784496`.
+  - Evidence: RED (5 files) → GREEN 30/30.
+- [x] T5 — S5: `alert`, `sonner` — `04d0aa8`.
+  - Evidence: GREEN 10/10, including a real `toast()` surfaced by `findByText`.
+- [x] T6 — S6: `dialog`, `alert-dialog`, `sheet` — `a4644b3`, `bb2b90d`.
+  - Evidence: GREEN 21/21; the Spanish close-label test caught finding 7.
+- [x] T7 — S7: `dropdown-menu`, `popover`, `tooltip` — `32d8375`, `07add52`.
+  - Evidence: worker: 16/16 focused, eslint/biome/typecheck clean; parent re-ran the suite.
+- [x] T8 — S8: `tabs`, `breadcrumb`, `pagination`, `scroll-area` — `5a5c07f`, `554c12c`, `be4733f`.
+  - Evidence: worker: 25/25 focused, clean; gaps (two landmark labels, duplicated jsdom shims)
+    closed by the parent with parity tests in `en`/`es`.
+- [x] T9 — Full gate — `lint` 0, `typecheck` 0, `test:coverage` 48 files / 301 tests /
+  98.06-95.94-93.54-98.06, `build` 0 (2026-10-17).
+
+## Commit map
+
+`b112dfc` deps · `39f5859` plan · `92567d4` i18n · `22029f0` test guard + shims · then T1…T8 slices
+as listed above. 16 commits, 4,165 authored lines.
