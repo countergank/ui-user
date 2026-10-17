@@ -268,3 +268,34 @@ Remaining units, unchanged from the commit map: T1 `22029f0..f8cf520`, T2 `..7d7
 T3 `..87bc9de`, T4 `..0784496`, T5 `..04d0aa8`, T6 `..bb2b90d`, T7 `..07add52`,
 T8 `..be4733f`, fixes `..54319e3`.
 
+## Delivery (chained PRs, merged slice by slice onto `develop`)
+
+Strategy chosen by the user: `stacked-to-main` — verified default branch `develop`, PR #1 based on
+`develop`, each later PR based on its immediate parent until that parent merges.
+
+| PR | Branch | Base | Changed lines | Local verification | CI |
+|---|---|---|---|---|---|
+| #10 | `feat/COU-271-01-support` | `develop` | +1,573 / -77 | — | **pass**: quality-gates, e2e, commitlint, preview build |
+| #11 | `feat/COU-271-02-forms` | `feat/COU-271-01-support` | +1,013 | 31 files / 200 tests, lint 0, typecheck 0 | base-branch gated |
+| #12 | `feat/COU-271-03-display-feedback` | `feat/COU-271-02-forms` | +756 | 38 files / 240 tests, lint 0, typecheck 0 | base-branch gated |
+| #13 | `feat/COU-271-04-overlays` | `feat/COU-271-03-display-feedback` | +688 | 41 files / 260 tests, lint 0, typecheck 0 | base-branch gated |
+| #14 | `feat/COU-271-05-menus` | `feat/COU-271-04-overlays` | +651 | 44 files / 276 tests, lint 0, typecheck 0 | base-branch gated |
+| #15 | `feat/COU-271-06-navigation` | `feat/COU-271-05-menus` | +956 / -54 | full gate at this tip: 48 files / 301 tests, coverage 98.06 / 95.94 / 93.54 / 98.06, build 0 | base-branch gated |
+
+`#10` was also verified locally before pushing (24 files / 165 tests, lint 0, typecheck 0).
+
+### Known constraint: CI is base-branch gated
+
+`.github/workflows/ci.yml` runs `pull_request` only for PRs targeting `develop`. Child PRs point at
+their parent branch, so GitHub reports no checks for them until they are retargeted to `develop`
+after the parent merges. Until then, each child is verified locally with the evidence above; the
+clean-diff property is preserved (every PR shows only its own slice), which is the reason for the
+chaining in the first place. The alternative — basing every child on `develop` — would show
+cumulative diffs and was rejected.
+
+### Merge order
+
+#10 → retarget #11 to `develop` → merge #11 → retarget #12 → … → #15, which completes the ticket.
+The local integration branch `feat/COU-271-primitivas-shadcn` is now redundant and can be deleted
+after the chain merges; it was never pushed.
+
