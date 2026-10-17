@@ -303,8 +303,20 @@ after the chain merges; it was never pushed.
 
 The chained PRs #10-#15 merged slices 2-6 into their parent branches rather than into `develop`
 (a chain accumulates on its children by construction), so only slice 1 reached `develop` as #10.
-The remaining work landed through one PR from `feat/COU-271-primitivas-restantes`, based on
-`develop` and carrying 17 cherry-picked work-unit commits. The hashes in the Tasks table are the
-originals: they remain reachable on the `feat/COU-271-0N-*` branches. The cherry-picked copies have
-new hashes and identical trees.
+The remaining work landed through PR #16 (`feat/COU-271-primitivas-restantes`), based on `develop`
+and carrying 17 cherry-picked work-unit commits plus the two fixes. #16 was squash-merged as
+`d6b3a85`, and `develop` is identical to the branch that was reviewed (`git diff 7af7a1a
+origin/develop` is empty).
 
+The hashes in the Tasks table are the originals. Their branches were deleted after the merge, so
+they are no longer reachable by branch name: they survive inside the merged PRs (#11-#15) and in
+GitHub's `refs/pull/*/head`. The cherry-picked copies on `develop` have new hashes and identical
+trees.
+
+**L14 — close-out, 2026-10-17:** PR #16 squash-merged as `d6b3a85` after CI passed (quality-gates,
+e2e, commitlint, preview build), with `develop` verified identical to the reviewed branch tree.
+COU-271 moved to Done in Linear. Every COU-271 branch was deleted, local and remote, after the merge;
+the original commit hashes remain reachable through the merged PRs and `refs/pull/*/head`. The
+coverage gate that went red at close was not a regression: the `all` scan was counting the review
+candidate views stored under `.git/gentle-ai/candidate-views/`, fixed by excluding `.git/**` in
+`vitest.config.ts` (98.06% restored).
