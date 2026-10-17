@@ -1,0 +1,21 @@
+# COU-273 — Session: tokens, automatic refresh and logout
+
+Mirror of `odd/tasks/COU-273-sesion-y-refresh.md` for ODD task recovery.
+Read the feature doc first; this file only tracks task state and evidence.
+
+## Tasks
+
+- [ ] T1 — HTTP client.
+  - Evidence:
+- [ ] T2 — Session store + namespaced/versioned persistence.
+  - Evidence:
+- [ ] T3 — Expiry decoding + proactive refresh.
+  - Evidence:
+- [ ] T4 — Single-flight refresh + reactive 401 retry + failure clears session.
+  - Evidence:
+- [ ] T5 — Local + remote logout, query cache clear.
+  - Evidence:
+- [ ] T6 — Expiry bridge to `/login`.
+  - Evidence:
+- [ ] T7 — Full gate + docs.
+  - Evidence:
