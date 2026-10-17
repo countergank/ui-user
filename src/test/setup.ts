@@ -10,6 +10,7 @@ import "vitest-axe/extend-expect";
 import { afterAll, afterEach, beforeAll, beforeEach, expect, vi } from "vitest";
 import * as axeMatchers from "vitest-axe/matchers";
 
+import { initialSessionState, sessionStore } from "@/lib/session/session-store";
 import { initialState as uiInitialState, uiStore } from "@/stores/use-ui-store";
 
 // Register vitest-axe's `toHaveNoViolations` matcher (TEST-3)
@@ -117,6 +118,9 @@ function resetAllStores() {
   // Merge (not replace=true): initialState holds only state fields, so a
   // replace would drop the store's actions.
   uiStore.setState(uiInitialState);
+  // COU-273: the session store persists to localStorage; reset both sides so a test
+  // never inherits a token from the previous one.
+  sessionStore.setState(initialSessionState);
 }
 
 function resetThemeDom() {
