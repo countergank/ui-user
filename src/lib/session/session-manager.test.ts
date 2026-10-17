@@ -78,6 +78,51 @@ describe("session manager — logout", () => {
     expect(api.logout).not.toHaveBeenCalled();
   });
 
+  it("discards a refresh that settles after logout instead of resurrecting the session", async () => {
+    const holder: { resolve?: (value: typeof AUTH) => void } = {};
+    const pending = new Promise<typeof AUTH>((resolve) => {
+      holder.resolve = resolve;
+    });
+    const api = {
+      refresh: vi.fn(() => pending),
+      logout: vi.fn(() => Promise.resolve()),
+    };
+    const manager = createSessionManager({ api, queryCache: { clear: vi.fn() } });
+
+    const inFlight = manager.refreshSession();
+    await manager.logout();
+
+    holder.resolve?.({ ...AUTH, accessToken: "access-9", refreshToken: "refresh-9" });
+    await inFlight;
+
+    expect(sessionStore.getState().status).toBe("anonymous");
+    expect(sessionStore.getState().refreshToken).toBeNull();
+    expect(window.localStorage.getItem(SESSION_STORAGE_KEY)).toBeNull();
+  });
+
+  it("does not flip a logged-out session to expired when the in-flight refresh fails", async () => {
+    const holder: { reject?: (error: Error) => void } = {};
+    const pending = new Promise<never>((_resolve, reject) => {
+      holder.reject = reject;
+    });
+    const onExpired = vi.fn();
+    const api = {
+      refresh: vi.fn(() => pending),
+      logout: vi.fn(() => Promise.resolve()),
+    };
+    const manager = createSessionManager({ api, onExpired, queryCache: { clear: vi.fn() } });
+
+    const inFlight = manager.refreshSession();
+    await manager.logout();
+
+    holder.reject?.(new Error("UA-AUTH-009"));
+    await inFlight;
+
+    expect(sessionStore.getState().status).toBe("anonymous");
+    expect(onExpired).not.toHaveBeenCalled();
+    expect(window.localStorage.getItem(SESSION_STORAGE_KEY)).toBeNull();
+  });
+
   it("cancels a scheduled proactive refresh so logout is final", async () => {
     vi.useFakeTimers();
     const now = 1_700_000_000_000;

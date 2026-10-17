@@ -59,6 +59,9 @@ export function createSessionManager(deps: SessionManagerDeps): SessionManager {
 
   let inFlight: Promise<boolean> | null = null;
   let scheduled: TimerHandle | null = null;
+  // Monotonic fence: logout bumps it, so a refresh that settles afterwards cannot
+  // write tokens back into a session the user already closed (S6/AC4).
+  let generation = 0;
 
   const cancelProactiveRefresh = (): void => {
     if (scheduled !== null) {
@@ -77,9 +80,18 @@ export function createSessionManager(deps: SessionManagerDeps): SessionManager {
       return Promise.resolve(false);
     }
 
+    const startedAt = generation;
+
     inFlight = (async (): Promise<boolean> => {
       try {
         const auth = await deps.api.refresh(refreshToken);
+
+        // Logout ran while this request was outstanding: discard the rotation instead
+        // of resurrecting the session and re-persisting credentials.
+        if (startedAt !== generation) {
+          return false;
+        }
+
         sessionStore.getState().rotateTokens({
           accessToken: auth.accessToken,
           refreshToken: auth.refreshToken,
@@ -87,13 +99,21 @@ export function createSessionManager(deps: SessionManagerDeps): SessionManager {
 
         return true;
       } catch {
+        // Same fence on the failure branch: a refresh that dies after logout must not
+        // flip the cleared session to `expired` and navigate the user to /login.
+        if (startedAt !== generation) {
+          return false;
+        }
+
         // Fail closed: no tokens survive a failed refresh, and the app learns why.
         sessionStore.getState().markExpired();
         deps.onExpired?.();
 
         return false;
       } finally {
-        inFlight = null;
+        if (startedAt === generation) {
+          inFlight = null;
+        }
       }
     })();
 
@@ -113,6 +133,10 @@ export function createSessionManager(deps: SessionManagerDeps): SessionManager {
   const logout = async (): Promise<void> => {
     const refreshToken = sessionStore.getState().refreshToken;
 
+    // Fence and drop any in-flight refresh before clearing, so its late settlement is
+    // a no-op rather than a silent re-login.
+    generation += 1;
+    inFlight = null;
     cancelProactiveRefresh();
     sessionStore.getState().clearSession();
     queryCache.clear();
