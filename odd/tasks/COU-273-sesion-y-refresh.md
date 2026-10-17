@@ -44,13 +44,37 @@ refresh 7 d. A5 (COU-264, remote logout + revocation) is **Done**, so the remote
 
 | ID | Task | Specs | Route | Commit |
 |---|---|---|---|---|
-| T1 | HTTP client: base URL, JSON, `AppError` mapping, Bearer injection, 401 hook | S1, S8 | inline | T1 |
-| T2 | Session store: tokens + user, namespaced and versioned persistence, migrate | S1, S7 | inline | T2 |
-| T3 | Access-token expiry decoding + proactive refresh timer | S1, S3 | inline | T3 |
-| T4 | Refresh coordinator: single-flight, reactive 401 retry, failure clears session | S1, S3, S5 | inline | T4 |
-| T5 | Logout: local (store + persistence + query cache) and remote best-effort | S1, S6 | inline | T5 |
-| T6 | Expiry bridge: expired session navigates to `/login` | S4 | inline | T6 |
+| T1 | HTTP client: base URL, JSON, `AppError` mapping, Bearer injection, 401 hook | S1, S8 | inline | `3e939d6` |
+| T2 | Session store: tokens + user, namespaced and versioned persistence, migrate | S1, S7 | inline | `33eea7c` |
+| T3 | Access-token expiry decoding + proactive refresh timer | S1, S3 | inline | `e0517bf` |
+| T4 | Refresh coordinator: single-flight, reactive 401 retry, failure clears session | S1, S3, S5 | inline | `febebcc` |
+| T5 | Logout: local (store + persistence + query cache) and remote best-effort | S1, S6 | inline | `d24f3c6` |
+| T6 | Expiry bridge: expired session navigates to `/login` | S4 | inline | `c588c0b` |
 | T7 | Full gate + docs | S8 | inline | T7 |
+
+## Progress
+
+- [x] T1 — HTTP client — `3e939d6`. RED first (module missing), then 7/7: base URL + JSON,
+  Bearer only when a token exists, envelope mapped to `AppError(code,status)`, non-JSON body
+  downgraded to `HTTP_ERROR`, exactly one retry after the 401 hook, `NETWORK_ERROR` on transport
+  failure.
+- [x] T2 — Session store — `33eea7c`. RED first, then 8/8: namespaced key
+  `countergank.ui.session`, `version: 1`, `migrate` discards payloads it cannot prove, rotation
+  keeps the user, logout removes the key instead of persisting `null` tokens, `markExpired` keeps
+  no tokens. The shared test setup now resets this store.
+- [x] T3 — Expiry reading — `e0517bf`. 6/6: `exp` decoded to milliseconds, unreadable tokens count
+  as expired (fail closed), 15 s refresh margin.
+- [x] T5 — Logout — `d24f3c6`. 10/10 in the manager suite: store, persisted key and query
+  cache cleared before the network is touched, remote revocation best-effort (a rejection still
+  leaves the user logged out), no remote call without a session, scheduled refresh cancelled so
+  logout is final.
+- [x] T6 — Expiry bridge — `c588c0b`. 3/3: renders nothing, an `expired` session lands on
+  `/login` with `replace`, an anonymous session stays put. Mounted in `AppShell`; the shell's own
+  8 tests are unchanged and green.
+- [x] T4 — Refresh coordinator — `febebcc`. 6/6: five concurrent 401s produce exactly one refresh
+  call, rotation persists the new pair, a failed refresh marks the session expired and fires
+  `onExpired` once, the in-flight promise clears on settle, proactive refresh fires at the margin
+  and is cancellable.
 
 ## Findings
 
@@ -96,3 +120,6 @@ then, after the analysis of COU-273 vs COU-281:
 
 then, on being asked to read the API contract:
 > ok dale leelo
+
+**L2 — implementation started, 2026-10-17:** T1-T4 landed as four work-unit commits on
+`feat/COU-273-sesion-y-refresh`, each with a RED observation before its implementation.
