@@ -41,7 +41,7 @@ export function decodeAccessToken(token: string): DecodedAccessToken | null {
   }
 
   try {
-    const parsed: unknown = JSON.parse(atob(base64UrlToBase64(parts[1])) as string);
+    const parsed: unknown = JSON.parse(atob(base64UrlToBase64(parts[1])));
     if (typeof parsed !== "object" || parsed === null) {
       return null;
     }

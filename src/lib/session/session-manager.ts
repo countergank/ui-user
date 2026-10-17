@@ -1,5 +1,5 @@
 import { DEFAULT_EXPIRY_SKEW_MS } from "./jwt";
-import { sessionStore, type SessionUser } from "./session-store";
+import { type SessionUser, sessionStore } from "./session-store";
 
 /** What `POST /auth/login` and `POST /auth/refresh` return (api-user `AuthResponse`). */
 export interface AuthResponse {
@@ -41,7 +41,11 @@ export interface SessionManager {
 export function createSessionManager(deps: SessionManagerDeps): SessionManager {
   const now = deps.now ?? Date.now;
   const setTimer = deps.setTimer ?? ((handler, delayMs) => setTimeout(handler, delayMs));
-  const clearTimer = deps.clearTimer ?? ((handle) => clearTimeout(handle));
+  const clearTimer =
+    deps.clearTimer ??
+    ((handle) => {
+      clearTimeout(handle);
+    });
 
   let inFlight: Promise<boolean> | null = null;
   let scheduled: TimerHandle | null = null;

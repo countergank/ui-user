@@ -44,9 +44,11 @@ describe("session store", () => {
     sessionStore.getState().startSession(AUTH);
 
     const raw = window.localStorage.getItem(SESSION_STORAGE_KEY);
-    expect(raw).not.toBeNull();
+    if (raw === null) {
+      throw new Error("the session was not persisted");
+    }
 
-    const persisted = JSON.parse(raw!) as { state: { accessToken: string }; version: number };
+    const persisted = JSON.parse(raw) as { state: { accessToken: string }; version: number };
     expect(SESSION_STORAGE_KEY).toBe("countergank.ui.session");
     expect(persisted.version).toBe(SESSION_STORAGE_VERSION);
     expect(persisted.state.accessToken).toBe("access-1");
@@ -85,8 +87,8 @@ describe("session store", () => {
     expect(state.user).toBeNull();
 
     const raw = window.localStorage.getItem(SESSION_STORAGE_KEY);
-    expect(raw === null || !raw.includes("access-1")).toBe(true);
-    expect(raw === null || !raw.includes("refresh-1")).toBe(true);
+    expect(raw?.includes("access-1")).not.toBe(true);
+    expect(raw?.includes("refresh-1")).not.toBe(true);
   });
 
   it("marks the session expired without keeping the tokens", () => {
@@ -104,6 +106,10 @@ describe("session store", () => {
 
     expect(migrated?.status).toBe("authenticated");
     expect(migrated?.accessToken).toBe("access-1");
+  });
+
+  it("discards a payload written by a newer client version", () => {
+    expect(migratePersistedSession(AUTH, SESSION_STORAGE_VERSION + 1)).toBeUndefined();
   });
 
   it("discards a persisted payload that no longer matches the schema", () => {

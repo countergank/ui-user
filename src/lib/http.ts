@@ -51,7 +51,7 @@ async function toAppError(response: Response): Promise<AppError> {
     try {
       const parsed: unknown = JSON.parse(raw);
       if (typeof parsed === "object" && parsed !== null) {
-        envelope = parsed as ApiErrorEnvelope;
+        envelope = parsed;
       }
     } catch {
       // Not JSON (a proxy page, a truncation): the status still tells the story.
@@ -125,6 +125,7 @@ export function createHttpClient(deps: HttpClientDeps = {}): HttpClient {
   };
 
   return {
-    request: <T>(path: string, options: HttpRequestOptions = {}) => execute<T>(path, options, false),
+    request: <T>(path: string, options: HttpRequestOptions = {}) =>
+      execute<T>(path, options, false),
   };
 }

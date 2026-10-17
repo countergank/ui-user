@@ -69,8 +69,13 @@ const persistedSessionSchema = z.object({
  */
 export function migratePersistedSession(
   persisted: unknown,
-  _version: number,
+  version: number,
 ): SessionState | undefined {
+  // A payload from a newer client than this build cannot be validated here.
+  if (version > SESSION_STORAGE_VERSION) {
+    return undefined;
+  }
+
   const parsed = persistedSessionSchema.safeParse(persisted);
 
   if (!parsed.success) {
@@ -96,7 +101,7 @@ export const sessionStore = createStore<SessionStore>()(
       clearSession: () => {
         set({ ...initialSessionState });
         // Remove the key entirely instead of persisting `null` tokens.
-        void sessionStore.persist.clearStorage();
+        sessionStore.persist.clearStorage();
       },
     }),
     {

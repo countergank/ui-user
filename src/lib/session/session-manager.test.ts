@@ -5,8 +5,8 @@
 // promise so N concurrent 401s produce a single refresh (S5).
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { initialSessionState, sessionStore } from "./session-store";
 import { createSessionManager } from "./session-manager";
+import { initialSessionState, sessionStore } from "./session-store";
 
 const AUTH = {
   user: {
@@ -20,10 +20,15 @@ const AUTH = {
   refreshToken: "refresh-1",
 };
 
-function makeApi(overrides: Partial<{ refresh: () => Promise<typeof AUTH>; logout: () => Promise<void> }> = {}) {
+function makeApi(
+  overrides: Partial<{ refresh: () => Promise<typeof AUTH>; logout: () => Promise<void> }> = {},
+) {
   return {
-    refresh: vi.fn(overrides.refresh ?? (async () => ({ ...AUTH, accessToken: "access-2", refreshToken: "refresh-2" }))),
-    logout: vi.fn(overrides.logout ?? (async () => undefined)),
+    refresh: vi.fn(
+      overrides.refresh ??
+        (() => Promise.resolve({ ...AUTH, accessToken: "access-2", refreshToken: "refresh-2" })),
+    ),
+    logout: vi.fn(overrides.logout ?? (() => Promise.resolve())),
   };
 }
 
@@ -56,9 +61,7 @@ describe("session manager — refresh", () => {
   it("marks the session expired and reports failure when the refresh fails", async () => {
     const onExpired = vi.fn();
     const api = makeApi({
-      refresh: async () => {
-        throw new Error("UA-AUTH-009");
-      },
+      refresh: () => Promise.reject(new Error("UA-AUTH-009")),
     });
     const manager = createSessionManager({ api, onExpired });
 

@@ -10,15 +10,22 @@ import { createHttpClient } from "./http";
 
 const BASE = "https://api.test";
 
-/** A `fetch` double that answers with the given status/body and records its calls. */
-function fetchStub(status: number, body: unknown) {
-  return vi.fn(async () => ({
+/** A `Response` double; not `async` on purpose, so no stub needs a fake `await`. */
+function response(status: number, body: unknown, contentType = "application/json"): Response {
+  return {
     ok: status >= 200 && status < 300,
     status,
-    headers: new Headers({ "content-type": "application/json" }),
-    json: async () => body,
-    text: async () => JSON.stringify(body),
-  })) as unknown as typeof fetch & { mock: { calls: unknown[][] } };
+    headers: new Headers({ "content-type": contentType }),
+    json: () => Promise.resolve(body),
+    text: () => Promise.resolve(JSON.stringify(body)),
+  } as unknown as Response;
+}
+
+/** A `fetch` double that always answers the same status/body. */
+function fetchStub(status: number, body: unknown) {
+  const stub = vi.fn(() => Promise.resolve(response(status, body)));
+
+  return stub as unknown as typeof fetch & { mock: { calls: unknown[][] } };
 }
 
 describe("http client", () => {
@@ -41,15 +48,21 @@ describe("http client", () => {
 
   it("adds the Bearer header only when a token is available", async () => {
     const withToken = fetchStub(200, {});
-    await createHttpClient({ baseUrl: BASE, fetchImpl: withToken, getAccessToken: () => "abc" })
-      .request("auth/me");
+    await createHttpClient({
+      baseUrl: BASE,
+      fetchImpl: withToken,
+      getAccessToken: () => "abc",
+    }).request("auth/me");
 
     const [, init] = withToken.mock.calls[0] as [string, RequestInit];
     expect(new Headers(init.headers).get("authorization")).toBe("Bearer abc");
 
     const withoutToken = fetchStub(200, {});
-    await createHttpClient({ baseUrl: BASE, fetchImpl: withoutToken, getAccessToken: () => null })
-      .request("auth/me");
+    await createHttpClient({
+      baseUrl: BASE,
+      fetchImpl: withoutToken,
+      getAccessToken: () => null,
+    }).request("auth/me");
 
     const [, anonInit] = withoutToken.mock.calls[0] as [string, RequestInit];
     expect(new Headers(anonInit.headers).get("authorization")).toBeNull();
@@ -61,9 +74,10 @@ describe("http client", () => {
       code: "UA-AUTH-009",
       message: "Invalid refresh token",
     });
-    const client = createHttpClient({ baseUrl: BASE, fetchImpl });
 
-    const error = await client.request("auth/refresh", { method: "POST" }).catch((e: unknown) => e);
+    const error = await createHttpClient({ baseUrl: BASE, fetchImpl })
+      .request("auth/refresh", { method: "POST" })
+      .catch((e: unknown) => e);
 
     expect(error).toBeInstanceOf(AppError);
     expect((error as AppError).code).toBe("UA-AUTH-009");
@@ -72,15 +86,14 @@ describe("http client", () => {
   });
 
   it("still produces an AppError when the error body is not JSON", async () => {
-    const fetchImpl = vi.fn(async () => ({
+    const notJson = {
       ok: false,
       status: 502,
       headers: new Headers({ "content-type": "text/html" }),
-      json: async () => {
-        throw new SyntaxError("Unexpected token <");
-      },
-      text: async () => "<html>bad gateway</html>",
-    })) as unknown as typeof fetch;
+      json: () => Promise.reject(new SyntaxError("Unexpected token <")),
+      text: () => Promise.resolve("<html>bad gateway</html>"),
+    } as unknown as Response;
+    const fetchImpl = vi.fn(() => Promise.resolve(notJson)) as unknown as typeof fetch;
 
     const error = await createHttpClient({ baseUrl: BASE, fetchImpl })
       .request("auth/me")
@@ -92,21 +105,18 @@ describe("http client", () => {
   });
 
   it("retries exactly once after the 401 hook renews the session", async () => {
-    const responses = [
-      { status: 401, body: { statusCode: 401, code: "UA-AUTH-009", message: "expired" } },
-      { status: 200, body: { id: "u1" } },
+    const answers = [
+      response(401, { statusCode: 401, code: "UA-AUTH-009", message: "expired" }),
+      response(200, { id: "u1" }),
     ];
-    const fetchImpl = vi.fn(async () => {
-      const next = responses.shift()!;
-      return {
-        ok: next.status === 200,
-        status: next.status,
-        headers: new Headers({ "content-type": "application/json" }),
-        json: async () => next.body,
-        text: async () => JSON.stringify(next.body),
-      };
+    const fetchImpl = vi.fn(() => {
+      const next = answers.shift();
+      if (next === undefined) {
+        throw new Error("the stub ran out of responses");
+      }
+      return Promise.resolve(next);
     }) as unknown as typeof fetch;
-    const onUnauthorized = vi.fn(async () => true);
+    const onUnauthorized = vi.fn(() => Promise.resolve(true));
 
     const client = createHttpClient({ baseUrl: BASE, fetchImpl, onUnauthorized });
     const result = await client.request("auth/me");
@@ -117,8 +127,12 @@ describe("http client", () => {
   });
 
   it("does not retry when the 401 hook reports the session is gone", async () => {
-    const fetchImpl = fetchStub(401, { statusCode: 401, code: "UA-AUTH-009", message: "gone" });
-    const onUnauthorized = vi.fn(async () => false);
+    const fetchImpl = fetchStub(401, {
+      statusCode: 401,
+      code: "UA-AUTH-009",
+      message: "gone",
+    });
+    const onUnauthorized = vi.fn(() => Promise.resolve(false));
 
     const error = await createHttpClient({ baseUrl: BASE, fetchImpl, onUnauthorized })
       .request("auth/me")
@@ -130,9 +144,9 @@ describe("http client", () => {
   });
 
   it("wraps a transport failure as a NETWORK_ERROR AppError", async () => {
-    const fetchImpl = vi.fn(async () => {
-      throw new TypeError("Failed to fetch");
-    }) as unknown as typeof fetch;
+    const fetchImpl = vi.fn(() =>
+      Promise.reject(new TypeError("Failed to fetch")),
+    ) as unknown as typeof fetch;
 
     const error = await createHttpClient({ baseUrl: BASE, fetchImpl })
       .request("auth/me")
