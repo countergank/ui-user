@@ -1,0 +1,21 @@
+# COU-281 — Login page
+
+Mirror of `odd/tasks/COU-281-login.md` for ODD task recovery.
+Read the feature doc first; this file only tracks task state and evidence.
+
+## Tasks
+
+- [x] T1 — `auth` i18n namespace + 10 keys in en/es/pt — `e6e363c`.
+  - Evidence: parity RED first, then 7/7; the typed bundles now require `auth` in all three languages.
+- [ ] T2 — Composition root: session API + manager + HTTP client hooks.
+  - Evidence:
+- [ ] T3 — `/login` route, centered layout, outside the shell.
+  - Evidence:
+- [ ] T4 — Login form with the four error mappings and pending state.
+  - Evidence:
+- [ ] T5 — Redirect to the original destination (validated).
+  - Evidence:
+- [ ] T6 — MSW component tests + focus/aria + axe.
+  - Evidence:
+- [ ] T7 — Full gate + docs.
+  - Evidence:
