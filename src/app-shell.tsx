@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 
 import { RouteAnnouncer } from "@/components/a11y/route-announcer";
+import { SessionExpiryBridge } from "@/components/session/session-expiry-bridge";
 import { ThemeSwitcher } from "@/components/theme/theme-switcher";
 import { useFocusManagement } from "@/hooks/use-focus-management";
 
@@ -77,6 +78,7 @@ export function AppShell() {
             {renderNav(NAV_ITEMS, t("shell.navigation.main"), t)}
             {/* Theme control lives in the shell header, in plain sight: switching
                 the theme is a frequent action, not a buried user-menu preference. */}
+            <SessionExpiryBridge />
             <ThemeSwitcher />
           </div>
         </div>
