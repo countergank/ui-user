@@ -108,7 +108,28 @@ export const en = {
       },
     },
   },
+  auth: {
+    login: {
+      title: "Sign in",
+      subtitle: "Access the user management console",
+      fields: {
+        email: "Email",
+        password: "Password",
+      },
+      submit: "Sign in",
+      forgotPassword: "Forgot your password?",
+      errors: {
+        invalidCredentials: "The email or password is incorrect.",
+        locked: "This account is locked. Try again later.",
+        inactive: "This account is inactive.",
+        rateLimited: "Too many attempts. Wait a moment and try again.",
+      },
+    },
+  },
 };
 
 /** Shape every language bundle must satisfy. Derived from English, the source of truth. */
 export type TranslationTree = typeof en.common;
+
+/** Shape every `auth` bundle must satisfy. */
+export type AuthTranslationTree = typeof en.auth;
