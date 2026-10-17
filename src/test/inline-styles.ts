@@ -10,10 +10,16 @@ import { expect } from "vitest";
  * those are the properties this guard refuses to find inline.
  */
 const FORBIDDEN_INLINE_DECLARATION =
-  /(?:^|;)\s*(?:color|background|background-color|border|border-color|border-radius|font|font-family|font-size|font-weight|line-height|letter-spacing|fill|stroke|padding|margin|gap)\s*:/i;
+  /(?:^|;)\s*(?:color|background|background-color|border|border-color|border-radius|box-shadow|font|font-family|font-size|font-weight|line-height|letter-spacing|fill|stroke|padding|margin|gap)\s*:/i;
 
 export function expectNoAuthoredInlineStyles(container: HTMLElement): void {
-  for (const node of container.querySelectorAll("[style]")) {
-    expect(node.getAttribute("style")).not.toMatch(FORBIDDEN_INLINE_DECLARATION);
+  // The container itself counts: a primitive's own root is the easiest place to sneak a
+  // design value in, and `querySelectorAll` never matches the element it is called on.
+  const styled = [container, ...container.querySelectorAll("[style]")];
+
+  for (const node of styled) {
+    // `getAttribute` is `null` when there is no style at all (the common case), and
+    // `toMatch` only accepts strings.
+    expect(node.getAttribute("style") ?? "").not.toMatch(FORBIDDEN_INLINE_DECLARATION);
   }
 }
