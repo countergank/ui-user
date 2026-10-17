@@ -6,7 +6,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { createSessionManager } from "./session-manager";
-import { initialSessionState, sessionStore } from "./session-store";
+import { SESSION_STORAGE_KEY, initialSessionState, sessionStore } from "./session-store";
 
 const AUTH = {
   user: {
@@ -40,6 +40,61 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.useRealTimers();
+});
+
+describe("session manager — logout", () => {
+  it("clears the store, the persisted session and the query cache, then revokes remotely", async () => {
+    const api = makeApi();
+    const queryCache = { clear: vi.fn() };
+    const manager = createSessionManager({ api, queryCache });
+
+    await manager.logout();
+
+    expect(sessionStore.getState().status).toBe("anonymous");
+    expect(sessionStore.getState().refreshToken).toBeNull();
+    expect(window.localStorage.getItem(SESSION_STORAGE_KEY)).toBeNull();
+    expect(queryCache.clear).toHaveBeenCalledTimes(1);
+    expect(api.logout).toHaveBeenCalledWith("refresh-1");
+  });
+
+  it("logs out locally even when the remote revocation fails", async () => {
+    const api = makeApi({ logout: () => Promise.reject(new Error("offline")) });
+    const queryCache = { clear: vi.fn() };
+    const manager = createSessionManager({ api, queryCache });
+
+    await expect(manager.logout()).resolves.toBeUndefined();
+
+    expect(sessionStore.getState().status).toBe("anonymous");
+    expect(queryCache.clear).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not call the API when there was no session", async () => {
+    sessionStore.getState().clearSession();
+    const api = makeApi();
+    const manager = createSessionManager({ api, queryCache: { clear: vi.fn() } });
+
+    await manager.logout();
+
+    expect(api.logout).not.toHaveBeenCalled();
+  });
+
+  it("cancels a scheduled proactive refresh so logout is final", async () => {
+    vi.useFakeTimers();
+    const now = 1_700_000_000_000;
+    vi.setSystemTime(now);
+    const api = makeApi();
+    const manager = createSessionManager({
+      api,
+      now: () => Date.now(),
+      queryCache: { clear: vi.fn() },
+    });
+
+    manager.scheduleProactiveRefresh(now + 60_000);
+    await manager.logout();
+    await vi.advanceTimersByTimeAsync(120_000);
+
+    expect(api.refresh).not.toHaveBeenCalled();
+  });
 });
 
 describe("session manager — refresh", () => {

@@ -1,3 +1,5 @@
+import { queryClient } from "@/lib/query-client";
+
 import { DEFAULT_EXPIRY_SKEW_MS } from "./jwt";
 import { type SessionUser, sessionStore } from "./session-store";
 
@@ -19,6 +21,8 @@ export interface SessionManagerDeps {
   now?: () => number;
   /** Fired once when a refresh fails and the session is marked expired. */
   onExpired?: () => void;
+  /** Query cache to empty on logout; defaults to the shared client. */
+  queryCache?: { clear: () => void };
   setTimer?: (handler: () => void, delayMs: number) => TimerHandle;
   clearTimer?: (handle: TimerHandle) => void;
 }
@@ -36,6 +40,11 @@ export interface SessionManager {
   /** Refresh proactively `DEFAULT_EXPIRY_SKEW_MS` before the access token expires (S3). */
   scheduleProactiveRefresh: (expiresAt: number) => void;
   cancelProactiveRefresh: () => void;
+  /**
+   * Local-first logout (S6): the store, the persisted session and the query cache are
+   * cleared before the network is touched, and a failed revocation never blocks it.
+   */
+  logout: () => Promise<void>;
 }
 
 export function createSessionManager(deps: SessionManagerDeps): SessionManager {
@@ -46,6 +55,7 @@ export function createSessionManager(deps: SessionManagerDeps): SessionManager {
     ((handle) => {
       clearTimeout(handle);
     });
+  const queryCache = deps.queryCache ?? queryClient;
 
   let inFlight: Promise<boolean> | null = null;
   let scheduled: TimerHandle | null = null;
@@ -100,10 +110,27 @@ export function createSessionManager(deps: SessionManagerDeps): SessionManager {
     }, delay);
   };
 
+  const logout = async (): Promise<void> => {
+    const refreshToken = sessionStore.getState().refreshToken;
+
+    cancelProactiveRefresh();
+    sessionStore.getState().clearSession();
+    queryCache.clear();
+
+    if (refreshToken === null) {
+      return;
+    }
+
+    // Best effort: the user is already logged out locally, so a dead network or a
+    // revoked token must not turn logout into an error the UI has to explain.
+    await deps.api.logout(refreshToken).catch(() => undefined);
+  };
+
   return {
     refreshSession,
     handleUnauthorized: refreshSession,
     scheduleProactiveRefresh,
     cancelProactiveRefresh,
+    logout,
   };
 }
