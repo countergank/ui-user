@@ -299,3 +299,12 @@ cumulative diffs and was rejected.
 The local integration branch `feat/COU-271-primitivas-shadcn` is now redundant and can be deleted
 after the chain merges; it was never pushed.
 
+### How this landed
+
+The chained PRs #10-#15 merged slices 2-6 into their parent branches rather than into `develop`
+(a chain accumulates on its children by construction), so only slice 1 reached `develop` as #10.
+The remaining work landed through one PR from `feat/COU-271-primitivas-restantes`, based on
+`develop` and carrying 17 cherry-picked work-unit commits. The hashes in the Tasks table are the
+originals: they remain reachable on the `feat/COU-271-0N-*` branches. The cherry-picked copies have
+new hashes and identical trees.
+
