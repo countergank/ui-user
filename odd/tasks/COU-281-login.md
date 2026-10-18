@@ -190,6 +190,15 @@ existing route nor the bootstrap changed behavior.
 Constraint carried forward: MSW needs explicit authorization before `pnpm add -D msw`, and push/PR
 stay user decisions.
 
+**L4 — native review (RDD on), lineage `review-a63d58e7b600b114`:** assess reported
+`reviewDue: true` (`high_risk`, auth hot path), the three-lens review (`risk`, `resilience`,
+`reliability`) over the frozen base-diff candidate closed **approved**, and its authority was
+acknowledged and burned. Six non-blocking findings, all `informational` — no correction was opened:
+`R3-429-no-recovery` (login-form.tsx:132, the deliberate 429 decision), `R3-msw-peer-outside-range`
+(package.json:79), `R3-redirect-unmatched-path` (safe-redirect.ts:40-45, the `/forgot-password`
+link S3 asks for), `R4-001` WARNING (api.ts:19-21), `R4-002` (login-form.tsx:44-49), `R4-003`
+(login-form.tsx:126-130). They are follow-up work, not defects in this ticket's scope.
+
 **L3 — delivery decisions (2026-10-17), selected in the oversized-delivery menu:**
 - Delivery: `delivery_strategy=single-pr` — "Un solo PR (menos recomendado)". Overrides the
   chaining path; no chain prompt is repeated.
