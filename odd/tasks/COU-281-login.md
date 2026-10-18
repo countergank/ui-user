@@ -55,8 +55,8 @@ va al primer error."
 | T2 | Composition root: session API over the HTTP client, manager instance, `getAccessToken`/`onUnauthorized` wiring | S1, S5 | inline | `7b89843` |
 | T3 | `/login` route with a centered layout, outside the app shell | S1, S3 | inline | `950c3a4` |
 | T4 | Login form: zod schema, submit, pending state, four error mappings | S3, S6, S7, S8, S9 | inline | `a205742` |
-| T5 | Redirect to the original destination, validated same-origin | S5 | inline | T5 |
-| T6 | Component tests with MSW + focus/aria + axe | S10, S11, S12 | inline | T6 |
+| T5 | Redirect to the original destination, validated same-origin | S5 | inline | `f3c985f` |
+| T6 | Component tests with MSW + focus/aria + axe | S10, S11, S12 | inline | `7df0aab` |
 | T7 | Full gate + docs | all | inline | T7 |
 
 ## Progress
@@ -66,6 +66,17 @@ va al primer error."
   typecheck 0. The locale files were typed as `{ common }`, so their constraint had to widen too —
   the type system, not just the test, enforces that every declared namespace exists in every
   language.
+- [x] T5 — Redirect — `f3c985f`. RED first (the guard module missing, and no navigation at all).
+  Then 8/8 for the allowlist (internal path with query and hash kept; absolute, protocol-relative,
+  backslash, scheme and control-character values all fall back) and 4/4 through real routes:
+  requested destination, default view, never a hostile one, and no navigation after a failure.
+- [x] T6 — MSW component suite — `7df0aab`. `msw` 3.0.3 added as a devDependency (authorized; MSW 3
+  renamed `onUnhandledRequest` to `onUnhandledFrame`, and it warns against vitest's declared
+  `msw@^2` peer without affecting these tests). 6/6 with the real page, client and runtime: success
+  stores the session, `UA-AUTH-002` renders under the form with the fields untouched, 423 locked,
+  429 rate-limited with the submit disabled, field errors described by `aria-describedby` with the
+  focus on the field, plus an axe pass over both the field-error and the form-error states.
+  Coverage after T6: 98.23 lines / 95.72 branches / 92.1 functions.
 - [x] T4 — Login form — `a205742`. RED first (three modules missing), then 23/23 in
   `src/features/auth/`: localized field errors wired through `aria-describedby` with the focus on
   the first invalid field, a form-level alert under the form for all four API failures (never on a
@@ -99,6 +110,9 @@ is pushed and no PR is opened before an explicit OK.
 
 ## Findings
 
+0. **MSW 3 ships `onUnhandledFrame`, not `onUnhandledRequest`.** A silent unhandled request would
+   turn a broken wire into a passing test, so the option is explicit; the version is pinned in
+   `package.json` and recorded here because it is newer than the peer range vitest declares.
 1. **The `auth` namespace does not exist.** `src/lib/i18n/resources.ts` declares
    `namespaces = ["common"]`; S4 asks for `auth.*`, so the namespace list, the resources shape and
    the three bundles all change. The parity test already covers every declared namespace.
