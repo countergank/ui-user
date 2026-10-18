@@ -66,6 +66,10 @@ va al primer error."
   typecheck 0. The locale files were typed as `{ common }`, so their constraint had to widen too —
   the type system, not just the test, enforces that every declared namespace exists in every
   language.
+- [x] T2b — Hydrated-session refresh (post-review correction) — `890e3dc`. RED first: a store
+  hydrated with a valid token scheduled **zero** refreshes because the wiring only listened for
+  changes. The initial pass now schedules the token already in the store (and never cancels: at
+  boot there is no timer). 38/38 in `src/lib/session/`, full gate `make ci` exit 0.
 - [x] T7 — Gate and docs. `make ci` (lint + typecheck + test:coverage + build) exits 0: 390 tests in
   55 files, coverage 98.23 lines / 95.72 branches / 92.1 functions, and `/login` builds as its own
   lazy chunk (52.30 kB / 18.62 kB gzip) instead of riding the entry bundle. `docs/testing.md` gained
@@ -134,6 +138,11 @@ is pushed and no PR is opened before an explicit OK.
    interceptor installed later — MSW being the one this feature needs in T6. The runtime keeps its
    injectable `fetchImpl`, and the shipped singleton passes a delegating wrapper instead of the
    bare global, so the lookup happens per request.
+8. **`startProactiveRefresh` missed the hydrated session.** zustand's `persist` hydrates the
+   store during creation, which happens before the wiring's `subscribe` exists. A reload with a
+   valid session therefore had no proactive refresh scheduled until the token rotated, leaving a
+   silently expiring token for the reactive 401 path to catch. Found by reading the code while
+   discussing route guards, then proven with a RED test and fixed in `890e3dc`.
 7. **Nothing ever called `scheduleProactiveRefresh`.** COU-273 shipped the timer and its tests, but
    the only production caller would have been a composition root that did not exist. T2 wires it as
    a store subscription, so a login, a rotation and a logout each reschedule or cancel it without
@@ -189,6 +198,12 @@ existing route nor the bootstrap changed behavior.
 
 Constraint carried forward: MSW needs explicit authorization before `pnpm add -D msw`, and push/PR
 stay user decisions.
+
+**L5 — post-review correction (2026-10-18):** while deciding the surface model (ADR-13) the
+hydrated-session gap was reported to the user as a code-reading observation, with the explicit
+caveat that it had not been verified in runtime. The user asked whether it could be fixed here;
+it was, before the PR merge: RED test first, fix, `make ci` green, commit `890e3dc`, and the
+native review re-run on the new candidate because the approved one no longer applies.
 
 **L4 — native review (RDD on), lineage `review-a63d58e7b600b114`:** assess reported
 `reviewDue: true` (`high_risk`, auth hot path), the three-lens review (`risk`, `resilience`,
