@@ -3,6 +3,7 @@
 // Copy assertions are derived from the i18n resources (COU-253).
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 
 import { i18n } from "@/lib/i18n";
@@ -21,7 +22,14 @@ describe("routes", () => {
   });
 
   it("renders the lazy login route component", () => {
-    render(<LoginRoute />);
+    // The page embeds the login form: a query client and a router for its link.
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <MemoryRouter>
+          <LoginRoute />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
 
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       i18n.getFixedT(null, "auth")("login.title"),

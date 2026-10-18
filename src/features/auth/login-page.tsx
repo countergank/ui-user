@@ -2,13 +2,15 @@ import { useTranslation } from "react-i18next";
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
+import { LoginForm } from "./login-form";
+
 /**
  * Login page shell (COU-281, T3).
  *
  * This is the only screen rendered outside `AppShell`: a login gate has no product
  * navigation, no skip link and no footer, so it brings its own `<main>` landmark. The
  * copy comes from the `auth` namespace (S4) and the layout is the centered `max-w-sm`
- * card the design asks for (S3); the form arrives in T4.
+ * card the design asks for (S3). The form itself lives in `login-form.tsx`.
  */
 export function LoginPage() {
   const { t } = useTranslation("auth");
@@ -22,7 +24,9 @@ export function LoginPage() {
           <h1 className="text-2xl font-semibold leading-none tracking-tight">{t("login.title")}</h1>
           <p className="text-sm text-muted-foreground">{t("login.subtitle")}</p>
         </CardHeader>
-        <CardContent />
+        <CardContent>
+          <LoginForm />
+        </CardContent>
       </Card>
     </main>
   );

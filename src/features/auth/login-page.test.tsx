@@ -4,7 +4,9 @@
 // landmark and its own heading. These assertions are structural on purpose: the copy is
 // read from the resources, and what must not be present (shell navigation, skip link) is
 // the actual point of routing it outside the shell.
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 
 import { i18n } from "@/lib/i18n";
@@ -13,9 +15,22 @@ import { LoginPage } from "./login-page";
 
 const t = i18n.getFixedT(null, "auth");
 
+/** The page embeds the form, which needs a query client and a router for its link. */
+function renderPage() {
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+
+  return render(
+    <QueryClientProvider client={client}>
+      <MemoryRouter>
+        <LoginPage />
+      </MemoryRouter>
+    </QueryClientProvider>,
+  );
+}
+
 describe("login page", () => {
   it("renders the login title as the single level-1 heading", () => {
-    render(<LoginPage />);
+    renderPage();
 
     const headings = screen.getAllByRole("heading", { level: 1 });
 
@@ -24,14 +39,14 @@ describe("login page", () => {
   });
 
   it("renders the subtitle and its own main landmark", () => {
-    render(<LoginPage />);
+    renderPage();
 
     expect(screen.getByText(t("login.subtitle"))).toBeInTheDocument();
     expect(screen.getByRole("main")).toBeInTheDocument();
   });
 
   it("renders without any of the app shell's landmarks", () => {
-    render(<LoginPage />);
+    renderPage();
 
     expect(screen.queryByRole("banner")).not.toBeInTheDocument();
     expect(screen.queryByRole("contentinfo")).not.toBeInTheDocument();
