@@ -11,6 +11,7 @@
 | Unit | Vitest | `src/**/*.test.ts` colocated | `pnpm test` |
 | Component | Testing Library + `userEvent` | colocated `<name>.test.tsx` | `pnpm test` |
 | A11y | `vitest-axe` | component tests + `src/test/axe-pipeline.test.tsx` | `pnpm test` |
+| API component | Testing Library + `msw` | colocated `<name>.integration.test.tsx` | `pnpm test` |
 | E2E | Playwright (Chromium) | `e2e/critical-journeys.spec.ts` | `pnpm test:e2e` |
 
 ## What each level proves
@@ -24,6 +25,12 @@ normalizes strings and arbitrary values.
 ```tsx
 expect(screen.getByRole("heading", { name: "Welcome" })).toBeInTheDocument();
 ```
+
+**API component** — a screen whose behavior depends on a backend contract. MSW stands in for
+the API behind the real HTTP client (`msw` + `setupServer`, handlers per test file), so the
+request shape and every error envelope the server can answer are exercised end to end.
+`login-page.integration.test.tsx` is the reference: `onUnhandledFrame: "error"` makes an
+unexpected request fail instead of passing silently.
 
 **A11y** — `axe(container).toHaveNoViolations()` on components plus the instrumentation probe
 (`src/test/axe-pipeline.test.tsx`) that ensures the runner actually detects violations.
@@ -48,6 +55,8 @@ pnpm test:coverage   # or make test-coverage
 - Tests colocate with the code they verify (configured in `vitest.config.ts`).
 - Query by role/name from the user's perspective; avoid implementation matches.
 - Test behavior, not implementation; mock at the boundary (query client in components).
+- For a screen that talks to the API, mock the network with MSW, never the request function:
+  a wire that breaks between the form and the client must fail the test.
 - Axe assertions ride along with component tests, not as a separate ritual.
 - The E2E suite serves the production build (`pnpm build && pnpm preview` in
   `playwright.config.ts`), so it also exercises the compiled output and SPA fallback.

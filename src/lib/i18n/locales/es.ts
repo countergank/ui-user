@@ -1,6 +1,6 @@
-import type { TranslationTree } from "./en";
+import type { AuthTranslationTree, TranslationTree } from "./en";
 
-export const es: { common: TranslationTree } = {
+export const es: { common: TranslationTree; auth: AuthTranslationTree } = {
   common: {
     meta: {
       productName: "Countergank User",
@@ -107,6 +107,27 @@ export const es: { common: TranslationTree } = {
         previous: "Anterior",
         next: "Siguiente",
         morePages: "Más páginas",
+      },
+    },
+  },
+  auth: {
+    login: {
+      title: "Iniciar sesión",
+      subtitle: "Accedé a la consola de gestión de usuarios",
+      fields: {
+        email: "Email",
+        password: "Contraseña",
+      },
+      submit: "Iniciar sesión",
+      forgotPassword: "¿Olvidaste tu contraseña?",
+      errors: {
+        invalidCredentials: "El email o la contraseña son incorrectos.",
+        locked: "Esta cuenta está bloqueada. Probá más tarde.",
+        inactive: "Esta cuenta está inactiva.",
+        rateLimited: "Demasiados intentos. Esperá un momento y volvé a intentar.",
+        emailRequired: "Ingresá tu email.",
+        emailInvalid: "Ingresá un email válido.",
+        passwordRequired: "Ingresá tu contraseña.",
       },
     },
   },

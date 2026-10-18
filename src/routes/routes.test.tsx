@@ -3,6 +3,7 @@
 // Copy assertions are derived from the i18n resources (COU-253).
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 
 import { i18n } from "@/lib/i18n";
@@ -10,12 +11,29 @@ import { i18n } from "@/lib/i18n";
 import { Component as AboutRoute } from "./about-route";
 import { Component as HomeRoute } from "./home-route";
 import { router } from "./index";
+import { Component as LoginRoute } from "./login-route";
 
 describe("routes", () => {
-  it("exports a browser router with an app shell root and two child routes", () => {
-    const first = router.routes[0];
-    expect(first.path).toBe("/");
-    expect(first.children).toHaveLength(2);
+  it("registers the app shell and the login page as sibling top-level routes", () => {
+    expect(router.routes.map((route) => route.path)).toEqual(["/", "/login"]);
+    // The login gate has neither the shell's navigation nor its skip link, so it cannot
+    // be a child of the shell route.
+    expect(router.routes[0].children).toHaveLength(2);
+  });
+
+  it("renders the lazy login route component", () => {
+    // The page embeds the login form: a query client and a router for its link.
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <MemoryRouter>
+          <LoginRoute />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
+      i18n.getFixedT(null, "auth")("login.title"),
+    );
   });
 
   it("renders the lazy home route component", async () => {

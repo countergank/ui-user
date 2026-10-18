@@ -28,6 +28,7 @@ frontend-standard-project/
 │  │  ├─ error/                 # error view + route error boundary
 │  │  └─ ui/                    # shadcn/ui primitives (button, card)
 │  ├─ features/
+│  │  ├─ auth/                  # login feature: page, form, schema, api.ts, hooks/
 │  │  └─ home/                  # sample feature: components/, hooks/, api.ts
 │  ├─ hooks/                    # shared hooks (use-focus-management)
 │  ├─ lib/                      # errors, query client, utils
@@ -64,7 +65,7 @@ frontend-standard-project/
 | `src/components/a11y/` | Accessibility building blocks | `route-announcer.tsx` |
 | `src/components/error/` | Error presentation + boundary | `route-error-boundary.tsx` |
 | `src/components/ui/` | shadcn/ui primitives, owned by this repo | `button.tsx` |
-| `src/features/<feature>/` | One folder per business capability | `src/features/home/home-page.tsx` |
+| `src/features/<feature>/` | One folder per business capability | `src/features/auth/login-form.tsx` |
 | `src/hooks/` | Shared, cross-feature hooks | `use-focus-management.ts` |
 | `src/lib/` | Infrastructure: errors, query client, env, utils | `errors.ts` |
 | `src/routes/` | Router definition + lazy route modules | `home-route.tsx` |

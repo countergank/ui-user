@@ -19,4 +19,10 @@ export const router = createBrowserRouter([
       { path: "about", lazy: () => import("./about-route") },
     ],
   },
+  {
+    // Sibling of the shell on purpose: a login gate needs no product navigation.
+    path: "/login",
+    lazy: () => import("./login-route"),
+    errorElement: <RouteErrorBoundary />,
+  },
 ]);
