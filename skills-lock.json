@@ -13,6 +13,12 @@
       "skillPath": "skills/github-conventions/SKILL.md",
       "computedHash": "af59d54b05941659e0211ab4ef8d37a6d3f0783c173f2fdb21d29d0b0d2320eb"
     },
+    "kickoff": {
+      "source": "countergank/skills",
+      "sourceType": "github",
+      "skillPath": "skills/kickoff/SKILL.md",
+      "computedHash": "d07024d17f9411fed4637810c1c9b5c5c338dc7fb9c12913950fd10ea69fc60f"
+    },
     "linear-tickets": {
       "source": "countergank/skills",
       "sourceType": "github",
