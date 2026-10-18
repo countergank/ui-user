@@ -53,7 +53,7 @@ va al primer error."
 |---|---|---|---|---|
 | T1 | `auth` i18n namespace + the 10 keys in `en`/`es`/`pt` | S4, S13 | inline | `e6e363c` |
 | T2 | Composition root: session API over the HTTP client, manager instance, `getAccessToken`/`onUnauthorized` wiring | S1, S5 | inline | `7b89843` |
-| T3 | `/login` route with a centered layout, outside the app shell | S1, S3 | inline | T3 |
+| T3 | `/login` route with a centered layout, outside the app shell | S1, S3 | inline | `950c3a4` |
 | T4 | Login form: zod schema, submit, pending state, four error mappings | S3, S6, S7, S8, S9 | inline | T4 |
 | T5 | Redirect to the original destination, validated same-origin | S5 | inline | T5 |
 | T6 | Component tests with MSW + focus/aria + axe | S10, S11, S12 | inline | T6 |
@@ -66,6 +66,11 @@ va al primer error."
   typecheck 0. The locale files were typed as `{ common }`, so their constraint had to widen too —
   the type system, not just the test, enforces that every declared namespace exists in every
   language.
+- [x] T3 — `/login` route — `950c3a4`. RED first on both files (the route module and the page did
+  not exist, and the router had no `/login` entry). Then 3/3 page tests and 4/4 route tests: one
+  level-1 heading, its own `<main>`, and none of the shell's banner/contentinfo/navigation/skip
+  link. The composition root now also delegates `fetch` instead of capturing it, so a late
+  replacement (MSW later, a polyfill in the browser) is honoured by the singleton.
 - [x] T2 — Composition root — `7b89843`. RED first on two fronts: the two new modules did not exist
   (10 tests could not even import), then the proactive-refresh wire was missing (3 failures).
   10/10 in the two new suites, 37/37 across `src/lib/session/`, 348/348 for the whole repo, lint 0,
@@ -82,8 +87,10 @@ recorded here so the strategy is a decision, not an accident:
 - **Slice 2** (planned): T3 + T4 + T5 — route, form, redirect.
 - **Slice 3** (planned): T6 + T7 — MSW component tests and the closing gate/docs.
 
-Strategy: **pending user decision** (`ask-on-risk`); the slice boundary above holds for either
-answer. Nothing is pushed and no PR is opened before an explicit OK.
+Strategy: **`single-pr`** — chosen by the user on 2026-10-17 from the oversized-delivery menu
+(explicitly the least recommended option, accepted). The slice boundary above stays recorded as
+the commit order inside that PR; no chain strategy applies and the prompt is not repeated. Nothing
+is pushed and no PR is opened before an explicit OK.
 
 ## Findings
 
@@ -100,7 +107,11 @@ answer. Nothing is pushed and no PR is opened before an explicit OK.
    falls back to `/`.
 5. **The session manager had no composition root** (disclosed at COU-273 close). T2 creates it here,
    which is where a session is first produced.
-6. **Nothing ever called `scheduleProactiveRefresh`.** COU-273 shipped the timer and its tests, but
+6. **A module-level singleton captures `fetch` at import time**, which silently defeats any
+   interceptor installed later — MSW being the one this feature needs in T6. The runtime keeps its
+   injectable `fetchImpl`, and the shipped singleton passes a delegating wrapper instead of the
+   bare global, so the lookup happens per request.
+7. **Nothing ever called `scheduleProactiveRefresh`.** COU-273 shipped the timer and its tests, but
    the only production caller would have been a composition root that did not exist. T2 wires it as
    a store subscription, so a login, a rotation and a logout each reschedule or cancel it without
    the login form knowing the timer exists.
@@ -139,3 +150,9 @@ answer. Nothing is pushed and no PR is opened before an explicit OK.
 
 Constraint carried forward: MSW needs explicit authorization before `pnpm add -D msw`, and push/PR
 stay user decisions.
+
+**L3 — delivery decisions (2026-10-17), selected in the oversized-delivery menu:**
+- Delivery: `delivery_strategy=single-pr` — "Un solo PR (menos recomendado)". Overrides the
+  chaining path; no chain prompt is repeated.
+- MSW: authorized — "Sí, instalá msw cuando llegue T6". A new devDependency is a delivery change
+  (Task Size item 5) and is executed only in T6.
