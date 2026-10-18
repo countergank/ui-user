@@ -199,6 +199,16 @@ existing route nor the bootstrap changed behavior.
 Constraint carried forward: MSW needs explicit authorization before `pnpm add -D msw`, and push/PR
 stay user decisions.
 
+**L6 — native review, second candidate (RDD on), lineage `review-9cbd9b70c76b72e5`:** assess over
+`origin/develop..HEAD` (`reviewDue: true`, high risk) and the three-lens review over the frozen
+candidate (`890e3dc` + `d70748b` on top of the merged-unmerged feature) closed **approved**;
+authority acknowledged and burned. Seven non-blocking findings, all `informational`:
+`R1-msw-peer-outside-range`, `R1-token-storage-xss-exposure` (WARNING, tokens in `localStorage` —
+the BFF ticket), `R3-429-no-remount-recovery`, `R3-login-no-authed-guard`, `R4-429-no-recovery`,
+`R4-forgot-password-unrouted`, `R4-login-401-triggers-refresh` (WARNING: a failed `POST
+/auth/login` goes through the client's 401 hook and can trigger a refresh before retrying once —
+harmless without a session, wasteful with one).
+
 **L5 — post-review correction (2026-10-18):** while deciding the surface model (ADR-13) the
 hydrated-session gap was reported to the user as a code-reading observation, with the explicit
 caveat that it had not been verified in runtime. The user asked whether it could be fixed here;
