@@ -3,7 +3,7 @@ import { Loader2 } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { useLogin } from "./hooks/use-login";
 import { resolveLoginError } from "./login-errors";
 import { type LoginValues, createLoginSchema } from "./login-schema";
+import { resolveRedirectTarget } from "./safe-redirect";
 
 /**
  * Login form (COU-281, T4 / S3, S6-S10).
@@ -31,6 +32,9 @@ import { type LoginValues, createLoginSchema } from "./login-schema";
  *   is a field validation, so none is attached to a field;
  * - a 429 disables the submit until the component remounts (S8) — the ticket asks for
  *   disabled, not for a countdown, and a countdown would need copy outside S4.
+ *
+ * The post-login destination is read once per submit and validated by `safe-redirect`:
+ * the store is already updated, so navigation is the only thing left to do on success.
  */
 export function LoginForm() {
   const { t } = useTranslation("auth");
@@ -42,6 +46,8 @@ export function LoginForm() {
     defaultValues: { email: "", password: "" },
   });
 
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const loginMutation = useLogin();
   const errorKey = resolveLoginError(loginMutation.error);
   const rateLimited = errorKey === "login.errors.rateLimited";
@@ -64,7 +70,14 @@ export function LoginForm() {
   }, [errorMessage]);
 
   const onSubmit = form.handleSubmit((values) => {
-    loginMutation.mutate(values);
+    const destination = resolveRedirectTarget(searchParams);
+
+    loginMutation.mutate(values, {
+      // `replace` so Back does not return to a login page the user already passed.
+      onSuccess: () => {
+        void navigate(destination, { replace: true });
+      },
+    });
   });
 
   return (
