@@ -35,6 +35,7 @@ contributors are governed by the same rules below.
 
 | Work area | Skill |
 |-----------|-------|
+| Session bootstrap (context, ticket, base branch, branch, ODD tracking) | `.agents/skills/kickoff/SKILL.md` |
 | React / TypeScript / Vite / styling / a11y / tests | `.agents/skills/react-frontend/SKILL.md` |
 | Commits, PRs, branches, changelogs | `.agents/skills/github-conventions/SKILL.md` |
 | Environment branches, releases, hotfixes | `.agents/skills/git-environment-flow/SKILL.md` |
