@@ -42,8 +42,16 @@ export function createSessionRuntime(fetchImpl?: typeof fetch): SessionRuntime {
   return { httpClient, sessionManager };
 }
 
-/** The app's single session runtime. Features import `httpClient` from here. */
-export const { httpClient, sessionManager } = createSessionRuntime();
+/**
+ * The app's single session runtime. Features import `httpClient` from here.
+ *
+ * `fetch` is delegated instead of captured so the singleton honours a late replacement —
+ * an MSW interceptor in tests, a polyfill in a browser without one. Capturing it at
+ * module load would freeze whatever the global was when this file was first imported.
+ */
+export const { httpClient, sessionManager } = createSessionRuntime((input, init) =>
+  fetch(input, init),
+);
 
 /**
  * Keeps the proactive refresh (COU-273 S3) alive: something has to schedule it after a
