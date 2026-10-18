@@ -163,6 +163,22 @@ describe("proactive refresh wiring", () => {
     unsubscribe();
   });
 
+  it("schedules the session that was already in the store before the wiring ran", () => {
+    // A reload with a persisted session: zustand hydrates the store during creation, so by
+    // the time this wiring runs the token is already there and no change event will follow.
+    sessionStore.getState().startSession({
+      ...AUTH,
+      accessToken: tokenExpiringAt(EXPIRES_AT),
+    });
+    const manager = fakeManager();
+
+    const unsubscribe = startProactiveRefresh(manager, sessionStore);
+
+    expect(manager.scheduleProactiveRefresh).toHaveBeenCalledExactlyOnceWith(EXPIRES_AT);
+
+    unsubscribe();
+  });
+
   it("ignores a state change that keeps the same token", () => {
     const manager = fakeManager();
     const unsubscribe = startProactiveRefresh(manager, sessionStore);

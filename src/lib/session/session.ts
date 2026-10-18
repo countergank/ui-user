@@ -60,23 +60,42 @@ export const { httpClient, sessionManager } = createSessionRuntime((input, init)
  */
 export function startProactiveRefresh(
   manager: SessionManager,
-  store: Pick<StoreApi<SessionStore>, "subscribe"> = sessionStore,
+  store: Pick<StoreApi<SessionStore>, "subscribe" | "getState"> = sessionStore,
 ): () => void {
+  // A reload with a persisted session hydrates the store during its creation, which is
+  // before this wiring exists: the token is already there and no change event will follow.
+  // Without this first pass the proactive refresh would not be scheduled until the token
+  // rotated, and an expired token would wait for a 401 to be noticed. It only schedules:
+  // at boot there is no timer to cancel, and cancelling one that does not exist would make
+  // every later cancellation ambiguous.
+  const hydratedToken = store.getState().accessToken;
+  const hydratedExpiry =
+    hydratedToken === null ? null : (decodeAccessToken(hydratedToken)?.expiresAt ?? null);
+
+  if (hydratedExpiry !== null) {
+    manager.scheduleProactiveRefresh(hydratedExpiry);
+  }
+
   return store.subscribe((state, previous) => {
     if (state.accessToken === previous.accessToken) {
       return;
     }
 
-    const expiresAt =
-      state.accessToken === null ? null : (decodeAccessToken(state.accessToken)?.expiresAt ?? null);
-
-    if (expiresAt === null) {
-      // No readable expiry means there is nothing to schedule — and a cleared session
-      // must not leave a timer that would refresh a token that no longer exists.
-      manager.cancelProactiveRefresh();
-      return;
-    }
-
-    manager.scheduleProactiveRefresh(expiresAt);
+    scheduleFor(manager, state.accessToken);
   });
+}
+
+/** Schedule (or cancel) the refresh for one access token, or for no session at all. */
+function scheduleFor(manager: SessionManager, accessToken: string | null): void {
+  const expiresAt =
+    accessToken === null ? null : (decodeAccessToken(accessToken)?.expiresAt ?? null);
+
+  if (expiresAt === null) {
+    // No readable expiry means there is nothing to schedule — and a cleared session must
+    // not leave a timer that would refresh a token that no longer exists.
+    manager.cancelProactiveRefresh();
+    return;
+  }
+
+  manager.scheduleProactiveRefresh(expiresAt);
 }
