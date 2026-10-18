@@ -57,7 +57,7 @@ va al primer error."
 | T4 | Login form: zod schema, submit, pending state, four error mappings | S3, S6, S7, S8, S9 | inline | `a205742` |
 | T5 | Redirect to the original destination, validated same-origin | S5 | inline | `f3c985f` |
 | T6 | Component tests with MSW + focus/aria + axe | S10, S11, S12 | inline | `7df0aab` |
-| T7 | Full gate + docs | all | inline | T7 |
+| T7 | Full gate + docs | all | inline | (this commit) |
 
 ## Progress
 
@@ -66,6 +66,10 @@ va al primer error."
   typecheck 0. The locale files were typed as `{ common }`, so their constraint had to widen too —
   the type system, not just the test, enforces that every declared namespace exists in every
   language.
+- [x] T7 — Gate and docs. `make ci` (lint + typecheck + test:coverage + build) exits 0: 390 tests in
+  55 files, coverage 98.23 lines / 95.72 branches / 92.1 functions, and `/login` builds as its own
+  lazy chunk (52.30 kB / 18.62 kB gzip) instead of riding the entry bundle. `docs/testing.md` gained
+  the API-component level and `docs/folder-structure.md` the `auth` feature.
 - [x] T5 — Redirect — `f3c985f`. RED first (the guard module missing, and no navigation at all).
   Then 8/8 for the allowlist (internal path with query and hash kept; absolute, protocol-relative,
   backslash, scheme and control-character values all fall back) and 4/4 through real routes:
@@ -161,7 +165,16 @@ is pushed and no PR is opened before an explicit OK.
 
 ## Verification
 
-`pnpm vitest run`, `pnpm lint`, `pnpm typecheck`, `pnpm test:coverage`, `pnpm build`.
+`pnpm vitest run`, `pnpm lint`, `pnpm typecheck`, `pnpm test:coverage`, `pnpm build` — all run
+through `make ci` at T7, exit 0.
+
+Spec coverage, by task: S1/T3-T5, S2 (nothing built outside scope), S3/T3-T4, S4+T13 parity/T1,
+S5/T4-T5, S6-S9/T4 and the MSW suite, S10-S12/T4 and T6, S13/T1 parity test, S14/T2 and T4.
+
+Differential check: the only pre-existing behavior this feature touches is the router (a new
+sibling route) and the app boot (one extra subscription). Their unchanged tests
+(`routes.test.tsx` home/about cases, `main.test.tsx`) still pass against the new code, so neither
+existing route nor the bootstrap changed behavior.
 
 ## Log
 
