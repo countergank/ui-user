@@ -54,7 +54,7 @@ va al primer error."
 | T1 | `auth` i18n namespace + the 10 keys in `en`/`es`/`pt` | S4, S13 | inline | `e6e363c` |
 | T2 | Composition root: session API over the HTTP client, manager instance, `getAccessToken`/`onUnauthorized` wiring | S1, S5 | inline | `7b89843` |
 | T3 | `/login` route with a centered layout, outside the app shell | S1, S3 | inline | `950c3a4` |
-| T4 | Login form: zod schema, submit, pending state, four error mappings | S3, S6, S7, S8, S9 | inline | T4 |
+| T4 | Login form: zod schema, submit, pending state, four error mappings | S3, S6, S7, S8, S9 | inline | `a205742` |
 | T5 | Redirect to the original destination, validated same-origin | S5 | inline | T5 |
 | T6 | Component tests with MSW + focus/aria + axe | S10, S11, S12 | inline | T6 |
 | T7 | Full gate + docs | all | inline | T7 |
@@ -66,6 +66,11 @@ va al primer error."
   typecheck 0. The locale files were typed as `{ common }`, so their constraint had to widen too —
   the type system, not just the test, enforces that every declared namespace exists in every
   language.
+- [x] T4 — Login form — `a205742`. RED first (three modules missing), then 23/23 in
+  `src/features/auth/`: localized field errors wired through `aria-describedby` with the focus on
+  the first invalid field, a form-level alert under the form for all four API failures (never on a
+  field), the generic fallback, the session stored on success, and a disabled + `aria-busy` +
+  spinner submit while pending and after a 429.
 - [x] T3 — `/login` route — `950c3a4`. RED first on both files (the route module and the page did
   not exist, and the router had no `/login` entry). Then 3/3 page tests and 4/4 route tests: one
   level-1 heading, its own `<main>`, and none of the shell's banner/contentinfo/navigation/skip
@@ -117,6 +122,13 @@ is pushed and no PR is opened before an explicit OK.
    the login form knowing the timer exists.
 
 ## Decisions
+
+- **Three validation keys beyond S4** (`emailRequired`, `emailInvalid`, `passwordRequired`). S10
+  requires field errors described by `aria-describedby`; S4 enumerates only the four API errors, so
+  the field copy had to be added. Parity (S13) covers them in the same test.
+- **The schema is a factory taking `t`.** `FormMessage` renders zod's message verbatim and that
+  string is what `aria-describedby` points at, so the messages must be localized at build time of
+  the schema, not translated at render.
 
 - **Form-level errors, not field errors**, for all four API failures: S6 says so explicitly for
   `UA-AUTH-002`, and the other three are account/rate conditions, not field validation.
