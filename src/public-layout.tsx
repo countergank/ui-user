@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 
 import { RouteAnnouncer } from "@/components/a11y/route-announcer";
-import { CountergankLogo } from "@/components/branding/countergank-logo";
+import { AppLogo } from "@/components/branding/app-logo";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
 import { ThemeSwitcher } from "@/components/theme/theme-switcher";
 import { useFocusManagement } from "@/hooks/use-focus-management";
@@ -79,7 +79,7 @@ export function PublicLayout() {
           {/* The mark follows the foreground token, so it reads on both themes; the link
               carries the accessible name and the mark stays decorative. */}
           <Link to="/" className="flex items-center gap-2 text-sm font-semibold">
-            <CountergankLogo className="h-9 w-auto" />
+            <AppLogo className="h-9" />
             {t("title")}
           </Link>
           <div className="flex items-center gap-3">

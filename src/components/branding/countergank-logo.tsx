@@ -1,10 +1,9 @@
 /**
  * Countergank mark (COU-310, T8 / S11).
  *
- * Inlined instead of served as `<img>` on purpose: the artwork is a single-colour mark
- * (`fill="#000000"` in the source), and an `<img>` cannot inherit `currentColor`, so on a
- * dark background it would vanish. As a component it follows the `foreground` token in
- * both themes.
+ * Inlined instead of served as `<img>` on purpose: the source artwork is a single black
+ * fill, and an `<img>` cannot inherit `currentColor`, so on a dark background it would
+ * vanish. As a component it follows the `foreground` token in both themes.
  *
  * The artwork is authored in a 20480-unit space and flipped by the group transform kept
  * from the source file. The `viewBox` is cropped to the ink box measured with a headless

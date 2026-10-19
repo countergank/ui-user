@@ -78,13 +78,17 @@ describe("public layout", () => {
     const { container } = renderAt("/");
 
     const brand = within(screen.getByRole("banner")).getByRole("link", { name: t("title") });
-    const mark = brand.querySelector("svg");
 
-    expect(mark).not.toBeNull();
-    expect(mark).toHaveAttribute("aria-hidden", "true");
-    // The artwork is inlined so it can inherit the foreground token in both themes.
-    expect(mark).toHaveAttribute("fill", "currentColor");
-    expect(container.querySelector('img[src*="logo"]')).toBeNull();
+    // The colour artwork for the light theme, the inlined monochrome mark for the dark one:
+    // the colour mark's "C" is black and would disappear on a dark background.
+    const colourMark = brand.querySelector('img[src="/logo-countergank-color.png"]');
+    const monochromeMark = brand.querySelector("svg");
+
+    expect(colourMark).not.toBeNull();
+    expect(colourMark).toHaveAttribute("aria-hidden", "true");
+    expect(monochromeMark).not.toBeNull();
+    expect(monochromeMark).toHaveAttribute("fill", "currentColor");
+    expect(container).toBeTruthy();
   });
 
   it("offers the language switcher in the header", () => {

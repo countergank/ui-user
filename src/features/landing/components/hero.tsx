@@ -1,7 +1,7 @@
 import { ArrowRight, BookOpen } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { CountergankLogo } from "@/components/branding/countergank-logo";
+import { AppLogo } from "@/components/branding/app-logo";
 import { Button } from "@/components/ui/button";
 import { docsUrl, repositoryUrl } from "@/lib/links";
 
@@ -19,7 +19,7 @@ export function LandingHero() {
   return (
     <section className="overflow-hidden rounded-2xl border bg-gradient-to-b from-muted/60 to-background px-6 py-12 sm:px-10 sm:py-16">
       <div className="flex flex-col items-start gap-6">
-        <CountergankLogo className="h-12 w-auto" />
+        <AppLogo className="h-14" />
         <h1 className="max-w-2xl text-4xl font-semibold tracking-tight sm:text-5xl">
           {t("title")}
         </h1>
