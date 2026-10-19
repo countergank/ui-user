@@ -31,6 +31,9 @@ export const es: {
         home: "Inicio",
         about: "Acerca de",
       },
+      language: {
+        switch: "Cambiar idioma",
+      },
       theme: {
         switchTo: "Cambiar a {{mode}}",
         system: "Automático",

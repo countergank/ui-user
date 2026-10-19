@@ -1,6 +1,7 @@
 import i18next, { type i18n as I18nInstance, type InitOptions } from "i18next";
 import { initReactI18next } from "react-i18next";
 
+import { applyDocumentLanguage, readStoredLanguage } from "./language";
 import { defaultLanguage, defaultNamespace, languages, namespaces, resources } from "./resources";
 
 const baseOptions = {
@@ -23,8 +24,15 @@ export function createI18nInstance(options: InitOptions = {}): I18nInstance {
   void instance.use(initReactI18next);
   void instance.init({
     ...baseOptions,
+    // A stored preference wins over the default, so a reload keeps the chosen language
+    // instead of flashing English first.
+    lng: readStoredLanguage() ?? defaultLanguage,
     ...options,
   });
+
+  // `<html lang>` follows every change, including the one from the switcher.
+  instance.on("languageChanged", applyDocumentLanguage);
+  applyDocumentLanguage(instance.language);
 
   return instance;
 }

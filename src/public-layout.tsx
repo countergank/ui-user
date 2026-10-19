@@ -5,6 +5,7 @@ import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 
 import { RouteAnnouncer } from "@/components/a11y/route-announcer";
 import { CountergankLogo } from "@/components/branding/countergank-logo";
+import { LanguageSwitcher } from "@/components/i18n/language-switcher";
 import { ThemeSwitcher } from "@/components/theme/theme-switcher";
 import { useFocusManagement } from "@/hooks/use-focus-management";
 
@@ -89,6 +90,7 @@ export function PublicLayout() {
             >
               {t("nav.signIn")}
             </Link>
+            <LanguageSwitcher />
             <ThemeSwitcher />
           </div>
         </div>

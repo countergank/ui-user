@@ -87,6 +87,16 @@ describe("public layout", () => {
     expect(container.querySelector('img[src*="logo"]')).toBeNull();
   });
 
+  it("offers the language switcher in the header", () => {
+    renderAt("/");
+
+    expect(
+      within(screen.getByRole("banner")).getByRole("button", {
+        name: tCommon("shell.language.switch"),
+      }),
+    ).toBeInTheDocument();
+  });
+
   it("stacks the landmarks in a full-height column so the footer sits at the page bottom", () => {
     renderAt("/about");
 

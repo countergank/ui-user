@@ -31,6 +31,9 @@ export const pt: {
         home: "Início",
         about: "Sobre",
       },
+      language: {
+        switch: "Mudar idioma",
+      },
       theme: {
         switchTo: "Mudar para {{mode}}",
         system: "Automático",

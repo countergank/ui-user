@@ -25,6 +25,9 @@ export const en = {
         home: "Home",
         about: "About",
       },
+      language: {
+        switch: "Change language",
+      },
       theme: {
         switchTo: "Switch to {{mode}}",
         system: "Automatic",
