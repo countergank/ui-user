@@ -9,7 +9,6 @@ import { describe, expect, it } from "vitest";
 import { i18n } from "@/lib/i18n";
 
 import { Component as AboutRoute } from "./about-route";
-import { Component as HomeRoute } from "./home-route";
 import { router } from "./index";
 import { Component as LandingRoute } from "./landing-route";
 import { Component as LoginRoute } from "./login-route";
@@ -50,21 +49,6 @@ describe("routes", () => {
     const heading = screen.getByRole("heading", { level: 1 });
     expect(heading).toHaveTextContent(i18n.getFixedT(null, "landing")("title"));
     expect(screen.queryByRole("navigation", { name: i18n.t("shell.navigation.main") })).toBeNull();
-  });
-
-  it("renders the lazy home route component", async () => {
-    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-    render(
-      <QueryClientProvider client={client}>
-        <HomeRoute />
-      </QueryClientProvider>,
-    );
-
-    // The hero title interpolates a time-based greeting; assert the resource's
-    // static portion so the expectation stays derived from translations.
-    const heroTitleTail = i18n.t("home.hero.title", { greeting: "" }).replace(/^!\s*/, "");
-    const heading = await screen.findByRole("heading", { level: 1 });
-    expect(heading).toHaveTextContent(heroTitleTail);
   });
 
   it("renders the lazy about route component as a project page", () => {

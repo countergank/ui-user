@@ -43,46 +43,6 @@ export const es: {
         loaded: "Página {{title}} cargada",
       },
     },
-    home: {
-      loading: "Cargando destacados…",
-      error: {
-        highlightsUnavailable: "No se pudieron cargar los destacados de la plantilla",
-        demoFailure: "Fallo de demostración",
-      },
-      greeting: {
-        morning: "Buenos días",
-        afternoon: "Buenas tardes",
-        evening: "Buenas noches",
-      },
-      hero: {
-        title: "{{greeting}}! Esta es la plantilla de frontend estándar",
-        subtitle:
-          "Una arquitectura React 19 por funcionalidades (screaming) con una estructura accesible, estado de servidor y manejo tipado de errores.",
-      },
-      environment: {
-        modeLabel: "Entorno:",
-        apiBaseLabel: "Base de API:",
-      },
-      highlights: {
-        listLabel: "Destacados de la plantilla",
-        items: {
-          shell: {
-            title: "Estructura accesible",
-            description:
-              "Puntos de referencia, enlace de salto, anunciador de ruta y gestión del foco integrados en el diseño.",
-          },
-          data: {
-            title: "Estado del servidor",
-            description:
-              "TanStack Query conectado mediante un QueryClientProvider con hooks y errores tipados.",
-          },
-          routing: {
-            title: "Rutas diferidas",
-            description: "React Router con división de código por ruta y límites de Suspense.",
-          },
-        },
-      },
-    },
     error: {
       genericTitle: "Algo salió mal",
       genericMessage: "Ocurrió un error inesperado.",
