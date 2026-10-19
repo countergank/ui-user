@@ -10,53 +10,50 @@ A **container** owns data fetching, state, and orchestration, then hands plain p
 **presentational** components. Presentational components never fetch data or touch the router;
 they render props. This keeps the UI easy to test and reuse.
 
-Real example — the home feature (`src/features/home/home-page.tsx`):
+Real example — the login feature (`src/features/auth/login-page.tsx`):
 
 ```tsx
-export function HomePage() {
-  const greeting = useGreeting();
-  const { data, isPending, isError, error, refetch } = useHighlights();
-
-  if (isPending) {
-    return <p aria-busy="true">Loading highlights…</p>;
-  }
-
-  if (isError) {
-    return (
-      <ErrorView
-        title="Could not load template highlights"
-        message={error.message}
-        onRetry={() => void refetch()}
-      />
-    );
-  }
+export function LoginPage() {
+  const { t } = useTranslation("auth");
 
   return (
-    <div className="flex flex-col gap-8">
-      <Hero title={`${greeting}! This is the standard frontend template`} subtitle="…" />
-      <FeatureCards features={data} />
-    </div>
+    <main className="flex min-h-screen items-center justify-center bg-muted/40 p-4">
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <h1 className="text-2xl font-semibold leading-none tracking-tight">{t("login.title")}</h1>
+          <p className="text-sm text-muted-foreground">{t("login.subtitle")}</p>
+        </CardHeader>
+        <CardContent>
+          <LoginForm />
+        </CardContent>
+      </Card>
+    </main>
   );
 }
 ```
 
-`Hero` and `FeatureCards` receive everything via props — `Hero` ({ title, subtitle, children })
-simply renders, proving the pattern by example.
+The page owns the layout and the copy; `LoginForm` owns the mutation, the schema and the error
+mapping, and reads the session through `useLogin` rather than receiving it as props. The
+presentational half is the shadcn layer (`Card`, `Form`, `Alert`, `Input`, `Button`), which never
+fetches, never routes and takes everything it renders as props.
 
 ## Feature grouping
 
 Everything for a capability lives under `src/features/<feature>/`:
 
 ```
-src/features/home/
-├─ api.ts            # typed TanStack Query hooks + query keys
-├─ home-page.tsx     # container
-├─ components/       # presentational components (+ colocated tests)
-└─ hooks/            # feature-scoped custom hooks (+ colocated tests)
+src/features/auth/
+├─ api.ts               # transport: the request, no session logic
+├─ hooks/use-login.ts   # feature-scoped hook: the mutation + session start
+├─ login-page.tsx       # container: layout, copy, composition
+├─ login-form.tsx       # container: form state, mutation, error mapping
+├─ login-schema.ts      # pure validation, localized by factory
+└─ login-errors.ts      # pure mapping from AppError to a message key
 ```
 
-`api.ts` exports typed hooks (e.g. `useHighlights`) backed by TanStack Query; feature
-components consume those hooks and never call `fetch` directly.
+`api.ts` stays a plain request so it can be called without a store; the hook composes it with
+`useMutation` and the session. Feature components consume those hooks and never call `fetch`
+directly.
 
 ## shadcn/ui primitives
 
@@ -88,8 +85,8 @@ Every component keeps its test next to it (`<name>.test.tsx`). This is configure
 needed:
 
 ```
-src/features/home/components/hero.tsx        # the component
-src/features/home/components/hero.test.tsx   # its test
+src/features/landing/landing-page.tsx        # the component
+src/features/landing/landing-page.test.tsx   # its test
 ```
 
 ## Role-based queries
