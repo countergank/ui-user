@@ -97,6 +97,21 @@ landing hace fetch)."
 `delivery_strategy=single-pr` (decisión del owner, 2026-10-18). Slice de esta feature: 1 commit
 por tarea, 6 en total, ~1.400 líneas autoradas. Nada pusheado todavía.
 
+## Corrections (review findings)
+
+Los tres hallazgos del review, resueltos en un solo commit de corrección:
+
+- **`R2-unnecessary-cast-in-nav-callback`** — arreglado. `renderNav` tipa su traductor como
+  `TFunction<"landing">`, así que el call site pasa `t` directo y el cast desaparece.
+- **`R3-e2e-literal-coupling`** — arreglado. El spec de Playwright importa `en` (el bundle de
+  referencia) y deriva título, labels de nav, skip link y el template del anuncio, en vez de
+  retipear el copy: un cambio de copy ya no rompe el e2e.
+- **`R3-doc-ref-unverified`** — verificado, no requería cambio. El snippet de
+  `docs/error-handling.md` coincide literalmente con `login-page.integration.test.tsx:105`
+  (`server.use(http.post(LOGIN_URL, () => apiFailure(401, "UA-AUTH-002")))`), y las cuatro
+  afirmaciones del párrafo existen en ese archivo: alert con foco (l. 112), 429 con submit
+  deshabilitado (l. 140), `aria-describedby` con foco en el campo (l. 154-155).
+
 ## Log
 
 **L1 — user request (verbatim):**

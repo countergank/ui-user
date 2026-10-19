@@ -1,3 +1,4 @@
+import type { TFunction } from "i18next";
 import { type ReactNode, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
@@ -37,11 +38,7 @@ function navLinkClass({ isActive }: { isActive: boolean }): string {
   }`;
 }
 
-function renderNav(
-  items: PublicNavItem[],
-  ariaLabel: string,
-  t: (key: string) => string,
-): ReactNode {
+function renderNav(items: PublicNavItem[], ariaLabel: string, t: TFunction<"landing">): ReactNode {
   return (
     <nav aria-label={ariaLabel}>
       <ul className="flex items-center gap-1">
@@ -79,7 +76,7 @@ export function PublicLayout() {
             {t("title")}
           </Link>
           <div className="flex items-center gap-3">
-            {renderNav(PUBLIC_NAV, t("nav.label"), (key) => t(key as "nav.home" | "nav.about"))}
+            {renderNav(PUBLIC_NAV, t("nav.label"), t)}
             <Link
               to="/login"
               className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"

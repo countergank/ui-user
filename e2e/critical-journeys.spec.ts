@@ -6,10 +6,19 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import type { Locator, Page } from "@playwright/test";
 
-const SITE_TITLE = "Countergank User";
+// The expected copy is derived from the English bundle, the reference language, instead of
+// being retyped here: a copy change must not turn into a red e2e run.
+import { en } from "../src/lib/i18n/locales/en";
 
-const skipLink = (page: Page) => page.getByRole("link", { name: "Skip to main content" });
-const publicNav = (page: Page) => page.getByRole("navigation", { name: "Public navigation" });
+const SITE_TITLE = en.landing.title;
+const ABOUT_TITLE = en.landing.about.title;
+const skipLinkLabel = en.common.shell.skipLink;
+const publicNavLabel = en.landing.nav.label;
+const loadedAnnouncement = (title: string) =>
+  en.common.shell.routeAnnouncer.loaded.replace("{{title}}", title);
+
+const skipLink = (page: Page) => page.getByRole("link", { name: skipLinkLabel });
+const publicNav = (page: Page) => page.getByRole("navigation", { name: publicNavLabel });
 
 // Headless Chromium cannot report window focus, so Playwright's toBeFocused()
 // always times out as "inactive" here. Asserting real focus behaviour instead:
@@ -73,13 +82,13 @@ test.describe("public surface journeys", () => {
     await page.keyboard.press("Tab");
     await expectFocused(page.getByRole("banner").getByRole("link", { name: SITE_TITLE }));
     await page.keyboard.press("Tab");
-    await expectFocused(publicNav(page).getByRole("link", { name: "Home" }));
+    await expectFocused(publicNav(page).getByRole("link", { name: en.landing.nav.home }));
     await page.keyboard.press("Tab");
-    await expectFocused(publicNav(page).getByRole("link", { name: "About" }));
+    await expectFocused(publicNav(page).getByRole("link", { name: en.landing.nav.about }));
 
     await page.keyboard.press("Enter");
     await expect(page).toHaveURL(/\/about/);
-    await expect(page.getByRole("heading", { level: 1, name: "About" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: ABOUT_TITLE })).toBeVisible();
     await expectFocused(page.getByRole("main"));
   });
 
@@ -87,10 +96,10 @@ test.describe("public surface journeys", () => {
     await page.goto("/");
 
     const status = page.getByRole("status");
-    await expect(status).toHaveText(`${SITE_TITLE} page loaded`);
+    await expect(status).toHaveText(loadedAnnouncement(SITE_TITLE));
 
-    await publicNav(page).getByRole("link", { name: "About" }).click();
-    await expect(status).toHaveText("About page loaded");
+    await publicNav(page).getByRole("link", { name: en.landing.nav.about }).click();
+    await expect(status).toHaveText(loadedAnnouncement(ABOUT_TITLE));
   });
 });
 
@@ -128,8 +137,8 @@ test.describe("automated accessibility audits", () => {
     const landingResults = await new AxeBuilder({ page }).analyze();
     expect(landingResults.violations).toEqual([]);
 
-    await publicNav(page).getByRole("link", { name: "About" }).click();
-    await expect(page.getByRole("heading", { level: 1, name: "About" })).toBeVisible();
+    await publicNav(page).getByRole("link", { name: en.landing.nav.about }).click();
+    await expect(page.getByRole("heading", { level: 1, name: ABOUT_TITLE })).toBeVisible();
     const aboutResults = await new AxeBuilder({ page }).analyze();
     expect(aboutResults.violations).toEqual([]);
   });
