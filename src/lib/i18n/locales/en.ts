@@ -82,6 +82,19 @@ export const en = {
     },
     about: {
       title: "About",
+      standards: {
+        title: "How this project is built",
+        body: "The repository carries the rules it follows. Read them before contributing.",
+        adr: "Architecture decisions",
+        patterns: "Component patterns",
+        accessibility: "Accessibility",
+        testing: "Testing",
+      },
+      contribute: {
+        title: "Contributing",
+        body: "Issues and pull requests are welcome. The branch flow, commit conventions and review gate are documented in the repository.",
+        cta: "Open an issue",
+      },
       body: "Countergank User is part of the countergank open-source stack: the frontend of the user API, built from the standard frontend mould (React 19, Vite, strict TypeScript). This repository also holds the standards the project follows — ADRs, component patterns, accessibility, error handling and testing rules — under docs/.",
     },
     what: {

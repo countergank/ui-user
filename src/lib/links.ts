@@ -9,3 +9,8 @@ export const repositoryUrl = "https://github.com/countergank/ui-user";
 export const docsUrl = `${repositoryUrl}/tree/develop/docs`;
 export const licenseUrl = `${repositoryUrl}/blob/develop/LICENSE`;
 export const issuesUrl = `${repositoryUrl}/issues`;
+
+/** A file inside the standards library (`docs/`), so the about page can link to each one. */
+export function docUrl(file: string): string {
+  return `${docsUrl}/${file}`;
+}

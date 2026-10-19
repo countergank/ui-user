@@ -59,4 +59,21 @@ describe("routes", () => {
     expect(screen.getByRole("heading", { level: 1, name: tLanding("about.title") })).toBeVisible();
     expect(screen.getByText(tLanding("about.body"))).toBeVisible();
   });
+
+  it("links the about page to the standards it follows", () => {
+    const tLanding = i18n.getFixedT(null, "landing");
+
+    render(<AboutRoute />);
+
+    for (const [key, file] of [
+      ["adr", "adr.md"],
+      ["patterns", "component-patterns.md"],
+      ["accessibility", "accessibility.md"],
+      ["testing", "testing.md"],
+    ] as const) {
+      expect(
+        screen.getByRole("link", { name: tLanding(`about.standards.${key}`) }),
+      ).toHaveAttribute("href", expect.stringContaining(`/docs/${file}`));
+    }
+  });
 });
