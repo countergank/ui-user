@@ -24,6 +24,11 @@ export default defineConfig({
     setupFiles: ["./src/test/setup.ts"],
     // Include pattern: colocated .test.ts/.test.tsx files (vitest-002 colocation)
     include: ["src/**/*.{test,spec}.{ts,tsx}"],
+    // The suite is ~60 jsdom files with axe and MSW, plus coverage instrumentation. Under
+    // host load (load average 11-13) the 5s default was timing out trivial DOM tests that
+    // pass in isolation, so the gate failed for reasons unrelated to the code under test.
+    // 20s matches the budget `src/main.test.tsx` already documents for the same reason.
+    testTimeout: 20_000,
     // Coverage configuration (TEST-1, vitest-003/coverage thresholds)
     coverage: {
       provider: "v8",

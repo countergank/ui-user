@@ -51,9 +51,9 @@ errors), `src/routes/` (lazy route modules).
 capability means adding one folder. See [folder-structure.md](folder-structure.md) for the
 full tree.
 
-**Example**: the sample `home` feature at `src/features/home/` owns `home-page.tsx` (the
-container), `components/hero.tsx` and `components/feature-cards.tsx` (presentational),
-`hooks/use-greeting.ts`, and `api.ts`.
+**Example**: the `auth` feature at `src/features/auth/` owns `login-page.tsx` and
+`login-form.tsx` (containers), `hooks/use-login.ts`, the pure `login-schema.ts` and
+`login-errors.ts`, and `api.ts`. The `landing` feature follows the same shape.
 
 ## ADR-2: shadcn/ui + Tailwind + Radix for components
 

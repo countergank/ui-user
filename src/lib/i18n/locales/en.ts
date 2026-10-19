@@ -25,6 +25,9 @@ export const en = {
         home: "Home",
         about: "About",
       },
+      language: {
+        switch: "Change language",
+      },
       theme: {
         switchTo: "Switch to {{mode}}",
         system: "Automatic",
@@ -36,52 +39,6 @@ export const en = {
       routeAnnouncer: {
         loaded: "{{title}} page loaded",
       },
-    },
-    home: {
-      loading: "Loading highlights…",
-      error: {
-        highlightsUnavailable: "Could not load template highlights",
-        demoFailure: "Demo failure",
-      },
-      greeting: {
-        morning: "Good morning",
-        afternoon: "Good afternoon",
-        evening: "Good evening",
-      },
-      hero: {
-        title: "{{greeting}}! This is the standard frontend template",
-        subtitle:
-          "A screaming, feature-based React 19 architecture with an accessible shell, server state, and typed error handling.",
-      },
-      environment: {
-        modeLabel: "Environment:",
-        apiBaseLabel: "API base:",
-      },
-      highlights: {
-        listLabel: "Template highlights",
-        items: {
-          shell: {
-            title: "Accessible shell",
-            description:
-              "Landmarks, skip link, route announcer, and focus management baked into the layout.",
-          },
-          data: {
-            title: "Server state",
-            description:
-              "TanStack Query wired through a QueryClientProvider with typed hooks and errors.",
-          },
-          routing: {
-            title: "Lazy routes",
-            description: "React Router with per-route code splitting and Suspense boundaries.",
-          },
-        },
-      },
-    },
-    about: {
-      heading: "About",
-      title: "Standard Frontend Template",
-      description:
-        "A feature-based (screaming) React 19 architecture with an accessible shell, typed error handling, TanStack Query for server state, and lazy React Router routes.",
     },
     error: {
       genericTitle: "Something went wrong",
@@ -106,6 +63,87 @@ export const en = {
         next: "Next",
         morePages: "More pages",
       },
+    },
+  },
+  landing: {
+    title: "Countergank User",
+    subtitle:
+      "An open-source console to manage the users, roles and permissions of a countergank API.",
+    nav: {
+      label: "Public navigation",
+      home: "Home",
+      about: "About",
+      signIn: "Sign in",
+    },
+    footer: {
+      docs: "Documentation",
+      repository: "Repository",
+      license: "License",
+    },
+    about: {
+      title: "About",
+      standards: {
+        title: "How this project is built",
+        body: "The repository carries the rules it follows. Read them before contributing.",
+        adr: "Architecture decisions",
+        patterns: "Component patterns",
+        accessibility: "Accessibility",
+        testing: "Testing",
+      },
+      contribute: {
+        title: "Contributing",
+        body: "Issues and pull requests are welcome. The branch flow, commit conventions and review gate are documented in the repository.",
+        cta: "Open an issue",
+      },
+      body: "Countergank User is part of the countergank open-source stack: the frontend of the user API, built from the standard frontend mould (React 19, Vite, strict TypeScript). This repository also holds the standards the project follows — ADRs, component patterns, accessibility, error handling and testing rules — under docs/.",
+    },
+    what: {
+      title: "What this is",
+      body: "Countergank User is the open-source management console for the countergank user API. It is a React single-page app: it talks to api-user over HTTP and owns no other backend of its own.",
+    },
+    service: {
+      title: "What it provides",
+      body: "Sign in against the API, then browse and manage users, roles and permissions and review the audit trail — the day-to-day surface of user administration, without building one from scratch.",
+    },
+    features: {
+      title: "What you get",
+      items: {
+        session: {
+          title: "Session that renews itself",
+          description:
+            "Access and refresh tokens, proactive renewal before expiry, a single refresh for concurrent 401s, and a local-first logout.",
+        },
+        accessibility: {
+          title: "Accessibility as a floor",
+          description:
+            "Landmarks, skip link, route announcements, focus management and axe in the test suite.",
+        },
+        languages: {
+          title: "Three languages",
+          description:
+            "English, Spanish and Brazilian Portuguese, with key parity enforced by the type system and the tests.",
+        },
+        typed: {
+          title: "Typed end to end",
+          description:
+            "Strict TypeScript, a typed error envelope from the API, and a runtime gate that fails fast on missing configuration.",
+        },
+      },
+    },
+    hero: {
+      ctaRepository: "View the repository",
+      ctaDocs: "Read the docs",
+    },
+    quickstart: {
+      title: "Run it locally",
+      body: "The backend ships with its own Docker stack. Start it, then run the console against it:",
+      command: "docker compose up",
+      note: "The console is served at localhost:3000 and the API answers at the URL in VITE_API_BASE_URL.",
+      terminalLabel: "Shell command",
+    },
+    stack: {
+      title: "Stack",
+      body: "Node 22, Vite 6, React 19, strict TypeScript, Tailwind + shadcn/ui, TanStack Query 5, React Router 7, Vitest + Testing Library + Playwright, Biome + ESLint.",
     },
   },
   auth: {
@@ -136,3 +174,6 @@ export type TranslationTree = typeof en.common;
 
 /** Shape every `auth` bundle must satisfy. */
 export type AuthTranslationTree = typeof en.auth;
+
+/** Shape every `landing` bundle must satisfy. */
+export type LandingTranslationTree = typeof en.landing;

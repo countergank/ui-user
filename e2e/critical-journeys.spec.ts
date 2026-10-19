@@ -1,14 +1,24 @@
 // e2e/critical-journeys.spec.ts
-// Critical user journeys for the standard frontend template (TEST-4):
-// keyboard navigation (skip link, landmarks), route announcements, data-failure
-// recovery, prefers-reduced-motion handling, and automated axe scans.
+// Critical user journeys of the public surface (COU-310, ADR-13): landmarks, keyboard
+// navigation through the skip link and the site navigation, route announcements,
+// reduced-motion handling and axe scans.
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import type { Locator, Page } from "@playwright/test";
 
-const skipLink = () => (page: Page) =>
-  page.getByRole("link", { name: "Skip to main content" });
-const mainNav = (page: Page) => page.getByRole("navigation", { name: "Main navigation" });
+// The expected copy is derived from the English bundle, the reference language, instead of
+// being retyped here: a copy change must not turn into a red e2e run.
+import { en } from "../src/lib/i18n/locales/en";
+
+const SITE_TITLE = en.landing.title;
+const ABOUT_TITLE = en.landing.about.title;
+const skipLinkLabel = en.common.shell.skipLink;
+const publicNavLabel = en.landing.nav.label;
+const loadedAnnouncement = (title: string) =>
+  en.common.shell.routeAnnouncer.loaded.replace("{{title}}", title);
+
+const skipLink = (page: Page) => page.getByRole("link", { name: skipLinkLabel });
+const publicNav = (page: Page) => page.getByRole("navigation", { name: publicNavLabel });
 
 // Headless Chromium cannot report window focus, so Playwright's toBeFocused()
 // always times out as "inactive" here. Asserting real focus behaviour instead:
@@ -38,22 +48,24 @@ async function focusDocumentHeadless(page: Page) {
   });
 }
 
-test.describe("shell and keyboard journeys", () => {
+test.describe("public surface journeys", () => {
   test("declares the page language and exposes the expected landmarks", async ({ page }) => {
     await page.goto("/");
 
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
     await expect(page.getByRole("banner")).toBeVisible();
-    await expect(page.getByRole("navigation", { name: "Main navigation" })).toBeVisible();
+    await expect(publicNav(page)).toBeVisible();
     await expect(page.getByRole("main")).toBeVisible();
     await expect(page.getByRole("contentinfo")).toBeVisible();
+    // The informational home explains how to run the project.
+    await expect(page.getByText("docker compose up")).toBeVisible();
   });
 
   test("skip link is the first Tab stop and jumps focus to main content", async ({ page }) => {
     await focusDocumentHeadless(page);
 
     await page.keyboard.press("Tab");
-    await expectFocused(skipLink()(page));
+    await expectFocused(skipLink(page));
 
     await page.keyboard.press("Enter");
     await expect(page).toHaveURL(/#main-content/);
@@ -64,15 +76,19 @@ test.describe("shell and keyboard journeys", () => {
     await focusDocumentHeadless(page);
 
     await page.keyboard.press("Tab");
-    await expectFocused(skipLink()(page));
+    await expectFocused(skipLink(page));
+    // The public header starts with the brand link back to the informational home, so it
+    // is the second Tab stop — the console shell used a non-focusable label instead.
     await page.keyboard.press("Tab");
-    await expectFocused(mainNav(page).getByRole("link", { name: "Home" }));
+    await expectFocused(page.getByRole("banner").getByRole("link", { name: SITE_TITLE }));
     await page.keyboard.press("Tab");
-    await expectFocused(mainNav(page).getByRole("link", { name: "About" }));
+    await expectFocused(publicNav(page).getByRole("link", { name: en.landing.nav.home }));
+    await page.keyboard.press("Tab");
+    await expectFocused(publicNav(page).getByRole("link", { name: en.landing.nav.about }));
 
     await page.keyboard.press("Enter");
     await expect(page).toHaveURL(/\/about/);
-    await expect(page.getByRole("heading", { name: "About" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: ABOUT_TITLE })).toBeVisible();
     await expectFocused(page.getByRole("main"));
   });
 
@@ -80,14 +96,30 @@ test.describe("shell and keyboard journeys", () => {
     await page.goto("/");
 
     const status = page.getByRole("status");
-    await expect(status).toHaveText("Home page loaded");
+    await expect(status).toHaveText(loadedAnnouncement(SITE_TITLE));
 
-    await mainNav(page).getByRole("link", { name: "About" }).click();
-    await expect(status).toHaveText("About page loaded");
+    await publicNav(page).getByRole("link", { name: en.landing.nav.about }).click();
+    await expect(status).toHaveText(loadedAnnouncement(ABOUT_TITLE));
   });
 });
 
-test.describe("motion and failure journeys", () => {
+test.describe("layout journey", () => {
+  test("the footer sits at the bottom of a short page", async ({ page }) => {
+    await page.goto("/about");
+    await expect(page.getByRole("heading", { level: 1, name: ABOUT_TITLE })).toBeVisible();
+
+    // Real layout assertion: jsdom cannot do it, and this is the defect the owner reported.
+    const gap = await page.evaluate(() => {
+      const footer = document.querySelector("footer");
+      if (!footer) throw new Error("the page has no footer");
+      return Math.round(window.innerHeight - footer.getBoundingClientRect().bottom);
+    });
+
+    expect(Math.abs(gap)).toBeLessThanOrEqual(1);
+  });
+});
+
+test.describe("motion journey", () => {
   test("honors prefers-reduced-motion by disabling transitions", async ({ page }) => {
     await page.goto("/");
 
@@ -112,37 +144,17 @@ test.describe("motion and failure journeys", () => {
     await page.locator(".skip-link").waitFor();
     expect(await transitionMs()).toBeLessThanOrEqual(1);
   });
-
-  test("a data failure renders an accessible error and recovers on retry", async ({ page }) => {
-    await page.goto("/#fail");
-
-    const alert = page.getByRole("alert");
-    await expect(alert).toContainText("Could not load template highlights");
-
-    // Remove the failure cause, then keyboard-activate the retry action.
-    await page.evaluate(() => {
-      window.location.hash = "";
-    });
-    await alert.getByRole("button", { name: "Try again" }).focus();
-    await page.keyboard.press("Enter");
-
-    await expect(
-      page.getByRole("heading", { name: /standard frontend template/i }),
-    ).toBeVisible();
-  });
 });
 
 test.describe("automated accessibility audits", () => {
-  test("home and about pages pass axe scans in a real browser", async ({ page }) => {
+  test("landing and about pages pass axe scans in a real browser", async ({ page }) => {
     await page.goto("/");
-    await expect(
-      page.getByRole("heading", { name: /standard frontend template/i }),
-    ).toBeVisible();
-    const homeResults = await new AxeBuilder({ page }).analyze();
-    expect(homeResults.violations).toEqual([]);
+    await expect(page.getByRole("heading", { level: 1, name: SITE_TITLE })).toBeVisible();
+    const landingResults = await new AxeBuilder({ page }).analyze();
+    expect(landingResults.violations).toEqual([]);
 
-    await mainNav(page).getByRole("link", { name: "About" }).click();
-    await expect(page.getByRole("heading", { name: "About" })).toBeVisible();
+    await publicNav(page).getByRole("link", { name: en.landing.nav.about }).click();
+    await expect(page.getByRole("heading", { level: 1, name: ABOUT_TITLE })).toBeVisible();
     const aboutResults = await new AxeBuilder({ page }).analyze();
     expect(aboutResults.violations).toEqual([]);
   });

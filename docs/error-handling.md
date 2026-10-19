@@ -63,35 +63,35 @@ One accessible presentation, announced to assistive technology and reused everyw
 </section>
 ```
 
-## 4. TanStack Query error paths — `src/features/home`
+## 4. Mutation error paths — `src/features/auth`
 
-Server-data errors are handled in the container via Query's state machine
-(`isPending` / `isError` / `data`), and `refetch` powers the retry:
+A failed mutation is the same typed envelope as any other request (`AppError` with `code` and
+`status`), and the container is where it becomes copy. `login-errors.ts` keeps that decision pure
+and testable, and `login-form.tsx` renders it once, under the form:
 
 ```tsx
-const { data, isPending, isError, error, refetch } = useHighlights();
-
-if (isError) {
-  return (
-    <ErrorView title="Could not load template highlights" message={error.message}
-      onRetry={() => void refetch()} />
-  );
-}
+const errorKey = resolveLoginError(loginMutation.error);
+const rateLimited = errorKey === "login.errors.rateLimited";
+const errorMessage =
+  errorKey !== null ? t(errorKey) : loginMutation.isError ? tCommon("error.genericMessage") : null;
 ```
 
-## 5. The demo failure path
+Query errors keep the same shape (`isPending` / `isError` / `refetch` in the container, `ErrorView`
+for the retry surface), which is what the route error boundary and `ErrorView` continue to cover.
 
-`src/features/home/api.ts` includes a deliberate failure hook — navigating to `/#fail`
-rejects with a typed error — so the whole path is exercised in `e2e/critical-journeys.spec.ts`:
+## 5. The real failure path is tested with MSW
+
+There is no demo failure hook anymore: the failure paths that matter are the API's own
+envelopes, and they are exercised against the real client in
+`src/features/auth/login-page.integration.test.tsx` with MSW:
 
 ```ts
-if (typeof window !== "undefined" && window.location.hash === "#fail") {
-  reject(new AppError("Demo failure", { code: "HIGHLIGHTS_UNAVAILABLE" }));
-}
+server.use(http.post(LOGIN_URL, () => apiFailure(401, "UA-AUTH-002")));
 ```
 
-The e2e test asserts the `role="alert"` with "Could not load template highlights", removes
-the failure cause, keyboard-activates **Try again**, and expects the page to recover.
+The suite asserts the `role="alert"` under the form, the field-level messages with their
+`aria-describedby`, the focus on the first error, and that a 429 leaves the submit disabled.
+Causality is honest: the test fails if the mapping, the transport or the alert regress.
 
 ## Rule of thumb checklist
 

@@ -142,3 +142,9 @@ test-results/
 playwright-report/
 blob-report/
 playwright/.cache/
+
+# Large local brand assets (COU-310). The colour mark shipped to the app is the derived,
+# trimmed and transparent `public/logo-countergank-color.png` (95 KB); these two are the
+# designers' originals and stay out of the repository.
+public/banner.png
+public/logo.png

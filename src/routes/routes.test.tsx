@@ -9,16 +9,19 @@ import { describe, expect, it } from "vitest";
 import { i18n } from "@/lib/i18n";
 
 import { Component as AboutRoute } from "./about-route";
-import { Component as HomeRoute } from "./home-route";
 import { router } from "./index";
+import { Component as LandingRoute } from "./landing-route";
 import { Component as LoginRoute } from "./login-route";
 
 describe("routes", () => {
-  it("registers the app shell and the login page as sibling top-level routes", () => {
+  it("registers the public layout for the informational pages, and login as a sibling", () => {
+    // ADR-13: `/` and `/about` are the public site; `/login` keeps its own layout
+    // because a gate with site chrome above it is not what COU-281 approved.
     expect(router.routes.map((route) => route.path)).toEqual(["/", "/login"]);
-    // The login gate has neither the shell's navigation nor its skip link, so it cannot
-    // be a child of the shell route.
-    expect(router.routes[0].children).toHaveLength(2);
+    expect(router.routes[0].children?.map((route) => route.path ?? "index")).toEqual([
+      "index",
+      "about",
+    ]);
   });
 
   it("renders the lazy login route component", () => {
@@ -36,25 +39,41 @@ describe("routes", () => {
     );
   });
 
-  it("renders the lazy home route component", async () => {
-    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  it("renders the lazy landing route component outside the console shell", () => {
     render(
-      <QueryClientProvider client={client}>
-        <HomeRoute />
-      </QueryClientProvider>,
+      <MemoryRouter>
+        <LandingRoute />
+      </MemoryRouter>,
     );
 
-    // The hero title interpolates a time-based greeting; assert the resource's
-    // static portion so the expectation stays derived from translations.
-    const heroTitleTail = i18n.t("home.hero.title", { greeting: "" }).replace(/^!\s*/, "");
-    const heading = await screen.findByRole("heading", { level: 1 });
-    expect(heading).toHaveTextContent(heroTitleTail);
+    const heading = screen.getByRole("heading", { level: 1 });
+    expect(heading).toHaveTextContent(i18n.getFixedT(null, "landing")("title"));
+    expect(screen.queryByRole("navigation", { name: i18n.t("shell.navigation.main") })).toBeNull();
   });
 
-  it("renders the lazy about route component", () => {
+  it("renders the lazy about route component as a project page", () => {
+    const tLanding = i18n.getFixedT(null, "landing");
+
     render(<AboutRoute />);
-    expect(screen.getByRole("heading", { name: i18n.t("about.heading") })).toBeInTheDocument();
-    expect(screen.getByText(i18n.t("about.title"))).toBeInTheDocument();
-    expect(screen.getByText(i18n.t("about.description"))).toBeInTheDocument();
+
+    expect(screen.getByRole("heading", { level: 1, name: tLanding("about.title") })).toBeVisible();
+    expect(screen.getByText(tLanding("about.body"))).toBeVisible();
+  });
+
+  it("links the about page to the standards it follows", () => {
+    const tLanding = i18n.getFixedT(null, "landing");
+
+    render(<AboutRoute />);
+
+    for (const [key, file] of [
+      ["adr", "adr.md"],
+      ["patterns", "component-patterns.md"],
+      ["accessibility", "accessibility.md"],
+      ["testing", "testing.md"],
+    ] as const) {
+      expect(
+        screen.getByRole("link", { name: tLanding(`about.standards.${key}`) }),
+      ).toHaveAttribute("href", expect.stringContaining(`/docs/${file}`));
+    }
   });
 });

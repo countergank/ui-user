@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 
-import { AppShell } from "@/app-shell";
 import { RouteErrorBoundary } from "@/components/error/route-error-boundary";
+import { PublicLayout } from "@/public-layout";
 
 /**
  * App router (ADR-4 / STACK-7).
@@ -11,11 +11,14 @@ import { RouteErrorBoundary } from "@/components/error/route-error-boundary";
  */
 export const router = createBrowserRouter([
   {
+    // ADR-13: `/` and `/about` are the public site, with their own layout. The console
+    // shell (`AppShell`) moves under `/app/*` in COU-278, which is why it has no route
+    // here for now.
     path: "/",
-    Component: AppShell,
+    Component: PublicLayout,
     errorElement: <RouteErrorBoundary />,
     children: [
-      { index: true, lazy: () => import("./home-route") },
+      { index: true, lazy: () => import("./landing-route") },
       { path: "about", lazy: () => import("./about-route") },
     ],
   },
