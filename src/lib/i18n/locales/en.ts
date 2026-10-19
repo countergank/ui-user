@@ -117,11 +117,16 @@ export const en = {
         },
       },
     },
+    hero: {
+      ctaRepository: "View the repository",
+      ctaDocs: "Read the docs",
+    },
     quickstart: {
       title: "Run it locally",
       body: "The backend ships with its own Docker stack. Start it, then run the console against it:",
       command: "docker compose up",
       note: "The console is served at localhost:3000 and the API answers at the URL in VITE_API_BASE_URL.",
+      terminalLabel: "Shell command",
     },
     stack: {
       title: "Stack",

@@ -8,6 +8,7 @@ import { describe, expect, it, vi } from "vitest";
 import { axe } from "vitest-axe";
 
 import { i18n } from "@/lib/i18n";
+import { docsUrl, repositoryUrl } from "@/lib/links";
 
 import { LandingPage } from "./landing-page";
 
@@ -52,6 +53,17 @@ describe("landing page", () => {
     expect(screen.getByText(t("quickstart.command"))).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: t("stack.title") })).toBeInTheDocument();
     expect(screen.getByText(t("stack.body"))).toBeInTheDocument();
+    expect(screen.getByText("React 19")).toBeInTheDocument();
+  });
+
+  it("sends the visitor to the repository and the docs from the hero", () => {
+    render(<LandingPage />);
+
+    expect(screen.getByRole("link", { name: t("hero.ctaRepository") })).toHaveAttribute(
+      "href",
+      repositoryUrl,
+    );
+    expect(screen.getByRole("link", { name: t("hero.ctaDocs") })).toHaveAttribute("href", docsUrl);
   });
 
   it("never calls the API from a public surface", () => {
