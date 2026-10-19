@@ -4,7 +4,7 @@
 // same accessibility floor — one skip link, one main landmark, a named navigation and an
 // announced route change. These assertions are the contract the e2e suite repeats in a
 // real browser.
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import { axe } from "vitest-axe";
@@ -72,6 +72,33 @@ describe("public layout", () => {
         tCommon("shell.routeAnnouncer.loaded", { title: t("about.title") }),
       );
     });
+  });
+
+  it("shows the Countergank mark next to the title in the brand link", () => {
+    const { container } = renderAt("/");
+
+    const brand = within(screen.getByRole("banner")).getByRole("link", { name: t("title") });
+    const mark = brand.querySelector("svg");
+
+    expect(mark).not.toBeNull();
+    expect(mark).toHaveAttribute("aria-hidden", "true");
+    // The artwork is inlined so it can inherit the foreground token in both themes.
+    expect(mark).toHaveAttribute("fill", "currentColor");
+    expect(container.querySelector('img[src*="logo"]')).toBeNull();
+  });
+
+  it("stacks the landmarks in a full-height column so the footer sits at the page bottom", () => {
+    renderAt("/about");
+
+    // jsdom has no layout engine, so the contract is the structure: one flex column that
+    // fills the viewport, with the main landmark growing and the footer after it.
+    const main = screen.getByRole("main");
+    const column = main.parentElement;
+
+    expect(column).not.toBeNull();
+    expect(column).toHaveClass("flex", "min-h-screen", "flex-col");
+    expect(main).toHaveClass("flex-1");
+    expect(screen.getByRole("contentinfo")).toHaveClass("mt-auto");
   });
 
   it("has no axe violations", async () => {

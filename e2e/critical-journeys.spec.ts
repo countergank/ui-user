@@ -103,6 +103,22 @@ test.describe("public surface journeys", () => {
   });
 });
 
+test.describe("layout journey", () => {
+  test("the footer sits at the bottom of a short page", async ({ page }) => {
+    await page.goto("/about");
+    await expect(page.getByRole("heading", { level: 1, name: ABOUT_TITLE })).toBeVisible();
+
+    // Real layout assertion: jsdom cannot do it, and this is the defect the owner reported.
+    const gap = await page.evaluate(() => {
+      const footer = document.querySelector("footer");
+      if (!footer) throw new Error("the page has no footer");
+      return Math.round(window.innerHeight - footer.getBoundingClientRect().bottom);
+    });
+
+    expect(Math.abs(gap)).toBeLessThanOrEqual(1);
+  });
+});
+
 test.describe("motion journey", () => {
   test("honors prefers-reduced-motion by disabling transitions", async ({ page }) => {
     await page.goto("/");

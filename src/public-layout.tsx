@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 
 import { RouteAnnouncer } from "@/components/a11y/route-announcer";
+import { CountergankLogo } from "@/components/branding/countergank-logo";
 import { ThemeSwitcher } from "@/components/theme/theme-switcher";
 import { useFocusManagement } from "@/hooks/use-focus-management";
 
@@ -63,7 +64,9 @@ export function PublicLayout() {
   const title = t(PAGE_TITLE_KEYS[location.pathname] ?? "title");
 
   return (
-    <>
+    // One full-height flex column: `<main>` grows and the footer follows it, so a short
+    // page (about) does not leave the footer glued to the last paragraph.
+    <div className="flex min-h-screen flex-col">
       <a href="#main-content" className="skip-link">
         {tCommon("shell.skipLink")}
       </a>
@@ -72,7 +75,10 @@ export function PublicLayout() {
 
       <header className="border-b bg-background">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
-          <Link to="/" className="text-sm font-semibold">
+          {/* The mark follows the foreground token, so it reads on both themes; the link
+              carries the accessible name and the mark stays decorative. */}
+          <Link to="/" className="flex items-center gap-2 text-sm font-semibold">
+            <CountergankLogo className="h-9 w-auto" />
             {t("title")}
           </Link>
           <div className="flex items-center gap-3">
@@ -107,7 +113,7 @@ export function PublicLayout() {
         </Suspense>
       </main>
 
-      <footer className="border-t bg-background">
+      <footer className="mt-auto border-t bg-background">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-6 text-sm text-muted-foreground">
           <span>{t("title")}</span>
           <nav aria-label={tCommon("shell.navigation.footer")}>
@@ -140,6 +146,6 @@ export function PublicLayout() {
           </nav>
         </div>
       </footer>
-    </>
+    </div>
   );
 }

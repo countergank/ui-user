@@ -63,7 +63,9 @@ export function AppShell() {
   const routeKey = location.pathname;
 
   return (
-    <>
+    // Same full-height column as the public layout: the console footer must also sit at the
+    // bottom on a short page, not hug the last card.
+    <div className="flex min-h-screen flex-col">
       {/* First focusable element: skip link (a11y skip-links rule) */}
       <a href="#main-content" className="skip-link">
         {t("shell.skipLink")}
@@ -104,7 +106,7 @@ export function AppShell() {
         </Suspense>
       </main>
 
-      <footer className="border-t bg-background">
+      <footer className="mt-auto border-t bg-background">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-6 text-sm text-muted-foreground">
           <span>{t("shell.footerLabel")}</span>
           <nav aria-label={t("shell.navigation.footer")}>
@@ -126,6 +128,6 @@ export function AppShell() {
           </nav>
         </div>
       </footer>
-    </>
+    </div>
   );
 }
