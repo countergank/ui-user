@@ -266,6 +266,65 @@ three bundles must be updated together; a string cannot be added to English alon
 `pnpm typecheck` reports `Property 'cta' is missing in type ...` and
 `pnpm test -- src/lib/i18n/parity.test.ts` reports the missing key path.
 
+## ADR-13: Public informational surfaces + gated management console
+
+**Context**: COU-281 delivered the `/login` screen and the session runtime, but the app still
+has no route guard (U05, declared out of scope in COU-273 and COU-281), so an anonymous visitor
+lands on `/` and can browse every route. That is not a design statement: the template's home,
+`about` and shell were demo content, and nobody had decided what is public and what is not. The
+project's stated purpose settles it: an **open-source dashboard for managing a
+`countergank/api-user` deployment**, with an informational home that explains what the project
+is and what service it provides, and a management console behind authentication. It is not a
+commercial product, so there is no CMS, no blog and no growth funnel to justify a marketing
+stack. The decision has to come before the routes are written, because it fixes the router
+shape, the post-login destination and where the shell lives.
+
+Two sources of evidence shape the decision. OWASP ASVS 5.0 **V8.3.1** requires authorization to
+be enforced "at a trusted service layer" and forbids relying on "controls that an untrusted
+consumer could manipulate, such as client-side JavaScript": a route guard is UX, and `api-user`
+stays the authority. And the architectural pattern of comparable products is two surfaces on one
+deployable — `supabase.com/` is the public home while `/dashboard` is the gated product.
+
+**Decision**: the app has **two surfaces, one repository, one deployable**.
+
+- **Public surface** — no console shell, own layout, no session required:
+  - `/` — informational home: what the project is, the service it provides, feature list,
+    quickstart (`docker compose up`), stack, and links to repository, docs and license.
+  - `/about` — kept public, the project/organization page.
+  - `/login` — the gate delivered by COU-281, unchanged in placement.
+- **Console surface** — everything under `/app/*`, gated by session:
+  - `/app` (summary), `/app/users`, `/app/roles`, `/app/permissions`, `/app/audit`,
+    `/app/settings`.
+  - `AppShell` becomes the **console layout only**: navigation, skip link, route announcer,
+    focus management, session-expiry bridge and footer belong to the authenticated area, not to
+    the public pages. Route-level layout split, not a conditional inside one component.
+- **Post-login destination is `/app`.** `DEFAULT_REDIRECT` in
+  `src/features/auth/safe-redirect.ts` changes from `/` to `/app`; the allowlist itself
+  (same-origin absolute path, no protocol-relative form, no backslash, no control characters)
+  stays as shipped.
+- **Authorization stays server-side.** `/app/*` is gated for UX and deep-link preservation; every
+  request is still authorized by `api-user` (ASVS V8.3.1). The UI never decides what a user may
+  read or write.
+- **Session is validated at boot.** A persisted session is confirmed with `GET /auth/me` before
+  the console trusts it, and the proactive refresh is (re)scheduled for the hydrated token — today
+  it is only scheduled on a token *change*, so a reload with a live session skips it.
+- **The informational home is static content.** No live API data on public pages: a public endpoint
+  returning aggregate product numbers would be new attack surface and is not needed to explain the
+  project. Strings live in i18n bundles with mandatory `en`/`es`/`pt` parity (ADR-12).
+- **No prerender or SSR in this decision.** Because the project is not commercial, SEO is not a
+  driver; if it becomes one, prerendering the public routes is an isolated later change and does
+  not require revisiting the surface split.
+
+**Consequences**: the router gains a second top-level layout, so `src/routes/routes.test.tsx`
+asserts the public/console split instead of the current single-shell tree; a guard test pins that
+an anonymous or expired session lands on `/login?redirect=…` and returns afterwards; the landing
+gets its own tests (structure, copy from resources, axe). Existing deep links to the template's
+`/` change meaning — the template home is retired and `about` moves out of the shell — which is
+acceptable while the project has no users. Costs: one more layout to keep accessible, and the
+`/app` prefix must be woven into navigation, redirects and tests. Benefits: the public surface is
+independently cacheable and shareable, the console is unambiguously private, and a future move to
+two deployables (static marketing + SPA console) is an infrastructure change rather than a rewrite.
+
 ## Adding a new ADR
 
 Append a numbered ADR with the same **Context → Decision → Consequences** shape. Keep it
