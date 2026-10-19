@@ -75,20 +75,18 @@ describe("public layout", () => {
   });
 
   it("shows the Countergank mark next to the title in the brand link", () => {
-    const { container } = renderAt("/");
+    renderAt("/");
 
     const brand = within(screen.getByRole("banner")).getByRole("link", { name: t("title") });
 
-    // The colour artwork for the light theme, the inlined monochrome mark for the dark one:
-    // the colour mark's "C" is black and would disappear on a dark background.
-    const colourMark = brand.querySelector('img[src="/logo-countergank-color.png"]');
-    const monochromeMark = brand.querySelector("svg");
+    // The owner's colour icon is the mark in both themes; it needs a light backing in the
+    // dark one because its "C" is black.
+    const mark = brand.querySelector('img[src="/logo-countergank-icon.png"]');
 
-    expect(colourMark).not.toBeNull();
-    expect(colourMark).toHaveAttribute("aria-hidden", "true");
-    expect(monochromeMark).not.toBeNull();
-    expect(monochromeMark).toHaveAttribute("fill", "currentColor");
-    expect(container).toBeTruthy();
+    expect(mark).not.toBeNull();
+    expect(mark).toHaveAttribute("aria-hidden", "true");
+    expect(mark?.className).toContain("dark:bg-white/95");
+    expect(brand.querySelector("svg")).toBeNull();
   });
 
   it("offers the language switcher in the header", () => {

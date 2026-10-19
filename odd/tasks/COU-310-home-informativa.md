@@ -148,6 +148,13 @@ por tarea, 6 en total, ~1.400 líneas autoradas. Nada pusheado todavía.
   oscuro conserva la variante monocroma inline; negro sobre fondo oscuro no es una decisión de
   marca, es un logo faltante. Primer intento de commit incluía `banner.png` (4.3 MB) y `logo.png`
   (382 KB) por un `git add -A public`; se corrigió con `--amend` y quedan fuera del repo.
+- [x] T8c — El ícono de color (`logo-countergank-icon.ico`) — el dueño señaló que seguía viendo el
+  arte monocromo: en tema oscuro `AppLogo` mostraba la variante inline y el color nunca aparecía.
+  El `.ico` trae un PNG RGBA 256×256 (14.5 KB, transparente) que se extrae como
+  `public/logo-countergank-icon.png` y es el único arte en los dos temas; como su "C" es negra, en
+  oscuro lleva un fondo claro. Se retira el componente monocromo y el derivado anterior
+  (`logo-countergank-color.png`). El wordmark "COUNTERGANK" viaja dentro del ícono y se repite con
+  el título: queda a la vista del dueño decidir si se recorta.
 - [x] Gate — `make ci` exit 0: 61 archivos, 395 tests, coverage 98.19 / 94.07 / 93.49. El guard de
   tokens atajó un `#000000` que había quedado en el docblock del logo; se reescribió el comentario.
 
