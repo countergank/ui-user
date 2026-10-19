@@ -12,8 +12,6 @@ describe("main entry", () => {
     document.body.innerHTML = '<div id="root"></div>';
     await import("@/main");
 
-    expect(await screen.findByRole("heading", { level: 1 })).toHaveTextContent(
-      "Countergank User",
-    );
+    expect(await screen.findByRole("heading", { level: 1 })).toHaveTextContent("Countergank User");
   }, 20_000);
 });

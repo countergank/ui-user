@@ -83,12 +83,6 @@ export const pt: {
         },
       },
     },
-    about: {
-      heading: "Sobre",
-      title: "Modelo de frontend padrão",
-      description:
-        "Uma arquitetura React 19 por funcionalidades (screaming) com uma estrutura acessível, tratamento tipado de erros, TanStack Query para o estado do servidor e rotas sob demanda do React Router.",
-    },
     error: {
       genericTitle: "Algo deu errado",
       genericMessage: "Ocorreu um erro inesperado.",
@@ -131,6 +125,7 @@ export const pt: {
     },
     about: {
       title: "Sobre",
+      body: "Countergank User faz parte do stack open source da countergank: o frontend da API de usuários, construído com o molde padrão de frontend (React 19, Vite, TypeScript estrito). Este repositório também guarda os padrões que o projeto segue — ADRs, padrões de componentes, acessibilidade, tratamento de erros e regras de testes — em docs/.",
     },
     what: {
       title: "O que é",

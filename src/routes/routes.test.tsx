@@ -67,10 +67,12 @@ describe("routes", () => {
     expect(heading).toHaveTextContent(heroTitleTail);
   });
 
-  it("renders the lazy about route component", () => {
+  it("renders the lazy about route component as a project page", () => {
+    const tLanding = i18n.getFixedT(null, "landing");
+
     render(<AboutRoute />);
-    expect(screen.getByRole("heading", { name: i18n.t("about.heading") })).toBeInTheDocument();
-    expect(screen.getByText(i18n.t("about.title"))).toBeInTheDocument();
-    expect(screen.getByText(i18n.t("about.description"))).toBeInTheDocument();
+
+    expect(screen.getByRole("heading", { level: 1, name: tLanding("about.title") })).toBeVisible();
+    expect(screen.getByText(tLanding("about.body"))).toBeVisible();
   });
 });

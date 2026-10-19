@@ -1,26 +1,19 @@
 import { useTranslation } from "react-i18next";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
 /**
- * Lazy-loaded route module for "/about" (bundle-001).
- * Deliberately simple to demonstrate the lazy route + Suspense boundary path.
- * All copy comes from the i18n resources (COU-253).
+ * Lazy-loaded route module for "/about" (COU-310, T3 / S6).
+ *
+ * Describes the project, not the template: what it is, where it comes from and where the
+ * standards it follows live. Public surface, so it renders inside `PublicLayout` and
+ * never touches the API.
  */
 export function Component() {
-  const { t } = useTranslation();
+  const { t } = useTranslation("landing");
 
   return (
-    <div className="flex flex-col gap-6">
-      <h1 className="text-3xl font-semibold tracking-tight">{t("about.heading")}</h1>
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("about.title")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="max-w-prose text-muted-foreground">{t("about.description")}</p>
-        </CardContent>
-      </Card>
+    <div className="flex flex-col gap-4">
+      <h1 className="text-3xl font-semibold tracking-tight">{t("about.title")}</h1>
+      <p className="max-w-prose text-muted-foreground">{t("about.body")}</p>
     </div>
   );
 }

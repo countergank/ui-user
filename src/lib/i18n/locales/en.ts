@@ -77,12 +77,6 @@ export const en = {
         },
       },
     },
-    about: {
-      heading: "About",
-      title: "Standard Frontend Template",
-      description:
-        "A feature-based (screaming) React 19 architecture with an accessible shell, typed error handling, TanStack Query for server state, and lazy React Router routes.",
-    },
     error: {
       genericTitle: "Something went wrong",
       genericMessage: "An unexpected error occurred.",
@@ -125,6 +119,7 @@ export const en = {
     },
     about: {
       title: "About",
+      body: "Countergank User is part of the countergank open-source stack: the frontend of the user API, built from the standard frontend mould (React 19, Vite, strict TypeScript). This repository also holds the standards the project follows — ADRs, component patterns, accessibility, error handling and testing rules — under docs/.",
     },
     what: {
       title: "What this is",
