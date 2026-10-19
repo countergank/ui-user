@@ -33,6 +33,19 @@ landing hace fetch)."
 **S9 — ADR-13** (`docs/adr.md`), la decisión que este ticket implementa: superficies públicas
 (`/`, `/about`, `/login`) sin el shell de consola; la consola vive en `/app/*` (COU-278).
 
+**S10 — Footer al pie**, verbatim: "Ademas about deja pegado al texto el footer, no queda al final
+de la pagina".
+
+**S11 — Logo**, verbatim: "falta logo de countergank que lo podes encontrar en el directorio public, los
+acabo de agregar" · "el logo si y debe estar al lado del titulo en el header de la app en la barra de
+navegacion" · "el banner no lo usamos todavia, no hace falta".
+
+**S12 — Selector de idioma**, verbatim: "el texto contenido actualmente no se le puede cambiar el
+idioma porque no hay boton de seleccion de idioma, deberia haber uno".
+
+**S13 — Embellecer**, verbatim: "la idea principal, embellecer el home y about que estan muy simples
+y feas a vista humana".
+
 ## Tasks
 
 | ID | Task | Specs | Route | Commit |
@@ -43,6 +56,11 @@ landing hace fetch)."
 | T4 | Retirar la home del template y probar que lo público no llama a la API | S2, S7 | inline | T4 |
 | T5 | Adaptar la suite e2e a la superficie pública | S3, S8 | inline | T5 |
 | T6 | Gate completo + docs | all | inline | T6 |
+| T7 | Footer al pie: wrapper flex column en `PublicLayout` y `AppShell` | S10 | inline | T7 |
+| T8 | Logo inline con `currentColor` en el header + favicon | S11 | inline | T8 |
+| T9 | Selector de idioma con persistencia y `<html lang>` sincronizado | S12 | inline | T9 |
+| T10 | Home: hero, feature grid con iconos, quickstart y stack badges | S13 | inline | T10 |
+| T11 | About: dos columnas y tarjeta de estándares | S13 | inline | T11 |
 
 ## Decisions
 
@@ -97,6 +115,16 @@ landing hace fetch)."
 `delivery_strategy=single-pr` (decisión del owner, 2026-10-18). Slice de esta feature: 1 commit
 por tarea, 6 en total, ~1.400 líneas autoradas. Nada pusheado todavía.
 
+## Decisions (requirements change, 2026-10-19)
+
+- **Banner fuera.** No se usa: `banner.png` (4.3 MB) y `logo.png` (382 KB) no entran al repo. Assets
+  commiteados: el SVG del logo (10.7 KB) y el `.ico` del favicon (14.5 KB).
+- **Logo inline, no `<img>`.** Un SVG servido por `<img>` no hereda `currentColor`, y este logo es
+  monocromo con `fill="#000000"`: sobre fondo oscuro desaparecería. Se inlinea como componente y
+  hereda el token `foreground`.
+- **Default de idioma sigue en `en`**, con el selector como única vía de cambio; la detección del
+  idioma del navegador pertenece a COU-277.
+
 ## Corrections (review findings)
 
 Los tres hallazgos del review, resueltos en un solo commit de corrección:
@@ -116,6 +144,15 @@ Los tres hallazgos del review, resueltos en un solo commit de corrección:
 
 **L1 — user request (verbatim):**
 > vamos con el tticket recomendado
+
+**L3 — user request (verbatim), requirements change on the delivered ticket:**
+> ok falta logo de countergank que lo podes encontrar en el directorio public, los acabo de agregar, falta mejorar los componentes de home, el texto contenido actualmente no se le puede cambiar el idioma porque no hay boton de seleccion de idioma, deberia haber uno, y la idea principal, embellecer el home y about que estan muy simples y feas a vista humana. Ademas about deja pegado al texto el footer, no queda al final de la pagina, hace una lista de como vas a proceder paso a paso arreglando lo que te pedi, no apliques nada todavia
+
+**L4 — user answer (verbatim):**
+> el banner no lo usamos todavia, no hace falta, el logo si y debe estar al lado del titulo en el header de la app en la barra de navegacion
+
+**L5 — user answer (verbatim)**, on the three ways to make a monochrome logo work in dark mode:
+> la recomendada
 
 **L2 — native review (RDD on), lineage `review-812d6d98167877f5`:** el host RDD marcó el candidato
 como no revisado, así que se corrió el review sobre el árbol congelado (base `3f549a0`). Tier
