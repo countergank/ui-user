@@ -1,6 +1,10 @@
-import type { AuthTranslationTree, TranslationTree } from "./en";
+import type { AuthTranslationTree, LandingTranslationTree, TranslationTree } from "./en";
 
-export const es: { common: TranslationTree; auth: AuthTranslationTree } = {
+export const es: {
+  common: TranslationTree;
+  auth: AuthTranslationTree;
+  landing: LandingTranslationTree;
+} = {
   common: {
     meta: {
       productName: "Countergank User",
@@ -108,6 +112,24 @@ export const es: { common: TranslationTree; auth: AuthTranslationTree } = {
         next: "Siguiente",
         morePages: "Más páginas",
       },
+    },
+  },
+  landing: {
+    title: "Countergank User",
+    subtitle:
+      "Una consola open source para gestionar los usuarios, roles y permisos de una API de countergank.",
+    nav: {
+      label: "Navegación pública",
+      home: "Inicio",
+      about: "Acerca de",
+      signIn: "Iniciar sesión",
+    },
+    footer: {
+      repository: "Repositorio",
+      license: "Licencia",
+    },
+    about: {
+      title: "Acerca de",
     },
   },
   auth: {

@@ -108,6 +108,24 @@ export const en = {
       },
     },
   },
+  landing: {
+    title: "Countergank User",
+    subtitle:
+      "An open-source console to manage the users, roles and permissions of a countergank API.",
+    nav: {
+      label: "Public navigation",
+      home: "Home",
+      about: "About",
+      signIn: "Sign in",
+    },
+    footer: {
+      repository: "Repository",
+      license: "License",
+    },
+    about: {
+      title: "About",
+    },
+  },
   auth: {
     login: {
       title: "Sign in",
@@ -136,3 +154,6 @@ export type TranslationTree = typeof en.common;
 
 /** Shape every `auth` bundle must satisfy. */
 export type AuthTranslationTree = typeof en.auth;
+
+/** Shape every `landing` bundle must satisfy. */
+export type LandingTranslationTree = typeof en.landing;
