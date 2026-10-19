@@ -126,6 +126,14 @@ export function PublicLayout() {
               <li>
                 <a
                   className="underline-offset-4 hover:text-foreground hover:underline"
+                  href="https://github.com/countergank/ui-user/tree/develop/docs"
+                >
+                  {t("footer.docs")}
+                </a>
+              </li>
+              <li>
+                <a
+                  className="underline-offset-4 hover:text-foreground hover:underline"
                   href="https://github.com/countergank/ui-user/blob/develop/LICENSE"
                 >
                   {t("footer.license")}

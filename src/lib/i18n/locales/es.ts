@@ -125,11 +125,55 @@ export const es: {
       signIn: "Iniciar sesión",
     },
     footer: {
+      docs: "Documentación",
       repository: "Repositorio",
       license: "Licencia",
     },
     about: {
       title: "Acerca de",
+    },
+    what: {
+      title: "Qué es",
+      body: "Countergank User es la consola open source de gestión de la API de usuarios de countergank. Es una single-page app en React: habla con api-user por HTTP y no tiene backend propio.",
+    },
+    service: {
+      title: "Qué ofrece",
+      body: "Iniciar sesión contra la API y después recorrer y administrar usuarios, roles y permisos, y revisar la auditoría: la superficie diaria de una administración de usuarios, sin construirla desde cero.",
+    },
+    features: {
+      title: "Qué incluye",
+      items: {
+        session: {
+          title: "Sesión que se renueva sola",
+          description:
+            "Access y refresh tokens, renovación proactiva antes de vencer, un solo refresh para 401 concurrentes y logout local primero.",
+        },
+        accessibility: {
+          title: "Accesibilidad como piso",
+          description:
+            "Landmarks, skip link, anuncio de rutas, manejo de foco y axe en la suite de tests.",
+        },
+        languages: {
+          title: "Tres idiomas",
+          description:
+            "Inglés, español y portugués de Brasil, con paridad de claves exigida por el sistema de tipos y los tests.",
+        },
+        typed: {
+          title: "Tipado de punta a punta",
+          description:
+            "TypeScript estricto, el envelope de error de la API tipado, y un gateway de configuración que falla rápido si falta una variable.",
+        },
+      },
+    },
+    quickstart: {
+      title: "Correrlo en local",
+      body: "El backend trae su propio stack de Docker. Levantalo y después corré la consola contra él:",
+      command: "docker compose up",
+      note: "La consola se sirve en localhost:3000 y la API responde en la URL de VITE_API_BASE_URL.",
+    },
+    stack: {
+      title: "Stack",
+      body: "Node 22, Vite 6, React 19, TypeScript estricto, Tailwind + shadcn/ui, TanStack Query 5, React Router 7, Vitest + Testing Library + Playwright, Biome + ESLint.",
     },
   },
   auth: {
