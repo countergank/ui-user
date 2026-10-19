@@ -141,6 +141,13 @@ por tarea, 6 en total, ~1.400 líneas autoradas. Nada pusheado todavía.
   quickstart tipo terminal y stack en badges, dentro de una columna centrada.
 - [x] T11 — About — `3b169f2`. Dos columnas, tarjeta de contribución y cuatro links a archivos
   reales de `docs/` (aserción en el test de rutas).
+- [x] T8b — Logo en color — `ebea400`. El dueño rechazó el arte monocromo ("se rompe todo") y pidió el
+  de color. El PNG original (2048², 382 KB, fondo blanco sin transparencia) se recorta al isotipo
+  —sin el wordmark, que duplica el título— y se convierte el blanco en transparencia real con un
+  render headless, sin agregar dependencias: 512×263, 95 KB. Como la "C" del arte es negra, el tema
+  oscuro conserva la variante monocroma inline; negro sobre fondo oscuro no es una decisión de
+  marca, es un logo faltante. Primer intento de commit incluía `banner.png` (4.3 MB) y `logo.png`
+  (382 KB) por un `git add -A public`; se corrigió con `--amend` y quedan fuera del repo.
 - [x] Gate — `make ci` exit 0: 61 archivos, 395 tests, coverage 98.19 / 94.07 / 93.49. El guard de
   tokens atajó un `#000000` que había quedado en el docblock del logo; se reescribió el comentario.
 
