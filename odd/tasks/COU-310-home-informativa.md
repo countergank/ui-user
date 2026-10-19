@@ -125,6 +125,25 @@ por tarea, 6 en total, ~1.400 líneas autoradas. Nada pusheado todavía.
 - **Default de idioma sigue en `en`**, con el selector como única vía de cambio; la detección del
   idioma del navegador pertenece a COU-277.
 
+## Progress (requirements change, T7-T11)
+
+- [x] T7 — Footer al pie — `d6140c7`. Causa raíz: `main.flex-1` sin padre flex y sin
+  `min-h-screen`. Ambos layouts envuelven ahora sus landmarks en una columna de altura completa;
+  el e2e mide el hueco contra el viewport (0 px en `/about`), no confía en una clase.
+- [x] T8 — Logo — `d6140c7`. SVG inline con `currentColor` (un `<img>` no puede recolorear un
+  relleno negro y desaparecía en dark), recorte del `viewBox` medido con un render headless
+  (~60% x ~41% de canvas útil), favicon `.ico`. Assets commiteados: 25 KB. El primer intento
+  olvidó el `<g transform>` del original y el logo no se veía: lo detecté mirando la captura del
+  header, no el test.
+- [x] T9 — Selector de idioma — `45b72dd`. Menú (no botón cíclico), persistencia con la misma forma
+  que el tema, lectura durante la creación de la instancia i18n y `<html lang>` sincronizado.
+- [x] T10 — Home — `122fdbe`. Hero con dos CTA, prosa en dos columnas, features con iconos,
+  quickstart tipo terminal y stack en badges, dentro de una columna centrada.
+- [x] T11 — About — `3b169f2`. Dos columnas, tarjeta de contribución y cuatro links a archivos
+  reales de `docs/` (aserción en el test de rutas).
+- [x] Gate — `make ci` exit 0: 61 archivos, 395 tests, coverage 98.19 / 94.07 / 93.49. El guard de
+  tokens atajó un `#000000` que había quedado en el docblock del logo; se reescribió el comentario.
+
 ## Corrections (review findings)
 
 Los tres hallazgos del review, resueltos en un solo commit de corrección:

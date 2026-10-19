@@ -26,10 +26,13 @@ frontend-standard-project/
 │  ├─ components/
 │  │  ├─ a11y/                  # a11y building blocks (route announcer)
 │  │  ├─ error/                 # error view + route error boundary
+│  │  ├─ branding/              # the Countergank mark, inlined to follow the theme
+│  │  ├─ i18n/                  # language switcher
 │  │  └─ ui/                    # shadcn/ui primitives (button, card)
 │  ├─ features/
 │  │  ├─ auth/                  # login feature: page, form, schema, api.ts, hooks/
 │  │  └─ landing/               # informational public home (COU-310, ADR-13)
+│  │     └─ components/         # hero, feature grid, quickstart, stack badges
 │  ├─ hooks/                    # shared hooks (use-focus-management)
 │  ├─ lib/                      # errors, query client, utils
 │  ├─ routes/                   # router + lazy route modules
@@ -67,7 +70,7 @@ frontend-standard-project/
 | `src/components/ui/` | shadcn/ui primitives, owned by this repo | `button.tsx` |
 | `src/features/<feature>/` | One folder per business capability | `src/features/auth/login-form.tsx`, `src/features/landing/landing-page.tsx` |
 | `src/hooks/` | Shared, cross-feature hooks | `use-focus-management.ts` |
-| `src/lib/` | Infrastructure: errors, query client, env, utils | `errors.ts` |
+| `src/lib/` | Infrastructure: errors, query client, env, links, utils | `errors.ts`, `links.ts` |
 | `src/routes/` | Router definition + lazy route modules | `landing-route.tsx` |
 | `src/stores/` | Zustand client/UI state: vanilla `createStore` + `initialState` + selectors + bound hook | `use-ui-store.ts` |
 | `src/styles/` | Tailwind entry + design tokens (light/dark) | `tokens.css` |
