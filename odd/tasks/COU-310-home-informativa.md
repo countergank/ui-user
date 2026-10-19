@@ -102,6 +102,9 @@ por tarea, 6 en total, ~1.400 líneas autoradas. Nada pusheado todavía.
 **L1 — user request (verbatim):**
 > vamos con el tticket recomendado
 
-**L2 — native review pendiente:** con RDD encendido y el riesgo nativo en `high` (auth en el
-camino), el review de esta feature se corre al terminar el trabajo, sobre el candidato congelado
-de la rama.
+**L2 — native review (RDD on), lineage `review-812d6d98167877f5`:** el host RDD marcó el candidato
+como no revisado, así que se corrió el review sobre el árbol congelado (base `3f549a0`). Tier
+`medium`, dos lentes (`readability`, `reliability`), resultado **approved**; autoridad acknowledgeada
+y quemada. Tres hallazgos, todos `informational` y sin corrección abierta:
+`R2-unnecessary-cast-in-nav-callback` (`src/public-layout.tsx:91-93`), `R3-doc-ref-unverified`
+(`docs/error-handling.md:80-91`) y `R3-e2e-literal-coupling` (`e2e/critical-journeys.spec.ts:11`).
