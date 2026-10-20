@@ -35,6 +35,10 @@ const server = setupServer(
 );
 
 beforeAll(() => {
+  // MSW 3 answers `onUnhandledFrame` — v2 called it `onUnhandledRequest` — so an escaping
+  // request fails this suite instead of passing silently, which is what the header promises.
+  // Verified against msw 3.0.3: `lib/_chunks/shared-options.d.ts` documents exactly
+  // `server.listen({ onUnhandledFrame: "error" })`, and an unmatched request throws.
   server.listen({ onUnhandledFrame: "error" });
 });
 
