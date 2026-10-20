@@ -70,7 +70,42 @@ su contrato está transcripto en S8 — por eso este ticket no está bloqueado.
   (`user:read`, `role:read`, `permission:read`, `audit:read`, `parameter:read`), verificados en
   el repo hermano con autorización del owner (L3).
 
+## Delivery
+
+`delivery_strategy=single-pr` (ADR-8: single final PR delivery, same as COU-310). Un commit por
+unidad revisable, no por tarea: 4 commits, ~1.050 líneas autoradas. Una vez que el gate pase,
+push y PR quedan a decisión del owner.
+
 ## Progress
+
+- [x] T1+T2 — `a6806a2`. `hasPermission` espeja la regla del guard de `api-user` (match exacto,
+  `*`, `<resource>:*`); `fetchMe` valida el payload de `/auth/me` con Zod antes de que la UI lo
+  vea; `usePermissions` pregunta una vez por sesión y sólo con sesión, devolviendo cero permisos
+  mientras carga o si falla (fail closed).
+- [x] T3+T4 — `cc47211`. `useCan` y `<Can>` exponen el predicado; `CONSOLE_NAV` declara las seis
+  secciones de ADR-13 con su `requiredPermission` y `visibleNavItems` filtra con el mismo
+  `hasPermission`. El namespace i18n `console` entra en los tres idiomas, así que el test de
+  paridad existente ya lo cubre.
+- [x] T5 — `ForbiddenView` + `isForbiddenError` (status 403 o `UA-SEC-002`) y el boundary de rutas
+  devolviendo `ForbiddenView` antes que el copy genérico.
+- [x] T6 — docs (`folder-structure.md`, `component-patterns.md`) y gate local.
+
+## Findings
+
+1. **El AC tenía una dependencia real, no declarativa.** `SessionUser` no lleva rol ni permisos y
+   `decodeAccessToken` descarta el claim `role` (`src/lib/session/jwt.ts:46-56`): sin `/auth/me`
+   no había forma de saber qué mostrar. COU-267 ya lo expone, así que el ticket no estaba
+   bloqueado; U06 sí lo estaba.
+2. **Un test de 403 pasaba en falso.** El primer caso afirmaba el título del `ForbiddenView`
+   sobre un error cuyo `message` era exactamente "Access denied", que el boundary genérico
+   también imprime. Se reescribió para afirmar el copy del `ForbiddenView` **y** la ausencia del
+   mensaje crudo del error.
+3. **`<resource>:*` no es opcional.** El guard del API acepta comodines por recurso
+   (`permissions.guard.ts:44-53`); sin espejarlos, un rol con `user:*` vería la sección Usuarios
+   oculta aunque el servidor la autorice.
+4. **El visitante anónimo no dispara `/auth/me`.** La query está gateada por el estado de sesión,
+   lo que mantiene la regla de superficies públicas de COU-310 (S7) sin un test nuevo en ese
+   ticket.
 
 ## Conventions check
 

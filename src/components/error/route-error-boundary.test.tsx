@@ -45,6 +45,21 @@ describe("RouteErrorBoundary", () => {
     expect(alert).toHaveTextContent("Network boom");
   });
 
+  it("renders the forbidden view for a 403 the action did not expect (COU-275, S6)", async () => {
+    renderWithLoader(() => {
+      throw new DataFetchError("Request failed with status 403", {
+        status: 403,
+        code: "UA-SEC-002",
+      });
+    });
+
+    const alert = await screen.findByRole("alert");
+    const tConsole = i18n.getFixedT(null, "console");
+    expect(alert).toHaveTextContent(tConsole("forbidden.title"));
+    expect(alert).toHaveTextContent(tConsole("forbidden.message"));
+    expect(alert).not.toHaveTextContent("Request failed with status 403");
+  });
+
   it("normalizes a raw thrown error into the generic title", async () => {
     renderWithLoader(() => {
       throw new Error("unexpected");

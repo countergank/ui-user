@@ -124,6 +124,36 @@ not required to move to Zustand. Server state always stays on TanStack Query. St
 between tests follow the convention in `src/test/setup.ts` (register each store's
 `initialState` reset there).
 
+## Rendering by permission
+
+The console is authorized **by permission**, not by role (COU-275): `admin` holds `*` and every
+other role sees only what its effective permissions allow. The client *predicts* the server's
+answer so it never offers an action that will come back 403; it never decides what a person may
+do — `api-user` remains the authority (ADR-13).
+
+| Need | Use | Where |
+|------|-----|-------|
+| Is this permission granted? | `useCan(permission)` | `src/features/authorization/hooks/use-can.ts` |
+| Hide or swap a piece of UI | `<Can permission fallback>` | `src/features/authorization/components/can.tsx` |
+| A section in the console navigation | one entry in `CONSOLE_NAV` | `src/features/console/navigation.ts` |
+| A 403 the action did not expect | `ForbiddenView` | `src/features/authorization/components/forbidden-view.tsx` |
+
+```tsx
+<Can permission={PERMISSIONS.userCreate}>
+  <CreateUserButton />
+</Can>
+```
+
+Rules:
+
+- **Never re-implement the wildcard check.** `hasPermission` mirrors the API's guard — exact
+  match, the global `*`, and the resource wildcard `<resource>:*`. A narrower rule hides a
+  section the server would authorize; a wider one offers an action that fails.
+- **Never invent permission names.** They come from the API's catalog
+  (`api-user/src/rbac/services/permission.service.ts`) and are listed once in `PERMISSIONS`.
+- **A gate is presentation, not protection.** Every request is still authorized by the server;
+  an unexpected 403 renders `ForbiddenView` through the route error boundary.
+
 ## Rule of thumb checklist
 
 - [ ] Container decides; presentational component renders props
