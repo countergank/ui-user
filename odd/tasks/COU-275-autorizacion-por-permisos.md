@@ -128,3 +128,25 @@ names:
 
 **L4 — user request (verbatim)**, moving COU-310 out of the board:
 > Sí, marcalo Done
+
+## Gate y review (2026-10-20)
+
+- `make ci` exit 0 (lint, typecheck, 84 tests, coverage, build).
+- `pnpm test:e2e`: **7/7** en Chromium contra el build de producción.
+- Review nativo `review-c11c79f0a5580191` (3 lentes: risk, resilience, reliability; tier
+  medium): **approved**, autoridad acknowledgeada y quemada. Siete hallazgos informativos,
+  ninguno abierto como corrección:
+  - `R3-stale-permissions-across-sessions` (WARNING) — el perfil de `/auth/me` no se invalida al
+    cambiar de usuario en la misma pestaña. Follow-up natural de COU-274 (guardas).
+  - `R4-fail-closed-no-error-signal` (WARNING) — el fail-closed es correcto pero no distingue
+    "sin permisos" de "el perfil falló". Follow-up.
+  - `R1-forbidden-code-only`, `R1-priv-client-prediction`, `R3-can-loading-flash`,
+    `R3-failed-profile-silent`, `R4-contract-error-retried` (SUGGESTION).
+- **Lineage abandonada**: `review-2dc8ad25c0e50f9d` llegó a `correction_required` por un
+  hallazgo CRITICAL (`onUnhandledFrame` en el suite de MSW) que resultó **falso positivo**: msw
+  3.0.3 expone esa opción y el guard tira en runtime (verificado con `setupServer` real). Su
+  validator posterior quedó inalcanzable por un defecto del harness —la captura revalida contra
+  un STATUS que no threadea `--committed-only`, ve el candidato vacío y rechaza el binding—, así
+  que se abandonó y se re-corrió el review sobre el candidato final. La corrección quedó igual en
+  `e75a783` porque documenta el porqué y evita que el hallazgo se repita.
+- Commits de la feature: `a6806a2`, `cc47211`, `2a7105d`, `e75a783`.
