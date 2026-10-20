@@ -1,9 +1,15 @@
-import type { AuthTranslationTree, LandingTranslationTree, TranslationTree } from "./en";
+import type {
+  AuthTranslationTree,
+  ConsoleTranslationTree,
+  LandingTranslationTree,
+  TranslationTree,
+} from "./en";
 
 export const es: {
   common: TranslationTree;
   auth: AuthTranslationTree;
   landing: LandingTranslationTree;
+  console: ConsoleTranslationTree;
 } = {
   common: {
     meta: {
@@ -171,6 +177,22 @@ export const es: {
         emailInvalid: "Ingresá un email válido.",
         passwordRequired: "Ingresá tu contraseña.",
       },
+    },
+  },
+  console: {
+    nav: {
+      label: "Secciones de la consola",
+      summary: "Resumen",
+      users: "Usuarios",
+      roles: "Roles",
+      permissions: "Permisos",
+      audit: "Auditoría",
+      settings: "Configuración",
+    },
+    forbidden: {
+      title: "Acceso denegado",
+      message:
+        "Tu rol no incluye esta sección. Si creés que debería, pedile a un administrador que revise tus permisos.",
     },
   },
 };

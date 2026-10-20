@@ -1,5 +1,6 @@
 import {
   type AuthTranslationTree,
+  type ConsoleTranslationTree,
   type LandingTranslationTree,
   type TranslationTree,
   en,
@@ -13,7 +14,7 @@ export const languages = ["en", "es", "pt"] as const;
 export type AppLanguage = (typeof languages)[number];
 
 export const defaultNamespace = "common";
-export const namespaces = [defaultNamespace, "auth", "landing"] as const;
+export const namespaces = [defaultNamespace, "auth", "landing", "console"] as const;
 export type AppNamespace = (typeof namespaces)[number];
 
 /**
@@ -22,7 +23,12 @@ export type AppNamespace = (typeof namespaces)[number];
  */
 const bundles = { en, es, pt } satisfies Record<
   AppLanguage,
-  { common: TranslationTree; auth: AuthTranslationTree; landing: LandingTranslationTree }
+  {
+    common: TranslationTree;
+    auth: AuthTranslationTree;
+    landing: LandingTranslationTree;
+    console: ConsoleTranslationTree;
+  }
 >;
 
 export const resources = bundles;
