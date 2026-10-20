@@ -167,6 +167,22 @@ export const en = {
       },
     },
   },
+  console: {
+    nav: {
+      label: "Console sections",
+      summary: "Summary",
+      users: "Users",
+      roles: "Roles",
+      permissions: "Permissions",
+      audit: "Audit",
+      settings: "Settings",
+    },
+    forbidden: {
+      title: "Access denied",
+      message:
+        "Your role does not include this section. If you think it should, ask an administrator to review your permissions.",
+    },
+  },
 };
 
 /** Shape every language bundle must satisfy. Derived from English, the source of truth. */
@@ -177,3 +193,6 @@ export type AuthTranslationTree = typeof en.auth;
 
 /** Shape every `landing` bundle must satisfy. */
 export type LandingTranslationTree = typeof en.landing;
+
+/** Shape every `console` bundle must satisfy. */
+export type ConsoleTranslationTree = typeof en.console;
