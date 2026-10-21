@@ -1,0 +1,26 @@
+# COU-323 — Endurecer las guardas de ruta de la consola
+
+Mirror of `odd/tasks/COU-323-endurecer-las-guardas-de-ruta-de-la-consola-tras-la-review.md`.
+Read the feature doc first; this file only tracks task state and evidence.
+
+## Tasks
+
+- [x] T1 — `loginDestination()` compartido (S1, S5).
+  - Evidence: `src/features/auth/login-destination.ts`; `RequireAuth` lo usa y `require-auth.test.tsx` sigue 3/3 con el mismo destino esperado.
+- [x] T2 — 403 sin sesión preserva la ruta (S1).
+  - Evidence: `route-error-boundary.test.tsx` 5/5: autenticado → `/forbidden`; anónimo con 403 en `/guard/42` → `/login?redirect=%2Fguard%2F42`.
+- [x] T3 — Error de red ≠ denegado (S2).
+  - Evidence: `usePermissions` expone `isError`/`refetch`; `require-permission.test.tsx` 5/5 (error reintentable con `role=alert`, sin `/forbidden`).
+- [x] T4 — Expiry conserva la ruta (S3).
+  - Evidence: `guards.test.tsx` 5/5: expirar en `/app/users` aterriza en `/login?redirect=%2Fapp%2Fusers`.
+- [x] T5 — Criterio explícito para rutas fuera del manifiesto (S4).
+  - Evidence: `require-section.test.tsx` 3/3 fija la regla (entrada con permiso se exige; sin entrada no se exige, y sólo puede ser el placeholder sin datos).
+- [x] T6 — R3-1/R3-2/R3-3 con disposición (S5).
+  - Evidence: L4 del doc de feature: R3-1 cubierto por el 403, R3-2 por el encoding único, R3-3 sin bucle y fijado por `guards.test.tsx`.
+- [x] T7 — Gate completo (S7).
+  - Evidence: `make ci` EXIT=0 (lint + typecheck + 463 tests con coverage sobre el umbral + build de producción). Aviso de chunk >500 kB: preexistente.
+
+## Commits
+
+- `f9fb7df` — T1, T2, T4 (destino compartido, 403 anónimo, expiry).
+- `4d723ac` — T3, T5, T6, T7 (error de red ≠ denegado, regla del manifiesto, disposición de R3, docs).

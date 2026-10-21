@@ -63,7 +63,8 @@ Every layout route declares its own `errorElement`, so a crash inside the consol
 console's shell and a crash on the public site keeps the public one.
 
 The boundary has two exits, and neither is "something went wrong": a **403** (`isForbiddenError`,
-`UA-SEC-002`) navigates to `/forbidden`, because a denial is an answer, not a failure to retry; and
+`UA-SEC-002`) navigates to `/forbidden` — or, when no session is loaded, to the login screen with
+the current route preserved, since `/forbidden` itself sits behind `RequireAuth`; and
 a route guard (`RequireAuth`, `RequirePermission`) never throws at all — it redirects before the
 protected route renders, so an authorization decision cannot end up in the error path.
 

@@ -1,30 +1,29 @@
 import { useTranslation } from "react-i18next";
-import { Navigate, isRouteErrorResponse, useRouteError } from "react-router-dom";
+import { Navigate, isRouteErrorResponse, useLocation, useRouteError } from "react-router-dom";
 
+import { loginDestination } from "@/features/auth/login-destination";
 import { isForbiddenError } from "@/features/authorization/forbidden";
 import { DataFetchError, toError } from "@/lib/errors";
+import { selectSessionStatus, useSession } from "@/lib/session/session-store";
 import { ErrorView } from "./error-view";
 
 /**
- * Route-level error boundary (ARCH-4, react-router errorElement/ErrorBoundary).
- *
- * Rendered by the data router inside `errorElement` when a loader, action, or
- * render throws. Uses `useRouteError()` (react-router v7 pattern) and renders
- * the accessible <ErrorView>. Errors are normalized to `Error` instances so we
- * never render raw thrown values. All boundary copy is resource-driven
- * (COU-253); statusText and thrown messages remain dynamic content.
- *
- * A 403 the action did not expect is not a failure to retry or to report as "something went
- * wrong" (COU-275, S6), and since COU-274 it is not rendered in place either: the boundary
- * navigates to `/forbidden`, so the URL matches what the person is reading and a reload keeps
- * the same answer.
+ * Route-level error boundary (ARCH-4). A 403 is never retried or reported as "something went
+ * wrong": it navigates to `/forbidden`, or to login with the current route when no session is
+ * loaded — `/forbidden` itself sits behind `RequireAuth` (COU-323).
  */
 export function RouteErrorBoundary() {
   const { t } = useTranslation();
   const error = useRouteError();
+  const location = useLocation();
+  const status = useSession(selectSessionStatus);
 
   if (isForbiddenError(error)) {
-    return <Navigate to="/forbidden" replace />;
+    return status === "authenticated" ? (
+      <Navigate to="/forbidden" replace />
+    ) : (
+      <Navigate to={loginDestination(location)} replace />
+    );
   }
 
   let title: string = t("error.genericTitle");
