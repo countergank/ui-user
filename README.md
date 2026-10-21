@@ -98,7 +98,8 @@ Vitest.
 1. **Mirror** this repository onto the new app's repo (clone + reset history, or copy the
    tree into a fresh repo/branch).
 2. **Rename** — `package.json` `name`; the `<title>`/meta in `index.html`; the brand text and
-   nav in `src/app-shell.tsx`.
+   nav in `src/public-layout.tsx` (public site) and the console shell in
+   `src/features/console/dashboard-layout.tsx`.
 3. **Install** — `pnpm install`.
 4. **Configure env** — `doppler setup` in the new repo, set `VITE_API_BASE_URL` per config,
    then read it through `src/lib/env.ts` from your API client layer.

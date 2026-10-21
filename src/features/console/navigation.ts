@@ -47,6 +47,32 @@ export const CONSOLE_NAV: readonly ConsoleNavItem[] = [
 ];
 
 /**
+ * The manifest entry a path belongs to (COU-278, T2 / S1, S7).
+ *
+ * Longest match first, so `/app/users/42` belongs to `/app/users` and a detail page keeps its
+ * section's breadcrumb and announcement.
+ *
+ * The **first** entry is the console's landing page by manifest convention and matches only
+ * exactly: as a prefix it would claim every console path, and `/app/unknown` would announce
+ * itself as "Summary". An unknown path resolves to `undefined` and the caller falls back to
+ * the console's own name.
+ */
+export function activeNavItem(
+  items: readonly ConsoleNavItem[],
+  pathname: string,
+): ConsoleNavItem | undefined {
+  const [root, ...sections] = items;
+
+  if (pathname === root.to) {
+    return root;
+  }
+
+  return sections
+    .filter((item) => pathname === item.to || pathname.startsWith(`${item.to}/`))
+    .sort((a, b) => b.to.length - a.to.length)[0];
+}
+
+/**
  * The items a grant list authorizes, in manifest order.
  *
  * Pure and cheap: the same `hasPermission` the rest of the console uses, so a section

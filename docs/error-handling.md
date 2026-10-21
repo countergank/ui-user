@@ -38,15 +38,24 @@ in one place:
 export const router = createBrowserRouter([
   {
     path: "/",
-    Component: AppShell,
+    Component: PublicLayout,
     errorElement: <RouteErrorBoundary />,
     children: [
-      { index: true, lazy: () => import("./home-route") },
+      { index: true, lazy: () => import("./landing-route") },
       { path: "about", lazy: () => import("./about-route") },
     ],
   },
+  {
+    path: "/app",
+    Component: DashboardLayout,
+    errorElement: <RouteErrorBoundary />,
+    children: [{ index: true, Component: ConsolePlaceholder }],
+  },
 ]);
 ```
+
+Every layout route declares its own `errorElement`, so a crash inside the console keeps the
+console's shell and a crash on the public site keeps the public one.
 
 `RouteErrorBoundary` reads `useRouteError()`, distinguishes React Router responses
 (`isRouteErrorResponse`) from app errors, normalizes both, and renders `ErrorView`.

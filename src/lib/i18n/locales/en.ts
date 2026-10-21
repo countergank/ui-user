@@ -177,6 +177,20 @@ export const en = {
       audit: "Audit",
       settings: "Settings",
     },
+    shell: {
+      title: "Countergank Console",
+      footerLabel: "Countergank User — management console",
+      expandSidebar: "Expand navigation",
+      collapseSidebar: "Collapse navigation",
+      openMenu: "Open navigation menu",
+      userMenu: "User menu",
+      profile: "My profile",
+      signOut: "Sign out",
+    },
+    placeholder: {
+      title: "Not built yet",
+      body: "The console shell is ready. This section arrives with its own ticket.",
+    },
     forbidden: {
       title: "Access denied",
       message:

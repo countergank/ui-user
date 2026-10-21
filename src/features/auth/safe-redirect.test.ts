@@ -16,7 +16,8 @@ describe("resolveRedirectTarget", () => {
   it("falls back to the default when there is no redirect", () => {
     expect(target("")).toBe(DEFAULT_REDIRECT);
     expect(target("?redirect=")).toBe(DEFAULT_REDIRECT);
-    expect(DEFAULT_REDIRECT).toBe("/");
+    // ADR-13: the console is the post-login destination, not the public home.
+    expect(DEFAULT_REDIRECT).toBe("/app");
   });
 
   it("keeps an internal path, including its query and hash", () => {

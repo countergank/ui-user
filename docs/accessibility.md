@@ -8,15 +8,15 @@
 | Guarantee | Where |
 |-----------|-------|
 | Page language declared (`<html lang="en">`) | `src/index.html` |
-| Semantic landmarks `<header>`/`<nav>`/`<main>`/`<footer>` | `src/app-shell.tsx` |
-| Skip link as the first Tab stop → `#main-content` | `src/app-shell.tsx` + `.skip-link` in `src/styles/index.css` |
+| Semantic landmarks `<header>`/`<nav>`/`<main>`/`<footer>` | `src/public-layout.tsx` (public) and `src/features/console/dashboard-layout.tsx` (console) |
+| Skip link as the first Tab stop → `#main-content` | both layouts + `.skip-link` in `src/styles/index.css` |
 | Route changes announced to screen readers | `src/components/a11y/route-announcer.tsx` (aria-live polite) |
 | Focus parked on the content landmark after client navigation | `src/hooks/use-focus-management.ts` |
 | Visible focus rings on interactive elements | `focus-visible:ring-2` in `button.tsx` and nav links |
 | Reduced-motion respected | `prefers-reduced-motion` override in `src/styles/index.css` |
 | Error states announced | `role="alert"` in `src/components/error/error-view.tsx` |
 
-## The shell walkthrough — `src/app-shell.tsx`
+## The shell walkthrough — `src/features/console/dashboard-layout.tsx`
 
 ```tsx
 <a href="#main-content" className="skip-link">Skip to main content</a>
@@ -36,8 +36,14 @@
 <footer>…</footer>
 ```
 
-The shell is rendered as the root layout route, so every routed page inherits landmarks, the
-skip link, the announcer, and focus management without extra work.
+The shell is a layout route, so every routed page inherits landmarks, the skip link, the
+announcer, and focus management without extra work. Since ADR-13 there are **two** layout
+routes and the split is at route level, not a conditional: `/`, `/about` and `/login` render
+in `PublicLayout`, `/app/*` and `/profile` in `DashboardLayout`. The console shell adds a
+sidebar (a static column on desktop, a focus-trapping `Sheet` drawer below `md`) and a topbar
+with the language control, the theme control and the user menu. Collapsing the sidebar
+removes it from the DOM rather than hiding it with CSS: a hidden-but-focusable navigation is
+a keyboard trap.
 
 ## Focus management — `src/hooks/use-focus-management.ts`
 
