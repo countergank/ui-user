@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next";
-import { isRouteErrorResponse, useRouteError } from "react-router-dom";
+import { Navigate, isRouteErrorResponse, useRouteError } from "react-router-dom";
 
-import { ForbiddenView } from "@/features/authorization/components/forbidden-view";
 import { isForbiddenError } from "@/features/authorization/forbidden";
 import { DataFetchError, toError } from "@/lib/errors";
 import { ErrorView } from "./error-view";
@@ -15,15 +14,17 @@ import { ErrorView } from "./error-view";
  * never render raw thrown values. All boundary copy is resource-driven
  * (COU-253); statusText and thrown messages remain dynamic content.
  *
- * A 403 is answered by `ForbiddenView` instead (COU-275, S6): the server denied the
- * action, which is not a failure to retry or to report as "something went wrong".
+ * A 403 the action did not expect is not a failure to retry or to report as "something went
+ * wrong" (COU-275, S6), and since COU-274 it is not rendered in place either: the boundary
+ * navigates to `/forbidden`, so the URL matches what the person is reading and a reload keeps
+ * the same answer.
  */
 export function RouteErrorBoundary() {
   const { t } = useTranslation();
   const error = useRouteError();
 
   if (isForbiddenError(error)) {
-    return <ForbiddenView />;
+    return <Navigate to="/forbidden" replace />;
   }
 
   let title: string = t("error.genericTitle");

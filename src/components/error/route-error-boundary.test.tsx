@@ -19,6 +19,8 @@ function renderWithLoader(loader: () => unknown) {
       errorElement: <RouteErrorBoundary />,
       loader,
     },
+    // COU-274: a server 403 navigates here instead of rendering the view in place.
+    { path: "/forbidden", Component: () => <h1>Forbidden page</h1> },
   ]);
   render(<RouterProvider router={router} />);
 }
@@ -45,7 +47,7 @@ describe("RouteErrorBoundary", () => {
     expect(alert).toHaveTextContent("Network boom");
   });
 
-  it("renders the forbidden view for a 403 the action did not expect (COU-275, S6)", async () => {
+  it("sends a 403 the action did not expect to the forbidden page (COU-275, S6 / COU-274, S3)", async () => {
     renderWithLoader(() => {
       throw new DataFetchError("Request failed with status 403", {
         status: 403,
@@ -53,11 +55,10 @@ describe("RouteErrorBoundary", () => {
       });
     });
 
-    const alert = await screen.findByRole("alert");
-    const tConsole = i18n.getFixedT(null, "console");
-    expect(alert).toHaveTextContent(tConsole("forbidden.title"));
-    expect(alert).toHaveTextContent(tConsole("forbidden.message"));
-    expect(alert).not.toHaveTextContent("Request failed with status 403");
+    // The generic error copy must never absorb a denial, and neither must the raw message.
+    expect(await screen.findByRole("heading", { name: "Forbidden page" })).toBeInTheDocument();
+    expect(screen.queryByText("Request failed with status 403")).toBeNull();
+    expect(screen.queryByText(i18n.t("error.genericTitle"))).toBeNull();
   });
 
   it("normalizes a raw thrown error into the generic title", async () => {
