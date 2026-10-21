@@ -71,7 +71,7 @@ frontend-standard-project/
 | `src/components/error/` | Error presentation + boundary | `route-error-boundary.tsx` |
 | `src/components/ui/` | shadcn/ui primitives, owned by this repo | `button.tsx` |
 | `src/features/<feature>/` | One folder per business capability | `src/features/auth/login-form.tsx`, `src/features/landing/landing-page.tsx` |
-| `src/features/authorization/` | Permission vocabulary and gates: `hasPermission`, `usePermissions`, `useCan`, `<Can>`, `ForbiddenView` | `permissions.ts` |
+| `src/features/authorization/` | Permission vocabulary and gates: `hasPermission`, `usePermissions`, `useCan`, `<Can>`, `ForbiddenView`, and the route guards `RequireAuth` / `RequirePermission` | `permissions.ts` |
 | `src/features/console/` | Console shell and navigation: `DashboardLayout`, the sidebar/topbar, the manifest and the permission-filtered `<ConsoleNav>` | `dashboard-layout.tsx` |
 | `src/hooks/` | Shared, cross-feature hooks | `use-focus-management.ts` |
 | `src/lib/` | Infrastructure: errors, query client, env, links, utils, persisted preferences (`lib/theme`, `lib/ui`) | `errors.ts`, `links.ts` |

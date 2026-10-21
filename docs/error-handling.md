@@ -47,15 +47,25 @@ export const router = createBrowserRouter([
   },
   {
     path: "/app",
-    Component: DashboardLayout,
+    element: (
+      <RequireAuth>
+        <DashboardLayout />
+      </RequireAuth>
+    ),
     errorElement: <RouteErrorBoundary />,
     children: [{ index: true, Component: ConsolePlaceholder }],
   },
+  { path: "/forbidden", Component: ForbiddenPage, errorElement: <RouteErrorBoundary /> },
 ]);
 ```
 
 Every layout route declares its own `errorElement`, so a crash inside the console keeps the
 console's shell and a crash on the public site keeps the public one.
+
+The boundary has two exits, and neither is "something went wrong": a **403** (`isForbiddenError`,
+`UA-SEC-002`) navigates to `/forbidden`, because a denial is an answer, not a failure to retry; and
+a route guard (`RequireAuth`, `RequirePermission`) never throws at all — it redirects before the
+protected route renders, so an authorization decision cannot end up in the error path.
 
 `RouteErrorBoundary` reads `useRouteError()`, distinguishes React Router responses
 (`isRouteErrorResponse`) from app errors, normalizes both, and renders `ErrorView`.
