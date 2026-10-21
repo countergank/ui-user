@@ -3,15 +3,15 @@ priority: P1
 category: bundle-loading
 ---
 
-# Preload Resources on Hover or Focus
+# Prefetch Likely-Next Resources on Hover or Focus
 
-**Do**: Use `<link rel="preload">` or dynamic `import()` on hover/focus for routes or resources the user is likely to navigate to next. This bridges the gap between prefetch (eager) and on-demand (lazy).
+**Do**: Use `<link rel="prefetch">` or dynamic `import()` on hover/focus for routes or resources the user is likely to navigate to next. This bridges the gap between eager loading and on-demand (lazy) loading. Reserve `<link rel="preload">` for critical resources needed on the current page (fonts, hero images, critical CSS).
 
-**Avoid**: Preloading every possible next page on mount. Using `prefetch` for critical above-the-fold resources (use `preload` instead).
+**Avoid**: Prefetching every possible next page on mount. Using `preload` for likely-next navigation — `preload` is for critical same-page resources; `prefetch` is for likely-next navigation.
 
 **Example**:
 ```tsx
-// Correct: preload on hover for perceived speed
+// Correct: prefetch on hover for perceived speed
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
   const handleMouseEnter = () => {
     const link = document.createElement("link");
@@ -27,7 +27,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   );
 }
 
-// Correct: resource hints in HTML
+// Correct: preload critical same-page resources; prefetch likely-next ones
 <link rel="preload" href="/fonts/inter.woff2" as="font" crossorigin />
 <link rel="preconnect" href="https://api.example.com" />
 ```

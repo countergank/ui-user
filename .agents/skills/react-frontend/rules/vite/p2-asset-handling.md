@@ -23,6 +23,11 @@ function Header() {
   return <Logo aria-label="Company logo" />;
 }
 
+// The named ReactComponent export requires exportType: "named" in the
+// vite-plugin-svgr configuration (vite.config.ts) — without it the import
+// above resolves to a URL string, not a component:
+//   svgr({ exportType: "named" })
+
 // Correct: public/ for assets that need stable URLs
 // /favicon.ico served from public/ without hashing
 <link rel="icon" href="/favicon.ico" />

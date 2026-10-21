@@ -15,11 +15,13 @@ category: performance
 import { cache } from "react";
 
 const getUser = cache(async (id: string) => {
-  const res = await fetch(`/api/users/${id}`, {
-    next: { revalidate: 60 }, // HTTP cache for 60s
-  });
+  const res = await fetch(`/api/users/${id}`);
   return res.json();
 });
+// HTTP caching: the browser caches `fetch` responses per their
+// Cache-Control headers (e.g. `Cache-Control: max-age=60` from the API).
+// For cross-render deduplication and stale-while-revalidate semantics,
+// use TanStack Query with staleTime/gcTime (see p3-parallel-fetching.md).
 
 // Both calls share the same fetch result
 function UserProfile({ id }: { id: string }) {

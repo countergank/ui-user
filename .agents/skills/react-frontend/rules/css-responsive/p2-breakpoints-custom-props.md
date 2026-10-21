@@ -3,9 +3,9 @@ priority: P2
 category: css-responsive
 ---
 
-# Use CSS Custom Properties for Breakpoints
+# Centralize Breakpoint Values
 
-**Do**: Define breakpoint values as CSS custom properties for consistency and themeability. Use `@media` with `var()` references or a preprocessor mixin that reads from the same source.
+**Do**: Define breakpoint values as CSS custom properties for consistency and themeability. Note the real mechanism: media queries cannot read `var()` — they require literal lengths — so custom properties carry the values inside rules only (or feed a preprocessor/CSS-in-JS mixin that emits literal `@media` queries from the same source).
 
 **Avoid**: Hardcoded breakpoint values scattered across files. Inconsistent breakpoint names (`768px` vs `767px` vs `sm`).
 
@@ -19,7 +19,8 @@ category: css-responsive
   --bp-xl: 1280px;
 }
 
-/* Usage with CSS-in-JS or preprocessors */
+/* Media queries use literal lengths (var() is invalid in @media);
+   --bp-* tokens document the values consumed inside rules */
 @media (min-width: 768px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);

@@ -14,7 +14,7 @@ category: react
 // Correct: defer expensive search filtering
 function SearchPage() {
   const [query, setQuery] = useState("");
-  const [deferredQuery, setDeferredQuery] = useDeferredValue(query);
+  const deferredQuery = useDeferredValue(query);
   const results = useSearch(deferredQuery); // expensive computation
 
   return (

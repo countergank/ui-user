@@ -5,7 +5,7 @@ category: accessibility
 
 # Provide Minimum Touch Target Sizes
 
-**Do**: Ensure interactive elements have a minimum target size of 24×24px (WCAG 2.5.8 Level AA). Use padding, min-width, and min-height to expand small targets without changing visual design.
+**Do**: Ensure interactive elements have a minimum target size of 24×24px (WCAG 2.5.8 Level AA). This 24px minimum is the normative floor; 44×44px is the recommended target (WCAG 2.5.5 Level AAA). Use padding, min-width, and min-height to expand small targets without changing visual design. See `rules/css-responsive/p1-touch-friendly.md` for the recommended 44px touch-target guidance.
 
 **Avoid**: Placing interactive elements closer than 24px apart. Using tiny icon-only buttons without padding.
 

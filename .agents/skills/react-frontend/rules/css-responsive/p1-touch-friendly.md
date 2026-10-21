@@ -5,7 +5,7 @@ category: css-responsive
 
 # Design Touch-Friendly Interfaces
 
-**Do**: Provide a minimum 44×44px tap target for all interactive elements on touch devices. Use `touch-action: manipulation` to eliminate the 300ms tap delay on buttons and links.
+**Normative minimum**: interactive elements must have a target size of at least 24×24px (WCAG 2.5.8 Level AA). **Recommended target**: aim for 44×44px (WCAG 2.5.5 Level AAA) for all interactive elements on touch devices. Use `touch-action: manipulation` to eliminate the 300ms tap delay on buttons and links. See `rules/accessibility/p1-target-size.md` for the normative 24px rule.
 
 **Avoid**: Small tap targets that require precise finger placement. Using `touch-action: none` on interactive elements (breaks touch).
 

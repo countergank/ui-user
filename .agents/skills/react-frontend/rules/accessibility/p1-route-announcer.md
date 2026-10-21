@@ -11,8 +11,9 @@ category: accessibility
 
 **Example**:
 ```tsx
-// Use the RouteAnnouncer asset template
-import { RouteAnnouncer } from "@/assets/RouteAnnouncer";
+// Copy assets/RouteAnnouncer.tsx from this skill into your app as
+// src/components/RouteAnnouncer.tsx, then import:
+import { RouteAnnouncer } from "@/components/RouteAnnouncer";
 
 function App() {
   const location = useLocation();

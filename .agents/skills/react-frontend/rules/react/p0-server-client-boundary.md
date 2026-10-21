@@ -5,6 +5,8 @@ category: react
 
 # Separate Server and Client Component Boundaries
 
+> **Applies only to React Server Components frameworks** (Next.js App Router or equivalent). In a Vite SPA this rule does not apply: every component is a client component and the Server/Server Component APIs below do not exist.
+
 **Do**: Mark components that use browser APIs, state, or effects with `"use client"` at the top. Keep server components free of client-only imports.
 
 **Avoid**: Mixing server and client logic in the same file. Importing client-only libraries (useState, useEffect, window, document) in server components.
