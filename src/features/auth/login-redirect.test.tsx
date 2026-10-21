@@ -91,7 +91,8 @@ describe("login redirect", () => {
 
     await submitValidCredentials();
 
-    expect(await screen.findByTestId("location")).toHaveTextContent("/");
+    // ADR-13: the console is the post-login destination, not the public home.
+    expect(await screen.findByTestId("location")).toHaveTextContent(/^\/app$/);
   });
 
   it("never follows a hostile destination", async () => {
@@ -101,7 +102,8 @@ describe("login redirect", () => {
     await submitValidCredentials();
 
     await waitFor(() => {
-      expect(screen.getByTestId("location")).toHaveTextContent(/^\/$/);
+      // The hostile destination is dropped, and the fallback is still the console.
+      expect(screen.getByTestId("location")).toHaveTextContent(/^\/app$/);
     });
   });
 

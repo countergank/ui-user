@@ -6,10 +6,10 @@
  * anything else — another origin, a protocol-relative form, a scheme, a relative
  * fragment, an embedded control character — falls back to the default view.
  *
- * No route guard exists yet (U05), so today nothing produces this parameter; the form
- * honours it when a future guard or a shared link starts providing one.
+ * ADR-13 moved the destination from `/` to `/app`: `/` is the informational public home,
+ * so landing there after authenticating would hide the console the user just signed in for.
  */
-export const DEFAULT_REDIRECT = "/";
+export const DEFAULT_REDIRECT = "/app";
 
 /**
  * Browsers treat `\` as `/` in URLs, so a backslash is a path-traversal vector too, and
