@@ -189,6 +189,20 @@ export const pt: {
       audit: "Auditoria",
       settings: "Configurações",
     },
+    shell: {
+      title: "Console Countergank",
+      footerLabel: "Countergank User — console de administração",
+      expandSidebar: "Expandir a navegação",
+      collapseSidebar: "Recolher a navegação",
+      openMenu: "Abrir o menu de navegação",
+      userMenu: "Menu do usuário",
+      profile: "Meu perfil",
+      signOut: "Sair",
+    },
+    placeholder: {
+      title: "Ainda não construída",
+      body: "O shell do console está pronto. Esta seção chega com o seu próprio ticket.",
+    },
     forbidden: {
       title: "Acesso negado",
       message:

@@ -6,6 +6,7 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 
+import { DashboardLayout } from "@/features/console/dashboard-layout";
 import { i18n } from "@/lib/i18n";
 
 import { Component as AboutRoute } from "./about-route";
@@ -17,11 +18,27 @@ describe("routes", () => {
   it("registers the public layout for the informational pages, and login as a sibling", () => {
     // ADR-13: `/` and `/about` are the public site; `/login` keeps its own layout
     // because a gate with site chrome above it is not what COU-281 approved.
-    expect(router.routes.map((route) => route.path)).toEqual(["/", "/login"]);
+    expect(router.routes.map((route) => route.path)).toEqual(["/", "/login", "/app", "/profile"]);
     expect(router.routes[0].children?.map((route) => route.path ?? "index")).toEqual([
       "index",
       "about",
     ]);
+  });
+
+  it("mounts the console layout under /app and /profile, not the public one", () => {
+    // COU-278 / ADR-13: the split is at route level, not a conditional inside one
+    // component, so the public pages can never inherit the console chrome. The data
+    // router stores a `Component` as an `element`, so the check reads `element.type`.
+    const layoutOf = (path: string) => {
+      const route = router.routes.find((candidate) => candidate.path === path);
+      const element = route?.element as { type?: unknown } | undefined;
+
+      return element?.type;
+    };
+
+    expect(layoutOf("/app")).toBe(DashboardLayout);
+    expect(layoutOf("/profile")).toBe(DashboardLayout);
+    expect(layoutOf("/")).not.toBe(DashboardLayout);
   });
 
   it("renders the lazy login route component", () => {

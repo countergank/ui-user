@@ -32,7 +32,7 @@ frontend-standard-project/
 │  ├─ features/
 │  │  ├─ auth/                  # login feature: page, form, schema, api.ts, hooks/
 │  │  ├─ authorization/         # permissions: hasPermission, usePermissions, useCan, <Can>, ForbiddenView
-│  │  ├─ console/               # console navigation manifest + permission-filtered nav
+│  │  ├─ console/               # console shell, navigation manifest + permission-filtered nav
 │  │  └─ landing/               # informational public home (COU-310, ADR-13)
 │  │     └─ components/         # hero, feature grid, quickstart, stack badges
 │  ├─ hooks/                    # shared hooks (use-focus-management)
@@ -41,7 +41,7 @@ frontend-standard-project/
 │  ├─ stores/                   # Zustand client/UI state (v5: createStore + bound hooks)
 │  ├─ styles/                   # Tailwind entry + design tokens
 │  ├─ test/                     # test setup + axe instrumentation
-│  ├─ app-shell.tsx             # layout shell (landmarks, skip link)
+│  ├─ public-layout.tsx         # public site layout (landmarks, skip link, nav)
 │  ├─ main.tsx                  # bootstrap: QueryProvider + RouterProvider
 │  └─ vite-env.d.ts
 ├─ .editorconfig / .nvmrc / .gitignore / .dockerignore
@@ -72,9 +72,9 @@ frontend-standard-project/
 | `src/components/ui/` | shadcn/ui primitives, owned by this repo | `button.tsx` |
 | `src/features/<feature>/` | One folder per business capability | `src/features/auth/login-form.tsx`, `src/features/landing/landing-page.tsx` |
 | `src/features/authorization/` | Permission vocabulary and gates: `hasPermission`, `usePermissions`, `useCan`, `<Can>`, `ForbiddenView` | `permissions.ts` |
-| `src/features/console/` | Console navigation: the manifest and the permission-filtered `<ConsoleNav>` | `navigation.ts` |
+| `src/features/console/` | Console shell and navigation: `DashboardLayout`, the sidebar/topbar, the manifest and the permission-filtered `<ConsoleNav>` | `dashboard-layout.tsx` |
 | `src/hooks/` | Shared, cross-feature hooks | `use-focus-management.ts` |
-| `src/lib/` | Infrastructure: errors, query client, env, links, utils | `errors.ts`, `links.ts` |
+| `src/lib/` | Infrastructure: errors, query client, env, links, utils, persisted preferences (`lib/theme`, `lib/ui`) | `errors.ts`, `links.ts` |
 | `src/routes/` | Router definition + lazy route modules | `landing-route.tsx` |
 | `src/stores/` | Zustand client/UI state: vanilla `createStore` + `initialState` + selectors + bound hook | `use-ui-store.ts` |
 | `src/styles/` | Tailwind entry + design tokens (light/dark) | `tokens.css` |

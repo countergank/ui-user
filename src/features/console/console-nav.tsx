@@ -21,7 +21,12 @@ function navLinkClass({ isActive }: { isActive: boolean }): string {
   }`;
 }
 
-export function ConsoleNav() {
+interface ConsoleNavProps {
+  /** Fired after a section link is activated; the mobile drawer closes on it. */
+  onNavigate?: () => void;
+}
+
+export function ConsoleNav({ onNavigate }: ConsoleNavProps = {}) {
   const { t } = useTranslation("console");
   const { permissions } = usePermissions();
   const items = visibleNavItems(CONSOLE_NAV, permissions);
@@ -31,7 +36,12 @@ export function ConsoleNav() {
       <ul className="flex flex-col gap-1">
         {items.map((item) => (
           <li key={item.to}>
-            <NavLink to={item.to} end={item.to === "/app"} className={navLinkClass}>
+            <NavLink
+              to={item.to}
+              end={item.to === "/app"}
+              className={navLinkClass}
+              onClick={onNavigate}
+            >
               {t(item.labelKey)}
             </NavLink>
           </li>
