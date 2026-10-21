@@ -43,11 +43,11 @@ en `src/routes/guards.test.tsx` ni en `require-auth.test.tsx` / `require-permiss
 |---|---|---|---|---|
 | T1 | `loginDestination()` compartido; `RequireAuth` lo usa (un solo encoding) | S1, S5 | inline | f9fb7df |
 | T2 | Un 403 sin sesión va a login con la ruta preservada | S1 | inline | f9fb7df |
-| T3 | `usePermissions` expone `isError` + `refetch`; la guarda muestra error reintentable, no `/forbidden` | S2 | inline | pendiente |
+| T3 | `usePermissions` expone `isError` + `refetch`; la guarda muestra error reintentable, no `/forbidden` | S2 | inline | 4d723ac |
 | T4 | `SessionExpiryBridge` conserva la ruta al expirar | S3 | inline | f9fb7df |
-| T5 | Criterio explícito y testeado para rutas fuera del manifiesto | S4 | inline | pendiente |
-| T6 | Revisión de R3-1/R3-2/R3-3 con disposición escrita | S5 | inline | pendiente |
-| T7 | Gate completo (`make ci`) | S7 | inline | pendiente |
+| T5 | Criterio explícito y testeado para rutas fuera del manifiesto | S4 | inline | 4d723ac |
+| T6 | Revisión de R3-1/R3-2/R3-3 con disposición escrita | S5 | inline | 4d723ac |
+| T7 | Gate completo (`make ci`) | S7 | inline | 4d723ac |
 
 ## Log
 
