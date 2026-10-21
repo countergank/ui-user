@@ -1,10 +1,8 @@
-// Route guards through the real router (COU-274, T6, T7 / S4, S5, S8).
-//
-// The four combinations the ticket asks for, asserted on the production route tree: same
-// router, same console shell, same guards. A guard that only works in a synthetic harness
-// would pass a component test and still let a deep link through here.
+// Route guards through the real router (COU-274 S4/S5/S8, COU-323): the four session ×
+// permission combinations plus expiry, on the production route tree — a guard that only works
+// in a synthetic harness would still let a deep link through.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it } from "vitest";
 
@@ -85,6 +83,26 @@ describe("route guards", () => {
     ).toBeInTheDocument();
     expect(memoryRouter.state.location.pathname).toBe("/app/users");
     expect(screen.getByRole("navigation", { name: tConsole("nav.label") })).toBeInTheDocument();
+  });
+
+  it("keeps the current route when the session expires in flight (COU-323)", async () => {
+    // COU-273's bridge owns the redirect on expiry, and it used to send everyone to the
+    // console root: the person lost the page they were reading.
+    startSession();
+    const memoryRouter = renderApp("/app/users", ["user:read"]);
+
+    expect(
+      await screen.findByRole("heading", { level: 1, name: tConsole("placeholder.title") }),
+    ).toBeInTheDocument();
+
+    act(() => {
+      sessionStore.getState().markExpired();
+    });
+
+    await waitFor(() => {
+      expect(memoryRouter.state.location.pathname).toBe("/login");
+    });
+    expect(memoryRouter.state.location.search).toBe("?redirect=%2Fapp%2Fusers");
   });
 
   it("with a session but without the permission, the section is /forbidden, not a 404", async () => {
