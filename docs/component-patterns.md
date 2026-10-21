@@ -55,6 +55,19 @@ src/features/auth/
 `useMutation` and the session. Feature components consume those hooks and never call `fetch`
 directly.
 
+## Comments
+
+A comment explains **why**, and only when the code cannot say it. The budget is three lines of
+prose; the `/**` and `*/` delimiters do not count, and neither do directives (`biome-ignore`,
+`eslint-disable`) or a one-line ADR/spec reference.
+
+Keep: a constraint that would otherwise be violated silently (a value that must match
+`index.html`, an ordering requirement), and a decision a reader would otherwise "fix".
+
+Drop: narrative rationale, multi-paragraph doc blocks on trivial functions, and anything that
+restates the code or the test name. If the reason needs four lines, it belongs in `docs/`, not
+next to the function.
+
 ## shadcn/ui primitives
 
 Shared primitives that encode the design system live in `src/components/ui/`. They are
