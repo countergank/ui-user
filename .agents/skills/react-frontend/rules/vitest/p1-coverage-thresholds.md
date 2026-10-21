@@ -15,12 +15,12 @@ category: vitest
 export default defineConfig({
   test: {
     coverage: {
-      provider: "istanbul",
+      provider: "v8",
       reporter: ["text", "lcov", "html"],
       thresholds: {
         lines: 80,
-        branches: 75,
-        functions: 85,
+        branches: 80,
+        functions: 80,
         statements: 80,
       },
       include: ["src/**/*.{ts,tsx}"],
@@ -29,3 +29,5 @@ export default defineConfig({
   },
 });
 ```
+
+**Single source of truth**: `assets/vitest.config.ts` in this skill. It uses the v8 provider with 80/80 thresholds (branches 80, functions 80, lines 80, statements 80). If this rule and the asset ever disagree, follow the asset and update this rule to match.

@@ -11,11 +11,15 @@ category: performance
 
 **Example**:
 ```tsx
-// Correct: defer after hydration
+// Correct: defer after hydration. The tracker URL comes from app config
+// (e.g. import.meta.env.VITE_TRACKER_SRC, set per environment) —
+// never hardcoded here.
+const TRACKER_SRC = import.meta.env.VITE_TRACKER_SRC;
+
 useEffect(() => {
   const id = requestIdleCallback(() => {
     const script = document.createElement("script");
-    script.src = "https://analytics.example.com/tracker.js";
+    script.src = TRACKER_SRC;
     script.async = true;
     document.head.appendChild(script);
   });

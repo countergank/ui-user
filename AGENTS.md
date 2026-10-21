@@ -31,6 +31,20 @@ contributors are governed by the same rules below.
 5. **No direct pushes** to `develop` / `staging` / `main` — every change lands via a PR
    that satisfies the CI gate (`quality-gates` + `e2e` + `commitlint`) and review.
 
+## Commits
+
+- **No `git commit` without an explicit authorization for that exact commit**, given by a
+  human in this session after seeing the diff. An approved plan or an authorized ODD feature
+  does not authorize any commit.
+- Before asking: show `git status --short` and `git diff --stat`, state the exact message,
+  then stop and wait for a yes.
+- Never chain `git commit` with other commands; never `--amend`, `--no-verify` or `-a` without
+  authorization.
+- If a commit lands without authorization, report it immediately. Do not amend or hide it.
+
+`.husky/pre-commit` rejects every commit unless `GIT_COMMIT_APPROVED=1` is set. Set it only on
+the exact command that executes an explicit human yes.
+
 ## Skills mapping (authoritative at `.atl/skill-registry.md`)
 
 | Work area | Skill |

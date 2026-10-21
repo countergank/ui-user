@@ -16,15 +16,25 @@ function Comment({ text }: { text: string }) {
   return <p>{text}</p>;
 }
 
-// Correct: sanitize when HTML is required
+// Correct: the single audited escape hatch for genuinely unavoidable raw
+// HTML. Keep it in one module; it sanitizes with DOMPurify, and only the
+// sanitized return value may ever reach React's raw-HTML prop
+// (dangerouslySetInnerHTML) inside that helper.
 import DOMPurify from "dompurify";
-function RichContent({ html }: { html: string }) {
-  return <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(html) }} />;
+
+export function sanitizeHtml(dirty: string): string {
+  return DOMPurify.sanitize(dirty, { USE_PROFILES: { html: true } });
 }
 
-// Wrong: XSS vulnerability
+// Usage: pass only sanitizeHtml(output) to the raw-HTML escape hatch —
+// never raw user or model output.
+
+// Wrong: building HTML strings from user input and rendering them without
+// sanitization (XSS). Any path where an unsanitized string reaches the
+// raw-HTML prop is a vulnerability.
 function UserBio({ bio }: { bio: string }) {
-  return <div dangerouslySetInnerHTML={{ __html: bio }} />;
+  const markup = `<p>${bio}</p>`; // unsanitized interpolation
+  return renderRawHtml(markup); // XSS sink
 }
 ```
 

@@ -2,6 +2,9 @@
 name: react-frontend
 description: "Trigger: react, typescript, vite, vitest, frontend, spa, component, hook, css, a11y, accessibility, wcag. Modern React 19 frontend development with TypeScript 5, Vite, and Vitest — 87 WCAG 2.2-compliant rules across 10 categories."
 license: MIT
+permissions:
+  - read-files
+  - write-files
 metadata:
   author: countergank
   version: "1.0.0"
@@ -25,7 +28,7 @@ Activate when building or modifying React SPAs: scaffolding components, writing 
 | P0 | composition | 2 | Compound components, single responsibility |
 | P0 | bundle-loading | 1 | Dynamic imports |
 | P0 | ux-design-tokens | 1 | State coverage |
-| P1 | react | 6 | Refs, memoization, transitions, error boundaries, Suspense |
+| P1 | react | 6 | Refs, memoization, transitions, effect cleanup, lazy state init |
 | P1 | typescript | 4 | Readonly props, error instances, nullish coalescing, as const |
 | P1 | accessibility | 6 | Color contrast, target size, reduced motion, route announcer |
 | P1 | vite | 2 | Build optimization, HMR config |
@@ -58,7 +61,7 @@ Activate when building or modifying React SPAs: scaffolding components, writing 
 
 1. **Agent loads this SKILL.md first** — the priority table identifies which categories apply to the current task.
 2. **Navigate `rules/<category>/` by priority** — start with `p0-*.md` files (always loaded), then `p1-*.md` when context involves performance, testing, or advanced a11y.
-3. **Each rule file is self-contained** — read the Do/Avoid/Example, apply the pattern, move on. No need to load all files.
+3. **Each rule file is self-contained** — read the Do/Avoid/Example, apply the pattern, move on. No need to load all files. RSC-only rules (`rules/react/p0-server-client-boundary.md`, `rules/performance/p1-serialization-minimal.md`, `rules/performance/p1-react-cache-dedup.md`) are conditional: they apply only when the app uses a React Server Components framework (Next.js App Router or equivalent), not in a Vite SPA.
 4. **Reference `assets/` templates** when scaffolding new projects or updating build configuration.
 
 ## Quick Reference
