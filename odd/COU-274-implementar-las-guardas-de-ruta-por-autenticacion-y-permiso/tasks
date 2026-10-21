@@ -1,0 +1,28 @@
+# COU-274 — Implementar las guardas de ruta por autenticación y permiso
+
+Mirror of `odd/tasks/COU-274-implementar-las-guardas-de-ruta-por-autenticacion-y-permiso.md`.
+Read the feature doc first; this file only tracks task state and evidence.
+
+## Tasks
+
+- [x] T1 — `RequireAuth` (S1, S6).
+  - Evidence: `require-auth.tsx`; 3/3 en `require-auth.test.tsx` (sesión, anónimo con `?page=2`, expirado).
+- [x] T2 — `RequirePermission` sin parpadeo (S2, S9).
+  - Evidence: `require-permission.tsx`; 4/4 en `require-permission.test.tsx` (permiso, sin permiso → `/forbidden`, comodín, cargando sin children y con `aria-busy`).
+- [x] T3 — Página `/forbidden` del shell (S2, S7).
+  - Evidence: `forbidden-page.tsx` (un `h1` sr-only + `ForbiddenView`); ruta real, no 404.
+- [x] T4 — `RequireSection` desde el manifiesto (S2, S5).
+  - Evidence: `require-section.tsx` usa `activeNavItem(...).requiredPermission`; sin entrada en el manifiesto no exige permiso.
+- [x] T5 — 403 del servidor → `/forbidden` (S3, S4).
+  - Evidence: `RouteErrorBoundary` navega con `<Navigate to="/forbidden">`; test de COU-275 actualizado a la nueva expectativa.
+- [x] T6 — Integración en el router (S4).
+  - Evidence: `consoleRoute` (`RequireAuth` + `errorElement`) aplicado a `/app`, `/forbidden` y `/profile`; `routes.test.tsx` verifica la puerta por ruta.
+- [x] T7 — Cuatro combinaciones + destino completo (S8, S9).
+  - Evidence: `src/routes/guards.test.tsx` 4/4 sobre el router real; el round trip completo lo cubren `login-redirect.test.tsx` (destino válido y hostil).
+- [x] T8 — Gate + docs (S11).
+  - Evidence: `make ci` EXIT=0 (lint + typecheck + 457 tests con coverage sobre el umbral + build de producción); `docs/error-handling.md` y `docs/folder-structure.md` actualizados. Aviso de chunk >500 kB: preexistente.
+
+## Commits
+
+- `09d2241` — T1, T2, T3, T4, T6, T7 (guardas + rutas + tests).
+- `6228c88` — T5 (403 del servidor → `/forbidden`).
