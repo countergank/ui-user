@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 
+import { loginDestination } from "@/features/auth/login-destination";
 import { selectSessionStatus, useSession } from "@/lib/session/session-store";
 
 interface RequireAuthProps {
@@ -8,9 +9,9 @@ interface RequireAuthProps {
 }
 
 /**
- * Session gate for a route (COU-274, T1 / S1, S6): deep-link preservation, never the
- * authorization decision (ADR-13). The full destination survives in `?redirect=` for
- * `safe-redirect.ts`; `expired` counts as not authenticated — its tokens are gone.
+ * Session gate for a route (COU-274 S1/S6). `expired` counts as no session, and the destination
+ * travels whole in `?redirect=`; the session store hydrates synchronously, so the decision lands
+ * on the first render and protected content never flashes. Authorization stays server-side.
  */
 export function RequireAuth({ children }: RequireAuthProps) {
   const status = useSession(selectSessionStatus);
@@ -20,7 +21,5 @@ export function RequireAuth({ children }: RequireAuthProps) {
     return <>{children}</>;
   }
 
-  const destination = `${location.pathname}${location.search}${location.hash}`;
-
-  return <Navigate to={`/login?redirect=${encodeURIComponent(destination)}`} replace />;
+  return <Navigate to={loginDestination(location)} replace />;
 }

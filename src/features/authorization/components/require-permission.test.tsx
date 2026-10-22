@@ -1,13 +1,12 @@
-// RequirePermission (COU-274, T2 / S2, S9).
-//
-// The rule that breaks silently: while the profile is still in flight the guard renders
-// neither the content nor a decision.
+// RequirePermission (COU-274 S2/S9, COU-323): grant, denial, wildcard, loading and a failed
+// profile read — the last two are the ones that break silently when conflated.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { RouterProvider, createMemoryRouter, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { permissionsQueryKey } from "@/features/authorization/hooks/use-permissions";
+import { i18n } from "@/lib/i18n";
 import { initialSessionState, sessionStore } from "@/lib/session/session-store";
 
 import { RequirePermission } from "./require-permission";
@@ -32,7 +31,7 @@ function startSession() {
   });
 }
 
-function renderGuard(options: { permissions?: string[] | null; pending?: boolean } = {}) {
+function renderGuard(options: { permissions?: string[] | null; pending?: boolean | "fail" } = {}) {
   const { permissions = [], pending = false } = options;
 
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
@@ -48,7 +47,10 @@ function renderGuard(options: { permissions?: string[] | null; pending?: boolean
     });
   }
 
-  if (pending) {
+  if (pending === "fail") {
+    // A profile request that fails at the network layer: not the same answer as "denied".
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
+  } else if (pending) {
     // A profile request that never settles: the guard must not guess while it waits.
     vi.stubGlobal(
       "fetch",
@@ -109,6 +111,18 @@ describe("RequirePermission", () => {
     renderGuard({ permissions: ["*"] });
 
     expect(screen.getByRole("heading", { name: "Users section" })).toBeInTheDocument();
+  });
+
+  it("reports a failed profile request as an error, not as a denial (COU-323)", async () => {
+    // A network failure proves nothing about permissions: answering `/forbidden` would tell
+    // the person their grant is gone when the truth is that the answer never arrived.
+    renderGuard({ permissions: null, pending: "fail" });
+
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent(i18n.t("error.dataFetchTitle"));
+    expect(alert).toHaveTextContent(i18n.t("error.retry"));
+    expect(screen.queryByRole("heading", { name: "Forbidden page at /forbidden" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Users section" })).toBeNull();
   });
 
   it("renders neither the content nor a verdict while the profile is loading", () => {

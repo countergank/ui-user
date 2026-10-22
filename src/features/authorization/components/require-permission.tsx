@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Navigate } from "react-router-dom";
 
+import { ErrorView } from "@/components/error/error-view";
+
 import { usePermissions } from "../hooks/use-permissions";
 import { hasPermission } from "../permissions";
 
@@ -12,13 +14,13 @@ interface RequirePermissionProps {
 }
 
 /**
- * Permission gate for a route (COU-274, T2 / S2, S9). While the profile is in flight it
- * renders a busy indicator and **nothing else**: flashing a protected section for one frame
- * is the failure this guards against, and a failed profile read fails closed onto `/forbidden`.
+ * Permission gate for a route (COU-274 S2/S9, COU-323). Loading renders a busy indicator and
+ * nothing else; a failed profile read is a retryable error (it proves nothing about the grant);
+ * a missing grant is `/forbidden`; the server stays the authority (ADR-13).
  */
 export function RequirePermission({ permission, children }: RequirePermissionProps) {
   const { t } = useTranslation();
-  const { permissions, isLoading } = usePermissions();
+  const { permissions, isLoading, isError, refetch } = usePermissions();
 
   if (isLoading) {
     return (
@@ -28,6 +30,16 @@ export function RequirePermission({ permission, children }: RequirePermissionPro
       <p role="status" aria-busy="true" className="text-muted-foreground">
         {t("shell.loading")}
       </p>
+    );
+  }
+
+  if (isError) {
+    return (
+      <ErrorView
+        title={t("error.dataFetchTitle")}
+        message={t("error.genericMessage")}
+        onRetry={refetch}
+      />
     );
   }
 

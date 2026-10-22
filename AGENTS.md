@@ -55,6 +55,15 @@ the exact command that executes an explicit human yes.
 | Environment branches, releases, hotfixes | `.agents/skills/git-environment-flow/SKILL.md` |
 | Linear ticket creation and linking | `.agents/skills/linear-tickets/SKILL.md` |
 
+## Comments
+
+Explain **why**, never what. Hard budget: **three lines of prose per comment** (the `/**` and
+`*/` delimiters do not count); `biome-ignore` / `eslint-disable` directives and a one-line
+ADR/spec reference are exempt. No narrative
+rationale, no multi-paragraph blocks on trivial functions, nothing that restates the code or
+the test name — if the reason needs more than three lines it belongs in `docs/`. Details:
+`docs/component-patterns.md` ("Comments").
+
 ## Stack (change only with an ADR in `docs/adr.md`)
 
 Node `>=22` · pnpm `9.15.9` · Vite 6 · React 19 · TypeScript (strict) · Tailwind + shadcn/ui ·

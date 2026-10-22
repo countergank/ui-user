@@ -14,18 +14,25 @@ export interface PermissionsResult {
   permissions: string[];
   /** True while the profile is still being fetched for an authenticated session. */
   isLoading: boolean;
+  /**
+   * True when the profile request failed (COU-323): a failure proves nothing about the grant,
+   * so a guard must report it as an error instead of answering "denied".
+   */
+  isError: boolean;
+  /** Retry the profile request, for the error state of a guard. */
+  refetch: () => void;
 }
 
 /**
- * Role and effective permissions of the current session (COU-275, T2 / S1). An anonymous
- * visitor asks nothing (a public surface never calls the API); a pending or failed profile
- * yields no permissions, failing closed; the server stays the authority (ADR-13).
+ * Role and effective permissions of the current session (COU-275 T2/S1). An anonymous visitor
+ * asks nothing and a failed read yields none: failing closed keeps the UI from offering what the
+ * server would reject, without ever deciding permissions here (ADR-13).
  */
 export function usePermissions(): PermissionsResult {
   const status = useSession(selectSessionStatus);
   const authenticated = status === "authenticated";
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: permissionsQueryKey,
     queryFn: fetchMe,
     enabled: authenticated,
@@ -35,5 +42,9 @@ export function usePermissions(): PermissionsResult {
     role: authenticated ? (data?.role ?? null) : null,
     permissions: authenticated ? (data?.permissions ?? []) : [],
     isLoading: authenticated && isLoading,
+    isError: authenticated && isError,
+    refetch: () => {
+      void refetch();
+    },
   };
 }
