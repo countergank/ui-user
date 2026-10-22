@@ -10,12 +10,8 @@ import { ThemeSwitcher } from "@/components/theme/theme-switcher";
 import { useFocusManagement } from "@/hooks/use-focus-management";
 
 /**
- * Layout of the public site (COU-310, T1 / ADR-13).
- *
- * The informational pages share a layout, but not the console's: no product navigation,
- * no session-expiry bridge and no user menu. What it does keep is the accessibility floor
- * the templates guarantee — one skip link, one named navigation, one `main` landmark, an
- * announced route change and focus moved to the content on navigation.
+ * Public-site layout (COU-310, T1 / ADR-13): shared by the informational pages, not the
+ * console. Keeps the a11y floor — skip link, named nav, `main` landmark, announced route.
  */
 
 interface PublicNavItem {

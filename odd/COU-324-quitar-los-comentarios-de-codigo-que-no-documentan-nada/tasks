@@ -23,3 +23,4 @@ Read the feature doc first; this file only tracks task state and evidence.
 - `8e86e76` — T2 (features).
 - `aff9586` — T1 (components, lib, stores, routes).
 - `18c4964` — T3 (test harness, e2e, configs).
+- commit siguiente — T3, archivos que faltaban (`src/hooks`, `src/public-layout.tsx`, `src/vite-env.d.ts`).

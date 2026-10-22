@@ -93,3 +93,7 @@ de #28**, o rebasear sobre `develop` una vez mergeado, para que la rama incluya 
 
 L8 — Entrega en 3 slices de comentarios + este commit de tracking: `8e86e76` features,
 `aff9586` components/lib/stores/routes, `18c4964` harness/e2e/configs.
+
+L9 — Tres archivos del shard C (`src/hooks/use-focus-management.ts`, `src/public-layout.tsx`,
+`src/vite-env.d.ts`) quedaron fuera del `git add` del slice 3; van en un commit propio en vez de
+amend, para no reescribir historia ya creada.
