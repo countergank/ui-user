@@ -1,0 +1,25 @@
+# COU-324 — Limpieza de comentarios
+
+Mirror of `odd/tasks/COU-324-quitar-los-comentarios-de-codigo-que-no-documentan-nada.md`.
+Read the feature doc first; this file only tracks task state and evidence.
+
+## Tasks
+
+- [x] T1 — Shard `src/components/**`, `src/lib/**`, `src/stores/**`, `src/routes/**`.
+  - Evidence: 38 archivos, sólo comentarios (verificado), ~110 líneas de prosa quitadas.
+- [x] T2 — Shard `src/features/**`.
+  - Evidence: 47 archivos, sólo comentarios (verificado), directivas y restricciones conservadas.
+- [x] T3 — Shard `src/test/**`, raíz de `src/`, `e2e/**`, configs.
+  - Evidence: 11 archivos, sólo comentarios (verificado); shims de jsdom conservados y comprimidos.
+- [ ] T4 — Los tres comentarios de la review de COU-323.
+  - Evidence: **diferido** — `src/features/console/require-section.test.tsx` sólo existe en el PR #28.
+- [x] T5 — Verificación: sólo líneas de comentario cambiadas.
+  - Evidence: 100 archivos, 0 líneas de código en el diff; 0 bloques de prosa >3 en `src/`.
+- [x] T6 — Gate completo (`make ci`).
+  - Evidence: `make ci` EXIT=0 (lint + typecheck + 463 tests con coverage + build). Aviso de chunk >500 kB: preexistente.
+
+## Commits
+
+- `8e86e76` — T2 (features).
+- `aff9586` — T1 (components, lib, stores, routes).
+- `18c4964` — T3 (test harness, e2e, configs).
