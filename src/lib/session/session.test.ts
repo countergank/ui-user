@@ -1,9 +1,6 @@
-// Tests for the session composition root (COU-281, T2).
-//
-// The manager and the HTTP client were built in COU-273 as independent pieces that were
-// never assembled: nothing produced a session, nothing read the token, nothing answered a
-// 401. This suite pins the three wires that make them one runtime, because a wrong wire
-// here is invisible until production returns 401s.
+// Tests for the session composition root (COU-281, T2): pins the three wires that make
+// the manager and the HTTP client one runtime, because a wrong wire here is invisible
+// until production returns 401s.
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { AppError } from "@/lib/errors";

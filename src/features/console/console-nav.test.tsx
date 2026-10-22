@@ -1,9 +1,7 @@
 // Console navigation suite (COU-275, T4 / S3, S4).
 //
-// The ticket's acceptance case lives here: a `user:read` visitor sees Users and nothing
-// else that needs a permission they do not hold, while `admin` (`*`) sees the whole
-// console. Assertions are on what a person can reach — links by accessible name — so a
-// hidden section cannot pass by being styled away.
+// Assertions are on what a person can reach — links by accessible name — so a hidden
+// section cannot pass by being styled away.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";

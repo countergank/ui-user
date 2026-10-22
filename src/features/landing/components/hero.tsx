@@ -6,12 +6,9 @@ import { Button } from "@/components/ui/button";
 import { docsUrl, repositoryUrl } from "@/lib/links";
 
 /**
- * Landing hero (COU-310, T10 / S13).
- *
- * The first screen has to answer three questions before a visitor scrolls: what is this,
- * who makes it, and where do I get it. The mark answers the second, the heading and
- * subtitle the first, and the two calls to action the third — no banner image, by the
- * owner's decision, so the copy carries the page.
+ * Landing hero (COU-310, T10 / S13). Answers, before a visitor scrolls: what is this
+ * (heading and subtitle), who makes it (the mark), where to get it (the two calls to
+ * action). No banner image, by decision — the copy carries the page.
  */
 export function LandingHero() {
   const { t } = useTranslation("landing");

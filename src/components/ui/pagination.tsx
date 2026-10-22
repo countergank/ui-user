@@ -23,10 +23,8 @@ const paginationNextVariants = cva("pr-2.5");
 const paginationEllipsisVariants = cva("flex h-9 w-9 items-center justify-center");
 
 /**
- * The landmark label is not read from i18n: `common.ui.pagination` ships the previous, next
- * and more-pages labels only, with no `ui.pagination.label` key (ADR-12, S7). Reported on
- * COU-271 rather than invented here, because the locale bundles are outside this slice.
- * `props` spreads after the default, so a caller can pass its own `aria-label`.
+ * The landmark label comes from `ui.pagination.label` (ADR-12). `props` spreads after the
+ * default, so a caller can override it with its own `aria-label`.
  */
 function Pagination({ className, ...props }: React.ComponentPropsWithoutRef<"nav">) {
   const { t } = useTranslation();

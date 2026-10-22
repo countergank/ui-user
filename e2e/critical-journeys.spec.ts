@@ -1,7 +1,4 @@
-// e2e/critical-journeys.spec.ts
-// Critical user journeys of the public surface (COU-310, ADR-13): landmarks, keyboard
-// navigation through the skip link and the site navigation, route announcements,
-// reduced-motion handling and axe scans.
+// Critical user journeys of the public surface (COU-310, ADR-13).
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import type { Locator, Page } from "@playwright/test";
@@ -30,13 +27,9 @@ async function expectFocused(locator: Locator) {
     .toBe(true);
 }
 
-// Headless Chromium does not always grant the page window focus after
-// page.goto(), which makes Tab traversal non-deterministic (the first Tab can
-// land anywhere). Making body programmatically focusable and focusing it before
-// walking the tab order makes `document.activeElement` traversal deterministic
-// and headless-safe. The tabindex stays a live-DOM test-only change: it is
-// never persisted to source and does not alter the shipped tab order. The
-// skip-link wait also guarantees React has committed before the first Tab.
+// Headless Chromium does not always grant the page window focus after page.goto(), making
+// Tab traversal non-deterministic. Focus a programmatically focusable body first (the
+// tabindex is a test-only change, never persisted) and wait for the skip link so React commits.
 async function focusDocumentHeadless(page: Page) {
   await page.goto("/");
   await page.locator(".skip-link").waitFor();
@@ -57,7 +50,6 @@ test.describe("public surface journeys", () => {
     await expect(publicNav(page)).toBeVisible();
     await expect(page.getByRole("main")).toBeVisible();
     await expect(page.getByRole("contentinfo")).toBeVisible();
-    // The informational home explains how to run the project.
     await expect(page.getByText("docker compose up")).toBeVisible();
   });
 
@@ -108,7 +100,7 @@ test.describe("layout journey", () => {
     await page.goto("/about");
     await expect(page.getByRole("heading", { level: 1, name: ABOUT_TITLE })).toBeVisible();
 
-    // Real layout assertion: jsdom cannot do it, and this is the defect the owner reported.
+    // Real layout assertion; jsdom cannot perform it.
     const gap = await page.evaluate(() => {
       const footer = document.querySelector("footer");
       if (!footer) throw new Error("the page has no footer");
@@ -134,7 +126,7 @@ test.describe("motion journey", () => {
         return Math.round(parseFloat(value) * 1000);
       });
 
-    // Default: the skip-link transition (0.1s) is intact.
+    // Default: the 0.1s transition declared in src/styles/index.css is still applied.
     expect(await transitionMs()).toBeGreaterThanOrEqual(100);
 
     // Reduced motion: universal 0.01ms override wins (WCAG 2.2 reduced-motion).

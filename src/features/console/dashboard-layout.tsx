@@ -12,18 +12,9 @@ import { ConsoleTopbar } from "./components/console-topbar";
 import { CONSOLE_NAV, type ConsoleNavItem, activeNavItem } from "./navigation";
 
 /**
- * The console shell (COU-278, T1-T6 / S1-S14).
- *
- * ADR-13 split the app into two surfaces at route level, so this is the console's only
- * layout: `/app/*` and `/profile` render inside it, and the public pages cannot inherit its
- * chrome. What it adds to the console is a sidebar, a topbar and a content column with one
- * width and one padding, so no section page has to re-decide either.
- *
- * What it deliberately keeps from the template shell is the accessibility floor (S4): the
- * skip link is still the first focusable element, `main` is still the single content
- * landmark with `#main-content`, `useFocusManagement` still parks focus after a client-side
- * navigation, and `RouteAnnouncer` still announces the new page — now with the section's
- * name from the manifest instead of the template's titles.
+ * The console shell (COU-278, T1-T6 / S1-S14): the console's only layout (ADR-13), so
+ * `/app/*` and `/profile` render inside it and public pages cannot inherit its chrome.
+ * It keeps the template's accessibility floor (S4) unchanged.
  */
 export function DashboardLayout() {
   const location = useLocation();

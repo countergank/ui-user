@@ -21,7 +21,6 @@ const breadcrumbSeparatorVariants = cva("[&>svg]:size-3.5");
 const breadcrumbEllipsisVariants = cva("flex h-9 w-9 items-center justify-center");
 
 /**
- * The landmark label is the one string in this folder that is not read from i18n:
  * The landmark label is copy a screen-reader user hears, so it comes from the bundle
  * (`ui.breadcrumb.label`, ADR-12). `props` spreads after the default, so a caller with a
  * more specific landmark name can still override it.
@@ -68,9 +67,8 @@ BreadcrumbLink.displayName = "BreadcrumbLink";
 
 /**
  * The current page is text, not a link: `aria-current="page"` makes assistive technology
- * announce "current page" (the WAI-ARIA breadcrumb pattern) without the fake `link` role
- * the shadcn source adds — an interactive role on a non-focusable span is an a11y lint
- * failure here and would advertise a tab stop that does not exist.
+ * announce "current page" (WAI-ARIA breadcrumb pattern) without the fake `link` role the
+ * shadcn source adds, which would advertise a tab stop that does not exist.
  */
 const BreadcrumbPage = React.forwardRef<HTMLSpanElement, React.ComponentPropsWithoutRef<"span">>(
   ({ className, ...props }, ref) => (

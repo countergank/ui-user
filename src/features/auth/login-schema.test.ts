@@ -1,8 +1,4 @@
 // Login schema (COU-281, T4 / S10).
-//
-// The schema is a factory because its messages are localized: a field error is rendered
-// by `FormMessage` as the string zod produced, and that string is what `aria-describedby`
-// points at. A schema built once at module load would freeze one language forever.
 import { describe, expect, it } from "vitest";
 
 import { i18n } from "@/lib/i18n";

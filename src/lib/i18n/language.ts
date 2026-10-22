@@ -1,12 +1,9 @@
 import { type AppLanguage, languages } from "./resources";
 
 /**
- * Language preference persistence (COU-310, T9 / S12).
- *
- * The same shape as the theme preference in `src/lib/theme/theme.ts`: a namespaced key, a
- * read that fails closed to "no preference" when storage is blocked, and a write that
- * never throws. The i18n instance reads it during creation, so the first render already
- * uses the stored language instead of flashing English.
+ * Language preference persistence (COU-310, T9 / S12): same shape as the theme preference
+ * in `src/lib/theme/theme.ts` — a namespaced key, a read that fails closed when storage is
+ * blocked, and a write that never throws; the i18n instance reads it at creation.
  */
 export const LANGUAGE_STORAGE_KEY = "countergank.ui.language";
 

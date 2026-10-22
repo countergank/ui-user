@@ -1,10 +1,5 @@
 // Theme primitives (COU-270).
 //
-// The product has a THREE-state theme: an explicit `light`/`dark` choice, or
-// `system` which follows the OS. This module owns the vocabulary, the storage
-// boundary and the DOM side effect — and nothing else, so every branch is
-// directly unit-testable without a DOM.
-//
 // `index.html` inlines an equivalent pre-paint script (it cannot import this
 // module); keep the storage key, the preference vocabulary and the media query
 // in sync with it (`theme.test.ts` guards the drift).
@@ -22,10 +17,9 @@ export type ThemePreference = "system" | "light" | "dark";
 export type ResolvedTheme = "light" | "dark";
 
 /**
- * The order a one-button theme control cycles through: `light → dark → system`,
- * wrapping back to `light`. `light` leads because the default preference is
- * `system`, so the first activation lands on `light` — the most common answer to
- * "it is following the OS and I want to pin it".
+ * One-button cycle order: `light → dark → system`, wrapping back to `light`.
+ * `light` leads because `system` is the default, so the first activation pins
+ * `light`.
  */
 export const THEME_CYCLE: readonly ThemePreference[] = ["light", "dark", "system"];
 
@@ -78,11 +72,7 @@ export function resolveTheme(
   return preference;
 }
 
-/**
- * The preference a cycle control advances to, wrapping from the end of
- * {@link THEME_CYCLE} back to its start (`system` → `light`). Pure, so the cycle
- * order is unit-testable without rendering a button.
- */
+/** Wraps from the end of {@link THEME_CYCLE} back to its start (`system` → `light`). */
 export function nextPreference(current: ThemePreference): ThemePreference {
   const index = THEME_CYCLE.indexOf(current);
 

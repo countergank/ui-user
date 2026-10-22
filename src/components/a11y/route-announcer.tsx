@@ -6,10 +6,8 @@ interface RouteAnnouncerProps {
 }
 
 /**
- * Accessible route change announcer (a11y route-announcer rule / ARCH-6).
- * Uses `aria-live="polite"` to announce page transitions to screen reader
- * users. Mount once at the app root; the message updates after route changes.
- * Source: countergank react-frontend skill asset.
+ * Accessible route change announcer (a11y route-announcer rule / ARCH-6): announces page
+ * transitions to screen reader users via `aria-live="polite"`. Mount once at the app root.
  */
 export function RouteAnnouncer({ message }: RouteAnnouncerProps) {
   const [announced, setAnnounced] = useState("");

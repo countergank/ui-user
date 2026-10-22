@@ -14,7 +14,6 @@ import {
 import { sessionManager } from "@/lib/session/session";
 import { selectSessionUser, useSession } from "@/lib/session/session-store";
 
-/** First letters of the two names the API returns, for the avatar fallback. */
 function initialsOf(name: string | undefined, lastName: string | undefined): string {
   const initials = `${name?.[0] ?? ""}${lastName?.[0] ?? ""}`.trim();
 
@@ -22,15 +21,9 @@ function initialsOf(name: string | undefined, lastName: string | undefined): str
 }
 
 /**
- * The topbar's user menu (COU-278, T5 / S1).
- *
- * Two actions, and only two: the profile page (COU-285 fills it) and signing out. Logout is
- * **local-first** — `sessionManager.logout()` empties the store, the persisted session and
- * the query cache before touching the network (COU-273, S6) — so the navigation to `/login`
- * happens after it settles and never depends on the API answering.
- *
- * The trigger's accessible name is the action, not the initials: a two-letter avatar tells a
- * screen-reader user nothing about what opens.
+ * The topbar's user menu (COU-278, T5 / S1). Logout is **local-first**: the store, the
+ * persisted session and the query cache are emptied before the network call (COU-273, S6),
+ * so navigating to `/login` never depends on the API answering.
  */
 export function UserMenu() {
   const { t } = useTranslation("console");

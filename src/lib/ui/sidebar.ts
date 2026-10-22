@@ -1,9 +1,6 @@
-// Sidebar expansion storage (COU-278).
-//
-// "El sidebar colapsa y expande, y recuerda el estado" (S6) needs one decision persisted
-// across reloads. This module owns that boundary — the key, the vocabulary and the storage
-// failure policy — and nothing else, so the shell can be tested without storage and
-// storage can be tested without the shell. It mirrors `lib/theme/theme.ts` on purpose.
+// Sidebar expansion storage (COU-278): the key, the vocabulary and the storage
+// failure policy for "el sidebar recuerda el estado" (S6). Mirrors
+// `lib/theme/theme.ts` on purpose.
 
 /** `localStorage` key holding the console sidebar's expansion choice. */
 export const SIDEBAR_STORAGE_KEY = "countergank.ui.sidebar";
@@ -17,10 +14,8 @@ const DEFAULT_SIDEBAR_OPEN = true;
 
 /**
  * Read the persisted choice. Absent, corrupt or unreadable storage all resolve to the
- * default: a broken `localStorage` (private mode, blocked cookies) must never throw.
- *
- * The check is a positive match on the only value that means "collapsed", so an
- * unexpected literal can never accidentally hide the navigation.
+ * default: a broken `localStorage` must never throw. The check is a positive match on the
+ * only value that means "collapsed", so an unexpected literal cannot hide the navigation.
  */
 export function readStoredSidebarOpen(): boolean {
   try {

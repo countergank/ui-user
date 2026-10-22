@@ -9,9 +9,8 @@ interface ErrorViewProps {
 }
 
 /**
- * Accessible, reusable error presentation (ARCH-4, a11y).
- * Announced to screen readers via `role="alert"`, keeps focus/announcement
- * semantics, and exposes an optional retry action whose copy is
+ * Accessible, reusable error presentation (ARCH-4, a11y): announced via `role="alert"`,
+ * with focus/announcement semantics kept and an optional retry action whose copy is
  * resource-driven (COU-253).
  */
 export function ErrorView({ title, message, onRetry }: ErrorViewProps) {

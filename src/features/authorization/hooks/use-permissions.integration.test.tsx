@@ -1,8 +1,7 @@
 // `usePermissions` suite (COU-275, T2 / S1, S8).
 //
-// The real hook, the real HTTP client and MSW standing in for `api-user`: nothing here
-// stubs `fetchMe`, so a wire that breaks between the hook and the client fails the test
-// instead of passing behind a mock.
+// Real hook, real HTTP client, MSW standing in for `api-user`: nothing stubs `fetchMe`,
+// so a broken wire fails a test instead of passing behind a mock.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import { http, HttpResponse } from "msw";
@@ -35,10 +34,9 @@ const server = setupServer(
 );
 
 beforeAll(() => {
-  // MSW 3 answers `onUnhandledFrame` — v2 called it `onUnhandledRequest` — so an escaping
-  // request fails this suite instead of passing silently, which is what the header promises.
-  // Verified against msw 3.0.3: `lib/_chunks/shared-options.d.ts` documents exactly
-  // `server.listen({ onUnhandledFrame: "error" })`, and an unmatched request throws.
+  // MSW 3 renamed `onUnhandledRequest` to `onUnhandledFrame`; with "error" an unmatched
+  // request throws instead of passing silently. Verified against msw 3.0.3
+  // (`lib/_chunks/shared-options.d.ts` documents `onUnhandledFrame`).
   server.listen({ onUnhandledFrame: "error" });
 });
 

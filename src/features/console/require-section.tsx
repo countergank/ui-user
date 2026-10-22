@@ -10,15 +10,9 @@ interface RequireSectionProps {
 }
 
 /**
- * Section gate for the console (COU-274, T4 / S2).
- *
- * The manifest already knows which permission each section needs — that is what filters the
- * sidebar — so the route does not restate it. One lookup, one rule: a section cannot be
- * hidden from the navigation and still reachable by URL, and adding a section later is one
- * manifest entry rather than a second declaration that can drift.
- *
- * Paths with no manifest entry have no permission to enforce and fall through; the session
- * gate upstream has already answered the authentication question.
+ * Section gate for the console (COU-274, T4 / S2): the manifest already knows each
+ * section's permission, so the route does not restate it. A path with no manifest entry
+ * falls through — safe only because the session gate upstream answered authentication.
  */
 export function RequireSection({ children }: RequireSectionProps) {
   const { pathname } = useLocation();

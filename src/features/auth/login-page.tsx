@@ -5,12 +5,9 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { LoginForm } from "./login-form";
 
 /**
- * Login page shell (COU-281, T3).
- *
- * This is the only screen rendered outside `AppShell`: a login gate has no product
- * navigation, no skip link and no footer, so it brings its own `<main>` landmark. The
- * copy comes from the `auth` namespace (S4) and the layout is the centered `max-w-sm`
- * card the design asks for (S3). The form itself lives in `login-form.tsx`.
+ * Login page shell (COU-281, T3): the only screen rendered outside `AppShell` — a login
+ * gate has no product navigation — so it brings its own `<main>` landmark, with copy from
+ * the `auth` namespace (S4) and the centered `max-w-sm` card the design asks for (S3).
  */
 export function LoginPage() {
   const { t } = useTranslation("auth");

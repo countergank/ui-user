@@ -1,9 +1,6 @@
-// Sidebar persistence (COU-278, T3 / S6).
-//
-// "Recuerda el estado" is a storage contract, so it is asserted at the storage boundary the
-// same way the theme preference is (`lib/theme/theme.test.ts`): absent, corrupt and
-// unreadable storage all degrade to the default instead of throwing, and the value stored
-// is the bare literal the next boot reads back.
+// Sidebar persistence (COU-278, T3 / S6): a storage contract, asserted at the storage
+// boundary like the theme preference (`lib/theme/theme.test.ts`): absent, corrupt and
+// unreadable storage degrade to the default instead of throwing.
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { initialState, selectSidebarOpen, uiStore } from "@/stores/use-ui-store";

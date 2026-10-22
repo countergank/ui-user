@@ -9,20 +9,9 @@ import { RequireSection } from "@/features/console/require-section";
 import { PublicLayout } from "@/public-layout";
 
 /**
- * App router (ADR-4 / STACK-7, ADR-13, COU-274).
- * `createBrowserRouter` data router; per-route lazy modules via the router's
- * `lazy` (dynamic import) for code splitting (ARCH-5, bundle-001) and a
- * route-level errorElement wired to <RouteErrorBoundary> (ARCH-4).
- *
- * ADR-13 fixes the shape: two surfaces, split at route level.
- * - `/`, `/about` and `/login` are public and carry their own chrome.
- * - `/app/*`, `/forbidden` and `/profile` are the console: one shell (`DashboardLayout`),
- *   behind `RequireAuth`, with each section asking `RequireSection` for the permission the
- *   manifest already declares. The shell is imported eagerly because it wraps every console
- *   page.
- *
- * Sections under the console land on `ConsolePlaceholder` until their own ticket adds the
- * page (COU-289 onwards), so a manifest entry never resolves to a 404 inside the shell.
+ * App router (ADR-4 / STACK-7, ADR-13, COU-274): `createBrowserRouter` data router with
+ * per-route lazy modules (ARCH-5, bundle-001) and a route-level errorElement (ARCH-4).
+ * ADR-13 fixes the shape: two surfaces, split at route level; the console shell is eager.
  */
 const consoleRoute = {
   element: (

@@ -21,13 +21,9 @@ export interface UiActions {
 
 export type UiStore = UiState & UiActions;
 
-// Pure literal, deliberately free of import-time side effects: reading storage
-// here would leak state across tests. `startThemeSync()` and
-// `hydrateSidebarState()` perform hydration.
-//
-// The sidebar starts expanded (COU-278): a console that opens with its navigation
-// hidden makes every visit start with a click, so collapsing is the choice that has
-// to be remembered — not the default.
+// Pure literal, deliberately free of import-time side effects: reading storage here
+// would leak state across tests — `startThemeSync()` and `hydrateSidebarState()` hydrate.
+// The sidebar starts expanded (COU-278): collapsing is the choice that must be remembered.
 export const initialState: UiState = { sidebarOpen: true, theme: "system" };
 
 export const uiStore = createStore<UiStore>()((set, get) => ({

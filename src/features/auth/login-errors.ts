@@ -1,11 +1,9 @@
 import { AppError } from "@/lib/errors";
 
 /**
- * The four login failures the ticket enumerates (COU-281, S6-S8).
- *
- * They are account or rate conditions, never field validation, so all four render as one
- * form-level message under the form. Mapping lives here, pure, so the decision is
- * assertable without rendering anything.
+ * The four login failures (COU-281, S6-S8) are account or rate conditions, never field
+ * validation, so all four render as one form-level message. Mapping lives here, pure, so
+ * the decision is assertable without rendering anything.
  */
 export type LoginErrorKey =
   | "login.errors.invalidCredentials"

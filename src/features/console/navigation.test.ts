@@ -1,8 +1,7 @@
 // Manifest lookup (COU-278, T2 / S7).
 //
-// The breadcrumb and the route announcer both need "which section is this path in?". It is
-// pure, so the two rules that actually matter are pinned here: a detail page belongs to its
-// section, and the console root never swallows its own children.
+// The two rules that matter: a detail page belongs to its section, and the console root
+// never swallows its own children.
 import { describe, expect, it } from "vitest";
 
 import { CONSOLE_NAV, activeNavItem } from "./navigation";

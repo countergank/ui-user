@@ -1,10 +1,7 @@
 // Console shell suite (COU-278, T1-T9 / S1-S14).
 //
-// The shell is the only thing every console page has in common, so its guarantees are
-// asserted on the shell itself: landmarks and focus start (S4), a sidebar that collapses
-// and remembers it (S6), the active section (S7), the permission filter (S8), keyboard
-// reachability (S9), axe (S10) and both themes (S11). Assertions are on what a person can
-// reach — roles and accessible names — so a control styled away cannot pass.
+// Its guarantees are asserted on the shell itself, by what a person can reach — roles
+// and accessible names — so a control styled away cannot pass.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";

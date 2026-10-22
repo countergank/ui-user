@@ -81,9 +81,8 @@ describe("Tooltip", () => {
     await screen.findByRole("tooltip");
 
     // `region` is a page-level rule, and a floating layer portaled to <body> can never sit
-    // inside a landmark on a bare test page. The node it flags is Radix's own
-    // `[data-radix-popper-content-wrapper]`, not markup this primitive authors, so the
-    // rest of the ruleset runs against the whole document while that one is skipped.
+    // inside a landmark on a bare test page; the flagged node is Radix's own wrapper, not
+    // markup this primitive authors, so that one rule is skipped while the rest run.
     const results = await axe(document.body, { rules: { region: { enabled: false } } });
 
     expect(results).toHaveNoViolations();

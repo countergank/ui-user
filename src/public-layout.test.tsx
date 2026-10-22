@@ -1,9 +1,5 @@
-// Public layout tests (COU-310, T1 / S3, S8).
-//
-// The public surface is the opposite of the console shell: no product navigation, but the
-// same accessibility floor — one skip link, one main landmark, a named navigation and an
-// announced route change. These assertions are the contract the e2e suite repeats in a
-// real browser.
+// Public layout (COU-310 T1/S3/S8): no product navigation, same accessibility floor.
+// These assertions are the contract the e2e suite repeats in a real browser.
 import { render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, expect, it } from "vitest";

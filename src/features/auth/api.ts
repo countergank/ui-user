@@ -2,11 +2,9 @@ import { httpClient } from "@/lib/session/session";
 import type { AuthResponse } from "@/lib/session/session-manager";
 
 /**
- * Login transport (COU-281, T4).
- *
- * `POST /auth/login` per the api-user contract (S14). The session is not started here:
- * that is the mutation's success handler, so this stays a plain request that a test can
- * call without a store.
+ * Login transport (COU-281, T4): `POST /auth/login` per the api-user contract (S14). The
+ * session is not started here — that is the mutation's success handler — so this stays a
+ * plain request a test can call without a store.
  */
 export interface LoginCredentials {
   email: string;

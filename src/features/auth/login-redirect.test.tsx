@@ -1,8 +1,7 @@
 // Redirect after a successful login (COU-281, T5 / S1, S5).
 //
-// The form is rendered inside real routes so the assertion is about navigation, not about
-// a mocked hook: after the session starts, the app must land on the requested destination
-// or on the default view when the request was missing or hostile.
+// Rendered inside real routes so the assertion is about navigation, not a mocked hook:
+// the app must land on the requested destination or on the default view.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";

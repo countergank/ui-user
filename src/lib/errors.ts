@@ -1,10 +1,7 @@
 /**
- * Typed error model (ARCH-4, ts-001, p1-error-instances).
- *
- * All application errors are `Error` instances — never thrown as raw strings —
- * so they carry stack traces, support `instanceof`, and work with React error
- * boundaries. `AppError` carries an optional machine-readable code and an HTTP
- * status for consistent surfacing at route boundaries.
+ * Typed error model (ARCH-4, ts-001, p1-error-instances): all application errors are
+ * `Error` instances — never raw strings — so they carry stacks, support `instanceof`, and
+ * work with React error boundaries. `AppError` adds a machine-readable code and a status.
  */
 
 export interface AppErrorOptions {

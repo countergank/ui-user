@@ -3,8 +3,7 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 // Vite config for the standard frontend template.
-// - `@/` path alias -> ./src (must match tsconfig.json "paths")
-// - Environment variables exposed via `import.meta.env.VITE_*` (VITE_ prefix)
+// The `@/` path alias -> ./src must match tsconfig.json "paths".
 export default defineConfig({
   plugins: [react()],
   resolve: {

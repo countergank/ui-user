@@ -1,9 +1,7 @@
 // Login page layout tests (COU-281, T3).
 //
-// The page is the one screen that lives outside the app shell, so it owns its own
-// landmark and its own heading. These assertions are structural on purpose: the copy is
-// read from the resources, and what must not be present (shell navigation, skip link) is
-// the actual point of routing it outside the shell.
+// The page lives outside the app shell, so what must be absent (shell navigation, skip
+// link) is the actual point of routing it there.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";

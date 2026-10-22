@@ -1,16 +1,7 @@
 /**
- * The Countergank mark for the public surface (COU-310, S11).
- *
- * The owner's artwork is the colour icon shipped in `logo-countergank-icon.ico`; its
- * embedded 256x256 RGBA PNG is extracted here as `logo-countergank-icon.png`, so the same
- * artwork serves the favicon and the header without a second conversion. It keeps its own
- * transparency, so no tile is needed behind it.
- *
- * The mark's "C" is black: on the dark theme it would disappear into the background, so
- * the dark theme gives it a light backing instead of swapping to a different artwork —
- * the brand colour is the point.
- *
- * Decorative: the surrounding link carries the accessible name.
+ * The Countergank mark for the public surface (COU-310, S11): the owner's artwork with its
+ * own transparency. The mark's "C" is black, so on dark it gets a light backing instead of
+ * a different artwork — the brand colour is the point. Decorative: the link names itself.
  */
 export function AppLogo({ className }: { className?: string }) {
   return (

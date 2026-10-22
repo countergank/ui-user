@@ -1,14 +1,7 @@
 /**
- * Typed environment access (COU-125, docs/adr.md "env handling policy").
- *
- * Vite bakes `VITE_*` variables into the bundle at build time, so the values cannot
- * change at runtime — they are locked to the mode used when the app was built. This
- * module is the single, typed gateway for reading that configuration:
- *
- * - `env` — a frozen, fully-typed object of resolved configuration.
- * - `envMode` / `isDev` / `isStaging` / `isProd` — the build mode (`import.meta.env.MODE`).
- * - fail-fast: a missing required variable throws at import with a descriptive error
- *   instead of silently poisoning a request later.
+ * Typed environment access (COU-125, docs/adr.md "env handling policy"). Vite bakes
+ * `VITE_*` variables into the bundle at build time, so this module is the single typed
+ * gateway: `env` plus the build-mode flags, failing fast at import on missing variables.
  */
 import { AppError } from "@/lib/errors";
 

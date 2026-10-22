@@ -23,18 +23,9 @@ import { type LoginValues, createLoginSchema } from "./login-schema";
 import { resolveRedirectTarget } from "./safe-redirect";
 
 /**
- * Login form (COU-281, T4 / S3, S6-S10).
- *
- * Three decisions worth naming:
- * - the schema is rebuilt when the translator changes, because its messages are rendered
- *   verbatim as field errors;
- * - every API failure is one form-level `Alert` placed under the form (S6): none of them
- *   is a field validation, so none is attached to a field;
- * - a 429 disables the submit until the component remounts (S8) — the ticket asks for
- *   disabled, not for a countdown, and a countdown would need copy outside S4.
- *
- * The post-login destination is read once per submit and validated by `safe-redirect`:
- * the store is already updated, so navigation is the only thing left to do on success.
+ * Login form (COU-281, T4 / S3, S6-S10). The schema is rebuilt when the translator changes
+ * (its messages are rendered verbatim); every API failure is one form-level `Alert` under
+ * the form, none being a field validation (S6); a 429 disables the submit until remount (S8).
  */
 export function LoginForm() {
   const { t } = useTranslation("auth");
