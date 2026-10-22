@@ -4,10 +4,9 @@ import type * as React from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * Status badges stay on the shadcn variant set. The design system's tone variants
- * (`success`/`warning`/`danger`/`info`, `docs/design-system.md`) are deliberately not
- * shipped yet: no screen consumes them, and inventing an API nobody calls is how a
- * primitive surface rots. The first domain component that needs a tone adds it here.
+ * Status badges stay on the shadcn variant set: the design system's tone variants
+ * (`docs/design-system.md`) are deliberately not shipped yet — no screen consumes them,
+ * and inventing an API nobody calls is how a primitive surface rots.
  */
 const badgeVariants = cva(
   "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",

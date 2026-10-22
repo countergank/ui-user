@@ -1,10 +1,7 @@
 /**
- * Access-token expiry reading (COU-273, T3).
- *
- * The server owns the TTL (`api-user` signs the access token with `expiresIn: '15m'`,
- * configurable), so the client reads the standard `exp` claim instead of hardcoding a
- * duration that would silently drift from the server. Nothing here verifies the
- * signature: that is the server's job, and a tampered token fails there anyway.
+ * Access-token expiry reading (COU-273, T3). The server owns the TTL, so the client reads
+ * the standard `exp` claim instead of hardcoding a duration that would silently drift from
+ * the server. No signature verification here: a tampered token fails on the server anyway.
  */
 
 export interface AccessTokenClaims {

@@ -1,8 +1,5 @@
-// Route guards through the real router (COU-274, T6, T7 / S4, S5, S8).
-//
-// The four combinations the ticket asks for, asserted on the production route tree: same
-// router, same console shell, same guards. A guard that only works in a synthetic harness
-// would pass a component test and still let a deep link through here.
+// Route guards through the real router (COU-274, T6, T7 / S4, S5, S8): the session and
+// permission combinations asserted on the production route tree, not a synthetic harness.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";

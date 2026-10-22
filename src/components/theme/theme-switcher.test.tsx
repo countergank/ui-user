@@ -10,25 +10,9 @@ import { matchMediaStub } from "@/test/setup";
 
 import { ThemeSwitcher } from "./theme-switcher";
 
-// Tests for the single-button theme control (COU-270).
-//
-// The control was rebuilt as ONE icon button that cycles through the three
-// preferences (`light → dark → system → light`) because the three-segment
-// control was rejected on review. A plain sun/moon toggle was rejected too: it
-// would put `system` out of UI reach forever after the first click, which would
-// make the live `matchMedia` subscription in `src/lib/theme/theme-sync.ts`
-// effectively dead code.
-//
-// Two properties are easy to get wrong and are covered explicitly below:
-//   1. The ICON reflects the stored PREFERENCE, never the resolved theme, so
-//      `system` stays visible as `Monitor` even while the OS asks for dark.
-//   2. The accessible NAME describes the ACTION on the NEXT preference, e.g.
-//      "Switch to Light" while the stored preference is `system`.
-//
-// `startThemeSync()` lives in `src/main.tsx` and is deliberately NOT started
-// here: the DOM `.dark` class is its responsibility, so these tests assert the
-// store, the accessible name and the rendered icon instead of the `<html>`
-// class list.
+// Tests for the single-button theme control (COU-270). Two properties are easy to get
+// wrong and covered explicitly below: the ICON reflects the stored PREFERENCE, never the
+// resolved theme; the accessible NAME describes the ACTION on the NEXT preference.
 
 /** Render the control against an isolated i18n instance for the given language. */
 function renderSwitcher(language: "en" | "es" | "pt" = "en") {
@@ -49,9 +33,8 @@ function getThemeButton(): HTMLElement {
 
 /**
  * The lucide icon rendered inside the button. lucide stamps every icon with a
- * `lucide-<name>` class (`lucide-react`'s public className contract), which is
- * the only handle a screen reader deliberately cannot see — the icon is
- * `aria-hidden`, so there is no role/name query for it.
+ * `lucide-<name>` class (`lucide-react`'s public className contract), which is the only
+ * handle a test has: the icon is `aria-hidden`, so there is no role/name query for it.
  */
 function getThemeIcon(): SVGElement {
   const icon = getThemeButton().querySelector("svg");

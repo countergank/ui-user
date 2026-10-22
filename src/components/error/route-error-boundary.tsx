@@ -6,18 +6,9 @@ import { DataFetchError, toError } from "@/lib/errors";
 import { ErrorView } from "./error-view";
 
 /**
- * Route-level error boundary (ARCH-4, react-router errorElement/ErrorBoundary).
- *
- * Rendered by the data router inside `errorElement` when a loader, action, or
- * render throws. Uses `useRouteError()` (react-router v7 pattern) and renders
- * the accessible <ErrorView>. Errors are normalized to `Error` instances so we
- * never render raw thrown values. All boundary copy is resource-driven
- * (COU-253); statusText and thrown messages remain dynamic content.
- *
- * A 403 the action did not expect is not a failure to retry or to report as "something went
- * wrong" (COU-275, S6), and since COU-274 it is not rendered in place either: the boundary
- * navigates to `/forbidden`, so the URL matches what the person is reading and a reload keeps
- * the same answer.
+ * Route-level error boundary (ARCH-4, COU-253), rendered by the data router when a loader,
+ * action, or render throws; all copy is resource-driven. A 403 is not rendered in place:
+ * it navigates to `/forbidden` so the URL matches and a reload keeps the same answer (S6).
  */
 export function RouteErrorBoundary() {
   const { t } = useTranslation();

@@ -33,10 +33,8 @@ describe("routes", () => {
 
   it("puts every console route behind the session gate, and none of the public ones", () => {
     // COU-278 / ADR-13: the split is at route level, not a conditional inside one
-    // component, so the public pages can never inherit the console chrome. COU-274 wraps
-    // the console in `RequireAuth`, so the outermost element is the gate and the shell
-    // sits inside it (proven end to end in `guards.test.tsx`). The data router stores a
-    // `Component` as an `element`, so the check reads `element.type`.
+    // component, so public pages can never inherit the console chrome; COU-274 wraps the
+    // console in `RequireAuth`, so the outermost element is the gate (see `guards.test.tsx`).
     const gateOf = (path: string) => {
       const route = router.routes.find((candidate) => candidate.path === path);
       const element = route?.element as { type?: unknown } | undefined;

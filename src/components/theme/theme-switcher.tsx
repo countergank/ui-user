@@ -7,12 +7,8 @@ import { selectTheme, useUiStore } from "@/stores/use-ui-store";
 
 /**
  * The icon that stands for each preference — `Sun` for `light`, `Moon` for
- * `dark`, `Monitor` for `system`.
- *
- * The icon reflects the stored **preference**, never the resolved theme: with
- * `system` selected the monitor stays on screen even while the OS asks for dark,
- * so the user can tell `system` is still active rather than guessing why the
- * page went dark.
+ * `dark`, `Monitor` for `system`. It reflects the stored **preference**, never the
+ * resolved theme, so `system` stays visible even while the OS asks for dark.
  */
 const THEME_ICONS: Record<ThemePreference, LucideIcon> = {
   light: Sun,
@@ -31,25 +27,9 @@ const THEME_MODE_KEYS: Record<
 };
 
 /**
- * Single-button theme control (COU-270).
- *
- * One compact ghost icon button that **cycles** through the three preferences in
- * {@link THEME_CYCLE} order (`light → dark → system → light`), replacing the
- * three-segment control rejected on review. Cycling matters: a plain sun/moon
- * toggle would leave `system` (follow the OS) unreachable from the UI after the
- * first click, which would make the live `matchMedia` subscription in
- * `theme-sync.ts` dead code.
- *
- * The value is held in Zustand, not local state, so both the icon and the label
- * follow any external writer (the pre-paint hydration in `startThemeSync()`
- * included).
- *
- * Accessibility: the accessible name describes the **action** the click will
- * take — `Switch to Dark`, not `Dark`. With no room for a visible label the
- * `title` carries the same string for mouse users. Because the cycle order is
- * fixed, the announced action also determines the current state unambiguously
- * (`Dark` ⇒ currently `light`, `System` ⇒ currently `dark`, `Light` ⇒ currently
- * `system`). The icon is `aria-hidden` so it cannot pollute that name.
+ * Single-button theme control (COU-270): cycles {@link THEME_CYCLE} so `system` (follow
+ * the OS) stays reachable; the value lives in Zustand so icon and label follow any
+ * external writer. The accessible name names the **action** (`Switch to Dark`).
  */
 export function ThemeSwitcher() {
   const { t } = useTranslation();

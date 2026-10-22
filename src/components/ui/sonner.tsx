@@ -17,9 +17,8 @@ const TOAST_CLASS_NAMES = {
 
 /**
  * Sonner owns the live region and the queue; this wrapper only projects the app's theme
- * preference and design tokens onto it. The preference is already one of
- * `light | dark | system`, which is exactly Sonner's own vocabulary — including
- * `system`, so the OS preference keeps working without resolving it here.
+ * preference and design tokens onto it. The preference is already `light | dark | system`
+ * — Sonner's own vocabulary, `system` included, so the OS preference keeps working.
  */
 function Toaster({
   className,

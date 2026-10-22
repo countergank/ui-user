@@ -1,8 +1,7 @@
 import { render, screen } from "@testing-library/react";
-// Integration tests for the route error boundary (ARCH-4, react-router v7
-// errorElement pattern): HTTP error responses, domain errors, and raw errors.
-// Boundary copy assertions are derived from the i18n resources (COU-253);
-// statusText and thrown messages remain server/error-owned content.
+// Integration tests for the route error boundary (ARCH-4, react-router v7 errorElement
+// pattern): HTTP error responses, domain errors, and raw errors. Boundary copy assertions
+// are derived from the i18n resources (COU-253).
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 

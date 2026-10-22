@@ -1,12 +1,6 @@
-// Theme bootstrap (COU-270).
-//
-// `tokens.css` ships a complete `.dark` block, but nothing in the app ever
-// activated it. This module is that missing wire, and it is imperative on
-// purpose: the composition root calls `startThemeSync()` once at boot, before
-// React renders, so the very first paint already matches the user's preference.
-//
-// It reads/writes the store directly (`uiStore`, not the React hook) because
-// bootstrapping happens outside the React tree.
+// Theme bootstrap (COU-270): imperative on purpose — `startThemeSync()` runs at boot,
+// before React renders, so the first paint matches the preference. It reads/writes the
+// store directly because bootstrapping runs outside the React tree.
 import { uiStore } from "@/stores/use-ui-store";
 
 import {

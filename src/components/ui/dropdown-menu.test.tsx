@@ -1,9 +1,6 @@
-// Component tests for the shadcn/ui DropdownMenu primitives (COU-271, S2-S5).
-//
-// The menu's open/close lifecycle belongs to Radix, so these tests pin the parts the
-// ticket owns: the collapsed trigger contract, the slots that carry real semantics
-// (item, checkbox item, radio item, separator, disabled state) and the two repo rules
-// that are invisible to a screenshot — tokens-only styling and axe.
+// Component tests for the shadcn/ui DropdownMenu primitives (COU-271, S2-S5). Radix owns
+// the open/close lifecycle, so these tests pin the parts the ticket owns: the collapsed
+// trigger contract, the semantic slots, and the repo rules invisible to a screenshot.
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
@@ -135,9 +132,8 @@ describe("DropdownMenu", () => {
     await openMenu(user);
 
     // `region` is a page-level rule, and a floating layer portaled to <body> can never sit
-    // inside a landmark on a bare test page. The node it flags is Radix's own
-    // `[data-radix-popper-content-wrapper]`, not markup this primitive authors, so the
-    // rest of the ruleset runs against the whole document while that one is skipped.
+    // inside a landmark on a bare test page; the flagged node is Radix's own wrapper, not
+    // markup this primitive authors, so that one rule is skipped while the rest run.
     const results = await axe(document.body, { rules: { region: { enabled: false } } });
 
     expect(results).toHaveNoViolations();
