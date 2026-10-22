@@ -6,15 +6,9 @@ import { Quickstart } from "./components/quickstart";
 import { StackBadges } from "./components/stack-badges";
 
 /**
- * Informational home of the project (COU-310, T10 / ADR-13).
- *
- * Static content on purpose: a public surface never calls the API (S7), so a visitor
- * learns what the project is and how to run it without a session or a request. Every
- * string comes from the `landing` namespace (S5) and every colour is a token utility
- * (S8).
- *
- * Order is deliberate: what and who (hero), what it is and what it does (two prose
- * sections), what you get (features), how to run it (quickstart), with what (stack).
+ * Informational home of the project (COU-310, T10 / ADR-13). Static content on purpose:
+ * a public surface never calls the API (S7); every string comes from the `landing`
+ * namespace (S5), every colour is a token utility (S8), and the section order is deliberate.
  */
 export function LandingPage() {
   const { t } = useTranslation("landing");

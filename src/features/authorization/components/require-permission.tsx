@@ -12,18 +12,9 @@ interface RequirePermissionProps {
 }
 
 /**
- * Permission gate for a route (COU-274, T2 / S2, S9).
- *
- * Predicts the server's answer so a user is not walked into a section they cannot read, and
- * sends them to `/forbidden` — a real page, not the router's 404 — so the message explains
- * the denial instead of pretending the route does not exist.
- *
- * While the profile is in flight it renders a busy indicator and **nothing else**: showing
- * the section first and then removing it is the flash the ticket rules out, and treating
- * "loading" as "denied" would bounce an authorized user to `/forbidden` on every reload.
- *
- * A failed profile read yields no permissions (`usePermissions` fails closed), which lands on
- * `/forbidden` — the honest answer, since the client cannot prove the grant.
+ * Permission gate for a route (COU-274, T2 / S2, S9). While the profile is in flight it
+ * renders a busy indicator and **nothing else**: flashing a protected section for one frame
+ * is the failure this guards against, and a failed profile read fails closed onto `/forbidden`.
  */
 export function RequirePermission({ permission, children }: RequirePermissionProps) {
   const { t } = useTranslation();

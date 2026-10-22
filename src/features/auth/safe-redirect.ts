@@ -1,13 +1,7 @@
 /**
- * Where to send the user after a successful login (COU-281, T5 / S1).
- *
- * `?redirect=` comes from a link, so it is attacker-controlled. An allowlist beats a
- * denylist here: the value is used only when it is a same-origin absolute path, and
- * anything else — another origin, a protocol-relative form, a scheme, a relative
- * fragment, an embedded control character — falls back to the default view.
- *
- * ADR-13 moved the destination from `/` to `/app`: `/` is the informational public home,
- * so landing there after authenticating would hide the console the user just signed in for.
+ * Where to send the user after a successful login (COU-281, T5 / S1). `?redirect=` comes
+ * from a link, so it is attacker-controlled: the allowlist beats a denylist — the value is
+ * used only as a same-origin absolute path, everything else falls back (ADR-13 → `/app`).
  */
 export const DEFAULT_REDIRECT = "/app";
 

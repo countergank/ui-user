@@ -4,13 +4,9 @@ import { DataFetchError } from "@/lib/errors";
 import { httpClient } from "@/lib/session/session";
 
 /**
- * `/auth/me` transport (COU-275, T2 / S8).
- *
- * The API answers `{ id, name, lastName, email, role, permissions[] }` with the user's
- * *effective* permissions (`api-user/src/auth/dto/me-response.dto.ts`). The response is
- * validated before it reaches the UI: a payload that silently lost `permissions` would
- * hide every section instead of saying so, and a stale client would be impossible to
- * diagnose from the screen.
+ * `/auth/me` transport (COU-275, T2 / S8). The API answers with the user's *effective*
+ * permissions (`api-user/src/auth/dto/me-response.dto.ts`). The response is validated
+ * first: a payload that silently lost `permissions` would hide every section.
  */
 export const meResponseSchema = z.object({
   id: z.string().min(1),

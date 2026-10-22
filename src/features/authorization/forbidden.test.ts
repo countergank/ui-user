@@ -1,9 +1,7 @@
 // `isForbiddenError` suite (COU-275, T5 / S6).
 //
-// The API answers 403 as `{ statusCode: 403, code: "UA-SEC-002" }`
-// (`api-user/src/common/errors/error-kind.ts:173`), and the HTTP client keeps both the
-// status and the code on the `AppError` it throws. Either one is enough evidence; a
-// different failure is not.
+// Either the 403 status or the UA-SEC-002 code is enough evidence; a different failure
+// is not.
 import { describe, expect, it } from "vitest";
 
 import { AppError, DataFetchError } from "@/lib/errors";

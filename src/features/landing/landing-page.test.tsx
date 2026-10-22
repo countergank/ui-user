@@ -1,8 +1,6 @@
 // Landing page tests (COU-310, T2 / S4, S7, S8).
 //
-// The informational home explains the project without a session, so it is asserted for
-// the content the ticket enumerates (what it is, the service, features, quickstart,
-// stack, links) and for what it must never do: call the API.
+// Asserted for the enumerated content and for what it must never do: call the API.
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { axe } from "vitest-axe";

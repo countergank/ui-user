@@ -1,9 +1,7 @@
 // Login error mapping (COU-281, T4).
 //
-// The four failures the ticket enumerates are API conditions, not field validations, so
-// they all render as one form-level message. This module is the whole decision: HTTP
-// status and `code` in, message key (or nothing) out. It is pure so the table can be
-// asserted without a component.
+// The four failures are API conditions, not field validations, so they all render as one
+// form-level message; the mapping is pure so the table is assertable without a component.
 import { describe, expect, it } from "vitest";
 
 import { AppError } from "@/lib/errors";

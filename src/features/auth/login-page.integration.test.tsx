@@ -1,9 +1,7 @@
 // Login page component suite (COU-281, T6 / S11, S12).
 //
-// This is the ticket's own acceptance suite: the real page, the real session runtime and
-// the real HTTP client, with MSW standing in for `api-user`. Nothing here stubs `login`,
-// `fetch` or the mutation — a wire that breaks between the form and the client shows up
-// as a failing assertion instead of a passing mock.
+// Real page, real session runtime, real HTTP client, MSW standing in for `api-user`:
+// nothing stubs `login`, `fetch` or the mutation, so a broken wire fails an assertion.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";

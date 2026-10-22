@@ -17,17 +17,9 @@ export interface PermissionsResult {
 }
 
 /**
- * Role and effective permissions of the current session (COU-275, T2 / S1).
- *
- * Three deliberate choices:
- * - An **anonymous** visitor asks nothing: the public surface must not call the API
- *   (COU-310, S7), so the query is gated on the session status instead of firing and
- *   failing.
- * - A **failed or pending** profile yields no permissions. Failing closed keeps a
- *   half-loaded console from offering an action the server will reject; the sections
- *   appear as soon as the profile arrives.
- * - The server stays the authority (ADR-13): the UI never decides what the user may
- *   read or write, it only avoids rendering what is already forbidden.
+ * Role and effective permissions of the current session (COU-275, T2 / S1). An anonymous
+ * visitor asks nothing (a public surface never calls the API); a pending or failed profile
+ * yields no permissions, failing closed; the server stays the authority (ADR-13).
  */
 export function usePermissions(): PermissionsResult {
   const status = useSession(selectSessionStatus);

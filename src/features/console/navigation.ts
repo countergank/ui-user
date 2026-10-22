@@ -1,11 +1,9 @@
 import { PERMISSIONS, type Permission, hasPermission } from "@/features/authorization/permissions";
 
 /**
- * The console's navigation manifest (COU-275, T4 / S3, S10).
- *
- * One declarative list, not a component that decides: the sections and the permission
- * each one needs live here, so adding a section (COU-278 onwards) is one entry and the
- * filter never learns a new case. The `to` targets are ADR-13's console routes.
+ * The console's navigation manifest (COU-275, T4 / S3, S10). One declarative list, not a
+ * component that decides: the sections and the permission each one needs live here, so
+ * adding a section is one entry and the filter never learns a new case. ADR-13 routes.
  */
 
 /** The `console.nav.*` leaves this manifest may point at. */
@@ -23,7 +21,7 @@ export interface ConsoleNavItem {
   /** i18n leaf in the `console` namespace. */
   labelKey: ConsoleNavLabelKey;
   /**
-   * Permission the section needs. Omitted means "any signed-in user": the summary is
+   * Permission the section needs; omitted means "any signed-in user", so the summary is
    * the console's landing page and must never be unreachable.
    */
   requiredPermission?: Permission;
@@ -47,15 +45,9 @@ export const CONSOLE_NAV: readonly ConsoleNavItem[] = [
 ];
 
 /**
- * The manifest entry a path belongs to (COU-278, T2 / S1, S7).
- *
- * Longest match first, so `/app/users/42` belongs to `/app/users` and a detail page keeps its
- * section's breadcrumb and announcement.
- *
- * The **first** entry is the console's landing page by manifest convention and matches only
- * exactly: as a prefix it would claim every console path, and `/app/unknown` would announce
- * itself as "Summary". An unknown path resolves to `undefined` and the caller falls back to
- * the console's own name.
+ * The manifest entry a path belongs to (COU-278, T2 / S1, S7). Longest match first, so
+ * `/app/users/42` keeps its section's breadcrumb. The first entry is the landing page by
+ * manifest convention and matches only exactly: as a prefix it would claim every console path.
  */
 export function activeNavItem(
   items: readonly ConsoleNavItem[],
@@ -73,10 +65,9 @@ export function activeNavItem(
 }
 
 /**
- * The items a grant list authorizes, in manifest order.
- *
- * Pure and cheap: the same `hasPermission` the rest of the console uses, so a section
- * cannot appear here through a different rule than the one guarding its actions.
+ * The items a grant list authorizes, in manifest order. Pure; uses the same
+ * `hasPermission` as the rest of the console, so a section cannot appear here under a
+ * different rule than the one guarding its actions.
  */
 export function visibleNavItems(
   items: readonly ConsoleNavItem[],

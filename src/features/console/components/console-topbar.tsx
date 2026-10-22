@@ -27,17 +27,9 @@ interface ConsoleTopbarProps {
 }
 
 /**
- * The console topbar (COU-278, T5 / S1).
- *
- * Left to right: the navigation controls, the product name, the breadcrumb, and the three
- * global controls — language, theme and the user menu. The theme control stays in the topbar
- * rather than moving into the user menu: it is a frequent action, and COU-270's review
- * already rejected burying it.
- *
- * Two navigation triggers instead of one because the behaviours differ: below `md` the
- * sidebar is a drawer that opens and closes on demand, above it the sidebar is either
- * expanded or not there at all, and that choice is the persisted one (S6). Each is reachable
- * by keyboard and carries its action as its accessible name.
+ * The console topbar (COU-278, T5 / S1): navigation controls, product name, breadcrumb,
+ * and the global controls — language, theme, user menu. Two navigation triggers because
+ * the behaviours differ: a drawer below `md`, the persisted expand/collapse above it (S6).
  */
 export function ConsoleTopbar({
   sidebarOpen,

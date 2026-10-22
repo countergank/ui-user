@@ -1,9 +1,7 @@
 // Redirect target validation (COU-281, T5 / S1, S5).
 //
-// `?redirect=` is attacker-controlled: a login link can carry any string, and following it
-// after a successful authentication is exactly the open-redirect shape. The rule is a
-// whitelist — a same-origin absolute path or nothing — so no hostile form has to be
-// enumerated to be safe.
+// `?redirect=` is attacker-controlled: the rule is an allowlist — a same-origin absolute
+// path or nothing — so no hostile form has to be enumerated to be safe.
 import { describe, expect, it } from "vitest";
 
 import { DEFAULT_REDIRECT, resolveRedirectTarget } from "./safe-redirect";

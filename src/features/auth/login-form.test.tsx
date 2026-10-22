@@ -1,10 +1,7 @@
 // Login form behavior (COU-281, T4 / S6-S10).
 //
-// These tests cover what the form itself decides: field validation with accessible
-// errors, the pending state that prevents a double submit, and the four API failures the
-// ticket enumerates rendered UNDER the form rather than inside a field. The MSW-driven
-// component suite (S11) arrives in T6; here `fetch` is stubbed directly, which works
-// because the session runtime resolves `fetch` per request instead of capturing it.
+// `fetch` is stubbed directly — the session runtime resolves it per request — and the
+// MSW-driven component suite (S11) lives in `login-page.integration.test.tsx`.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";

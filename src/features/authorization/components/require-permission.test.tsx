@@ -1,8 +1,7 @@
 // RequirePermission (COU-274, T2 / S2, S9).
 //
-// Two rules, and the second is the one that breaks silently: while the profile is still in
-// flight the guard renders neither the content nor a decision — flashing a protected section
-// for one frame is exactly the failure the ticket names.
+// The rule that breaks silently: while the profile is still in flight the guard renders
+// neither the content nor a decision.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { RouterProvider, createMemoryRouter, useLocation } from "react-router-dom";
