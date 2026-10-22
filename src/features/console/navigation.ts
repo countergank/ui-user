@@ -21,8 +21,8 @@ export interface ConsoleNavItem {
   /** i18n leaf in the `console` namespace. */
   labelKey: ConsoleNavLabelKey;
   /**
-   * Permission the section needs; omitted means "any signed-in user", so the summary is
-   * the console's landing page and must never be unreachable.
+   * Permission the section needs. Omitted means any signed-in user: the summary is the
+   * console's landing page and must never be unreachable.
    */
   requiredPermission?: Permission;
 }

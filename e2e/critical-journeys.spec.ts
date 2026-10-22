@@ -126,7 +126,7 @@ test.describe("motion journey", () => {
         return Math.round(parseFloat(value) * 1000);
       });
 
-    // Default: the skip-link transition is intact.
+    // Default: the 0.1s transition declared in src/styles/index.css is still applied.
     expect(await transitionMs()).toBeGreaterThanOrEqual(100);
 
     // Reduced motion: universal 0.01ms override wins (WCAG 2.2 reduced-motion).

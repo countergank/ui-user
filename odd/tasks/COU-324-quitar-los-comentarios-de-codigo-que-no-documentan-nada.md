@@ -50,12 +50,12 @@ presupuesto de **3 líneas de prosa** por comentario, delimitadores `/**` y `*/`
 
 | ID | Task | Specs | Route | Commit |
 |---|---|---|---|---|
-| T1 | Shard `src/components/**`, `src/lib/**`, `src/stores/**`, `src/routes/**` | S1-S3 | worker | aff9586 / 8e86e76 / 18c4964 |
-| T2 | Shard `src/features/**` | S1-S3 | worker | pendiente |
-| T3 | Shard `src/test/**`, raíz de `src/`, `e2e/**` y configs | S1-S3 | worker | pendiente |
-| T4 | Los tres comentarios señalados por la review de COU-323 | S12 | worker | pendiente |
-| T5 | Verificación: sólo líneas de comentario cambiadas | S5, S9 | inline | pendiente |
-| T6 | Gate completo (`make ci`) | S9 | inline | pendiente |
+| T1 | Shard `src/components/**`, `src/lib/**`, `src/stores/**`, `src/routes/**` | S1-S3 | worker | aff9586 |
+| T2 | Shard `src/features/**` | S1-S3 | worker | 8e86e76 |
+| T3 | Shard `src/test/**`, raíz de `src/`, `e2e/**` y configs | S1-S3 | worker | 18c4964, 02b8976 |
+| T4 | Los comentarios señalados por la review de COU-323 | S12 | worker | dfc52cd |
+| T5 | Verificación: sólo líneas de comentario cambiadas | S5, S9 | inline | (sin commit propio) |
+| T6 | Gate completo (`make ci`) | S9 | inline | make ci EXIT=0 |
 
 ## Log
 
@@ -118,3 +118,11 @@ L12 — Estado final: `develop` integrado (`edd313d`), T4 aplicado (`dfc52cd`), 
 (`dfc52cd`), PR #29 **MERGEABLE** y con CI corriendo (commitlint en verde). Causa raíz del
 "no checks reported": GitHub no ejecuta workflows `pull_request` cuando el PR tiene conflictos,
 porque no puede construir el merge commit.
+
+L13 — Los cinco hallazgos de la review de COU-324 se resolvieron antes del merge, sobre el PR abierto:
+`R2-task-docs-disagree` (la tabla de tareas decía "pendiente" y tenía un SHA triple mal puesto),
+`R2-pagination-comment-drift` (el comentario afirmaba que faltaba una clave de i18n que el propio
+código usa), `R2-permission-catalog-pointer-dropped` (se restauró el puntero al catálogo sembrado
+de `api-user`), `R2-required-permission-causal-garble` (la relación omitted → cualquier usuario
+autenticado → resumen siempre alcanzable) y `R2-transition-threshold-unexplained` (el umbral del
+e2e es el `transition: top 0.1s` de `src/styles/index.css`).

@@ -1,7 +1,7 @@
 /**
- * Permission vocabulary and the grant rule (COU-275, T1 / S7, S9). The API is the
- * authority (ADR-13): this module only predicts its answer, so it must match `api-user`'s
- * guard (`src/auth/guards/permissions.guard.ts:44-53`) — exact match, `*`, resource wildcard.
+ * Permission vocabulary and the grant rule (COU-275 T1/S7/S9). It predicts `api-user`'s guard
+ * (`src/auth/guards/permissions.guard.ts:44-53`) and takes every name from its seeded catalog
+ * (`api-user/src/rbac/services/permission.service.ts:12`), never inventing one. ADR-13.
  */
 
 /** Grants every permission; the `admin` role holds exactly this. */

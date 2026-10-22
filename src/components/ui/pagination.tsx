@@ -23,9 +23,8 @@ const paginationNextVariants = cva("pr-2.5");
 const paginationEllipsisVariants = cva("flex h-9 w-9 items-center justify-center");
 
 /**
- * The `ui.pagination.label` key is reported missing from some locale bundles (ADR-12,
- * S7, COU-271); the locale bundles are outside this slice. `props` spreads after the
- * default, so a caller can pass its own `aria-label`.
+ * The landmark label comes from `ui.pagination.label` (ADR-12). `props` spreads after the
+ * default, so a caller can override it with its own `aria-label`.
  */
 function Pagination({ className, ...props }: React.ComponentPropsWithoutRef<"nav">) {
   const { t } = useTranslation();
