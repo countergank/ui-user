@@ -1,12 +1,6 @@
-// Commitlint flat config — enforces Conventional Commits for the template.
-// Shared config sourced from @commitlint/config-conventional, which permits the
-// commit types used across this repo (feat, fix, chore, test, docs, refactor, ci,
-// style, perf, build, revert) plus the default scopes and rules it ships with.
-//
-// In addition, a custom "no-co-authored-by" rule rejects Co-Authored-By and
-// AI-attribution trailers in the body or footer. This config is shared by both
-// the local husky hook (.husky/commit-msg -> commitlint --edit) and the CI
-// `commitlint` job, so local and remote enforcement stay consistent (MA-3).
+// Commitlint flat config: Conventional Commits via @commitlint/config-conventional, plus a
+// custom "no-co-authored-by" rule rejecting Co-Authored-By / AI-attribution trailers.
+// Shared by the husky hook and the CI `commitlint` job so enforcement stays consistent (MA-3).
 import type { UserConfig } from "@commitlint/types";
 
 const NO_AUTHORED_BY =

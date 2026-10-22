@@ -1,6 +1,4 @@
-// playwright.config.ts
-// E2E configuration for the standard frontend template (TEST-4/5).
-// Critical journeys run against a production preview (vite preview) in Chromium.
+// E2E configuration (TEST-4/5): critical journeys run against a production preview in Chromium.
 import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({

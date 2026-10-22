@@ -1,9 +1,5 @@
-// AA enforcement for the design tokens (docs/accessibility.md: WCAG 2.2 AA baseline).
-//
-// The tokens live in CSS, so this test reads src/styles/tokens.css from disk and
-// MEASURES contrast instead of trusting the numbers. A token edit that drops a
-// tone/foreground pair or the destructive button below 4.5:1 fails here, with the
-// measured ratio and the two hex colors in the message.
+// WCAG 2.2 AA for the design tokens (docs/accessibility.md): the CSS is read from disk and
+// contrast is MEASURED, not trusted — a pair below 4.5:1 fails with the ratio and colors.
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";

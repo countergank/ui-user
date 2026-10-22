@@ -1,13 +1,6 @@
-// Guard for docs/design-system.md's "tokens only, never hex" rule.
-//
-// This is the CSS-side half of the guard: it walks every text file under `src/`
-// and fails if any of them contains a hex color literal. The TypeScript/TSX half
-// lives in `eslint.config.js` (`no-restricted-syntax`), because Biome 1.9.4 ships
-// no hex-color rule and ESLint cannot lint CSS — the two tools cover one half of
-// the surface each.
-//
-// Precedent for reading styles from disk instead of importing them:
-// `src/styles/tokens.test.ts`.
+// "Tokens only, never hex" (docs/design-system.md). This is the CSS-side half; the
+// TypeScript/TSX half is `no-restricted-syntax` in `eslint.config.js`, because Biome ships
+// no hex rule and ESLint cannot lint CSS.
 import { readFileSync, readdirSync } from "node:fs";
 import { dirname, extname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";

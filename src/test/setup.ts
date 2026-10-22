@@ -1,10 +1,5 @@
-// src/test/setup.ts
-// Global Vitest setup (TEST-2, vitest-003):
-// - jest-dom matchers (toBeVisible, toBeInTheDocument, ...)
-// - axe matchers (toHaveNoViolations) + axe types
-// - Testing Library cleanup after each test (auto-cleanup when globals are on)
-// - a controllable `window.matchMedia` stub (jsdom does not implement it)
-// - DOM/storage hygiene so a theme test never leaks the `dark` class or a stored key
+// Global Vitest setup (TEST-2, vitest-003): jest-dom + axe matchers, Testing Library
+// cleanup, a controllable `window.matchMedia` stub, DOM/storage hygiene between tests.
 import "@testing-library/jest-dom/vitest";
 import "vitest-axe/extend-expect";
 import { afterAll, afterEach, beforeAll, beforeEach, expect, vi } from "vitest";
@@ -17,17 +12,14 @@ import { initialState as uiInitialState, uiStore } from "@/stores/use-ui-store";
 expect.extend(axeMatchers);
 
 // --- window.matchMedia stub -------------------------------------------------
-// jsdom ships no `window.matchMedia`, so `systemPrefersDark()` and the OS-change
-// subscription in `startThemeSync()` cannot be exercised without a stub. It is
-// intentionally NOT a frozen global: tests drive it through `matchMediaStub`
-// (simulate dark/light, fire `change`, assert listeners were removed).
+// jsdom ships no `matchMedia`, so theme tests cannot exercise it without a stub.
+// Intentionally not frozen: tests drive it via `matchMediaStub` (setDark/emitChange).
 
 /** The only query the theme layer cares about, kept in sync with `src/lib/theme/theme.ts`. */
 const DARK_MEDIA_QUERY = "(prefers-color-scheme: dark)";
 
 type MediaQueryListener = (event: MediaQueryListEvent) => void;
 
-/** Shape of the fake `MediaQueryList` handed out by the stub. */
 interface StubMediaQueryList {
   media: string;
   readonly matches: boolean;
@@ -37,7 +29,6 @@ interface StubMediaQueryList {
 }
 
 export interface MatchMediaStub {
-  /** Install the stub as `window.matchMedia` (idempotent). */
   install: () => void;
   /** Simulate an engine without `matchMedia` (jsdom's default state). */
   restore: () => void;
@@ -45,9 +36,7 @@ export interface MatchMediaStub {
   setDark: (dark: boolean) => void;
   /** Fire `change` without changing the match state. */
   emitChange: () => void;
-  /** How many `change` listeners are currently registered (leak detector). */
   listenerCount: () => number;
-  /** Drop listeners and reset the match state to light. */
   reset: () => void;
 }
 
@@ -113,10 +102,9 @@ const matchMediaStub: MatchMediaStub = createMatchMediaStub();
 export { matchMediaStub };
 
 function resetAllStores() {
-  // Convention (CSM-6): every Zustand store in src/stores/ exports an
-  // `initialState`; register its reset here so tests never leak state.
-  // Merge (not replace=true): initialState holds only state fields, so a
-  // replace would drop the store's actions.
+  // CSM-6: every Zustand store in src/stores/ exports an `initialState`; register its
+  // reset here so tests never leak state. Merge, not replace=true: initialState holds
+  // only state fields, so a replace would drop the store's actions.
   uiStore.setState(uiInitialState);
   // COU-273: the session store persists to localStorage; reset both sides so a test
   // never inherits a token from the previous one.
@@ -155,15 +143,8 @@ if (typeof HTMLCanvasElement !== "undefined") {
 }
 
 // --- jsdom shims for Radix surfaces -----------------------------------------
-// jsdom's selector engine (nwsapi) cannot evaluate the CSS top-layer pseudo-classes
-// `:popover-open` / `:modal`: it recurses ~50M times before the error is swallowed, so a
-// single popper position update "hangs" for ~20s. `@floating-ui/dom` asks for both on
-// every update and jsdom has no top layer, so answering "no" is the truthful stub. Any
-// Radix popper (dropdown, popover, tooltip) opened in jsdom needs this.
-//
-// Radix's ScrollArea also measures with a `ResizeObserver` jsdom does not implement. The
-// stub only satisfies the constructor: jsdom reports every box as 0x0, so there is
-// nothing real to measure and the tests assert what mounts, not what it measures.
+// nwsapi cannot evaluate `:popover-open` / `:modal` at all (~50M recursions, ~20s hang), so
+// answering "no" is the truthful stub. ScrollArea needs a `ResizeObserver` jsdom lacks.
 type NativeMatches = (this: Element, selector: string) => boolean;
 
 const UNSUPPORTED_TOP_LAYER_SELECTORS = new Set([":popover-open", ":modal"]);

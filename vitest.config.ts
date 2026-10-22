@@ -1,7 +1,4 @@
-// vitest.config.ts
-// Reusable Vitest configuration for React + TypeScript projects (countergank
-// react-frontend skill asset). Includes: jsdom environment, coverage thresholds,
-// test file patterns, Testing Library setup.
+// Vitest configuration for React + TypeScript projects (countergank react-frontend skill asset).
 import { URL, fileURLToPath } from "node:url";
 
 import react from "@vitejs/plugin-react";
@@ -16,18 +13,14 @@ export default defineConfig({
     },
   },
   test: {
-    // Use jsdom for DOM-dependent React component tests
     environment: "jsdom",
-    // Global test utilities available without import
     globals: true,
-    // Setup file for Testing Library matchers + axe matchers
     setupFiles: ["./src/test/setup.ts"],
     // Include pattern: colocated .test.ts/.test.tsx files (vitest-002 colocation)
     include: ["src/**/*.{test,spec}.{ts,tsx}"],
-    // The suite is ~60 jsdom files with axe and MSW, plus coverage instrumentation. Under
-    // host load (load average 11-13) the 5s default was timing out trivial DOM tests that
-    // pass in isolation, so the gate failed for reasons unrelated to the code under test.
-    // 20s matches the budget `src/main.test.tsx` already documents for the same reason.
+    // Under host load (load average 11-13) the 5s default timed out trivial DOM tests
+    // that pass in isolation (~60 jsdom files with axe, MSW, coverage), so the gate
+    // failed for reasons unrelated to the code; 20s matches `src/main.test.tsx`'s budget.
     testTimeout: 20_000,
     // Coverage configuration (TEST-1, vitest-003/coverage thresholds)
     coverage: {
@@ -39,7 +32,6 @@ export default defineConfig({
         functions: 80,
         statements: 80,
       },
-      // Exclude test files, config, entry bootstrap and build artifacts from coverage
       exclude: [
         "node_modules/",
         // Review candidate views live under `.git/gentle-ai/...` and are full repository

@@ -1,7 +1,6 @@
 // src/test/axe.d.ts
-// Type augmentation so `expect(...).toHaveNoViolations()` (vitest-axe) typechecks
-// on Vitest's Assertion. Augments module "vitest" the same way
-// @testing-library/jest-dom/vitest does (proven vitest 3 pattern).
+// Type augmentation so `expect(...).toHaveNoViolations()` (vitest-axe) typechecks on
+// Vitest's Assertion (same pattern as @testing-library/jest-dom/vitest).
 import type { AxeMatchers } from "vitest-axe";
 
 declare module "vitest" {
