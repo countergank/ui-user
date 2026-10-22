@@ -113,3 +113,8 @@ L11 — T4 aplicado con una salvedad honesta: `R3-comment-safety-claim` se corri
 `R4-section-pin-overstated` **no se aplica sin violar S5**: la sobreafirmación vive en el **nombre
 del test** ("and that is the documented rule") y S5 prohíbe cambiar nombres de tests; queda como
 follow-up de una línea.
+
+L12 — Estado final: `develop` integrado (`edd313d`), T4 aplicado (`dfc52cd`), push fast-forward
+(`dfc52cd`), PR #29 **MERGEABLE** y con CI corriendo (commitlint en verde). Causa raíz del
+"no checks reported": GitHub no ejecuta workflows `pull_request` cuando el PR tiene conflictos,
+porque no puede construir el merge commit.
