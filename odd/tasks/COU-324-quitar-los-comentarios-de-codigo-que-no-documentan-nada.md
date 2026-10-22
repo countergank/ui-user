@@ -97,3 +97,19 @@ L8 — Entrega en 3 slices de comentarios + este commit de tracking: `8e86e76` f
 L9 — Tres archivos del shard C (`src/hooks/use-focus-management.ts`, `src/public-layout.tsx`,
 `src/vite-env.d.ts`) quedaron fuera del `git add` del slice 3; van en un commit propio en vez de
 amend, para no reescribir historia ya creada.
+
+L10 — Integración con `develop` (`ab6eb7f`, con #28 mergeado): el `push --force-with-lease` de un
+rebase limpio quedó bloqueado por la política de seguridad del harness, así que se tomó el camino
+**no destructivo**: un merge de `origin/develop` dentro de la rama (commit `edd313d`) y un push
+fast-forward. Los conflictos aparecieron sólo donde **ambos lados** aplicaron la misma regla
+(`require-permission.tsx` y su test, `use-permissions.ts`, `require-auth.tsx` y su test,
+`route-error-boundary.tsx` y su test, `session-expiry-bridge.tsx`, `routes/guards.test.tsx`): se
+tomó la versión de `develop`, que ya cumple el presupuesto. El trabajo descartado al moverse la
+rama local quedó en `backup/cou-324-rebased`, y el escaneo posterior confirma **0 bloques de prosa
+>3** en todo `src/`.
+
+L11 — T4 aplicado con una salvedad honesta: `R3-comment-safety-claim` se corrigió (el header de
+`require-section.test.tsx` dice qué pinea el test, no una garantía que no establece).
+`R4-section-pin-overstated` **no se aplica sin violar S5**: la sobreafirmación vive en el **nombre
+del test** ("and that is the documented rule") y S5 prohíbe cambiar nombres de tests; queda como
+follow-up de una línea.

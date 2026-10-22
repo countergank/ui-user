@@ -11,8 +11,8 @@ Read the feature doc first; this file only tracks task state and evidence.
   - Evidence: 47 archivos, sólo comentarios (verificado), directivas y restricciones conservadas.
 - [x] T3 — Shard `src/test/**`, raíz de `src/`, `e2e/**`, configs.
   - Evidence: 11 archivos, sólo comentarios (verificado); shims de jsdom conservados y comprimidos.
-- [ ] T4 — Los tres comentarios de la review de COU-323.
-  - Evidence: **diferido** — `src/features/console/require-section.test.tsx` sólo existe en el PR #28.
+- [x] T4 — Los comentarios de la review de COU-323.
+  - Evidence: `R3-comment-safety-claim` corregido; `R4-section-pin-overstated` descartado con razón (vive en el nombre del test; S5 prohíbe renombrar tests).
 - [x] T5 — Verificación: sólo líneas de comentario cambiadas.
   - Evidence: 100 archivos, 0 líneas de código en el diff; 0 bloques de prosa >3 en `src/`.
 - [x] T6 — Gate completo (`make ci`).
