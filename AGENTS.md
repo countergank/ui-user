@@ -57,12 +57,17 @@ the exact command that executes an explicit human yes.
 
 ## Comments
 
-Explain **why**, never what. Hard budget: **three lines of prose per comment** (the `/**` and
-`*/` delimiters do not count); `biome-ignore` / `eslint-disable` directives and a one-line
-ADR/spec reference are exempt. No narrative
-rationale, no multi-paragraph blocks on trivial functions, nothing that restates the code or
-the test name — if the reason needs more than three lines it belongs in `docs/`. Details:
-`docs/component-patterns.md` ("Comments").
+**No comments.** The code says what it does; a comment that explains it is noise, and a
+comment that justifies a decision belongs in the PR, the ADR or the ticket — not next to a
+function that will outlive it.
+
+The only allowed form is **JSDoc that documents an API**: `/** */` directly above an exported
+function, hook or component, describing its parameters and return with `@param` / `@returns`
+when they are not obvious from the signature. Nothing else: no inline `//`, no section
+banners, no "why" notes, no JSDoc on trivial or internal helpers.
+
+Tool directives stay, because they are instructions to the linter, not prose:
+`biome-ignore` and `eslint-disable` lines and the single line that justifies them.
 
 ## Stack (change only with an ADR in `docs/adr.md`)
 
