@@ -2,6 +2,7 @@ import { Menu, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
+import { AppLogo } from "@/components/branding/app-logo";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
 import { ThemeSwitcher } from "@/components/theme/theme-switcher";
 import {
@@ -16,21 +17,13 @@ import { Button } from "@/components/ui/button";
 import { UserMenu } from "./user-menu";
 
 interface ConsoleTopbarProps {
-  /** Desktop sidebar expansion, mirrored into `aria-expanded`. */
   sidebarOpen: boolean;
   onToggleSidebar: () => void;
   onOpenDrawer: () => void;
-  /** Name of the section the current path belongs to, already translated. */
   sectionLabel: string;
-  /** True on the console's landing page, where the breadcrumb would repeat itself. */
   atRoot: boolean;
 }
 
-/**
- * The console topbar (COU-278, T5 / S1): navigation controls, product name, breadcrumb,
- * and the global controls — language, theme, user menu. Two navigation triggers because
- * the behaviours differ: a drawer below `md`, the persisted expand/collapse above it (S6).
- */
 export function ConsoleTopbar({
   sidebarOpen,
   onToggleSidebar,
@@ -45,7 +38,7 @@ export function ConsoleTopbar({
 
   return (
     <header className="sticky top-0 z-40 border-b bg-background">
-      <div className="mx-auto flex h-16 max-w-7xl items-center gap-2 px-4">
+      <div className="flex h-16 w-full items-center gap-2 px-4 md:px-6">
         <Button
           type="button"
           variant="ghost"
@@ -76,7 +69,13 @@ export function ConsoleTopbar({
           )}
         </Button>
 
-        <span className="truncate text-sm font-semibold">{tConsole("shell.title")}</span>
+        <Link
+          to="/app"
+          className="flex shrink-0 items-center gap-2 rounded-md px-1 py-0.5 transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <AppLogo className="h-6 w-6" />
+          <span className="truncate text-sm font-semibold">{tConsole("shell.title")}</span>
+        </Link>
 
         <Breadcrumb className="ml-2 hidden sm:block">
           <BreadcrumbList>

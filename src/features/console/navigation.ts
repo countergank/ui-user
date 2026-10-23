@@ -1,12 +1,5 @@
 import { PERMISSIONS, type Permission, hasPermission } from "@/features/authorization/permissions";
 
-/**
- * The console's navigation manifest (COU-275, T4 / S3, S10). One declarative list, not a
- * component that decides: the sections and the permission each one needs live here, so
- * adding a section is one entry and the filter never learns a new case. ADR-13 routes.
- */
-
-/** The `console.nav.*` leaves this manifest may point at. */
 export type ConsoleNavLabelKey =
   | "nav.summary"
   | "nav.users"
@@ -16,14 +9,8 @@ export type ConsoleNavLabelKey =
   | "nav.settings";
 
 export interface ConsoleNavItem {
-  /** Route the section lives at. */
   to: string;
-  /** i18n leaf in the `console` namespace. */
   labelKey: ConsoleNavLabelKey;
-  /**
-   * Permission the section needs. Omitted means any signed-in user: the summary is the
-   * console's landing page and must never be unreachable.
-   */
   requiredPermission?: Permission;
 }
 
@@ -45,9 +32,8 @@ export const CONSOLE_NAV: readonly ConsoleNavItem[] = [
 ];
 
 /**
- * The manifest entry a path belongs to (COU-278, T2 / S1, S7). Longest match first, so
- * `/app/users/42` keeps its section's breadcrumb. The first entry is the landing page by
- * manifest convention and matches only exactly: as a prefix it would claim every console path.
+ * @returns The entry whose path matches `pathname`, longest match first; the first entry
+ * matches only exactly.
  */
 export function activeNavItem(
   items: readonly ConsoleNavItem[],
@@ -64,11 +50,6 @@ export function activeNavItem(
     .sort((a, b) => b.to.length - a.to.length)[0];
 }
 
-/**
- * The items a grant list authorizes, in manifest order. Pure; uses the same
- * `hasPermission` as the rest of the console, so a section cannot appear here under a
- * different rule than the one guarding its actions.
- */
 export function visibleNavItems(
   items: readonly ConsoleNavItem[],
   granted: readonly string[],

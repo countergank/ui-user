@@ -1,7 +1,3 @@
-// Console navigation suite (COU-275, T4 / S3, S4).
-//
-// Assertions are on what a person can reach — links by accessible name — so a hidden
-// section cannot pass by being styled away.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
@@ -48,7 +44,6 @@ function renderNav(permissions: string[]) {
   );
 }
 
-/** The section names the navigation currently offers. */
 function visibleSectionNames(): string[] {
   const nav = screen.getByRole("navigation", { name: t("nav.label") });
 
