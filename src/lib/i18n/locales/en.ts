@@ -63,6 +63,22 @@ export const en = {
         next: "Next",
         morePages: "More pages",
       },
+      list: {
+        filters: {
+          all: "All",
+        },
+        clear: "Clear filters",
+        empty: "No results found",
+        sort: {
+          by: "Sort by {{column}}",
+        },
+        pagination: {
+          summary: "Showing {{from}} to {{to}} of {{total}}",
+          previous: "Previous page",
+          next: "Next page",
+          page: "Go to page {{page}}",
+        },
+      },
     },
   },
   landing: {
@@ -197,16 +213,47 @@ export const en = {
         "Your role does not include this section. If you think it should, ask an administrator to review your permissions.",
     },
   },
+  users: {
+    list: {
+      title: "Users",
+      columns: {
+        name: "Name",
+        email: "Email",
+        userName: "User",
+        role: "Role",
+        status: "Status",
+        createdAt: "Created",
+        actions: "Actions",
+      },
+      filters: {
+        search: "Search users",
+        role: "Role",
+        status: "Status",
+        clear: "Clear filters",
+      },
+      empty: "No users found",
+      actions: {
+        create: "New user",
+        edit: "Edit",
+        activate: "Activate",
+        deactivate: "Deactivate",
+        unlock: "Unlock",
+        delete: "Delete",
+      },
+      status: {
+        active: "Active",
+        inactive: "Inactive",
+      },
+    },
+  },
 };
 
-/** Shape every language bundle must satisfy. Derived from English, the source of truth. */
 export type TranslationTree = typeof en.common;
 
-/** Shape every `auth` bundle must satisfy. */
 export type AuthTranslationTree = typeof en.auth;
 
-/** Shape every `landing` bundle must satisfy. */
 export type LandingTranslationTree = typeof en.landing;
 
-/** Shape every `console` bundle must satisfy. */
 export type ConsoleTranslationTree = typeof en.console;
+
+export type UsersTranslationTree = typeof en.users;

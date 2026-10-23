@@ -3,6 +3,7 @@ import type {
   ConsoleTranslationTree,
   LandingTranslationTree,
   TranslationTree,
+  UsersTranslationTree,
 } from "./en";
 
 export const pt: {
@@ -10,6 +11,7 @@ export const pt: {
   auth: AuthTranslationTree;
   landing: LandingTranslationTree;
   console: ConsoleTranslationTree;
+  users: UsersTranslationTree;
 } = {
   common: {
     meta: {
@@ -74,6 +76,22 @@ export const pt: {
         previous: "Anterior",
         next: "Próxima",
         morePages: "Mais páginas",
+      },
+      list: {
+        filters: {
+          all: "Todos",
+        },
+        clear: "Limpar filtros",
+        empty: "Nenhum resultado",
+        sort: {
+          by: "Ordenar por {{column}}",
+        },
+        pagination: {
+          summary: "Mostrando {{from}} a {{to}} de {{total}}",
+          previous: "Página anterior",
+          next: "Página seguinte",
+          page: "Ir para a página {{page}}",
+        },
       },
     },
   },
@@ -207,6 +225,39 @@ export const pt: {
       title: "Acesso negado",
       message:
         "Seu papel não inclui esta seção. Se você acredita que deveria, peça a um administrador para revisar suas permissões.",
+    },
+  },
+  users: {
+    list: {
+      title: "Usuários",
+      columns: {
+        name: "Nome",
+        email: "Email",
+        userName: "Usuário",
+        role: "Papel",
+        status: "Status",
+        createdAt: "Criado",
+        actions: "Ações",
+      },
+      filters: {
+        search: "Buscar usuários",
+        role: "Papel",
+        status: "Status",
+        clear: "Limpar filtros",
+      },
+      empty: "Nenhum usuário encontrado",
+      actions: {
+        create: "Novo usuário",
+        edit: "Editar",
+        activate: "Ativar",
+        deactivate: "Desativar",
+        unlock: "Desbloquear",
+        delete: "Excluir",
+      },
+      status: {
+        active: "Ativo",
+        inactive: "Inativo",
+      },
     },
   },
 };
