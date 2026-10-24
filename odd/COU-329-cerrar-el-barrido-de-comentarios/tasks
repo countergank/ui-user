@@ -12,8 +12,14 @@ Mirror of `odd/tasks/COU-329-cerrar-el-barrido-de-comentarios.md`.
   - Evidence: `vite-env.d.ts`; `AGENTS.md` actualizado para cubrir directivas del compilador.
 - [x] T4 — `make ci` EXIT=0 (lint + typecheck + tests + build).
 
+## Costo aceptado, ahora en docs
+
+La justificación del contraste AA vivía en comentarios de `tokens.css` y el barrido la eliminó. Se
+restauró donde la regla manda: `docs/accessibility.md` → "Design tokens and contrast", con el número
+enforced por `tokens.test.ts`.
+
 ## Hallazgos de la review (informational, cerrada como aprobada)
 
 - `R2-task-evidence-mismatch` (warning): corregido arriba — la evidencia decía "ninguna línea agregada" y el commit sí agrega la directiva y el texto de `AGENTS.md`.
 - `R2-task-doc-mirror` (suggestion): esta cabecera y la del doc de feature describen el mismo estado; se mantienen alineadas.
-- `R2-rationale-record` (suggestion): `theme.test.ts` compara contra `index.html` y el porqué (script pre-paint que debe coincidir con `theme.ts`) se perdió con el barrido. **Costo aceptado y registrado**: si vuelve a hacer falta, su lugar es `docs/` o el propio ticket, no un comentario junto a la constante.
+- `R2-rationale-record` (suggestion): **resuelto con evidencia** — el acoplamiento con `index.html` está documentado donde corresponde, en el `describe("index.html pre-paint theme bootstrap")` y el caso `"uses the same storage key and preference vocabulary as theme.ts"`. No hacía falta comentario ni rename.
