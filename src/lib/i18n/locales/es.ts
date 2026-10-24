@@ -188,6 +188,8 @@ export const es: {
       },
       submit: "Iniciar sesión",
       forgotPassword: "¿Olvidaste tu contraseña?",
+      showPassword: "Mostrar contraseña",
+      hidePassword: "Ocultar contraseña",
       errors: {
         invalidCredentials: "El email o la contraseña son incorrectos.",
         locked: "Esta cuenta está bloqueada. Probá más tarde.",
@@ -273,6 +275,7 @@ export const es: {
         email: "Email",
         userName: "Usuario",
         password: "Contraseña",
+        confirmPassword: "Confirmar contraseña",
         role: "Rol",
       },
       submit: "Guardar",
@@ -285,6 +288,13 @@ export const es: {
         userNameTaken: "Ese nombre de usuario ya está en uso.",
         weakPassword:
           "Usá entre 8 y 64 caracteres con al menos una minúscula, una mayúscula, un dígito y un carácter especial (@$!%*?&), sin caracteres repetidos consecutivos ni secuencias comunes.",
+        passwordMismatch: "Las contraseñas no coinciden.",
+      },
+      passwordStrength: {
+        label: "Fortaleza de la contraseña: {{strength}}",
+        weak: "Débil",
+        medium: "Media",
+        strong: "Fuerte",
       },
     },
   },

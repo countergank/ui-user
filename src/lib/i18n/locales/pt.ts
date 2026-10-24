@@ -188,6 +188,8 @@ export const pt: {
       },
       submit: "Entrar",
       forgotPassword: "Esqueceu sua senha?",
+      showPassword: "Mostrar senha",
+      hidePassword: "Ocultar senha",
       errors: {
         invalidCredentials: "O email ou a senha estão incorretos.",
         locked: "Esta conta está bloqueada. Tente mais tarde.",
@@ -273,6 +275,7 @@ export const pt: {
         email: "Email",
         userName: "Usuário",
         password: "Senha",
+        confirmPassword: "Confirmar senha",
         role: "Papel",
       },
       submit: "Salvar",
@@ -285,6 +288,13 @@ export const pt: {
         userNameTaken: "Esse nome de usuário já está em uso.",
         weakPassword:
           "Use de 8 a 64 caracteres com pelo menos uma letra minúscula, uma maiúscula, um dígito e um caractere especial (@$!%*?&), sem caracteres repetidos consecutivos nem sequências comuns.",
+        passwordMismatch: "As senhas não coincidem.",
+      },
+      passwordStrength: {
+        label: "Força da senha: {{strength}}",
+        weak: "Fraca",
+        medium: "Média",
+        strong: "Forte",
       },
     },
   },

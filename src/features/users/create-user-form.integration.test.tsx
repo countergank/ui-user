@@ -89,8 +89,9 @@ function renderForm() {
 
 async function fillForm({
   password = "Nx9!mKp2",
+  confirmPassword,
   role,
-}: { password?: string; role?: string } = {}) {
+}: { password?: string; confirmPassword?: string; role?: string } = {}) {
   const user = userEvent.setup();
 
   await user.type(screen.getByLabelText(tUsers("create.fields.name")), "Ada");
@@ -98,6 +99,10 @@ async function fillForm({
   await user.type(screen.getByLabelText(tUsers("create.fields.email")), "ada@example.com");
   await user.type(screen.getByLabelText(tUsers("create.fields.userName")), "ada");
   await user.type(screen.getByLabelText(tUsers("create.fields.password")), password);
+  await user.type(
+    screen.getByLabelText(tUsers("create.fields.confirmPassword")),
+    confirmPassword ?? password,
+  );
 
   if (role !== undefined) {
     await user.click(screen.getByRole("combobox", { name: tUsers("create.fields.role") }));
@@ -268,6 +273,42 @@ describe("create user form — MSW", () => {
     expect(screen.getByText(tUsers("create.groups.access"))).toBeInTheDocument();
   });
 
+  it("blocks a mismatched confirmation on the confirm field and does not post", async () => {
+    renderForm();
+
+    const user = await fillForm({ confirmPassword: "Different9!pass" });
+    await user.click(screen.getByRole("button", { name: tUsers("create.submit") }));
+
+    expect(await screen.findByText(tUsers("create.errors.passwordMismatch"))).toBeInTheDocument();
+    expect(screen.getByLabelText(tUsers("create.fields.confirmPassword"))).toHaveAttribute(
+      "aria-invalid",
+      "true",
+    );
+    expect(screen.getByLabelText(tUsers("create.fields.password"))).not.toHaveAttribute(
+      "aria-invalid",
+      "true",
+    );
+    expect(requestCount).toBe(0);
+    expect(screen.queryByText("users-list")).not.toBeInTheDocument();
+  });
+
+  it.each([
+    ["Nx9!", "weak"],
+    ["Nx9mKp2w", "medium"],
+    ["Nx9!mKp2", "strong"],
+  ] as const)("announces the %s strength band for %s", async (password, band) => {
+    renderForm();
+
+    const user = userEvent.setup();
+    await user.type(screen.getByLabelText(tUsers("create.fields.password")), password);
+
+    const announcement = tUsers("create.passwordStrength.label", {
+      strength: tUsers(`create.passwordStrength.${band}`),
+    });
+    const status = screen.getByRole("status");
+    expect(status).toHaveTextContent(announcement);
+  });
+
   it("has no axe violations on the form", async () => {
     const { container } = renderForm();
 
@@ -277,7 +318,15 @@ describe("create user form — MSW", () => {
   it("keeps every field labelled", () => {
     renderForm();
 
-    for (const key of ["name", "lastName", "email", "userName", "password", "role"] as const) {
+    for (const key of [
+      "name",
+      "lastName",
+      "email",
+      "userName",
+      "password",
+      "confirmPassword",
+      "role",
+    ] as const) {
       expect(screen.getByLabelText(tUsers(`create.fields.${key}`))).toBeInTheDocument();
     }
   });

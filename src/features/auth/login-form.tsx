@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
-import { useEffect, useMemo, useRef } from "react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
@@ -26,6 +26,7 @@ export function LoginForm() {
   const { t } = useTranslation("auth");
   const { t: tCommon } = useTranslation();
   const schema = useMemo(() => createLoginSchema(t), [t]);
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<LoginValues>({
     resolver: zodResolver(schema),
@@ -90,9 +91,29 @@ export function LoginForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>{t("login.fields.password")}</FormLabel>
-              <FormControl>
-                <Input type="password" autoComplete="current-password" {...field} />
-              </FormControl>
+              <div className="relative">
+                <FormControl>
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="current-password"
+                    className="pr-10"
+                    {...field}
+                  />
+                </FormControl>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-0 top-0 h-full w-10 hover:bg-transparent"
+                  aria-label={showPassword ? t("login.hidePassword") : t("login.showPassword")}
+                  title={showPassword ? t("login.hidePassword") : t("login.showPassword")}
+                  onClick={() => {
+                    setShowPassword((visible) => !visible);
+                  }}
+                >
+                  {showPassword ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
+                </Button>
+              </div>
               <FormMessage />
             </FormItem>
           )}

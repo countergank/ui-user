@@ -175,6 +175,34 @@ describe("login form — API failures", () => {
   });
 });
 
+describe("login form — show/hide password", () => {
+  it("toggles the input type and the accessible name while preserving the value", async () => {
+    renderForm();
+
+    const user = userEvent.setup();
+    const password = screen.getByLabelText(tAuth("login.fields.password"));
+    await user.type(password, "secret");
+
+    const toggle = screen.getByRole("button", { name: tAuth("login.showPassword") });
+    expect(toggle).toHaveAttribute("title", tAuth("login.showPassword"));
+    expect(password).toHaveAttribute("type", "password");
+
+    await user.click(toggle);
+
+    expect(password).toHaveAttribute("type", "text");
+    expect(password).toHaveValue("secret");
+    expect(screen.getByRole("button", { name: tAuth("login.hidePassword") })).toHaveAttribute(
+      "title",
+      tAuth("login.hidePassword"),
+    );
+
+    await user.click(screen.getByRole("button", { name: tAuth("login.hidePassword") }));
+
+    expect(password).toHaveAttribute("type", "password");
+    expect(password).toHaveValue("secret");
+  });
+});
+
 describe("login form — success", () => {
   it("stores the session the API returned", async () => {
     fetchMock.mockResolvedValue(jsonResponse(200, AUTH));

@@ -174,6 +174,8 @@ export const en = {
       },
       submit: "Sign in",
       forgotPassword: "Forgot your password?",
+      showPassword: "Show password",
+      hidePassword: "Hide password",
       errors: {
         invalidCredentials: "The email or password is incorrect.",
         locked: "This account is locked. Try again later.",
@@ -259,6 +261,7 @@ export const en = {
         email: "Email",
         userName: "User",
         password: "Password",
+        confirmPassword: "Confirm password",
         role: "Role",
       },
       submit: "Save",
@@ -271,6 +274,13 @@ export const en = {
         userNameTaken: "That user name is already taken.",
         weakPassword:
           "Use 8 to 64 characters with at least one lowercase letter, one uppercase letter, one digit and one special character (@$!%*?&), without repeated consecutive characters or common sequences.",
+        passwordMismatch: "Passwords do not match.",
+      },
+      passwordStrength: {
+        label: "Password strength: {{strength}}",
+        weak: "Weak",
+        medium: "Medium",
+        strong: "Strong",
       },
     },
   },
