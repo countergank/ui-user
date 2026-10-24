@@ -33,7 +33,8 @@ alcance hasta A9; el API ya acepta `permissions`).
 
 **S11 — AC tests**: "Test con MSW y test axe." · "Claves presentes en los tres idiomas."
 
-**S12 — Contrato verificado en `api-user`** (leído, no supuesto):
+**S12 — Contrato verificado con el equipo del API** (leído en su código, no supuesto). El contrato
+completo queda transcripto acá para que este repo no dependa de un puntero externo:
 - `POST /admin/users` con permiso `user:create`.
 - Body: `name`, `lastName`, `email`, `userName`, `password`, `role?` (`admin|user|viewer`, default
   `user`), `permissions?`.
@@ -69,6 +70,7 @@ visible (el CTA "Nuevo usuario" está `disabled`). Estimación 3 confirmada.
 el manifiesto ya declara `/app/users`, que es de donde `RequireSection` saca el permiso. Se
 implementa en `/app/users/new`.
 
-**L4 — Contrato leído en `api-user`** (permiso de lectura ya otorgado para esta integración), no
-inventado: ver S12. La respuesta **no trae `id`**, así que el formulario no puede navegar a un
+**L4 — Contrato leído en el repositorio del API** con permiso de lectura, no inventado: ver S12, que
+lo transcribe completo. Este repo no referencia rutas de otros repos: un puntero que no se puede
+abrir desde acá no es documentación. La respuesta **no trae `id`**, así que el formulario no puede navegar a un
 detalle inexistente; vuelve al listado e invalida la query.
