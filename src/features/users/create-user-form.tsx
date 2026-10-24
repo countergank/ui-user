@@ -28,7 +28,7 @@ import {
 import { type CreateUserInput, type CreateUserValues, createUserFormSchema } from "./create-schema";
 import { resolveCreateUserError } from "./create-user-errors";
 import { useCreateUser } from "./hooks/use-create-user";
-import { USER_ROLES } from "./users-list-config";
+import { USER_ROLES } from "./types";
 
 export function CreateUserForm() {
   const { t } = useTranslation("users");

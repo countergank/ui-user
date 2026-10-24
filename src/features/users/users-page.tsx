@@ -13,8 +13,9 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { useUsers } from "./hooks/use-users";
+import { USER_ROLES } from "./types";
 import { useUsersColumns } from "./users-columns";
-import { USERS_LIST_PARAMS, USER_ROLES } from "./users-list-config";
+import { USERS_LIST_PARAMS } from "./users-list-config";
 
 export function UsersPage() {
   const { t } = useTranslation("users");

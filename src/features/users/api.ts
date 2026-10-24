@@ -8,6 +8,7 @@ import {
   createUserResponseSchema,
   paginatedUsersSchema,
 } from "./types";
+import type { UserRoleName } from "./types";
 
 export interface CreateUserPayload {
   name: string;
@@ -15,7 +16,7 @@ export interface CreateUserPayload {
   email: string;
   userName: string;
   password: string;
-  role: string;
+  role: UserRoleName;
 }
 
 export interface UsersQuery {

@@ -1,6 +1,8 @@
 import type { TFunction } from "i18next";
 import { z } from "zod";
 
+import { USER_ROLES } from "./types";
+
 const EMAIL_SHAPE = z.string().email();
 const PASSWORD_LOWER = /[a-z]/;
 const PASSWORD_UPPER = /[A-Z]/;
@@ -54,7 +56,7 @@ export function createUserFormSchema(t: TFunction<"users">) {
         (value) => !COMMON_SEQUENCES.some((sequence) => value.toLowerCase().includes(sequence)),
         weakPassword,
       ),
-    role: z.enum(["admin", "user", "viewer"]).default("user"),
+    role: z.enum(USER_ROLES).default("user"),
   });
 }
 

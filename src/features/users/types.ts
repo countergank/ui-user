@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+export const USER_ROLES = ["admin", "user", "viewer"] as const;
+export type UserRoleName = (typeof USER_ROLES)[number];
+
 export const userSchema = z.object({
   id: z.string(),
   name: z.string(),
