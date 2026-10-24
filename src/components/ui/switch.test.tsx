@@ -8,7 +8,6 @@ import { expectNoAuthoredInlineStyles } from "@/test/inline-styles";
 
 import { Switch } from "./switch";
 
-/** The switch by its accessible name, whatever its checked state. */
 function getSwitch(name = "Notifications"): HTMLElement {
   return screen.getByRole("switch", { name });
 }
@@ -76,7 +75,6 @@ describe("Switch", () => {
 
     await user.click(getSwitch());
 
-    // State is carried by the Radix data attribute the token utilities key off.
     expect(container.querySelector('[data-state="checked"]')).not.toBeNull();
     expect(thumb).not.toBeNull();
   });

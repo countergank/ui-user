@@ -12,7 +12,6 @@ import { expectNoAuthoredInlineStyles } from "@/test/inline-styles";
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./tooltip";
 
-/** A tooltip whose trigger is a real button, the only interactive shape it supports. */
 function renderTooltip() {
   return render(
     <TooltipProvider>
@@ -47,8 +46,6 @@ describe("Tooltip", () => {
     expect(await screen.findByRole("tooltip")).toHaveTextContent(
       "Members can rejoin with an invite link.",
     );
-    // The description is attached to the trigger, which is what a screen reader reads
-    // once the tooltip opens.
     expect(trigger).toHaveAccessibleDescription("Members can rejoin with an invite link.");
   });
 
@@ -80,9 +77,6 @@ describe("Tooltip", () => {
     await user.tab();
     await screen.findByRole("tooltip");
 
-    // `region` is a page-level rule, and a floating layer portaled to <body> can never sit
-    // inside a landmark on a bare test page; the flagged node is Radix's own wrapper, not
-    // markup this primitive authors, so that one rule is skipped while the rest run.
     const results = await axe(document.body, { rules: { region: { enabled: false } } });
 
     expect(results).toHaveNoViolations();

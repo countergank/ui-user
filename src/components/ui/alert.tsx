@@ -19,10 +19,6 @@ const alertVariants = cva(
   },
 );
 
-/**
- * `role="alert"` makes the region assertive: an alert is for something the user must
- * see now. Non-urgent status belongs in the toaster, which is polite by default.
- */
 const Alert = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof alertVariants>

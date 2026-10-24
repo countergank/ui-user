@@ -15,7 +15,6 @@ import {
   TableRow,
 } from "./table";
 
-/** A real table: caption, one header row, one body row. */
 function renderTable() {
   return render(
     <Table>

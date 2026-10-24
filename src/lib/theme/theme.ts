@@ -1,42 +1,21 @@
-// Theme primitives (COU-270).
-//
-// `index.html` inlines an equivalent pre-paint script (it cannot import this
-// module); keep the storage key, the preference vocabulary and the media query
-// in sync with it (`theme.test.ts` guards the drift).
-
-/** `localStorage` key holding the user's theme preference. */
 export const THEME_STORAGE_KEY = "countergank.ui.theme";
 
-/** The media query that reports the OS color-scheme preference. */
 export const DARK_MEDIA_QUERY = "(prefers-color-scheme: dark)";
 
-/** What the user chose: follow the OS, or pin one of the two themes. */
 export type ThemePreference = "system" | "light" | "dark";
 
-/** What the DOM actually renders. `system` is always resolved before use. */
 export type ResolvedTheme = "light" | "dark";
 
-/**
- * One-button cycle order: `light → dark → system`, wrapping back to `light`.
- * `light` leads because `system` is the default, so the first activation pins
- * `light`.
- */
 export const THEME_CYCLE: readonly ThemePreference[] = ["light", "dark", "system"];
 
 const DEFAULT_PREFERENCE: ThemePreference = "system";
 
-/**
- * Is this stored value a theme preference we understand? Deliberately narrow:
- * anything that is not exactly one of the three literals is treated as corrupt.
- */
 export function isThemePreference(value: unknown): value is ThemePreference {
   return value === "system" || value === "light" || value === "dark";
 }
 
 /**
- * Read the persisted preference. Absent, corrupt, or unreadable storage all
- * resolve to `"system"` — a broken `localStorage` (Safari private mode, blocked
- * cookies, disabled storage) must never throw, let alone break the app.
+ * @returns The persisted preference, or `"system"` when storage is absent, corrupt or unreadable.
  */
 export function readStoredPreference(): ThemePreference {
   try {
@@ -48,19 +27,16 @@ export function readStoredPreference(): ThemePreference {
 }
 
 /**
- * Persist the preference as a bare string (`"system"`, `"light"`, `"dark"`).
- * Best-effort: a failed write (quota, disabled storage) is swallowed because the
- * in-memory store already holds the user's choice for this session.
+ * @param preference - `"system"`, `"light"` or `"dark"`, persisted as a bare string.
+ * @returns void; a failed write is swallowed because the in-memory store already holds the choice.
  */
 export function writeStoredPreference(preference: ThemePreference): void {
   try {
     window.localStorage.setItem(THEME_STORAGE_KEY, preference);
-  } catch {
-    // Intentionally ignored: storage is a cache, not a source of truth.
-  }
+    // eslint-disable-next-line no-empty -- storage is a cache, not a source of truth.
+  } catch {}
 }
 
-/** Pure resolution: `system` defers to the OS, an explicit choice wins. */
 export function resolveTheme(
   preference: ThemePreference,
   systemPrefersDark: boolean,
@@ -72,7 +48,6 @@ export function resolveTheme(
   return preference;
 }
 
-/** Wraps from the end of {@link THEME_CYCLE} back to its start (`system` → `light`). */
 export function nextPreference(current: ThemePreference): ThemePreference {
   const index = THEME_CYCLE.indexOf(current);
 
@@ -80,8 +55,8 @@ export function nextPreference(current: ThemePreference): ThemePreference {
 }
 
 /**
- * Does the OS currently ask for a dark scheme? Unavailable `matchMedia` (and a
- * throwing one) is treated as "no preference", i.e. light.
+ * @returns Whether the OS currently asks for a dark scheme; an unavailable or throwing
+ * `matchMedia` counts as light.
  */
 export function systemPrefersDark(): boolean {
   try {
@@ -96,9 +71,8 @@ export function systemPrefersDark(): boolean {
 }
 
 /**
- * The single DOM side effect: toggle the `dark` class Tailwind's `darkMode:
- * ["class"]` keys off, and declare the matching `color-scheme` so the browser
- * paints native UI (scrollbars, form controls, canvas) to match.
+ * @param resolved - `"light"` or `"dark"`; `system` must be resolved before calling.
+ * @returns void; toggles the `dark` class on `<html>` and declares the matching `color-scheme`.
  */
 export function applyTheme(resolved: ResolvedTheme): void {
   const root = document.documentElement;

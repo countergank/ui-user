@@ -47,7 +47,6 @@ const SelectTrigger = React.forwardRef<
   >
     {children}
     <SelectPrimitive.Icon asChild>
-      {/* Decorative: the trigger's expanded state is already in `aria-expanded`. */}
       <ChevronDown aria-hidden="true" className="h-4 w-4 opacity-50" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>

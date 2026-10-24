@@ -16,7 +16,6 @@ const Checkbox = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <CheckboxPrimitive.Root ref={ref} className={cn(checkboxVariants({ className }))} {...props}>
     <CheckboxPrimitive.Indicator className="flex items-center justify-center text-current">
-      {/* Decorative: the checked state is already exposed through aria-checked. */}
       <Check aria-hidden="true" className="h-4 w-4" />
     </CheckboxPrimitive.Indicator>
   </CheckboxPrimitive.Root>

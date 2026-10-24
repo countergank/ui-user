@@ -13,8 +13,6 @@ describe("Separator", () => {
 
     const separator = screen.getByRole("separator");
 
-    // `horizontal` is the role's implicit default, so Radix omits the attribute;
-    // asserting its absence is what proves we did not accidentally declare vertical.
     expect(separator).not.toHaveAttribute("aria-orientation");
     expect(separator).toHaveClass("h-[1px]", "w-full");
   });

@@ -1,18 +1,16 @@
 import { useEffect, useState } from "react";
 
 interface RouteAnnouncerProps {
-  /** Message to announce after route change (e.g., page title) */
   message: string;
 }
 
 /**
- * Accessible route change announcer (a11y route-announcer rule / ARCH-6): announces page
- * transitions to screen reader users via `aria-live="polite"`. Mount once at the app root.
+ * @param message - the text to announce after a route change (e.g. the page title).
+ * @returns A visually hidden `aria-live="polite"` announcer; mount once at the app root.
  */
 export function RouteAnnouncer({ message }: RouteAnnouncerProps) {
   const [announced, setAnnounced] = useState("");
 
-  // Delay announcement so screen readers pick it up after DOM update
   useEffect(() => {
     const timer = setTimeout(() => {
       setAnnounced(message);
@@ -23,8 +21,6 @@ export function RouteAnnouncer({ message }: RouteAnnouncerProps) {
   }, [message]);
 
   return (
-    // Deliberate visually-hidden live region from the react-frontend skill asset:
-    // `<div role="status">` is the canonical screen-reader announcer pattern.
     // biome-ignore lint/a11y/useSemanticElements: intentional aria-live announcer, not an <output>
     <div
       role="status"

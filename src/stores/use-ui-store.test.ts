@@ -7,13 +7,11 @@ import { initialState, selectSidebarOpen, selectTheme, uiStore } from "./use-ui-
 
 describe("uiStore (vanilla)", () => {
   beforeEach(() => {
-    // The store persists the theme preference, so each test starts from clean storage.
     window.localStorage.clear();
   });
 
   it("has correct initial state", () => {
     const state = uiStore.getState();
-    // COU-278: a console opens with its navigation visible; collapsing is the choice.
     expect(selectSidebarOpen(state)).toBe(true);
     expect(selectTheme(state)).toBe("system");
   });

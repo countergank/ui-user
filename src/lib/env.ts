@@ -1,8 +1,3 @@
-/**
- * Typed environment access (COU-125, docs/adr.md "env handling policy"). Vite bakes
- * `VITE_*` variables into the bundle at build time, so this module is the single typed
- * gateway: `env` plus the build-mode flags, failing fast at import on missing variables.
- */
 import { AppError } from "@/lib/errors";
 
 export type AppEnv = "development" | "staging" | "production";
@@ -17,14 +12,21 @@ const MODE_TO_ENV: Record<string, AppEnv> = {
   production: "production",
 };
 
-/** Maps a raw `MODE` value onto our known environments. Anything unexpected → dev safe-fail. */
+/**
+ * @param mode - the raw `MODE` value.
+ * @returns The known environment, falling back to `development` for anything unexpected.
+ */
 export function resolveMode(mode: string): AppEnv {
   return MODE_TO_ENV[mode] ?? "development";
 }
 
 type ImportMetaEnvLike = Record<string, string | undefined>;
 
-/** Resolves a required `VITE_*` variable, throwing an `AppError` (ENV_MISSING) if absent. */
+/**
+ * @param env - an env-like record (`import.meta.env` in production, a stub in tests).
+ * @param name - the required variable name.
+ * @returns The variable value; throws an `AppError` (`ENV_MISSING`) when absent.
+ */
 export function requireEnv(env: ImportMetaEnvLike, name: string): string {
   const value = env[name];
   if (value === undefined || value === "") {
@@ -36,13 +38,12 @@ export function requireEnv(env: ImportMetaEnvLike, name: string): string {
 }
 
 export interface EnvShape {
-  /** Base URL of the backend API the SPA talks to. */
   apiBaseUrl: string;
 }
 
 /**
- * Builds a typed configuration snapshot from an env-like object. Pure and unit-testable:
- * supply any record and get a checked `EnvShape`, with fail-fast on missing required vars.
+ * @param env - an env-like record to read required `VITE_*` variables from.
+ * @returns A frozen, typed configuration snapshot; throws on missing required variables.
  */
 export function resolveEnv(env: ImportMetaEnvLike): EnvShape {
   return Object.freeze({
@@ -50,20 +51,12 @@ export function resolveEnv(env: ImportMetaEnvLike): EnvShape {
   });
 }
 
-/**
- * The Vite build mode (`import.meta.env.MODE`): "development" | "staging" | "production".
- * Anything unexpected (e.g. a custom `--mode` flag) safely resolves to "development".
- */
 export const envMode: AppEnv = resolveMode(import.meta.env.MODE);
 
 export const isDev = envMode === "development";
 export const isStaging = envMode === "staging";
 export const isProd = envMode === "production";
 
-/**
- * The app's resolved configuration, evaluated eagerly at import time so a missing
- * `VITE_API_BASE_URL` fails fast with a loud startup error.
- */
 export const env: EnvShape = resolveEnv(import.meta.env);
 
 export default env;

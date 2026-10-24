@@ -1,9 +1,3 @@
-/**
- * Access-token expiry reading (COU-273, T3). The server owns the TTL, so the client reads
- * the standard `exp` claim instead of hardcoding a duration that would silently drift from
- * the server. No signature verification here: a tampered token fails on the server anyway.
- */
-
 export interface AccessTokenClaims {
   sub?: string;
   exp?: number;
@@ -14,14 +8,9 @@ export interface AccessTokenClaims {
 
 export interface DecodedAccessToken {
   sub: string | null;
-  /** Absolute expiry in milliseconds since the epoch, or `null` when the token carries none. */
   expiresAt: number | null;
 }
 
-/**
- * Refresh this long before the token actually dies. Long enough to cover a slow round
- * trip, short enough not to refresh while the token is still comfortably valid.
- */
 export const DEFAULT_EXPIRY_SKEW_MS = 15_000;
 
 function base64UrlToBase64(value: string): string {
@@ -30,7 +19,10 @@ function base64UrlToBase64(value: string): string {
   return normalized.padEnd(Math.ceil(normalized.length / 4) * 4, "=");
 }
 
-/** Decode the payload of a JWT-shaped token, or `null` when it is not one. */
+/**
+ * @param token - a JWT-shaped access token, with or without a usable payload.
+ * @returns The decoded claims, or `null` when the token is not a readable JWT.
+ */
 export function decodeAccessToken(token: string): DecodedAccessToken | null {
   const parts = token.split(".");
   if (parts.length !== 3) {
@@ -54,7 +46,9 @@ export function decodeAccessToken(token: string): DecodedAccessToken | null {
   }
 }
 
-/** Milliseconds left before expiry, clamped at zero. Unreadable tokens count as expired. */
+/**
+ * @returns Milliseconds left before expiry, clamped at zero; unreadable tokens count as expired.
+ */
 export function millisecondsUntilExpiry(token: string, now: number = Date.now()): number {
   const decoded = decodeAccessToken(token);
   if (decoded?.expiresAt == null) {
@@ -65,8 +59,8 @@ export function millisecondsUntilExpiry(token: string, now: number = Date.now())
 }
 
 /**
- * Is the token inside the refresh margin? A token we cannot read is reported expired:
- * failing closed sends the user through refresh instead of firing a doomed request.
+ * @returns Whether the token is inside the refresh margin; an unreadable token is reported
+ * expired, failing closed.
  */
 export function isTokenExpired(
   token: string,

@@ -22,7 +22,6 @@ const AUTH = {
 
 const ROTATED = { ...AUTH, accessToken: "access-2", refreshToken: "refresh-2" };
 
-/** A `Response` double: the client reads `ok`, `status`, `text()` and nothing else. */
 function response(status: number, body: unknown): Response {
   return {
     ok: status >= 200 && status < 300,
@@ -46,7 +45,6 @@ function headersOf(call: unknown[]): Headers {
   return new Headers((call[1] as RequestInit).headers);
 }
 
-/** A JWT-shaped token whose only meaningful claim is `exp` (seconds, per the JWT spec). */
 function tokenExpiringAt(expiresAtMs: number): string {
   const payload = btoa(JSON.stringify({ sub: "u1", exp: Math.floor(expiresAtMs / 1000) }));
 
@@ -161,8 +159,6 @@ describe("proactive refresh wiring", () => {
   });
 
   it("schedules the session that was already in the store before the wiring ran", () => {
-    // A reload with a persisted session: zustand hydrates the store during creation, so by
-    // the time this wiring runs the token is already there and no change event will follow.
     sessionStore.getState().startSession({
       ...AUTH,
       accessToken: tokenExpiringAt(EXPIRES_AT),

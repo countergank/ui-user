@@ -22,7 +22,6 @@ const AUTH = {
   refreshToken: "refresh-2",
 };
 
-/** Only `request` is needed, which is exactly the surface the adapter may use. */
 function clientReturning(value: unknown) {
   const request = vi.fn(() => Promise.resolve(value));
 

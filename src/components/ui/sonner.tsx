@@ -6,7 +6,6 @@ import { selectTheme, useUiStore } from "@/stores/use-ui-store";
 
 const toasterVariants = cva("toaster group");
 
-/** The token classes every toast surface inherits, overridable per call site. */
 const TOAST_CLASS_NAMES = {
   toast:
     "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
@@ -15,11 +14,6 @@ const TOAST_CLASS_NAMES = {
   cancelButton: "group-[.toaster]:bg-muted group-[.toaster]:text-muted-foreground",
 } as const;
 
-/**
- * Sonner owns the live region and the queue; this wrapper only projects the app's theme
- * preference and design tokens onto it. The preference is already `light | dark | system`
- * — Sonner's own vocabulary, `system` included, so the OS preference keeps working.
- */
 function Toaster({
   className,
   toastOptions,

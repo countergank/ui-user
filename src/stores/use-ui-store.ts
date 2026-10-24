@@ -11,19 +11,13 @@ export interface UiState {
 }
 
 export interface UiActions {
-  /** Collapse/expand the console sidebar; the choice is persisted (COU-278, S6). */
   toggleSidebar: () => void;
-  /** Set the sidebar expansion explicitly; the value is also persisted. */
   setSidebarOpen: (open: boolean) => void;
-  /** Set the theme preference; the value is also persisted for the next visit. */
   setTheme: (preference: ThemePreference) => void;
 }
 
 export type UiStore = UiState & UiActions;
 
-// Pure literal, deliberately free of import-time side effects: reading storage here
-// would leak state across tests — `startThemeSync()` and `hydrateSidebarState()` hydrate.
-// The sidebar starts expanded (COU-278): collapsing is the choice that must be remembered.
 export const initialState: UiState = { sidebarOpen: true, theme: "system" };
 
 export const uiStore = createStore<UiStore>()((set, get) => ({

@@ -123,8 +123,6 @@ describe("readStoredPreference", () => {
   });
 
   it('falls back to "system" when localStorage access throws', () => {
-    // Patch the prototype, not `window.localStorage`: jsdom's Storage is a Proxy
-    // that swallows instance-level method assignment (it stores it as an item).
     const getItem = vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
       throw new Error("SecurityError: storage is disabled");
     });
@@ -219,8 +217,6 @@ describe("index.html pre-paint theme bootstrap", () => {
     const inlineStart = html.indexOf("<script>");
     const inlineScript = html.slice(inlineStart, html.indexOf("</script>", inlineStart));
 
-    // Drift guard: the inline script cannot import the constant, so renaming
-    // THEME_STORAGE_KEY without updating index.html must fail this suite.
     expect(inlineScript).toContain(THEME_STORAGE_KEY);
 
     for (const preference of ["system", "light", "dark"]) {

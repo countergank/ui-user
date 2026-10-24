@@ -11,11 +11,6 @@ import {
 import { writeStoredLanguage } from "@/lib/i18n/language";
 import { type AppLanguage, languages } from "@/lib/i18n/resources";
 
-/**
- * Language switcher (COU-310, T9 / S12). A menu, not a cycling button: cycling through
- * three languages hides which one is active. Each option is labelled in its own language —
- * translating them would make the menu unreadable to the person who needs it most.
- */
 const LANGUAGE_NAMES: Record<AppLanguage, string> = {
   en: "English",
   es: "Español",

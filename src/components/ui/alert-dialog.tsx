@@ -86,8 +86,6 @@ const AlertDialogDescription = React.forwardRef<
 ));
 AlertDialogDescription.displayName = AlertDialogPrimitive.Description.displayName;
 
-// Action and Cancel are the button primitive in two roles; reusing `buttonVariants`
-// keeps one definition of "primary" and "outline" in the codebase.
 const AlertDialogAction = React.forwardRef<
   React.ComponentRef<typeof AlertDialogPrimitive.Action>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action>

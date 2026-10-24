@@ -3,10 +3,8 @@ import { useStore } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { createStore } from "zustand/vanilla";
 
-/** Namespaced storage key: this app's session, never a generic `session`. */
 export const SESSION_STORAGE_KEY = "countergank.ui.session";
 
-/** Bumped whenever the persisted shape changes; `migratePersistedSession` gates on it. */
 export const SESSION_STORAGE_VERSION = 1;
 
 export interface SessionUser {
@@ -17,7 +15,6 @@ export interface SessionUser {
   lastName: string;
 }
 
-/** `expired` is a real state: authenticated once, but the refresh failed. */
 export type SessionStatus = "anonymous" | "authenticated" | "expired";
 
 export interface SessionState {
@@ -28,19 +25,14 @@ export interface SessionState {
 }
 
 export interface SessionActions {
-  /** Login succeeded: keep the user the API returned and both tokens. */
   startSession: (auth: { user: SessionUser; accessToken: string; refreshToken: string }) => void;
-  /** A refresh rotates the pair; the user stays the same. */
   rotateTokens: (tokens: { accessToken: string; refreshToken: string }) => void;
-  /** The refresh failed: no tokens survive, but the UI knows why the session ended. */
   markExpired: () => void;
-  /** Local logout: empty state, no persisted session left behind. */
   clearSession: () => void;
 }
 
 export type SessionStore = SessionState & SessionActions;
 
-// Deliberately a literal, not a storage read: import-time side effects leak across tests.
 export const initialSessionState: SessionState = {
   status: "anonymous",
   user: null,
@@ -63,15 +55,15 @@ const persistedSessionSchema = z.object({
 });
 
 /**
- * Gate for a persisted payload written by an older (or corrupted) client. A shape we
- * cannot prove is not trusted: the session is discarded and the user logs in again,
- * which is the safe direction for credentials.
+ * @param persisted - the stored payload, written by this build or an older one.
+ * @param version - the persisted shape version.
+ * @returns The validated session state, or `undefined` when the payload cannot be trusted
+ * (written by a newer client, or failing the shape check) so the caller discards it.
  */
 export function migratePersistedSession(
   persisted: unknown,
   version: number,
 ): SessionState | undefined {
-  // A payload from a newer client than this build cannot be validated here.
   if (version > SESSION_STORAGE_VERSION) {
     return undefined;
   }
@@ -100,7 +92,6 @@ export const sessionStore = createStore<SessionStore>()(
       },
       clearSession: () => {
         set({ ...initialSessionState });
-        // Remove the key entirely instead of persisting `null` tokens.
         sessionStore.persist.clearStorage();
       },
     }),

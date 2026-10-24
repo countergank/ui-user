@@ -66,11 +66,6 @@ const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTML
 );
 TableRow.displayName = "TableRow";
 
-/**
- * `scope="col"` is explicit rather than left to the browser's implicit association:
- * WCAG H63 asks for it, and it keeps the header meaningful when a caller renders a
- * row header with `scope="row"` instead.
- */
 const TableHead = React.forwardRef<HTMLTableCellElement, React.ComponentPropsWithoutRef<"th">>(
   ({ className, scope = "col", ...props }, ref) => (
     <th ref={ref} scope={scope} className={cn(tableHeadVariants({ className }))} {...props} />

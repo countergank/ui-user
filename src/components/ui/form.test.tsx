@@ -28,7 +28,6 @@ const schema = z.object({ email: z.string().email("Enter a valid email") });
 
 type DemoValues = z.infer<typeof schema>;
 
-/** A minimal, realistic consumer: one required field, one submit button. */
 function DemoForm({ onSubmit }: { onSubmit: (values: DemoValues) => void }) {
   const form = useForm<DemoValues>({
     resolver: zodResolver(schema),
@@ -39,7 +38,6 @@ function DemoForm({ onSubmit }: { onSubmit: (values: DemoValues) => void }) {
     <Form {...form}>
       <form
         onSubmit={(event) => {
-          // `handleSubmit` returns a promise; the DOM handler must stay void.
           void form.handleSubmit(onSubmit)(event);
         }}
         noValidate

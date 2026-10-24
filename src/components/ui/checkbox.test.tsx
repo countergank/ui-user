@@ -8,7 +8,6 @@ import { expectNoAuthoredInlineStyles } from "@/test/inline-styles";
 
 import { Checkbox } from "./checkbox";
 
-/** The checkbox by its accessible name, whatever its checked state. */
 function getCheckbox(name = "Accept terms"): HTMLElement {
   return screen.getByRole("checkbox", { name });
 }

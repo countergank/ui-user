@@ -12,10 +12,6 @@ import { expectNoAuthoredInlineStyles } from "@/test/inline-styles";
 
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
-/**
- * A popover with an explicit accessible name: the primitive ships no title slot, so
- * the caller names the surface the same way it would name any dialog.
- */
 function renderPopover() {
   return render(
     <Popover>
@@ -71,7 +67,6 @@ describe("Popover", () => {
 
   it("renders no inline styles on the elements it authors (S4)", async () => {
     const user = userEvent.setup();
-    // The panel is portaled to <body>, so the whole document is the surface under test.
     const { baseElement } = renderPopover();
     await openPopover(user);
 
@@ -83,9 +78,6 @@ describe("Popover", () => {
     renderPopover();
     await openPopover(user);
 
-    // `region` is a page-level rule, and a floating layer portaled to <body> can never sit
-    // inside a landmark on a bare test page; the flagged node is Radix's own wrapper, not
-    // markup this primitive authors, so that one rule is skipped while the rest run.
     const results = await axe(document.body, { rules: { region: { enabled: false } } });
 
     expect(results).toHaveNoViolations();

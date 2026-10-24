@@ -5,10 +5,6 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-// Every slot's class string lives in its own `cva`, including the single-string ones:
-// the shadcn API is `data-[state=...]`-driven, so state is expressed as an attribute
-// selector here and never as an inline style (S4).
-
 const dropdownMenuContentVariants = cva(
   "z-50 min-w-[8rem] overflow-hidden rounded-md border border-border bg-popover p-1 text-popover-foreground shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
 );
@@ -104,7 +100,6 @@ const DropdownMenuSubTrigger = React.forwardRef<
     {...props}
   >
     {children}
-    {/* Decorative: the submenu's open state is already on the item as `data-state`. */}
     <ChevronRight aria-hidden="true" className={cn(dropdownMenuSubTriggerIconVariants())} />
   </DropdownMenuPrimitive.SubTrigger>
 ));
@@ -162,7 +157,6 @@ const DropdownMenuCheckboxItem = React.forwardRef<
   >
     <span className={cn(dropdownMenuIndicatorVariants())}>
       <DropdownMenuPrimitive.ItemIndicator>
-        {/* Decorative: `aria-checked` already carries the state. */}
         <Check aria-hidden="true" className={cn(dropdownMenuIconVariants())} />
       </DropdownMenuPrimitive.ItemIndicator>
     </span>
@@ -182,7 +176,6 @@ const DropdownMenuRadioItem = React.forwardRef<
   >
     <span className={cn(dropdownMenuIndicatorVariants())}>
       <DropdownMenuPrimitive.ItemIndicator>
-        {/* Decorative: `aria-checked` already carries the state. */}
         <Circle aria-hidden="true" className={cn(dropdownMenuRadioIconVariants())} />
       </DropdownMenuPrimitive.ItemIndicator>
     </span>

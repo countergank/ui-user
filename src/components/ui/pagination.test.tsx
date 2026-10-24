@@ -18,7 +18,6 @@ import {
   PaginationPrevious,
 } from "./pagination";
 
-/** A real pager: previous, first page (current), second page, collapsed gap, next. */
 function renderPagination(instance: I18nInstance = createI18nInstance({ lng: "en" })) {
   return render(
     <I18nextProvider i18n={instance}>
@@ -91,8 +90,6 @@ describe("Pagination", () => {
   it("styles page numbers with the shared button classes rather than its own", () => {
     renderPagination();
 
-    // `inline-flex` and `bg-background` only exist in `buttonVariants`: the active page is
-    // the outline variant, the other one the ghost variant of the same button.
     expect(screen.getByRole("link", { name: "1" })).toHaveClass("inline-flex", "bg-background");
     expect(screen.getByRole("link", { name: "2" })).toHaveClass("inline-flex");
     expect(screen.getByRole("link", { name: "2" })).not.toHaveClass("bg-background");

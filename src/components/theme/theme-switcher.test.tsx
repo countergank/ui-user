@@ -10,11 +10,6 @@ import { matchMediaStub } from "@/test/setup";
 
 import { ThemeSwitcher } from "./theme-switcher";
 
-// Tests for the single-button theme control (COU-270). Two properties are easy to get
-// wrong and covered explicitly below: the ICON reflects the stored PREFERENCE, never the
-// resolved theme; the accessible NAME describes the ACTION on the NEXT preference.
-
-/** Render the control against an isolated i18n instance for the given language. */
 function renderSwitcher(language: "en" | "es" | "pt" = "en") {
   const i18n = createI18nInstance({ lng: language });
   const view = render(
@@ -26,16 +21,10 @@ function renderSwitcher(language: "en" | "es" | "pt" = "en") {
   return { ...view, i18n };
 }
 
-/** The single theme button, whatever its current accessible name. */
 function getThemeButton(): HTMLElement {
   return screen.getByRole("button");
 }
 
-/**
- * The lucide icon rendered inside the button. lucide stamps every icon with a
- * `lucide-<name>` class (`lucide-react`'s public className contract), which is the only
- * handle a test has: the icon is `aria-hidden`, so there is no role/name query for it.
- */
 function getThemeIcon(): SVGElement {
   const icon = getThemeButton().querySelector("svg");
 
@@ -46,7 +35,6 @@ function getThemeIcon(): SVGElement {
   return icon;
 }
 
-/** Set the stored preference directly, the way the pre-paint hydration would. */
 function setStoredPreference(preference: "light" | "dark" | "system"): void {
   act(() => {
     uiStore.getState().setTheme(preference);
@@ -72,7 +60,6 @@ describe("ThemeSwitcher", () => {
   it("names the NEXT preference as an action and mirrors it in the tooltip", () => {
     renderSwitcher();
 
-    // Default preference is `system`, so the first click lands on `light`.
     expect(getThemeButton()).toHaveAccessibleName("Switch to Light");
     expect(getThemeButton()).toHaveAttribute("title", "Switch to Light");
   });
@@ -81,17 +68,14 @@ describe("ThemeSwitcher", () => {
     const user = userEvent.setup();
     renderSwitcher();
 
-    // `system` → `light`
     await user.click(getThemeButton());
     expect(uiStore.getState().theme).toBe("light");
     expect(getThemeButton()).toHaveAccessibleName("Switch to Dark");
 
-    // `light` → `dark`
     await user.click(getThemeButton());
     expect(uiStore.getState().theme).toBe("dark");
     expect(getThemeButton()).toHaveAccessibleName("Switch to Automatic");
 
-    // `dark` → `system` (the wrap-around's second half)
     await user.click(getThemeButton());
     expect(uiStore.getState().theme).toBe("system");
     expect(getThemeButton()).toHaveAccessibleName("Switch to Light");
@@ -109,12 +93,8 @@ describe("ThemeSwitcher", () => {
 
       const button = getThemeButton();
 
-      // One icon only: a "render all three, hide two with CSS" implementation
-      // would pass a class check but leaks into the accessibility tree.
       expect(button.querySelectorAll("svg")).toHaveLength(1);
       expect(getThemeIcon()).toHaveClass(iconClass);
-      // The class is lucide's own label; the child element proves the geometry
-      // is the icon we claim (a circle for the sun, a rect for the monitor).
       expect(getThemeIcon().querySelector(shapeTag)).not.toBeNull();
     },
   );
@@ -129,7 +109,6 @@ describe("ThemeSwitcher", () => {
   it("tracks the stored preference instead of a local copy", () => {
     renderSwitcher();
 
-    // Default: `system` → the monitor.
     expect(getThemeIcon()).toHaveClass("lucide-monitor");
     expect(getThemeButton()).toHaveAccessibleName("Switch to Light");
 
@@ -149,8 +128,6 @@ describe("ThemeSwitcher", () => {
 
     matchMediaStub.setDark(true);
 
-    // The OS now asks for dark, but the preference is still `system`: a
-    // resolved-theme implementation would swap the icon to the moon here.
     expect(getThemeIcon()).toHaveClass("lucide-monitor");
     expect(getThemeButton()).toHaveAccessibleName("Switch to Light");
   });
@@ -172,7 +149,6 @@ describe("ThemeSwitcher", () => {
   it("renders the Spanish action copy from i18n, proving no hardcoded English", () => {
     renderSwitcher("es");
 
-    // Default preference is `system`, so the next mode is `light` → "Claro".
     expect(getThemeButton()).toHaveAccessibleName("Cambiar a Claro");
     expect(getThemeButton()).toHaveAttribute("title", "Cambiar a Claro");
     expect(screen.queryByText("Switch to Light")).not.toBeInTheDocument();

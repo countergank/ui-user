@@ -1,10 +1,5 @@
 import { QueryClient } from "@tanstack/react-query";
 
-/**
- * Shared TanStack Query client (ADR-3 / STACK-5).
- * Configured for the template defaults: retries with exponential backoff,
- * GC and stale time tuned for a data-refetching SPA.
- */
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

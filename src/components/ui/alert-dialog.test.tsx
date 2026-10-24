@@ -66,7 +66,6 @@ describe("AlertDialog", () => {
 
     expect(screen.getByRole("button", { name: "Keep member" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Delete" })).toBeInTheDocument();
-    // The confirm action reuses the button primitive's classes instead of reinventing them.
     expect(screen.getByRole("button", { name: "Delete" })).toHaveClass("bg-primary");
   });
 

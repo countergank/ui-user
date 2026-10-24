@@ -11,9 +11,6 @@ const paginationVariants = cva("mx-auto flex w-full justify-center");
 
 const paginationContentVariants = cva("flex flex-row items-center gap-1");
 
-// `buttonVariants` owns the resting/hover/focus states; this cva only records the
-// pagination-specific deviation (a tighter gap between icon and label) so the composed
-// class string never becomes an untracked template literal.
 const paginationLinkVariants = cva("gap-1");
 
 const paginationPreviousVariants = cva("pl-2.5");
@@ -22,10 +19,6 @@ const paginationNextVariants = cva("pr-2.5");
 
 const paginationEllipsisVariants = cva("flex h-9 w-9 items-center justify-center");
 
-/**
- * The landmark label comes from `ui.pagination.label` (ADR-12). `props` spreads after the
- * default, so a caller can override it with its own `aria-label`.
- */
 function Pagination({ className, ...props }: React.ComponentPropsWithoutRef<"nav">) {
   const { t } = useTranslation();
 
@@ -57,11 +50,6 @@ interface PaginationLinkProps
   isActive?: boolean;
 }
 
-/**
- * A page number is a button-shaped anchor: it reuses `buttonVariants` instead of restating
- * the button classes, and the active page is the only one carrying `aria-current="page"`,
- * which is what screen readers announce as the current page.
- */
 const PaginationLink = React.forwardRef<HTMLAnchorElement, PaginationLinkProps>(
   ({ className, isActive, size = "icon", children, ...props }, ref) => (
     <a
@@ -92,7 +80,6 @@ const PaginationPrevious = React.forwardRef<HTMLAnchorElement, PaginationLinkPro
         className={cn(paginationPreviousVariants({ className }))}
         {...props}
       >
-        {/* Decorative: the accessible name is the label on the anchor. */}
         <ChevronLeft aria-hidden="true" className="h-4 w-4" />
         <span>{label}</span>
       </PaginationLink>
@@ -114,7 +101,6 @@ const PaginationNext = React.forwardRef<HTMLAnchorElement, PaginationLinkProps>(
         className={cn(paginationNextVariants({ className }))}
         {...props}
       >
-        {/* Decorative: the accessible name is the label on the anchor. */}
         <span>{label}</span>
         <ChevronRight aria-hidden="true" className="h-4 w-4" />
       </PaginationLink>
@@ -123,10 +109,6 @@ const PaginationNext = React.forwardRef<HTMLAnchorElement, PaginationLinkProps>(
 );
 PaginationNext.displayName = "PaginationNext";
 
-/**
- * The gap marker announces itself as "More pages" through screen-reader-only copy: the
- * three dots alone would be silent, so the wrapper is not hidden from assistive technology.
- */
 const PaginationEllipsis = React.forwardRef<
   HTMLSpanElement,
   React.ComponentPropsWithoutRef<"span">

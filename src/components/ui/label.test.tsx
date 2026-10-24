@@ -33,14 +33,12 @@ describe("Label", () => {
       </Label>,
     );
 
-    // Implicit association is a `label` semantic, not a `for`-only trick.
     expect(screen.getByLabelText("Email")).toBeInstanceOf(HTMLInputElement);
   });
 
   it("never emits `disabled` on the label element — that is not a valid label attribute", () => {
     render(<Label htmlFor="email">Email</Label>);
 
-    // The disabled story is CSS-only (`peer-disabled:*` against the control).
     expect(screen.getByText("Email")).not.toHaveAttribute("disabled");
   });
 

@@ -20,11 +20,6 @@ const breadcrumbSeparatorVariants = cva("[&>svg]:size-3.5");
 
 const breadcrumbEllipsisVariants = cva("flex h-9 w-9 items-center justify-center");
 
-/**
- * The landmark label is copy a screen-reader user hears, so it comes from the bundle
- * (`ui.breadcrumb.label`, ADR-12). `props` spreads after the default, so a caller with a
- * more specific landmark name can still override it.
- */
 const Breadcrumb = React.forwardRef<HTMLElement, React.ComponentPropsWithoutRef<"nav">>(
   ({ className, ...props }, ref) => {
     const { t } = useTranslation();
@@ -65,11 +60,6 @@ const BreadcrumbLink = React.forwardRef<HTMLAnchorElement, BreadcrumbLinkProps>(
 );
 BreadcrumbLink.displayName = "BreadcrumbLink";
 
-/**
- * The current page is text, not a link: `aria-current="page"` makes assistive technology
- * announce "current page" (WAI-ARIA breadcrumb pattern) without the fake `link` role the
- * shadcn source adds, which would advertise a tab stop that does not exist.
- */
 const BreadcrumbPage = React.forwardRef<HTMLSpanElement, React.ComponentPropsWithoutRef<"span">>(
   ({ className, ...props }, ref) => (
     <span
@@ -97,10 +87,6 @@ const BreadcrumbSeparator = React.forwardRef<HTMLLIElement, React.ComponentProps
 );
 BreadcrumbSeparator.displayName = "BreadcrumbSeparator";
 
-/**
- * Unlike the shadcn source, the wrapper is not `aria-hidden`: the collapsed segments are a
- * real thing to announce, and hiding the wrapper would hide the translated label with it.
- */
 const BreadcrumbEllipsis = React.forwardRef<
   HTMLSpanElement,
   React.ComponentPropsWithoutRef<"span">

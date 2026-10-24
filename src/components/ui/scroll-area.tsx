@@ -20,8 +20,6 @@ const scrollAreaScrollBarVariants = cva("flex touch-none select-none transition-
   },
 });
 
-// `--border` is the thumb colour: the scroll indicator is chrome, so it follows the theme
-// instead of being a fixed grey that would disappear in dark mode.
 const scrollAreaThumbVariants = cva("relative flex-1 rounded-full bg-border");
 
 const ScrollArea = React.forwardRef<
