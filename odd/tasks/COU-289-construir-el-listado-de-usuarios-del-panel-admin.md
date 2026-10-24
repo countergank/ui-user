@@ -151,3 +151,25 @@ no a un prompt inválido.
 **Decisión del humano**: seguir con **un solo PR** (#30), sin partir el candidato. Consecuencia
 registrada: la entrega va por política ordinaria (gate + CI en verde) y esta feature queda sin
 veredicto de review nativa; el switch de RDD es del humano.
+
+### Causa determinista del fallo de review (cuarto intento)
+
+El cuarto intento no falló por transport: el admission del reviewer **rechazó el artefacto** con
+`submission-refused` y este motivo:
+
+```
+reviewer declared inspection unavailable: No GENTLE_AI_REVIEW_PATCH sections were provided:
+the candidate's content hunks are absent from this request, so none of the 54 manifest paths
+could be inspected.
+```
+
+Es decir: el prompt que arma el relay **no incluye los hunks del diff**. Los tres intentos previos
+(`Stream ended without finish_reason` a 114 s, 205 s y 512 s) son consistentes con la misma causa:
+el reviewer no tenía material que inspeccionar. No es el código de este repo, ni el tamaño del
+candidato como se hipotetizó antes.
+
+Detalles útiles para reportar el defecto:
+- `mutation_performed: none` y **el slot no se consumió** (se puede reintentar en el mismo lineage).
+- El payload rechazado quedó guardado en
+  `.git/gentle-ai/rejected-results/review-eeafed1692e81396/review-resilience-1-0fa53b675d76.json`.
+- El lineage sigue en `reviewing`, generación 1, sin autoridad quemada.
