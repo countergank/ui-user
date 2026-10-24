@@ -1,6 +1,3 @@
-// Unit tests for the minimal HTTP client (COU-273, T1): base URL + JSON, the Bearer
-// header, mapping the API's error envelope onto `AppError`, and one 401 retry delegated
-// to a caller-supplied hook. Network details stay injectable so every branch is testable.
 import { describe, expect, it, vi } from "vitest";
 
 import { AppError } from "./errors";

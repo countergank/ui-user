@@ -65,6 +65,16 @@ The axe probe in `src/test/axe-pipeline.test.tsx` deliberately renders a missing
 and asserts `image-alt` IS reported — proving the runner can detect violations instead of
 passing vacuously.
 
+## Design tokens and contrast
+
+The token palette in `src/styles/tokens.css` is an **AA claim, not a taste choice**: every
+tone/foreground pair and the destructive button are held at ≥ 4.5:1 in both themes.
+
+`src/styles/tokens.test.ts` parses that CSS and **measures** the ratios, so the rule survives the
+colours being edited; a pair that drops below the floor fails with the measured ratio and both hex
+values. This is also the written record of why the values are what they are: the tokens carry no
+comments (ADR: "no comments"), so the reasoning lives here and the numbers are enforced there.
+
 ## Rule of thumb checklist
 
 - [ ] Interactive controls have visible labels/text (never rely on color or icon alone)

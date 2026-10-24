@@ -1,6 +1,3 @@
-// Tests for the session composition root (COU-281, T2): pins the three wires that make
-// the manager and the HTTP client one runtime, because a wrong wire here is invisible
-// until production returns 401s.
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { AppError } from "@/lib/errors";

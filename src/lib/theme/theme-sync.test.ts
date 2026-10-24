@@ -1,6 +1,3 @@
-// Tests for `startThemeSync()` — the imperative bridge between the persisted
-// preference, the OS color scheme, and the DOM. No React involved: the sync reads
-// `uiStore` directly (that is the contract the composition root relies on).
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import { selectTheme, uiStore } from "@/stores/use-ui-store";

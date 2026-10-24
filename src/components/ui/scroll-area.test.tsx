@@ -1,4 +1,3 @@
-// Component tests for the shadcn/ui ScrollArea primitives (COU-271, S2-S5).
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { axe } from "vitest-axe";

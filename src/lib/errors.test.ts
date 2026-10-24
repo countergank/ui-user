@@ -1,4 +1,3 @@
-// Unit tests for the typed error model (ARCH-4, p1-error-instances).
 import { describe, expect, it } from "vitest";
 
 import { AppError, DataFetchError, RouteError, toError } from "./errors";

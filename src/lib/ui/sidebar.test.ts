@@ -1,6 +1,3 @@
-// Sidebar persistence (COU-278, T3 / S6): a storage contract, asserted at the storage
-// boundary like the theme preference (`lib/theme/theme.test.ts`): absent, corrupt and
-// unreadable storage degrade to the default instead of throwing.
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { initialState, selectSidebarOpen, uiStore } from "@/stores/use-ui-store";

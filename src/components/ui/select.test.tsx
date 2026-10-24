@@ -1,8 +1,3 @@
-// Component tests for the shadcn/ui Select primitives (COU-271, S3-S5).
-//
-// Radix Select opens through pointer events jsdom cannot fully model (`scrollIntoView`,
-// pointer capture), so this suite pins what the ticket asks for — render, accessible
-// name, disabled contract and axe — instead of faking an interaction the browser owns.
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { axe } from "vitest-axe";

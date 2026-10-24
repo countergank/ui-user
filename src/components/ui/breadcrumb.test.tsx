@@ -1,4 +1,3 @@
-// Component tests for the shadcn/ui Breadcrumb primitives (COU-271, S2-S5, S7).
 import { render, screen } from "@testing-library/react";
 import type { i18n as I18nInstance } from "i18next";
 import { I18nextProvider } from "react-i18next";

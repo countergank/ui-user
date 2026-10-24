@@ -1,8 +1,3 @@
-// Component tests for the shadcn/ui Tooltip primitives (COU-271, S2-S5).
-//
-// A tooltip must be reachable without a mouse, so the open test drives it with the
-// keyboard: Tab focuses the trigger and Radix opens the description. Radix provides
-// the trigger/content wiring; these tests pin the contract around it.
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";

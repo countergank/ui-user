@@ -1,6 +1,3 @@
-// Component tests for the RouteAnnouncer (a11y route-announcer rule, ARCH-6): the polite
-// live region updates ~100ms after each message change; messages are derived from the
-// i18n resources like the shell produces them (COU-253).
 import { act, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 

@@ -1,4 +1,3 @@
-// Component tests for the shadcn/ui Sheet primitives (COU-271, S2-S5, S7).
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { i18n as I18nInstance } from "i18next";

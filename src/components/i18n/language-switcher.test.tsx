@@ -1,6 +1,3 @@
-// Language switcher tests (COU-310, T9 / S12).
-// What the owner asked for is not "a button": it is that the copy can change language, so
-// the assertions follow the effect — visible copy, `<html lang>`, the stored preference.
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useTranslation } from "react-i18next";
