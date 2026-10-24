@@ -1,6 +1,3 @@
-// RequireSection (COU-274 S2, COU-323 R1): the manifest is the single source of a section's
-// permission, so a route never restates it. This suite pins that for the paths it exercises:
-// a granted section, a denied one, and a path with no manifest entry.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";

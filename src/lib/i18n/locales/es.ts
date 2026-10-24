@@ -3,6 +3,7 @@ import type {
   ConsoleTranslationTree,
   LandingTranslationTree,
   TranslationTree,
+  UsersTranslationTree,
 } from "./en";
 
 export const es: {
@@ -10,6 +11,7 @@ export const es: {
   auth: AuthTranslationTree;
   landing: LandingTranslationTree;
   console: ConsoleTranslationTree;
+  users: UsersTranslationTree;
 } = {
   common: {
     meta: {
@@ -74,6 +76,24 @@ export const es: {
         previous: "Anterior",
         next: "Siguiente",
         morePages: "Más páginas",
+      },
+      list: {
+        filters: {
+          all: "Todos",
+        },
+        pending: "Pendiente de implementación",
+        refresh: "Actualizar",
+        clear: "Limpiar filtros",
+        empty: "No hay resultados",
+        sort: {
+          by: "Ordenar por {{column}}",
+        },
+        pagination: {
+          summary: "Mostrando {{from}} a {{to}} de {{total}}",
+          previous: "Página anterior",
+          next: "Página siguiente",
+          page: "Ir a la página {{page}}",
+        },
       },
     },
   },
@@ -207,6 +227,39 @@ export const es: {
       title: "Acceso denegado",
       message:
         "Tu rol no incluye esta sección. Si creés que debería, pedile a un administrador que revise tus permisos.",
+    },
+  },
+  users: {
+    list: {
+      title: "Usuarios",
+      columns: {
+        name: "Nombre",
+        email: "Email",
+        userName: "Usuario",
+        role: "Rol",
+        status: "Estado",
+        createdAt: "Creado",
+        actions: "Acciones",
+      },
+      filters: {
+        search: "Buscar usuarios",
+        role: "Rol",
+        status: "Estado",
+        clear: "Limpiar filtros",
+      },
+      empty: "No hay usuarios",
+      actions: {
+        create: "Nuevo usuario",
+        edit: "Editar",
+        activate: "Activar",
+        deactivate: "Desactivar",
+        unlock: "Desbloquear",
+        delete: "Eliminar",
+      },
+      status: {
+        active: "Activo",
+        inactive: "Inactivo",
+      },
     },
   },
 };

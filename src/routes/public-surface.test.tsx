@@ -1,8 +1,3 @@
-// Public surface tests (COU-310, T4 / S7).
-//
-// The rule the ticket asks for is negative and easy to break silently: no public page may
-// call the API. It is asserted through the real router and the real pages, not through a
-// stub, so adding a query to the landing or the about page fails here.
 import { render, screen, waitFor } from "@testing-library/react";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";

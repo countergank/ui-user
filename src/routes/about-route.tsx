@@ -4,11 +4,6 @@ import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { docUrl, issuesUrl } from "@/lib/links";
 
-/**
- * About page (COU-310, T11 / S6, S13): describes the project, not the template, and each
- * standards link goes to a file that exists in `docs/`. Public surface: renders inside
- * `PublicLayout`, never touches the API.
- */
 const STANDARDS = [
   { key: "adr", file: "adr.md", Icon: GitBranch },
   { key: "patterns", file: "component-patterns.md", Icon: LayoutTemplate },
