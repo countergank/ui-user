@@ -1,7 +1,3 @@
-// `hasPermission` suite (COU-275, T1 / S7, S9).
-//
-// The rule the UI applies must be the rule the API applies, or the console hides a section
-// the server would authorize; these cases pin the parity with the `api-user` guard.
 import { describe, expect, it } from "vitest";
 
 import { hasPermission } from "./permissions";

@@ -1,6 +1,3 @@
-// Commitlint flat config: Conventional Commits via @commitlint/config-conventional, plus a
-// custom "no-co-authored-by" rule rejecting Co-Authored-By / AI-attribution trailers.
-// Shared by the husky hook and the CI `commitlint` job so enforcement stays consistent (MA-3).
 import type { UserConfig } from "@commitlint/types";
 
 const NO_AUTHORED_BY =

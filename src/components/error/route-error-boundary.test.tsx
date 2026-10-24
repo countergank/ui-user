@@ -1,6 +1,4 @@
 import { render, screen } from "@testing-library/react";
-// Route error boundary (ARCH-4): HTTP responses, domain errors, raw errors and the 403 exits
-// (COU-274/COU-323). Copy comes from the i18n resources (COU-253).
 import { RouterProvider, createMemoryRouter, useLocation } from "react-router-dom";
 import { beforeEach, describe, expect, it } from "vitest";
 
@@ -25,7 +23,6 @@ function renderWithLoader(loader: () => unknown, initialPath = "/") {
         errorElement: <RouteErrorBoundary />,
         loader,
       },
-      // COU-274: a server 403 navigates here instead of rendering the view in place.
       { path: "/forbidden", Component: () => <h1>Forbidden page</h1> },
       { path: "/login", Component: LoginProbe },
       {
@@ -90,15 +87,12 @@ describe("RouteErrorBoundary", () => {
       });
     });
 
-    // The generic error copy must never absorb a denial, and neither must the raw message.
     expect(await screen.findByRole("heading", { name: "Forbidden page" })).toBeInTheDocument();
     expect(screen.queryByText("Request failed with status 403")).toBeNull();
     expect(screen.queryByText(i18n.t("error.genericTitle"))).toBeNull();
   });
 
   it("keeps the destination when a 403 arrives without a session (COU-323)", async () => {
-    // `/forbidden` sits behind RequireAuth, so navigating there anonymously would replace
-    // the origin with `/forbidden` and drop where the person actually was.
     renderWithLoader(() => {
       throw new DataFetchError("Request failed with status 403", {
         status: 403,

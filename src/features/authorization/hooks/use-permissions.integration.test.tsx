@@ -1,7 +1,3 @@
-// `usePermissions` suite (COU-275, T2 / S1, S8).
-//
-// Real hook, real HTTP client, MSW standing in for `api-user`: nothing stubs `fetchMe`,
-// so a broken wire fails a test instead of passing behind a mock.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import { http, HttpResponse } from "msw";
@@ -23,7 +19,6 @@ const USER_PROFILE = {
   permissions: ["user:read", "user:update"],
 };
 
-/** How many times `/auth/me` was asked; an anonymous visitor must ask zero. */
 let meRequests = 0;
 
 const server = setupServer(
@@ -34,9 +29,6 @@ const server = setupServer(
 );
 
 beforeAll(() => {
-  // MSW 3 renamed `onUnhandledRequest` to `onUnhandledFrame`; with "error" an unmatched
-  // request throws instead of passing silently. Verified against msw 3.0.3
-  // (`lib/_chunks/shared-options.d.ts` documents `onUnhandledFrame`).
   server.listen({ onUnhandledFrame: "error" });
 });
 

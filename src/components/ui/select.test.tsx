@@ -10,7 +10,6 @@ import { axe } from "vitest-axe";
 import { expectNoAuthoredInlineStyles } from "@/test/inline-styles";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select";
 
-/** A complete Select, labelled through the same `for`/`id` contract a form uses. */
 function renderSelect(disabled = false) {
   return render(
     <>
@@ -56,7 +55,6 @@ describe("Select", () => {
   it("renders no inline styles on the elements it authors (S4)", () => {
     const { container } = renderSelect();
 
-    // Radix's `SelectValue` node is the only styled element and it carries no class.
     expectNoAuthoredInlineStyles(container);
     expect(screen.getByRole("combobox", { name: "Role" })).not.toHaveAttribute("style");
   });

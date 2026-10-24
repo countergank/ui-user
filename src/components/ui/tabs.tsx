@@ -4,8 +4,6 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-// The list sits on `--muted` and the active trigger lifts back onto `--background`, so
-// the selected/unselected pair comes from tokens in both themes instead of a grey literal.
 const tabsListVariants = cva(
   "inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground",
 );

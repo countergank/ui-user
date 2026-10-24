@@ -6,7 +6,6 @@ import { describe, expect, it } from "vitest";
 
 import { decodeAccessToken, isTokenExpired, millisecondsUntilExpiry } from "./jwt";
 
-/** Build a syntactically valid, unsigned JWT with the given payload. */
 function jwtWith(payload: Record<string, unknown>): string {
   const encode = (value: unknown) =>
     btoa(JSON.stringify(value)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
@@ -14,7 +13,7 @@ function jwtWith(payload: Record<string, unknown>): string {
   return `${encode({ alg: "HS256", typ: "JWT" })}.${encode(payload)}.signature`;
 }
 
-const NOW = 1_700_000_000_000; // ms
+const NOW = 1_700_000_000_000;
 
 describe("access token expiry", () => {
   it("reads the exp claim as milliseconds since the epoch", () => {

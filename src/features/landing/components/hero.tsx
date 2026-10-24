@@ -5,11 +5,6 @@ import { AppLogo } from "@/components/branding/app-logo";
 import { Button } from "@/components/ui/button";
 import { docsUrl, repositoryUrl } from "@/lib/links";
 
-/**
- * Landing hero (COU-310, T10 / S13). Answers, before a visitor scrolls: what is this
- * (heading and subtitle), who makes it (the mark), where to get it (the two calls to
- * action). No banner image, by decision — the copy carries the page.
- */
 export function LandingHero() {
   const { t } = useTranslation("landing");
 

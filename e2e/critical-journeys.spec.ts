@@ -1,10 +1,7 @@
-// Critical user journeys of the public surface (COU-310, ADR-13).
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import type { Locator, Page } from "@playwright/test";
 
-// The expected copy is derived from the English bundle, the reference language, instead of
-// being retyped here: a copy change must not turn into a red e2e run.
 import { en } from "../src/lib/i18n/locales/en";
 
 const SITE_TITLE = en.landing.title;
@@ -17,9 +14,6 @@ const loadedAnnouncement = (title: string) =>
 const skipLink = (page: Page) => page.getByRole("link", { name: skipLinkLabel });
 const publicNav = (page: Page) => page.getByRole("navigation", { name: publicNavLabel });
 
-// Headless Chromium cannot report window focus, so Playwright's toBeFocused()
-// always times out as "inactive" here. Asserting real focus behaviour instead:
-// the element must be document.activeElement. Same semantics, headless-safe.
 async function expectFocused(locator: Locator) {
   await expect(locator).toHaveCount(1);
   await expect
@@ -27,9 +21,6 @@ async function expectFocused(locator: Locator) {
     .toBe(true);
 }
 
-// Headless Chromium does not always grant the page window focus after page.goto(), making
-// Tab traversal non-deterministic. Focus a programmatically focusable body first (the
-// tabindex is a test-only change, never persisted) and wait for the skip link so React commits.
 async function focusDocumentHeadless(page: Page) {
   await page.goto("/");
   await page.locator(".skip-link").waitFor();
@@ -69,8 +60,6 @@ test.describe("public surface journeys", () => {
 
     await page.keyboard.press("Tab");
     await expectFocused(skipLink(page));
-    // The public header starts with the brand link back to the informational home, so it
-    // is the second Tab stop — the console shell used a non-focusable label instead.
     await page.keyboard.press("Tab");
     await expectFocused(page.getByRole("banner").getByRole("link", { name: SITE_TITLE }));
     await page.keyboard.press("Tab");
@@ -100,7 +89,6 @@ test.describe("layout journey", () => {
     await page.goto("/about");
     await expect(page.getByRole("heading", { level: 1, name: ABOUT_TITLE })).toBeVisible();
 
-    // Real layout assertion; jsdom cannot perform it.
     const gap = await page.evaluate(() => {
       const footer = document.querySelector("footer");
       if (!footer) throw new Error("the page has no footer");
@@ -115,8 +103,6 @@ test.describe("motion journey", () => {
   test("honors prefers-reduced-motion by disabling transitions", async ({ page }) => {
     await page.goto("/");
 
-    // Wait for the SPA mount so document.querySelector finds the skip link;
-    // page.evaluate is synchronous and must not race React's first commit.
     await page.locator(".skip-link").waitFor();
 
     const transitionMs = () =>
@@ -126,13 +112,10 @@ test.describe("motion journey", () => {
         return Math.round(parseFloat(value) * 1000);
       });
 
-    // Default: the 0.1s transition declared in src/styles/index.css is still applied.
     expect(await transitionMs()).toBeGreaterThanOrEqual(100);
 
-    // Reduced motion: universal 0.01ms override wins (WCAG 2.2 reduced-motion).
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.reload();
-    // React must commit again after the reload before querySelector resolves.
     await page.locator(".skip-link").waitFor();
     expect(await transitionMs()).toBeLessThanOrEqual(1);
   });

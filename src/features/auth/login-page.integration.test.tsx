@@ -1,7 +1,3 @@
-// Login page component suite (COU-281, T6 / S11, S12).
-//
-// Real page, real session runtime, real HTTP client, MSW standing in for `api-user`:
-// nothing stubs `login`, `fetch` or the mutation, so a broken wire fails an assertion.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -33,7 +29,6 @@ const AUTH = {
   refreshToken: "refresh-1",
 };
 
-/** The API answers failures with `{ statusCode, code, message }` (S14). */
 function apiFailure(status: number, code: string) {
   return HttpResponse.json({ statusCode: status, code, message: code }, { status });
 }
@@ -41,8 +36,6 @@ function apiFailure(status: number, code: string) {
 const server = setupServer();
 
 beforeAll(() => {
-  // An unexpected request is a bug in the test, not a silent pass. MSW 3 renamed the
-  // option from `onUnhandledRequest` to `onUnhandledFrame`.
   server.listen({ onUnhandledFrame: "error" });
 });
 
@@ -108,7 +101,6 @@ describe("login page — MSW", () => {
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent(tAuth("login.errors.invalidCredentials"));
     expect(alert).toHaveFocus();
-    // A form-level failure never marks a field invalid: the message is not about them.
     expect(screen.getByLabelText(tAuth("login.fields.email"))).toHaveAttribute(
       "aria-invalid",
       "false",
@@ -144,7 +136,6 @@ describe("login page — MSW", () => {
     const { container } = renderPage();
     const user = userEvent.setup();
 
-    // Empty submit: the field errors are the interesting accessible state.
     await user.click(screen.getByRole("button", { name: tAuth("login.submit") }));
 
     const email = screen.getByLabelText(tAuth("login.fields.email"));

@@ -1,7 +1,3 @@
-// `<Can>` suite (COU-275, T3 / S5).
-//
-// Write actions are the case this component exists for: the button is either rendered or
-// it is not, and the fallback is the caller's business, not the gate's.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";

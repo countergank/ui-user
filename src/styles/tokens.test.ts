@@ -1,5 +1,3 @@
-// WCAG 2.2 AA for the design tokens (docs/accessibility.md): the CSS is read from disk and
-// contrast is MEASURED, not trusted — a pair below 4.5:1 fails with the ratio and colors.
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -10,13 +8,9 @@ const here = dirname(fileURLToPath(import.meta.url));
 const tokensCss = readFileSync(resolve(here, "tokens.css"), "utf8");
 const tailwindConfig = readFileSync(resolve(here, "../../tailwind.config.js"), "utf8");
 
-/** Tones pairing `--x` (dot, border, icon fill, dark-mode text) with `--x-foreground` (AA text). */
 const TONES = ["success", "warning", "danger", "info"];
-/** Opacity of the tone laid over `--card` by badges/alerts in the boceto (`hsl(var(--x) / .14)`). */
 const TINT_ALPHA = 0.14;
-/** Same tint, spelled for test titles and failure messages. Keep in sync with TINT_ALPHA. */
 const TINT_LABEL = "14%";
-/** WCAG 2.2 AA normal-text threshold — the tone text is 11px. */
 const AA = 4.5;
 
 interface Hsl {
@@ -42,7 +36,6 @@ const parseHsl = (raw: string, token: string, mode: string): Hsl => {
   return { h: Number(match[1]), s: Number(match[2]), l: Number(match[3]) };
 };
 
-/** Body of the first `selector { ... }` block. Values hold no braces, so the first `}` closes it. */
 const selectorBody = (css: string, selector: string): string => {
   const start = css.indexOf(`${selector} {`);
   const open = start === -1 ? -1 : css.indexOf("{", start);
@@ -53,7 +46,6 @@ const selectorBody = (css: string, selector: string): string => {
   return css.slice(open + 1, close);
 };
 
-/** Custom-property declarations of one block, comments stripped. */
 const declarations = (selector: string): Map<string, string> => {
   const body = selectorBody(tokensCss, selector).replace(/\/\*[\s\S]*?\*\//g, "");
   const parsed = new Map<string, string>();
@@ -80,8 +72,6 @@ const readToken = (tokens: Map<string, string>, token: string, mode: string): Hs
   }
   return parseHsl(raw, token, mode);
 };
-
-// --- dependency-free color math: HSL -> sRGB -> WCAG relative luminance -> ratio ---
 
 const clamp01 = (value: number): number => Math.min(1, Math.max(0, value));
 
@@ -115,7 +105,6 @@ const contrastRatio = (foreground: Rgb, background: Rgb): number => {
   return (Math.max(first, second) + 0.05) / (Math.min(first, second) + 0.05);
 };
 
-/** Alpha compositing in sRGB — what the browser does for `hsl(var(--x) / .14)` over `--card`. */
 const composite = (foreground: Rgb, alpha: number, background: Rgb): Rgb => {
   const [fr, fg, fb] = foreground;
   const [br, bg, bb] = background;

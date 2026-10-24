@@ -1,7 +1,3 @@
-// `ForbiddenView` suite (COU-275, T5 / S6).
-//
-// The 403 view is announced, offers no retry (retrying a permission failure loops), and
-// says what the person can do about it instead of echoing the server's prose.
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { axe } from "vitest-axe";

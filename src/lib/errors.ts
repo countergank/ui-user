@@ -1,9 +1,3 @@
-/**
- * Typed error model (ARCH-4, ts-001, p1-error-instances): all application errors are
- * `Error` instances — never raw strings — so they carry stacks, support `instanceof`, and
- * work with React error boundaries. `AppError` adds a machine-readable code and a status.
- */
-
 export interface AppErrorOptions {
   code?: string;
   status?: number;
@@ -22,7 +16,6 @@ export class AppError extends Error {
   }
 }
 
-/** Errors raised by data-fetching layers (TanStack Query / api client). */
 export class DataFetchError extends AppError {
   constructor(
     message: string,
@@ -33,7 +26,6 @@ export class DataFetchError extends AppError {
   }
 }
 
-/** Errors raised by route loading or rendering. */
 export class RouteError extends AppError {
   constructor(message: string, options: AppErrorOptions = {}) {
     super(message, options);
@@ -42,8 +34,8 @@ export class RouteError extends AppError {
 }
 
 /**
- * Normalize an unknown thrown value into an `Error` instance so error UI and
- * error boundaries always render a safe, typed message.
+ * @param unknown - any thrown value.
+ * @returns The value as an `Error`, wrapping strings and falling back to a generic message.
  */
 export function toError(unknown: unknown): Error {
   if (unknown instanceof Error) return unknown;

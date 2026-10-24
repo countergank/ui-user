@@ -18,7 +18,6 @@ import {
   BreadcrumbSeparator,
 } from "./breadcrumb";
 
-/** A real trail: one ancestor link, collapsed segments, and the current page. */
 function renderBreadcrumb(instance: I18nInstance = createI18nInstance({ lng: "en" })) {
   return render(
     <I18nextProvider i18n={instance}>
@@ -55,8 +54,6 @@ describe("Breadcrumb", () => {
     const currentPage = screen.getByText("Ada Lovelace");
 
     expect(currentPage).toHaveAttribute("aria-current", "page");
-    // Text, not an anchor: the crumb names where the user already is, so there is no
-    // focusable no-op link to tab through.
     expect(currentPage.tagName).toBe("SPAN");
     expect(currentPage).not.toHaveAttribute("href");
   });

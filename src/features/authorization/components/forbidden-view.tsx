@@ -1,10 +1,5 @@
 import { useTranslation } from "react-i18next";
 
-/**
- * 403 view (COU-275, T5 / S6). Rendered when the server denies an action the UI expected
- * to be allowed. Deliberately different from `ErrorView`: no retry (retrying a permission
- * failure loops) and a message about permissions, not the service. Reusable inline too.
- */
 export function ForbiddenView() {
   const { t } = useTranslation("console");
 

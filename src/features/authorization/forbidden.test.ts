@@ -1,7 +1,3 @@
-// `isForbiddenError` suite (COU-275, T5 / S6).
-//
-// Either the 403 status or the UA-SEC-002 code is enough evidence; a different failure
-// is not.
 import { describe, expect, it } from "vitest";
 
 import { AppError, DataFetchError } from "@/lib/errors";

@@ -22,11 +22,6 @@ import { resolveLoginError } from "./login-errors";
 import { type LoginValues, createLoginSchema } from "./login-schema";
 import { resolveRedirectTarget } from "./safe-redirect";
 
-/**
- * Login form (COU-281, T4 / S3, S6-S10). The schema is rebuilt when the translator changes
- * (its messages are rendered verbatim); every API failure is one form-level `Alert` under
- * the form, none being a field validation (S6); a 429 disables the submit until remount (S8).
- */
 export function LoginForm() {
   const { t } = useTranslation("auth");
   const { t: tCommon } = useTranslation();
@@ -42,8 +37,6 @@ export function LoginForm() {
   const loginMutation = useLogin();
   const errorKey = resolveLoginError(loginMutation.error);
   const rateLimited = errorKey === "login.errors.rateLimited";
-  // An unenumerated failure still has to be explained, and inventing a key outside S4 is
-  // not an option: it falls back to the shared generic message.
   const errorMessage =
     errorKey !== null
       ? t(errorKey)
@@ -52,8 +45,6 @@ export function LoginForm() {
         : null;
   const alertRef = useRef<HTMLDivElement>(null);
 
-  // S10: the focus goes to the first error. Field errors are focused by react-hook-form;
-  // a form-level error has no field to land on, so the alert takes the focus itself.
   useEffect(() => {
     if (errorMessage !== null) {
       alertRef.current?.focus();
@@ -64,7 +55,6 @@ export function LoginForm() {
     const destination = resolveRedirectTarget(searchParams);
 
     loginMutation.mutate(values, {
-      // `replace` so Back does not return to a login page the user already passed.
       onSuccess: () => {
         void navigate(destination, { replace: true });
       },
@@ -77,7 +67,6 @@ export function LoginForm() {
         noValidate
         className="space-y-4"
         onSubmit={(event) => {
-          // `handleSubmit` is async; the DOM handler must stay void.
           void onSubmit(event);
         }}
       >
@@ -110,7 +99,6 @@ export function LoginForm() {
         />
 
         <div className="flex justify-end">
-          {/* The reset flow is a separate ticket; the link is what S3 asks for. */}
           <Link
             to="/forgot-password"
             className="text-sm text-primary underline-offset-4 hover:underline"

@@ -21,7 +21,6 @@ import {
   DropdownMenuTrigger,
 } from "./dropdown-menu";
 
-/** A menu that exercises every slot the primitive exports. */
 function renderMenu() {
   return render(
     <DropdownMenu>
@@ -59,8 +58,6 @@ describe("DropdownMenu", () => {
 
     const trigger = screen.getByRole("button", { name: "Open actions" });
 
-    // Radix announces the popup contract through these two ARIA attributes, so the
-    // trigger is still usable (and truthful) before the menu ever renders.
     expect(trigger).toHaveAttribute("aria-haspopup", "menu");
     expect(trigger).toHaveAttribute("aria-expanded", "false");
     expect(screen.queryByRole("menu")).not.toBeInTheDocument();
@@ -71,8 +68,6 @@ describe("DropdownMenu", () => {
     const user = userEvent.setup();
     renderMenu();
 
-    // Captured before opening: while the menu is open Radix hides the rest of the page
-    // from assistive technology, so the trigger is no longer reachable by role.
     const trigger = screen.getByRole("button", { name: "Open actions" });
     const menu = await openMenu(user);
 
@@ -93,8 +88,6 @@ describe("DropdownMenu", () => {
 
     const archive = screen.getByRole("menuitem", { name: "Archive" });
 
-    // Both attributes matter: `aria-disabled` is what a screen reader reads, the
-    // `data-disabled` hook is what the `data-[disabled]:*` tokens style.
     expect(archive).toHaveAttribute("aria-disabled", "true");
     expect(archive).toHaveAttribute("data-disabled", "");
   });
@@ -119,7 +112,6 @@ describe("DropdownMenu", () => {
 
   it("renders no inline styles on the elements it authors (S4)", async () => {
     const user = userEvent.setup();
-    // The content is portaled to <body>, so the whole document is the surface under test.
     const { baseElement } = renderMenu();
     await openMenu(user);
 
@@ -131,9 +123,6 @@ describe("DropdownMenu", () => {
     renderMenu();
     await openMenu(user);
 
-    // `region` is a page-level rule, and a floating layer portaled to <body> can never sit
-    // inside a landmark on a bare test page; the flagged node is Radix's own wrapper, not
-    // markup this primitive authors, so that one rule is skipped while the rest run.
     const results = await axe(document.body, { rules: { region: { enabled: false } } });
 
     expect(results).toHaveNoViolations();

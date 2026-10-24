@@ -7,11 +7,6 @@ import { DataFetchError, toError } from "@/lib/errors";
 import { selectSessionStatus, useSession } from "@/lib/session/session-store";
 import { ErrorView } from "./error-view";
 
-/**
- * Route-level error boundary (ARCH-4). A 403 is never retried or reported as "something went
- * wrong": it navigates to `/forbidden`, or to login with the current route when no session is
- * loaded — `/forbidden` itself sits behind `RequireAuth` (COU-323).
- */
 export function RouteErrorBoundary() {
   const { t } = useTranslation();
   const error = useRouteError();
@@ -43,8 +38,6 @@ export function RouteErrorBoundary() {
     }
   }
 
-  // The data router remounts the boundary on navigation; a full-page reload is
-  // the simplest reliable retry for a route-level crash.
   return (
     <ErrorView
       title={title}

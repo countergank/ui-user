@@ -8,11 +8,6 @@ interface ErrorViewProps {
   onRetry?: () => void;
 }
 
-/**
- * Accessible, reusable error presentation (ARCH-4, a11y): announced via `role="alert"`,
- * with focus/announcement semantics kept and an optional retry action whose copy is
- * resource-driven (COU-253).
- */
 export function ErrorView({ title, message, onRetry }: ErrorViewProps) {
   const { t } = useTranslation();
   return (

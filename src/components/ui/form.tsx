@@ -14,11 +14,6 @@ import {
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
-/**
- * The Form primitives carry behavior, not a look: they project react-hook-form's field
- * state into the ids, `aria-invalid` and `aria-describedby` that make a form field
- * legible to assistive technology. Styling stays in `label`, `input` and friends.
- */
 const formItemVariants = cva("space-y-2");
 
 const Form = FormProvider;
@@ -46,10 +41,6 @@ interface FormItemContextValue {
 
 const FormItemContext = React.createContext<FormItemContextValue | null>(null);
 
-/**
- * The field state plus the generated ids a control, its description and its error
- * message need. Throws instead of returning half a contract when used out of place.
- */
 const useFormField = () => {
   const fieldContext = React.useContext(FormFieldContext);
   const itemContext = React.useContext(FormItemContext);

@@ -16,7 +16,6 @@ describe("Avatar", () => {
       </Avatar>,
     );
 
-    // jsdom never fires `load`: the fallback is what a user sees before the image resolves.
     expect(screen.getByText("LC")).toBeInTheDocument();
   });
 

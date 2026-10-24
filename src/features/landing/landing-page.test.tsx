@@ -1,6 +1,3 @@
-// Landing page tests (COU-310, T2 / S4, S7, S8).
-//
-// Asserted for the enumerated content and for what it must never do: call the API.
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { axe } from "vitest-axe";
@@ -47,7 +44,6 @@ describe("landing page", () => {
 
     expect(screen.getByRole("heading", { name: t("quickstart.title") })).toBeInTheDocument();
     expect(screen.getByText(t("quickstart.body"))).toBeInTheDocument();
-    // The command is code, not copy: it must not be translated.
     expect(screen.getByText(t("quickstart.command"))).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: t("stack.title") })).toBeInTheDocument();
     expect(screen.getByText(t("stack.body"))).toBeInTheDocument();

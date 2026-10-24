@@ -4,11 +4,6 @@ import { useTranslation } from "react-i18next";
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
-/**
- * Feature grid (COU-310, T10 / S13). Each card pairs one claim with an icon so the block
- * is scannable; the four claims are the ones the repository actually backs with code and
- * tests.
- */
 const FEATURES: { key: "session" | "accessibility" | "languages" | "typed"; Icon: LucideIcon }[] = [
   { key: "session", Icon: ShieldCheck },
   { key: "accessibility", Icon: Accessibility },

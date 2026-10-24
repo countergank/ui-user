@@ -1,7 +1,3 @@
-// `useCan` suite (COU-275, T3 / S7).
-//
-// Asserted through the hook the UI actually calls, with the profile in the query cache,
-// so the case under test is the predicate and nothing else.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";

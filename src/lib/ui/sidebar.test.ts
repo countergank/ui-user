@@ -35,7 +35,6 @@ describe("readStoredSidebarOpen", () => {
   );
 
   it("returns the default when storage throws", () => {
-    // Spying on the prototype is what actually intercepts jsdom's Storage instance.
     const getItem = vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
       throw new Error("storage disabled");
     });

@@ -55,8 +55,6 @@ describe("ScrollArea", () => {
   it("renders no inline styles on the elements it authors (S4)", () => {
     const { container } = renderScrollArea();
 
-    // Radix owns the `overflow`/`position`/`min-width` mechanics it sets inline; the guard
-    // only refuses design properties (colour, type, spacing).
     expectNoAuthoredInlineStyles(container);
   });
 

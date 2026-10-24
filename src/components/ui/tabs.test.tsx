@@ -8,7 +8,6 @@ import { expectNoAuthoredInlineStyles } from "@/test/inline-styles";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
 
-/** A two-section tab set: the smallest structure that can prove one panel is swapped out. */
 function renderTabs() {
   return render(
     <Tabs defaultValue="profile">
@@ -29,7 +28,6 @@ describe("Tabs", () => {
     expect(screen.getByRole("tablist", { name: "Account sections" })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "Profile" })).toHaveAttribute("aria-selected", "true");
     expect(screen.getByRole("tab", { name: "Sessions" })).toHaveAttribute("aria-selected", "false");
-    // Only the selected panel exists: the inactive one is not merely hidden from view.
     expect(screen.getByRole("tabpanel")).toHaveTextContent("Profile details.");
   });
 
@@ -48,7 +46,6 @@ describe("Tabs", () => {
     const user = userEvent.setup();
     renderTabs();
 
-    // A single Tab stop: the selected tab, not every tab in the list.
     await user.tab();
     expect(screen.getByRole("tab", { name: "Profile" })).toHaveFocus();
 

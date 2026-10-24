@@ -1,7 +1,3 @@
-// Login error mapping (COU-281, T4).
-//
-// The four failures are API conditions, not field validations, so they all render as one
-// form-level message; the mapping is pure so the table is assertable without a component.
 import { describe, expect, it } from "vitest";
 
 import { AppError } from "@/lib/errors";

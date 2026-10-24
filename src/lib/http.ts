@@ -1,11 +1,6 @@
 import { env } from "@/lib/env";
 import { AppError } from "@/lib/errors";
 
-/**
- * The API answers failures with `{ statusCode, code, message }`
- * (`api-user/src/common/filters`), so the client can keep the machine-readable
- * `code` intact instead of flattening everything to "request failed".
- */
 export interface ApiErrorEnvelope {
   statusCode?: number;
   code?: string;
@@ -18,16 +13,9 @@ export interface HttpRequestOptions extends Omit<RequestInit, "body" | "headers"
 }
 
 export interface HttpClientDeps {
-  /** Defaults to `env.apiBaseUrl`. */
   baseUrl?: string;
-  /** Defaults to the global `fetch`; injectable so every branch is testable. */
   fetchImpl?: typeof fetch;
-  /** Read the current access token, or `null` when there is no session. */
   getAccessToken?: () => string | null;
-  /**
-   * Called once when a request comes back 401. Resolve `true` only when the session
-   * was renewed, which makes the client retry the original request exactly once.
-   */
   onUnauthorized?: () => Promise<boolean>;
 }
 
@@ -42,7 +30,6 @@ function buildUrl(baseUrl: string, path: string): string {
   return `${baseUrl.replace(/\/+$/, "")}/${path.replace(/^\/+/, "")}`;
 }
 
-/** Parse the API's error envelope without assuming the body is JSON at all. */
 async function toAppError(response: Response): Promise<AppError> {
   const raw = await response.text().catch(() => "");
   let envelope: ApiErrorEnvelope = {};
@@ -53,9 +40,8 @@ async function toAppError(response: Response): Promise<AppError> {
       if (typeof parsed === "object" && parsed !== null) {
         envelope = parsed;
       }
-    } catch {
-      // Not JSON (a proxy page, a truncation): the status still tells the story.
-    }
+      // eslint-disable-next-line no-empty -- a non-JSON body still leaves the status to explain the failure.
+    } catch {}
   }
 
   const code = typeof envelope.code === "string" ? envelope.code : FALLBACK_CODE;
@@ -68,9 +54,9 @@ async function toAppError(response: Response): Promise<AppError> {
 }
 
 /**
- * Minimal JSON client. It deliberately does not know about sessions: it asks for a
- * token and delegates the 401 decision to `onUnauthorized`, so the session layer can
- * own refresh and this stays testable without one.
+ * @param deps - optional overrides: `baseUrl`, `fetchImpl`, `getAccessToken`, and
+ * `onUnauthorized`, which owns the single retry after a session renewal.
+ * @returns A minimal JSON client that does not know about sessions.
  */
 export function createHttpClient(deps: HttpClientDeps = {}): HttpClient {
   const baseUrl = deps.baseUrl ?? env.apiBaseUrl;

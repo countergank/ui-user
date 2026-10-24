@@ -9,11 +9,6 @@ import { LanguageSwitcher } from "@/components/i18n/language-switcher";
 import { ThemeSwitcher } from "@/components/theme/theme-switcher";
 import { useFocusManagement } from "@/hooks/use-focus-management";
 
-/**
- * Public-site layout (COU-310, T1 / ADR-13): shared by the informational pages, not the
- * console. Keeps the a11y floor — skip link, named nav, `main` landmark, announced route.
- */
-
 interface PublicNavItem {
   to: string;
   labelKey: "nav.home" | "nav.about";
@@ -24,7 +19,6 @@ const PUBLIC_NAV: PublicNavItem[] = [
   { to: "/about", labelKey: "nav.about" },
 ];
 
-/** Route titles for the announcer; unknown paths fall back to the site title. */
 const PAGE_TITLE_KEYS: Record<string, "title" | "about.title"> = {
   "/": "title",
   "/about": "about.title",
@@ -61,8 +55,6 @@ export function PublicLayout() {
   const title = t(PAGE_TITLE_KEYS[location.pathname] ?? "title");
 
   return (
-    // One full-height flex column: `<main>` grows and the footer follows it, so a short
-    // page (about) does not leave the footer glued to the last paragraph.
     <div className="flex min-h-screen flex-col">
       <a href="#main-content" className="skip-link">
         {tCommon("shell.skipLink")}
@@ -72,8 +64,6 @@ export function PublicLayout() {
 
       <header className="border-b bg-background">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
-          {/* The mark follows the foreground token, so it reads on both themes; the link
-              carries the accessible name and the mark stays decorative. */}
           <Link to="/" className="flex items-center gap-2 text-sm font-semibold">
             <AppLogo className="h-9" />
             {t("title")}

@@ -8,7 +8,6 @@ import { createHttpClient } from "./http";
 
 const BASE = "https://api.test";
 
-/** A `Response` double; not `async` on purpose, so no stub needs a fake `await`. */
 function response(status: number, body: unknown, contentType = "application/json"): Response {
   return {
     ok: status >= 200 && status < 300,
@@ -19,7 +18,6 @@ function response(status: number, body: unknown, contentType = "application/json
   } as unknown as Response;
 }
 
-/** A `fetch` double that always answers the same status/body. */
 function fetchStub(status: number, body: unknown) {
   const stub = vi.fn(() => Promise.resolve(response(status, body)));
 

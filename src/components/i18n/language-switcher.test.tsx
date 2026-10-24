@@ -12,7 +12,6 @@ import { LANGUAGE_STORAGE_KEY } from "@/lib/i18n/language";
 
 import { LanguageSwitcher } from "./language-switcher";
 
-/** A tiny consumer so the copy change is observable, not just the i18n instance. */
 function Harness() {
   const { t } = useTranslation("landing");
 
@@ -20,7 +19,6 @@ function Harness() {
 }
 
 afterEach(async () => {
-  // The i18n instance is a module singleton: leave it in the default language.
   await i18n.changeLanguage("en");
   window.localStorage.clear();
 });

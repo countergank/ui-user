@@ -5,17 +5,10 @@ import { LandingHero } from "./components/hero";
 import { Quickstart } from "./components/quickstart";
 import { StackBadges } from "./components/stack-badges";
 
-/**
- * Informational home of the project (COU-310, T10 / ADR-13). Static content on purpose:
- * a public surface never calls the API (S7); every string comes from the `landing`
- * namespace (S5), every colour is a token utility (S8), and the section order is deliberate.
- */
 export function LandingPage() {
   const { t } = useTranslation("landing");
 
   return (
-    // One centered column instead of prose stranded on the left of a wide container: the
-    // page reads as a designed document, not as text that ran out of width.
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-16">
       <LandingHero />
 
