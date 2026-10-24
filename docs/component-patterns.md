@@ -57,16 +57,16 @@ directly.
 
 ## Comments
 
-A comment explains **why**, and only when the code cannot say it. The budget is three lines of
-prose; the `/**` and `*/` delimiters do not count, and neither do directives (`biome-ignore`,
-`eslint-disable`) or a one-line ADR/spec reference.
+**No comments.** The code is the documentation; anything a comment would add belongs in the
+PR description, an ADR or the ticket.
 
-Keep: a constraint that would otherwise be violated silently (a value that must match
-`index.html`, an ordering requirement), and a decision a reader would otherwise "fix".
+The single exception is **JSDoc for an exported API**: a `/** */` block above an exported
+function, hook or component that documents its parameters and return with `@param` and
+`@returns` when the signature does not make them obvious. No inline `//`, no section banners,
+no rationale notes, no JSDoc on internal or trivial helpers.
 
-Drop: narrative rationale, multi-paragraph doc blocks on trivial functions, and anything that
-restates the code or the test name. If the reason needs four lines, it belongs in `docs/`, not
-next to the function.
+Directives are not comments for this rule: `biome-ignore` / `eslint-disable` stay, with their
+one-line justification.
 
 ## shadcn/ui primitives
 

@@ -4,13 +4,10 @@ import { defaultLanguage, languages, resources } from "./resources";
 
 const EXPECTED_LANGUAGES = ["en", "es", "pt"] as const;
 
-/** i18next interpolation token, e.g. `{{title}}` or `{{ theme }}`. */
 const PLACEHOLDER_PATTERN = /\{\{\s*([\w.]+)\s*\}\}/g;
 
-/** The raw bundles keyed by language, read from the real `resources` export. */
 const bundles = resources as unknown as Record<string, unknown>;
 
-/** Sorted list of every leaf key path in a bundle, e.g. `common.home.theme.dark`. */
 function flattenLeafPaths(value: unknown, prefix = ""): string[] {
   if (value === null || typeof value !== "object" || Array.isArray(value)) {
     return prefix ? [prefix] : [];
@@ -26,7 +23,6 @@ function flattenLeafPaths(value: unknown, prefix = ""): string[] {
     .sort();
 }
 
-/** Every leaf in a bundle mapped by its key path. */
 function collectLeaves(value: unknown, prefix = ""): Map<string, unknown> {
   const leaves = new Map<string, unknown>();
 
@@ -45,7 +41,6 @@ function collectLeaves(value: unknown, prefix = ""): Map<string, unknown> {
   return leaves;
 }
 
-/** Sorted, de-duplicated interpolation tokens found in a string. */
 function extractPlaceholders(value: string): string[] {
   const tokens = new Set<string>();
   for (const match of value.matchAll(PLACEHOLDER_PATTERN)) {

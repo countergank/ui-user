@@ -3,6 +3,7 @@ import {
   type ConsoleTranslationTree,
   type LandingTranslationTree,
   type TranslationTree,
+  type UsersTranslationTree,
   en,
 } from "./locales/en";
 import { es } from "./locales/es";
@@ -14,13 +15,9 @@ export const languages = ["en", "es", "pt"] as const;
 export type AppLanguage = (typeof languages)[number];
 
 export const defaultNamespace = "common";
-export const namespaces = [defaultNamespace, "auth", "landing", "console"] as const;
+export const namespaces = [defaultNamespace, "auth", "landing", "console", "users"] as const;
 export type AppNamespace = (typeof namespaces)[number];
 
-/**
- * Composed language bundles. `satisfies` keeps the exported type precise while forcing
- * every declared language to ship a complete `TranslationTree`.
- */
 const bundles = { en, es, pt } satisfies Record<
   AppLanguage,
   {
@@ -28,6 +25,7 @@ const bundles = { en, es, pt } satisfies Record<
     auth: AuthTranslationTree;
     landing: LandingTranslationTree;
     console: ConsoleTranslationTree;
+    users: UsersTranslationTree;
   }
 >;
 

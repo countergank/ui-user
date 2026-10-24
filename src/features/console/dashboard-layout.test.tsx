@@ -1,7 +1,3 @@
-// Console shell suite (COU-278, T1-T9 / S1-S14).
-//
-// Its guarantees are asserted on the shell itself, by what a person can reach — roles
-// and accessible names — so a control styled away cannot pass.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -78,7 +74,6 @@ function renderShell(initialPath = "/app", options: RenderOptions = {}) {
   return { router, container };
 }
 
-/** The section navigation, wherever the shell currently renders it. */
 function sectionNav(): HTMLElement {
   return screen.getByRole("navigation", { name: tConsole("nav.label") });
 }
@@ -163,23 +158,43 @@ describe("DashboardLayout sidebar (S6)", () => {
     const user = userEvent.setup();
     renderShell();
 
-    expect(sectionNav()).toBeInTheDocument();
+    const aside = screen.getByRole("complementary");
+    expect(aside).toHaveClass("w-64");
+    expect(aside).not.toHaveClass("invisible");
 
     await user.click(screen.getByRole("button", { name: tConsole("shell.collapseSidebar") }));
 
-    expect(screen.queryByRole("navigation", { name: tConsole("nav.label") })).toBeNull();
+    expect(aside).toHaveClass("w-0", "invisible");
     expect(window.localStorage.getItem(SIDEBAR_STORAGE_KEY)).toBe("false");
 
     await user.click(screen.getByRole("button", { name: tConsole("shell.expandSidebar") }));
 
-    expect(sectionNav()).toBeInTheDocument();
+    expect(aside).toHaveClass("w-64");
+    expect(aside).not.toHaveClass("invisible");
     expect(window.localStorage.getItem(SIDEBAR_STORAGE_KEY)).toBe("true");
+  });
+
+  it("animates the sidebar width without unmounting the content column", async () => {
+    const user = userEvent.setup();
+    renderShell();
+
+    const aside = screen.getByRole("complementary");
+    const content = screen.getByRole("main").parentElement;
+
+    expect(aside).toHaveClass("transition-[width]");
+    expect(content).not.toHaveClass("md:pl-64");
+
+    await user.click(screen.getByRole("button", { name: tConsole("shell.collapseSidebar") }));
+
+    expect(aside).toHaveClass("w-0");
+    expect(screen.getByRole("main")).toBeInTheDocument();
+    expect(screen.getByRole("main").parentElement).toBe(content);
   });
 
   it("starts collapsed when the persisted choice says so", () => {
     renderShell("/app", { sidebarOpen: false });
 
-    expect(screen.queryByRole("navigation", { name: tConsole("nav.label") })).toBeNull();
+    expect(screen.getByRole("complementary")).toHaveClass("w-0", "invisible");
     expect(screen.getByRole("button", { name: tConsole("shell.openMenu") })).toBeInTheDocument();
   });
 
@@ -189,13 +204,12 @@ describe("DashboardLayout sidebar (S6)", () => {
 
     await user.click(screen.getByRole("button", { name: tConsole("shell.openMenu") }));
 
-    const drawerNav = screen.getByRole("navigation", { name: tConsole("nav.label") });
-    expect(within(drawerNav).getAllByRole("link").length).toBeGreaterThan(0);
+    expect(within(screen.getByRole("dialog")).getByRole("navigation")).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: tCommon("ui.close") }));
 
     await waitFor(() => {
-      expect(screen.queryByRole("navigation", { name: tConsole("nav.label") })).toBeNull();
+      expect(screen.queryByRole("dialog")).toBeNull();
     });
   });
 });
@@ -235,7 +249,6 @@ describe("DashboardLayout active section and permissions (S7, S8)", () => {
 describe("DashboardLayout user menu (S1)", () => {
   it("links to the profile and signs out to the login page", async () => {
     const user = userEvent.setup();
-    // Logout is local-first: the revocation request must never gate the redirect.
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
     const { router } = renderShell();
 
@@ -280,13 +293,12 @@ describe("DashboardLayout keyboard and accessibility (S9, S10, S11)", () => {
     const user = userEvent.setup();
     renderShell();
 
-    // Skip link → the section links → the topbar controls. Asserting the sequence, not
-    // just "each control is focusable", is what proves nothing is skipped or trapped.
     const expectedOrder = [
       tCommon("shell.skipLink"),
       ...CONSOLE_NAV.map((item) => tConsole(item.labelKey)),
       tConsole("shell.openMenu"),
       tConsole("shell.collapseSidebar"),
+      tConsole("shell.title"),
       tCommon("shell.language.switch"),
       tCommon("shell.theme.switchTo", { mode: tCommon("shell.theme.light") }),
       tConsole("shell.userMenu"),
@@ -315,11 +327,11 @@ describe("DashboardLayout keyboard and accessibility (S9, S10, S11)", () => {
     screen.getByRole("button", { name: tConsole("shell.collapseSidebar") }).focus();
     await user.keyboard("{Enter}");
 
-    expect(screen.queryByRole("navigation", { name: tConsole("nav.label") })).toBeNull();
+    expect(screen.getByRole("complementary")).toHaveClass("w-0", "invisible");
     expect(screen.getByRole("button", { name: tConsole("shell.expandSidebar") })).toHaveFocus();
 
     await user.keyboard("{Enter}");
-    expect(sectionNav()).toBeInTheDocument();
+    expect(screen.getByRole("complementary")).toHaveClass("w-64");
   });
 
   it("has no axe violations in the light theme", async () => {

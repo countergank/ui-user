@@ -20,11 +20,6 @@ function initialsOf(name: string | undefined, lastName: string | undefined): str
   return initials === "" ? "?" : initials.toUpperCase();
 }
 
-/**
- * The topbar's user menu (COU-278, T5 / S1). Logout is **local-first**: the store, the
- * persisted session and the query cache are emptied before the network call (COU-273, S6),
- * so navigating to `/login` never depends on the API answering.
- */
 export function UserMenu() {
   const { t } = useTranslation("console");
   const user = useSession(selectSessionUser);

@@ -1,6 +1,3 @@
-// Route guards through the real router (COU-274 S4/S5/S8, COU-323): the four session ×
-// permission combinations plus expiry, on the production route tree — a guard that only works
-// in a synthetic harness would still let a deep link through.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
@@ -76,20 +73,18 @@ describe("route guards", () => {
 
   it("with a session and the permission, the section renders inside the console shell", async () => {
     startSession();
-    const memoryRouter = renderApp("/app/users", ["user:read"]);
+    const memoryRouter = renderApp("/app/roles", ["role:read"]);
 
     expect(
       await screen.findByRole("heading", { level: 1, name: tConsole("placeholder.title") }),
     ).toBeInTheDocument();
-    expect(memoryRouter.state.location.pathname).toBe("/app/users");
+    expect(memoryRouter.state.location.pathname).toBe("/app/roles");
     expect(screen.getByRole("navigation", { name: tConsole("nav.label") })).toBeInTheDocument();
   });
 
   it("keeps the current route when the session expires in flight (COU-323)", async () => {
-    // COU-273's bridge owns the redirect on expiry, and it used to send everyone to the
-    // console root: the person lost the page they were reading.
     startSession();
-    const memoryRouter = renderApp("/app/users", ["user:read"]);
+    const memoryRouter = renderApp("/app/roles", ["role:read"]);
 
     expect(
       await screen.findByRole("heading", { level: 1, name: tConsole("placeholder.title") }),
@@ -102,7 +97,7 @@ describe("route guards", () => {
     await waitFor(() => {
       expect(memoryRouter.state.location.pathname).toBe("/login");
     });
-    expect(memoryRouter.state.location.search).toBe("?redirect=%2Fapp%2Fusers");
+    expect(memoryRouter.state.location.search).toBe("?redirect=%2Fapp%2Froles");
   });
 
   it("with a session but without the permission, the section is /forbidden, not a 404", async () => {

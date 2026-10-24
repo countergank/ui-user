@@ -8,11 +8,6 @@ import { ForbiddenPage } from "@/features/console/forbidden-page";
 import { RequireSection } from "@/features/console/require-section";
 import { PublicLayout } from "@/public-layout";
 
-/**
- * App router (ADR-4 / STACK-7, ADR-13, COU-274): `createBrowserRouter` data router with
- * per-route lazy modules (ARCH-5, bundle-001) and a route-level errorElement (ARCH-4).
- * ADR-13 fixes the shape: two surfaces, split at route level; the console shell is eager.
- */
 const consoleRoute = {
   element: (
     <RequireAuth>
@@ -33,7 +28,6 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    // Sibling of the shell on purpose: a login gate needs no product navigation.
     path: "/login",
     lazy: () => import("./login-route"),
     errorElement: <RouteErrorBoundary />,
@@ -43,6 +37,7 @@ export const router = createBrowserRouter([
     path: "/app",
     children: [
       { index: true, Component: ConsolePlaceholder },
+      { path: "users", lazy: () => import("./users-route") },
       {
         path: "*",
         element: (
@@ -59,8 +54,6 @@ export const router = createBrowserRouter([
     children: [{ index: true, Component: ForbiddenPage }],
   },
   {
-    // COU-285 and COU-288 build the profile inside this shell; the route exists now so the
-    // user menu's destination is inside the authenticated area, not on the public site.
     path: "/profile",
     children: [{ index: true, Component: ConsolePlaceholder }],
     element: consoleRoute.element,

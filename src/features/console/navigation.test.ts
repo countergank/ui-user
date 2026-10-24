@@ -1,7 +1,3 @@
-// Manifest lookup (COU-278, T2 / S7).
-//
-// The two rules that matter: a detail page belongs to its section, and the console root
-// never swallows its own children.
 import { describe, expect, it } from "vitest";
 
 import { CONSOLE_NAV, activeNavItem } from "./navigation";

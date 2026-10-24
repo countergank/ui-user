@@ -1,6 +1,3 @@
-// Route module coverage (STACK-7, ARCH-5): the data router is constructed at
-// module scope and each lazy route module exports a renderable `Component`.
-// Copy assertions are derived from the i18n resources (COU-253).
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
@@ -16,8 +13,6 @@ import { Component as LoginRoute } from "./login-route";
 
 describe("routes", () => {
   it("registers the public layout for the informational pages, and login as a sibling", () => {
-    // ADR-13: `/` and `/about` are the public site; `/login` keeps its own layout
-    // because a gate with site chrome above it is not what COU-281 approved.
     expect(router.routes.map((route) => route.path)).toEqual([
       "/",
       "/login",
@@ -31,10 +26,15 @@ describe("routes", () => {
     ]);
   });
 
+  it("registers the users section as a lazy console child before the fallback (COU-289)", () => {
+    const appRoute = router.routes.find((route) => route.path === "/app");
+
+    expect(
+      appRoute?.children?.map((route) => route.path ?? (route.index ? "index" : undefined)),
+    ).toEqual(["index", "users", "*"]);
+  });
+
   it("puts every console route behind the session gate, and none of the public ones", () => {
-    // COU-278 / ADR-13: the split is at route level, not a conditional inside one
-    // component, so public pages can never inherit the console chrome; COU-274 wraps the
-    // console in `RequireAuth`, so the outermost element is the gate (see `guards.test.tsx`).
     const gateOf = (path: string) => {
       const route = router.routes.find((candidate) => candidate.path === path);
       const element = route?.element as { type?: unknown } | undefined;
@@ -49,7 +49,6 @@ describe("routes", () => {
   });
 
   it("renders the lazy login route component", () => {
-    // The page embeds the login form: a query client and a router for its link.
     render(
       <QueryClientProvider client={new QueryClient()}>
         <MemoryRouter>
