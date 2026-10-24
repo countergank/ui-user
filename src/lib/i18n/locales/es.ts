@@ -81,6 +81,7 @@ export const es: {
         filters: {
           all: "Todos",
         },
+        refresh: "Actualizar",
         clear: "Limpiar filtros",
         empty: "No hay resultados",
         sort: {

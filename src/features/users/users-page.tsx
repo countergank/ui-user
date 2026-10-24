@@ -2,6 +2,7 @@ import { DataTable } from "@/components/data-list/data-table";
 import { useListParams } from "@/components/data-list/hooks/use-list-params";
 import { ListFilters } from "@/components/data-list/list-filters";
 import { ListPagination } from "@/components/data-list/list-pagination";
+import { ListRefreshButton } from "@/components/data-list/list-refresh-button";
 import { ErrorView } from "@/components/error/error-view";
 import { Button } from "@/components/ui/button";
 import { Can } from "@/features/authorization/components/can";
@@ -27,9 +28,18 @@ export function UsersPage() {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <CardTitle className="text-2xl">{t("list.title")}</CardTitle>
-        <Can permission={PERMISSIONS.userCreate}>
-          <Button type="button">{t("list.actions.create")}</Button>
-        </Can>
+        <div className="flex items-center gap-2">
+          <ListRefreshButton
+            label={tCommon("ui.list.refresh")}
+            onRefresh={() => {
+              void users.refetch();
+            }}
+            isRefreshing={users.isFetching}
+          />
+          <Can permission={PERMISSIONS.userCreate}>
+            <Button type="button">{t("list.actions.create")}</Button>
+          </Can>
+        </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         {users.isError ? (

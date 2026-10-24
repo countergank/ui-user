@@ -72,10 +72,12 @@ const ADMIN_PROFILE = {
 };
 
 let lastUrl: URL | null = null;
+let requestCount = 0;
 
 const server = setupServer(
   http.get(USERS_URL, ({ request }) => {
     lastUrl = new URL(request.url);
+    requestCount += 1;
 
     return HttpResponse.json(PAGE);
   }),
@@ -92,6 +94,7 @@ beforeAll(() => {
 afterEach(() => {
   server.resetHandlers();
   lastUrl = null;
+  requestCount = 0;
 });
 
 afterAll(() => {
@@ -361,6 +364,23 @@ describe("users page — MSW", () => {
     expect(screen.getByText(tUsers("list.status.inactive"))).toBeInTheDocument();
     expect(screen.getAllByText("admin").length).toBeGreaterThan(0);
     expect(screen.getAllByText(/2024/)).toHaveLength(3);
+  });
+
+  it("refetches the current page from the refresh control", async () => {
+    const user = userEvent.setup();
+    renderPage("/app/users?page=2");
+
+    await waitFor(() => {
+      expect(requestCount).toBeGreaterThan(0);
+    });
+    const before = requestCount;
+
+    await user.click(screen.getByRole("button", { name: i18n.t("ui.list.refresh") }));
+
+    await waitFor(() => {
+      expect(requestCount).toBe(before + 1);
+    });
+    expect(lastUrl?.searchParams.get("page")).toBe("2");
   });
 
   it("has no axe violations on the loaded page (S12)", async () => {

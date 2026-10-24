@@ -67,6 +67,7 @@ export const en = {
         filters: {
           all: "All",
         },
+        refresh: "Refresh",
         clear: "Clear filters",
         empty: "No results found",
         sort: {
