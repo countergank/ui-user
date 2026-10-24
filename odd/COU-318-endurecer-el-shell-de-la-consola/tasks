@@ -1,0 +1,18 @@
+# COU-318 — Endurecer el shell de la consola
+
+Mirror of `odd/tasks/COU-318-endurecer-el-shell-de-la-consola.md`.
+
+## Tasks
+
+- [x] T1 — `signOut` navega primero y el revoke va en background (S1).
+  - Evidence: `user-menu.tsx`; test nuevo en `dashboard-layout.test.tsx` con `fetch` que nunca resuelve y navegación igual a `/login`.
+- [x] T2 — Drawer acotado al viewport (S2).
+  - Evidence: `SheetContent` `flex flex-col overflow-hidden` + `max-w-[85vw]` y el `nav` en un contenedor `min-h-0 flex-1 overflow-y-auto`.
+- [x] T3 — `activeNavItem` con manifiesto vacío (S3).
+  - Evidence: guard `root === undefined` + test de manifiesto vacío en `navigation.test.ts`.
+- [x] T4 — Shell eager: decisión registrada (S4).
+  - Evidence: L3 del doc de feature.
+- [x] T5 — Título del test corregido (S6).
+  - Evidence: `require-section.test.tsx` ya no dice "documented rule".
+- [x] T6 — Gate completo.
+  - Evidence: `make ci` EXIT=0 (lint + typecheck + 524 tests + build).

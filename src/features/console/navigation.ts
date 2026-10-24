@@ -39,13 +39,18 @@ export function activeNavItem(
   items: readonly ConsoleNavItem[],
   pathname: string,
 ): ConsoleNavItem | undefined {
-  const [root, ...sections] = items;
+  const root = items.at(0);
+
+  if (root === undefined) {
+    return undefined;
+  }
 
   if (pathname === root.to) {
     return root;
   }
 
-  return sections
+  return items
+    .slice(1)
     .filter((item) => pathname === item.to || pathname.startsWith(`${item.to}/`))
     .sort((a, b) => b.to.length - a.to.length)[0];
 }

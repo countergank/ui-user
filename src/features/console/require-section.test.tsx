@@ -69,7 +69,7 @@ describe("RequireSection", () => {
     expect(screen.getByRole("heading", { name: "Section content" })).toBeInTheDocument();
   });
 
-  it("enforces nothing for a path with no manifest entry, and that is the documented rule", () => {
+  it("enforces nothing for a path with no manifest entry", () => {
     renderSection("/app/unknown", []);
 
     expect(screen.getByRole("heading", { name: "Section content" })).toBeInTheDocument();
