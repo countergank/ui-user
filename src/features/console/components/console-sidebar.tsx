@@ -33,11 +33,15 @@ export function ConsoleSidebar({ open, drawerOpen, onDrawerOpenChange }: Console
       <Sheet open={drawerOpen} onOpenChange={onDrawerOpenChange}>
         {/* `aria-describedby={undefined}`: the drawer is a navigation menu, and Radix's
             missing-description warning is a false positive once the title is set. */}
-        <SheetContent side="left" className="w-72 bg-background" aria-describedby={undefined}>
+        <SheetContent
+          side="left"
+          className="flex w-72 max-w-[85vw] flex-col overflow-hidden bg-background"
+          aria-describedby={undefined}
+        >
           <SheetHeader>
             <SheetTitle>{t("nav.label")}</SheetTitle>
           </SheetHeader>
-          <div className="mt-6">
+          <div className="mt-6 min-h-0 flex-1 overflow-y-auto">
             <ConsoleNav
               onNavigate={() => {
                 onDrawerOpenChange(false);

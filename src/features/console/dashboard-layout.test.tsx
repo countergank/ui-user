@@ -257,6 +257,24 @@ describe("DashboardLayout user menu (S1)", () => {
   });
 });
 
+describe("DashboardLayout sign-out (COU-318)", () => {
+  it("leaves for the login screen without waiting for the revoke to answer", async () => {
+    const user = userEvent.setup();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() => new Promise(() => undefined)),
+    );
+    const { router } = renderShell();
+
+    await user.click(screen.getByRole("button", { name: tConsole("shell.userMenu") }));
+    await user.click(screen.getByRole("menuitem", { name: tConsole("shell.signOut") }));
+
+    await waitFor(() => {
+      expect(router.state.location.pathname).toBe("/login");
+    });
+  });
+});
+
 describe("DashboardLayout keyboard and accessibility (S9, S10, S11)", () => {
   it("walks the whole shell with the keyboard alone, in document order", async () => {
     const user = userEvent.setup();

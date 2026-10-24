@@ -23,6 +23,11 @@ describe("activeNavItem", () => {
     expect(activeNavItem(CONSOLE_NAV, "/app")?.to).toBe("/app");
   });
 
+  it("resolves an empty manifest to nothing instead of throwing", () => {
+    expect(activeNavItem([], "/app")).toBeUndefined();
+    expect(activeNavItem([], "/app/users")).toBeUndefined();
+  });
+
   it("resolves an unknown console path to nothing, so the caller can fall back", () => {
     expect(activeNavItem(CONSOLE_NAV, "/app/unknown")).toBeUndefined();
     expect(activeNavItem(CONSOLE_NAV, "/profile")).toBeUndefined();

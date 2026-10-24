@@ -30,8 +30,8 @@ export function UserMenu() {
   const user = useSession(selectSessionUser);
   const navigate = useNavigate();
 
-  const signOut = async (): Promise<void> => {
-    await sessionManager.logout();
+  const signOut = (): void => {
+    void sessionManager.logout();
     void navigate("/login", { replace: true });
   };
 
@@ -61,13 +61,7 @@ export function UserMenu() {
         <DropdownMenuItem asChild>
           <Link to="/profile">{t("shell.profile")}</Link>
         </DropdownMenuItem>
-        <DropdownMenuItem
-          onSelect={() => {
-            void signOut();
-          }}
-        >
-          {t("shell.signOut")}
-        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={signOut}>{t("shell.signOut")}</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
