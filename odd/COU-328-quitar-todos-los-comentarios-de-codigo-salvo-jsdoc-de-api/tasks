@@ -1,0 +1,16 @@
+# COU-328 — Limpieza de comentarios del resto del repo
+
+Mirror of `odd/tasks/COU-328-quitar-todos-los-comentarios-de-codigo-salvo-jsdoc-de-api.md`.
+
+## Tasks
+
+- [x] T1 — Shard `src/components/**`, `src/lib/**`, `src/stores/**`.
+  - Evidence: 66 archivos, −443/+64; 22 JSDoc de API conservados, 3 directivas `no-empty` nuevas (3608d58).
+- [x] T2 — Shard `src/features/**`.
+  - Evidence: 37 archivos, −222/0; import blocks restaurados y verificados (148fd66).
+- [x] T3 — Shard `src/routes/**`, `src/hooks/**`, `src/test/**`, `src/styles/**`, `e2e/**`, configs.
+  - Evidence: 16 archivos, −178/+4; CSS byte-idéntico sin comentarios (25a344e).
+- [x] T4 — Verificación mecánica.
+  - Evidence: 117 archivos TS/TSX auditados: todas las eliminaciones son comentario; las únicas 3 líneas de código son los colapsos `} catch {}`.
+- [x] T5 — Gate completo.
+  - Evidence: `make ci` EXIT=0 (lint + typecheck + 524 tests + build).
