@@ -38,6 +38,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, Component: ConsolePlaceholder },
       { path: "users", lazy: () => import("./users-route") },
+      { path: "users/new", lazy: () => import("./users-create-route") },
       {
         path: "*",
         element: (

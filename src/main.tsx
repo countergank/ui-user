@@ -4,6 +4,7 @@ import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 
 import "@/lib/i18n";
+import { Toaster } from "@/components/ui/sonner";
 import { queryClient } from "@/lib/query-client";
 import { sessionManager, startProactiveRefresh } from "@/lib/session/session";
 import { startThemeSync } from "@/lib/theme/theme-sync";
@@ -27,6 +28,7 @@ createRoot(rootElement).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
+      <Toaster />
     </QueryClientProvider>
   </StrictMode>,
 );

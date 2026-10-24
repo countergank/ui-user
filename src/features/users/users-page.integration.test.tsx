@@ -305,7 +305,11 @@ describe("users page — MSW", () => {
     renderPage();
 
     expect(await screen.findByText(tUsers("list.empty"))).toBeInTheDocument();
-    expect(screen.getAllByRole("button", { name: tUsers("list.actions.create") })).toHaveLength(2);
+    const createLinks = screen.getAllByRole("link", { name: tUsers("list.actions.create") });
+    expect(createLinks).toHaveLength(2);
+    for (const link of createLinks) {
+      expect(link).toHaveAttribute("href", "/app/users/new");
+    }
     expect(screen.queryByText("Ada Lovelace")).not.toBeInTheDocument();
   });
 
@@ -329,7 +333,7 @@ describe("users page — MSW", () => {
     renderPage("/app/users", ["user:read"]);
     await expectRows();
 
-    expect(screen.queryByRole("button", { name: tUsers("list.actions.create") })).toBeNull();
+    expect(screen.queryByRole("link", { name: tUsers("list.actions.create") })).toBeNull();
     expect(screen.queryByRole("button", { name: tUsers("list.actions.edit") })).toBeNull();
     expect(screen.queryByRole("button", { name: tUsers("list.actions.activate") })).toBeNull();
     expect(screen.queryByRole("button", { name: tUsers("list.actions.deactivate") })).toBeNull();
@@ -341,7 +345,8 @@ describe("users page — MSW", () => {
     renderPage();
     await expectRows();
 
-    expect(screen.getByRole("button", { name: tUsers("list.actions.create") })).toBeInTheDocument();
+    const createLink = screen.getByRole("link", { name: tUsers("list.actions.create") });
+    expect(createLink).toHaveAttribute("href", "/app/users/new");
     expect(screen.getAllByRole("button", { name: tUsers("list.actions.edit") })).toHaveLength(3);
     expect(screen.getAllByRole("button", { name: tUsers("list.actions.deactivate") })).toHaveLength(
       2,
