@@ -1,11 +1,7 @@
-// E2E configuration (TEST-4/5): critical journeys run against a production preview in Chromium.
 import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./e2e",
-  // Keyboard/focus journeys assert document.activeElement after real Tab
-  // presses; a single worker keeps headless window focus deterministic
-  // (7 tests, ~15s total — acceptable for this suite).
   fullyParallel: false,
   workers: 1,
   forbidOnly: Boolean(process.env.CI),
@@ -22,7 +18,6 @@ export default defineConfig({
     },
   ],
   webServer: {
-    // Production build first, then serve the built assets (SPA fallback on).
     command: "pnpm build && pnpm preview --port 4173 --strictPort",
     url: "http://localhost:4173",
     reuseExistingServer: true,

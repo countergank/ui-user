@@ -2,8 +2,6 @@ import { URL, fileURLToPath } from "node:url";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
-// Vite config for the standard frontend template.
-// The `@/` path alias -> ./src must match tsconfig.json "paths".
 export default defineConfig({
   plugins: [react()],
   resolve: {
