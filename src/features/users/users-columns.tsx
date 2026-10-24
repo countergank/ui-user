@@ -17,6 +17,7 @@ const dateFormatter = (language: string) =>
 
 export function useUsersColumns(): DataTableColumn<UserDTO>[] {
   const { t, i18n } = useTranslation("users");
+  const { t: tCommon } = useTranslation();
 
   return [
     {
@@ -66,7 +67,8 @@ export function useUsersColumns(): DataTableColumn<UserDTO>[] {
               variant="ghost"
               size="icon"
               aria-label={t("list.actions.edit")}
-              title={t("list.actions.edit")}
+              title={`${t("list.actions.edit")} · ${tCommon("ui.list.pending")}`}
+              disabled
             >
               <Pencil aria-hidden="true" />
             </Button>
@@ -76,7 +78,8 @@ export function useUsersColumns(): DataTableColumn<UserDTO>[] {
                 variant="ghost"
                 size="icon"
                 aria-label={t("list.actions.deactivate")}
-                title={t("list.actions.deactivate")}
+                title={`${t("list.actions.deactivate")} · ${tCommon("ui.list.pending")}`}
+                disabled
               >
                 <Power aria-hidden="true" />
               </Button>
@@ -86,7 +89,8 @@ export function useUsersColumns(): DataTableColumn<UserDTO>[] {
                 variant="ghost"
                 size="icon"
                 aria-label={t("list.actions.activate")}
-                title={t("list.actions.activate")}
+                title={`${t("list.actions.activate")} · ${tCommon("ui.list.pending")}`}
+                disabled
               >
                 <Power aria-hidden="true" />
               </Button>
@@ -97,7 +101,8 @@ export function useUsersColumns(): DataTableColumn<UserDTO>[] {
                 variant="ghost"
                 size="icon"
                 aria-label={t("list.actions.unlock")}
-                title={t("list.actions.unlock")}
+                title={`${t("list.actions.unlock")} · ${tCommon("ui.list.pending")}`}
+                disabled
               >
                 <LockOpen aria-hidden="true" />
               </Button>
@@ -109,7 +114,8 @@ export function useUsersColumns(): DataTableColumn<UserDTO>[] {
               variant="ghost"
               size="icon"
               aria-label={t("list.actions.delete")}
-              title={t("list.actions.delete")}
+              title={`${t("list.actions.delete")} · ${tCommon("ui.list.pending")}`}
+              disabled
             >
               <Trash2 aria-hidden="true" />
             </Button>

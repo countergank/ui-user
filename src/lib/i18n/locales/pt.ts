@@ -81,6 +81,7 @@ export const pt: {
         filters: {
           all: "Todos",
         },
+        pending: "Pendente de implementação",
         refresh: "Atualizar",
         clear: "Limpar filtros",
         empty: "Nenhum resultado",

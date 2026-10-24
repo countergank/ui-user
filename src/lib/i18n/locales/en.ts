@@ -67,6 +67,7 @@ export const en = {
         filters: {
           all: "All",
         },
+        pending: "Pending implementation",
         refresh: "Refresh",
         clear: "Clear filters",
         empty: "No results found",

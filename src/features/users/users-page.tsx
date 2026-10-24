@@ -37,7 +37,13 @@ export function UsersPage() {
             isRefreshing={users.isFetching}
           />
           <Can permission={PERMISSIONS.userCreate}>
-            <Button type="button">{t("list.actions.create")}</Button>
+            <Button
+              type="button"
+              title={`${t("list.actions.create")} · ${tCommon("ui.list.pending")}`}
+              disabled
+            >
+              {t("list.actions.create")}
+            </Button>
           </Can>
         </div>
       </CardHeader>
@@ -100,7 +106,13 @@ export function UsersPage() {
                 <div className="flex flex-col items-center gap-3 py-8">
                   <p className="text-sm text-muted-foreground">{t("list.empty")}</p>
                   <Can permission={PERMISSIONS.userCreate}>
-                    <Button type="button">{t("list.actions.create")}</Button>
+                    <Button
+                      type="button"
+                      title={`${t("list.actions.create")} · ${tCommon("ui.list.pending")}`}
+                      disabled
+                    >
+                      {t("list.actions.create")}
+                    </Button>
                   </Can>
                 </div>
               }

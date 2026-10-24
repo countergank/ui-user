@@ -351,7 +351,11 @@ describe("users page — MSW", () => {
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: tUsers("list.actions.unlock") })).toBeInTheDocument();
     const edit = screen.getAllByRole("button", { name: tUsers("list.actions.edit") })[0];
-    expect(edit).toHaveAttribute("title", tUsers("list.actions.edit"));
+    expect(edit).toHaveAttribute(
+      "title",
+      `${tUsers("list.actions.edit")} · ${i18n.t("ui.list.pending")}`,
+    );
+    expect(edit).toBeDisabled();
     expect(edit).toHaveTextContent("");
     expect(screen.getAllByRole("button", { name: tUsers("list.actions.delete") })).toHaveLength(3);
   });
