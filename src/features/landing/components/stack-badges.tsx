@@ -1,10 +1,5 @@
 import { useTranslation } from "react-i18next";
 
-/**
- * Stack badges (COU-310, T10 / S13). Technology names are proper nouns: not translated,
- * only the sentence that introduces them. Badges make the block scannable instead of a
- * paragraph of commas.
- */
 const STACK = [
   "React 19",
   "TypeScript",

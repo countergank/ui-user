@@ -1,7 +1,3 @@
-// Redirect target validation (COU-281, T5 / S1, S5).
-//
-// `?redirect=` is attacker-controlled: the rule is an allowlist — a same-origin absolute
-// path or nothing — so no hostile form has to be enumerated to be safe.
 import { describe, expect, it } from "vitest";
 
 import { DEFAULT_REDIRECT, resolveRedirectTarget } from "./safe-redirect";
@@ -14,7 +10,6 @@ describe("resolveRedirectTarget", () => {
   it("falls back to the default when there is no redirect", () => {
     expect(target("")).toBe(DEFAULT_REDIRECT);
     expect(target("?redirect=")).toBe(DEFAULT_REDIRECT);
-    // ADR-13: the console is the post-login destination, not the public home.
     expect(DEFAULT_REDIRECT).toBe("/app");
   });
 

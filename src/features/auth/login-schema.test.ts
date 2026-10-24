@@ -1,4 +1,3 @@
-// Login schema (COU-281, T4 / S10).
 import { describe, expect, it } from "vitest";
 
 import { i18n } from "@/lib/i18n";

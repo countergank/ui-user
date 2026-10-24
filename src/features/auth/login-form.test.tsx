@@ -1,7 +1,3 @@
-// Login form behavior (COU-281, T4 / S6-S10).
-//
-// `fetch` is stubbed directly — the session runtime resolves it per request — and the
-// MSW-driven component suite (S11) lives in `login-page.integration.test.tsx`.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -30,7 +26,6 @@ const AUTH = {
 
 const fetchMock = vi.fn();
 
-/** Minimal `Response` double: the client reads `ok`, `status`, `text()` and nothing else. */
 function jsonResponse(status: number, body: unknown): Response {
   return {
     ok: status >= 200 && status < 300,

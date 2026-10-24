@@ -1,7 +1,3 @@
-// RequireAuth (COU-274 S1/S6): the deep link decides what happens before authentication, so the
-// assertion is on the destination the guard builds — full path, query and hash, encoded. The
-// round trip itself is pinned by `login-redirect.test.tsx`.
-
 import { render, screen } from "@testing-library/react";
 import { RouterProvider, createMemoryRouter, useLocation } from "react-router-dom";
 import { beforeEach, describe, expect, it } from "vitest";

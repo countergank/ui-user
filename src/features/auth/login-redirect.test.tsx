@@ -1,7 +1,3 @@
-// Redirect after a successful login (COU-281, T5 / S1, S5).
-//
-// Rendered inside real routes so the assertion is about navigation, not a mocked hook:
-// the app must land on the requested destination or on the default view.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -38,7 +34,6 @@ function jsonResponse(status: number, body: unknown): Response {
   } as unknown as Response;
 }
 
-/** Renders wherever the router landed, so a navigation is observable. */
 function LocationProbe() {
   const location = useLocation();
 
@@ -90,7 +85,6 @@ describe("login redirect", () => {
 
     await submitValidCredentials();
 
-    // ADR-13: the console is the post-login destination, not the public home.
     expect(await screen.findByTestId("location")).toHaveTextContent(/^\/app$/);
   });
 
@@ -101,7 +95,6 @@ describe("login redirect", () => {
     await submitValidCredentials();
 
     await waitFor(() => {
-      // The hostile destination is dropped, and the fallback is still the console.
       expect(screen.getByTestId("location")).toHaveTextContent(/^\/app$/);
     });
   });

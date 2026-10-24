@@ -1,11 +1,6 @@
 import { Terminal } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-/**
- * Quickstart block (COU-310, T10 / S13). A command is code, not copy: rendered verbatim
- * and never translated, with its own accessible label so a screen reader announces what
- * the block is instead of a bare line of text.
- */
 export function Quickstart() {
   const { t } = useTranslation("landing");
 

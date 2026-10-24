@@ -1,7 +1,3 @@
-// Login page layout tests (COU-281, T3).
-//
-// The page lives outside the app shell, so what must be absent (shell navigation, skip
-// link) is the actual point of routing it there.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
@@ -13,7 +9,6 @@ import { LoginPage } from "./login-page";
 
 const t = i18n.getFixedT(null, "auth");
 
-/** The page embeds the form, which needs a query client and a router for its link. */
 function renderPage() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
 

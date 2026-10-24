@@ -1,5 +1,3 @@
-// RequirePermission (COU-274 S2/S9, COU-323): grant, denial, wildcard, loading and a failed
-// profile read — the last two are the ones that break silently when conflated.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { RouterProvider, createMemoryRouter, useLocation } from "react-router-dom";
@@ -48,10 +46,8 @@ function renderGuard(options: { permissions?: string[] | null; pending?: boolean
   }
 
   if (pending === "fail") {
-    // A profile request that fails at the network layer: not the same answer as "denied".
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
   } else if (pending) {
-    // A profile request that never settles: the guard must not guess while it waits.
     vi.stubGlobal(
       "fetch",
       vi.fn(() => new Promise(() => undefined)),
@@ -114,8 +110,6 @@ describe("RequirePermission", () => {
   });
 
   it("reports a failed profile request as an error, not as a denial (COU-323)", async () => {
-    // A network failure proves nothing about permissions: answering `/forbidden` would tell
-    // the person their grant is gone when the truth is that the answer never arrived.
     renderGuard({ permissions: null, pending: "fail" });
 
     const alert = await screen.findByRole("alert");
