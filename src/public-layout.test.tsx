@@ -1,5 +1,3 @@
-// Public layout (COU-310 T1/S3/S8): no product navigation, same accessibility floor.
-// These assertions are the contract the e2e suite repeats in a real browser.
 import { render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, expect, it } from "vitest";
@@ -54,7 +52,6 @@ describe("public layout", () => {
 
   it("announces the landing and the about route", async () => {
     const { unmount } = renderAt("/");
-    // The announcer delays its message so screen readers pick it up after the DOM update.
     await waitFor(() => {
       expect(screen.getByRole("status")).toHaveTextContent(
         tCommon("shell.routeAnnouncer.loaded", { title: t("title") }),
@@ -75,8 +72,6 @@ describe("public layout", () => {
 
     const brand = within(screen.getByRole("banner")).getByRole("link", { name: t("title") });
 
-    // The owner's colour icon is the mark in both themes; it needs a light backing in the
-    // dark one because its "C" is black.
     const mark = brand.querySelector('img[src="/logo-countergank-icon.png"]');
 
     expect(mark).not.toBeNull();
@@ -98,8 +93,6 @@ describe("public layout", () => {
   it("stacks the landmarks in a full-height column so the footer sits at the page bottom", () => {
     renderAt("/about");
 
-    // jsdom has no layout engine, so the contract is the structure: one flex column that
-    // fills the viewport, with the main landmark growing and the footer after it.
     const main = screen.getByRole("main");
     const column = main.parentElement;
 

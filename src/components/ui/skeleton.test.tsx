@@ -1,4 +1,3 @@
-// Component tests for the shadcn/ui Skeleton primitive (COU-271, S3-S5).
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { axe } from "vitest-axe";

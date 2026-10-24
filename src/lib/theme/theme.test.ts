@@ -1,6 +1,3 @@
-// Unit tests for the theme primitives (`src/lib/theme/theme.ts`).
-// The pure helpers (`isThemePreference`, `resolveTheme`) carry the real logic and
-// are tested without a DOM; the storage/DOM helpers are tested against jsdom.
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -22,8 +19,6 @@ import {
   writeStoredPreference,
 } from "./theme";
 
-// Resolved through node path arithmetic (not `new URL(...)`, which Vite rewrites
-// into an asset URL and would break the file path lookup).
 const INDEX_HTML_PATH = resolve(dirname(fileURLToPath(import.meta.url)), "../../../index.html");
 
 afterEach(() => {

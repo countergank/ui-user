@@ -66,8 +66,8 @@ function, hook or component, describing its parameters and return with `@param` 
 when they are not obvious from the signature. Nothing else: no inline `//`, no section
 banners, no "why" notes, no JSDoc on trivial or internal helpers.
 
-Tool directives stay, because they are instructions to the linter, not prose:
-`biome-ignore` and `eslint-disable` lines and the single line that justifies them.
+Tool directives stay, because they are instructions to the toolchain, not prose: `biome-ignore`,
+`eslint-disable` and `/// <reference>` lines, and the single line that justifies a suppression.
 
 ## Stack (change only with an ADR in `docs/adr.md`)
 

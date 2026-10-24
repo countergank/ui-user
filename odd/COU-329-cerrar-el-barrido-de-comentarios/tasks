@@ -1,0 +1,13 @@
+# COU-329 — Cerrar el barrido de comentarios
+
+Mirror of `odd/tasks/COU-329-cerrar-el-barrido-de-comentarios.md`.
+
+## Tasks
+
+- [x] T1 — 110 líneas de prosa quitadas en 44 archivos.
+  - Evidence: barrido por estado final; diff con sólo líneas `//` eliminadas y ninguna agregada.
+- [x] T2 — Escaneo final.
+  - Evidence: 0 líneas de prosa; 32 bloques `/**`, verificación automática: todos sobre `export` con `@param`/`@returns`.
+- [x] T3 — Directiva `/// <reference>` restaurada.
+  - Evidence: `vite-env.d.ts`; `AGENTS.md` actualizado para cubrir directivas del compilador.
+- [x] T4 — `make ci` EXIT=0 (lint + typecheck + tests + build).

@@ -1,6 +1,3 @@
-// Component tests for the accessible ErrorView (ARCH-4, a11y role=alert).
-// Assertions on the component's own copy (retry action) are derived from the
-// i18n resources (COU-253); title/message remain caller-supplied props.
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";

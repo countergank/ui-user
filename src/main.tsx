@@ -12,17 +12,10 @@ import { router } from "@/routes";
 
 import "./styles/index.css";
 
-// One-time composition-root setup: hydrate the stored theme preference and apply
-// it to <html> before React renders (index.html has a pre-paint script for the
-// gap before this module loads).
 startThemeSync();
 
-// The console sidebar's expansion choice is a preference too: apply it before the shell
-// renders, so a collapsed console does not flash open on every reload (COU-278, S6).
 hydrateSidebarState();
 
-// The proactive access-token refresh only exists as a subscription: nothing else
-// knows when the store gained or rotated a token (COU-281, T2).
 startProactiveRefresh(sessionManager);
 
 const rootElement = document.getElementById("root");

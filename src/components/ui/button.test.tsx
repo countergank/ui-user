@@ -1,4 +1,3 @@
-// Component tests for the shadcn/ui Button (TEST-2, vitest-003/004).
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";

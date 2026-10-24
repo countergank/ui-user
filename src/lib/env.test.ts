@@ -1,4 +1,3 @@
-// Unit tests for typed env handling (COU-125, env handling policy).
 import { describe, expect, it } from "vitest";
 
 import { type EnvShape, requireEnv, resolveEnv, resolveMode } from "./env";

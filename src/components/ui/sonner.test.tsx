@@ -1,7 +1,3 @@
-// Component tests for the shadcn/ui Sonner toaster (COU-271, S3-S5).
-//
-// The toaster is the feedback surface a dashboard actually calls, so the suite drives a
-// real `toast()` instead of only mounting the component.
 import { act, render, screen } from "@testing-library/react";
 import { toast } from "sonner";
 import { describe, expect, it } from "vitest";

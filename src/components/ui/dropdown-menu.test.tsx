@@ -1,6 +1,3 @@
-// Component tests for the shadcn/ui DropdownMenu primitives (COU-271, S2-S5). Radix owns
-// the open/close lifecycle, so these tests pin the parts the ticket owns: the collapsed
-// trigger contract, the semantic slots, and the repo rules invisible to a screenshot.
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";

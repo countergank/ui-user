@@ -1,4 +1,3 @@
-// Component tests for the shadcn/ui Table primitives (COU-271, S3-S5).
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { axe } from "vitest-axe";

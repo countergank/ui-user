@@ -1,8 +1,3 @@
-// Unit tests for the session manager (COU-273, T4).
-//
-// The coordinator owns the two refresh paths the ticket asks for: proactive (before the
-// token dies, S3) and reactive (after a 401), both funnelled through ONE in-flight
-// promise so N concurrent 401s produce a single refresh (S5).
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { createSessionManager } from "./session-manager";

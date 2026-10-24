@@ -1,4 +1,3 @@
-// Component tests for the expiry bridge (COU-273, T6 / AC2).
 import { act, render, screen } from "@testing-library/react";
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it } from "vitest";

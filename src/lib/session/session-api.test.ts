@@ -1,8 +1,3 @@
-// Unit tests for the session API adapter (COU-281, T2).
-//
-// The manager is transport-free by design: it takes a `SessionApi`. This adapter is the
-// only place that knows the two endpoints and their request shape, so the manager stays
-// testable without HTTP and the endpoints stay in one file.
 import { describe, expect, it, vi } from "vitest";
 
 import { AppError } from "@/lib/errors";

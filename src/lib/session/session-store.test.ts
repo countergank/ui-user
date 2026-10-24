@@ -1,8 +1,3 @@
-// Unit tests for the session store (COU-273, T2).
-//
-// The store is the authoritative client-side session: tokens plus the user the API
-// returned at login. Persistence must be namespaced and versioned (S7), and a payload
-// that no longer matches the schema must be discarded rather than trusted.
 import { beforeEach, describe, expect, it } from "vitest";
 
 import {

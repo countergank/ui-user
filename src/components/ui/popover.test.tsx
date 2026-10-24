@@ -1,8 +1,3 @@
-// Component tests for the shadcn/ui Popover primitives (COU-271, S2-S5).
-//
-// A popover is a non-modal dialog anchored to its trigger. Radix owns the anchoring and
-// the dismissal rules, so the tests below pin the observable contract: closed until
-// asked, named when open, dismissable with Escape, tokens-only, axe-clean.
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";

@@ -1,4 +1,3 @@
-// Unit tests for the `cn` classname utility (vitest-001 structure, TEST-1).
 import { describe, expect, it } from "vitest";
 
 import { cn } from "./utils";

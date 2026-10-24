@@ -1,8 +1,3 @@
-// Component tests for the shadcn/ui Form composition (COU-271, S3-S5).
-//
-// The primitive is behavior, not styling: it wires react-hook-form field state into
-// accessible ids, `aria-invalid` and `aria-describedby`. The suite drives a real form
-// through a real zod resolver instead of asserting on class names.
 import { zodResolver } from "@hookform/resolvers/zod";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";

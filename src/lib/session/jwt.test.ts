@@ -1,7 +1,3 @@
-// Unit tests for access-token expiry reading (COU-273, T3).
-//
-// The server owns the 15-minute TTL; the client must not hardcode it. These tests pin
-// the decode of the standard `exp` claim and the margin logic that decides "renew now".
 import { describe, expect, it } from "vitest";
 
 import { decodeAccessToken, isTokenExpired, millisecondsUntilExpiry } from "./jwt";
