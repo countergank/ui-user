@@ -129,3 +129,25 @@ L9 — Límites conocidos, reportados y no silenciados:
   2. Filtro de rol derivado de la página cargada: ¿se deja así o se oculta hasta que exista `GET /roles`?
 - **Fuera de alcance confirmado**: mutaciones de usuario (crear/editar/activar/desbloquear/eliminar) necesitan su ticket y contrato verificado; hoy solo se gatea su visibilidad.
 - **Recordatorio de arranque**: `git status --short` para confirmar que el trabajo sigue en el árbol, `make ci` para revalidar antes de commitear.
+
+## Review nativa: no se pudo completar (transport, no código)
+
+Lineage `review-eeafed1692e81396`, tier `medium`, 3 lentes, 54 archivos, 2.814 líneas. Tres
+intentos de captura, siempre `Stream ended without finish_reason` y `mutation_performed: none`:
+
+| Intento | Lente | Tiempo | Resultado |
+|---|---|---|---|
+| 1 | `review-resilience` (grupo) | 114 s | transport failure |
+| 2 | `review-resilience` (slot solo) | 205 s | transport failure |
+| 3 | `review-readability` (slot solo) | 512 s | transport failure |
+
+**Estado de la autoridad**: intacta. El lineage sigue en `reviewing`, generación 1, sin nada quemado,
+así que se puede retomar sin RESET ni RECOVER.
+
+**Lectura**: es tamaño de candidato. Las reviews que sí completaron fueron de 507, 1.105 y 1.558
+líneas; este es el doble de la más grande. Los tiempos crecientes apuntan a un stream que se agota,
+no a un prompt inválido.
+
+**Decisión del humano**: seguir con **un solo PR** (#30), sin partir el candidato. Consecuencia
+registrada: la entrega va por política ordinaria (gate + CI en verde) y esta feature queda sin
+veredicto de review nativa; el switch de RDD es del humano.
