@@ -2,7 +2,21 @@ import type { ListParams, SortOrder } from "@/components/data-list/params";
 
 import { httpClient } from "@/lib/session/session";
 
-import { type PaginatedUsers, paginatedUsersSchema } from "./types";
+import {
+  type CreateUserResponseDTO,
+  type PaginatedUsers,
+  createUserResponseSchema,
+  paginatedUsersSchema,
+} from "./types";
+
+export interface CreateUserPayload {
+  name: string;
+  lastName: string;
+  email: string;
+  userName: string;
+  password: string;
+  role: string;
+}
 
 export interface UsersQuery {
   page: number;
@@ -56,4 +70,19 @@ export async function fetchUsers(query: UsersQuery): Promise<PaginatedUsers> {
   const raw = await httpClient.request<unknown>(`/admin/users?${search.toString()}`);
 
   return paginatedUsersSchema.parse(raw);
+}
+
+/**
+ * @param payload - the create-user body; `role` always travels because the form defaults it to
+ * `user`, matching the API default.
+ * @returns The validated `CreateUserResponseDTO`. The API answers without an `id`, so a drift
+ * on that shape fails here and not in the caller.
+ */
+export async function createUser(payload: CreateUserPayload): Promise<CreateUserResponseDTO> {
+  const raw = await httpClient.request<unknown>("/admin/users", {
+    method: "POST",
+    body: payload,
+  });
+
+  return createUserResponseSchema.parse(raw);
 }

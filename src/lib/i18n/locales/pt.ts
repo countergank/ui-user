@@ -261,5 +261,31 @@ export const pt: {
         inactive: "Inativo",
       },
     },
+    create: {
+      title: "Novo usuário",
+      groups: {
+        identity: "Identidade",
+        access: "Acesso",
+      },
+      fields: {
+        name: "Nome",
+        lastName: "Sobrenome",
+        email: "Email",
+        userName: "Usuário",
+        password: "Senha",
+        role: "Papel",
+      },
+      submit: "Salvar",
+      cancel: "Cancelar",
+      success: "Usuário criado.",
+      errors: {
+        fieldRequired: "Este campo é obrigatório.",
+        emailInvalid: "Informe um email válido.",
+        emailTaken: "Esse email já está registrado.",
+        userNameTaken: "Esse nome de usuário já está em uso.",
+        weakPassword:
+          "Use de 8 a 64 caracteres com pelo menos uma letra minúscula, uma maiúscula, um dígito e um caractere especial (@$!%*?&), sem caracteres repetidos consecutivos nem sequências comuns.",
+      },
+    },
   },
 };

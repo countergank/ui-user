@@ -247,6 +247,32 @@ export const en = {
         inactive: "Inactive",
       },
     },
+    create: {
+      title: "New user",
+      groups: {
+        identity: "Identity",
+        access: "Access",
+      },
+      fields: {
+        name: "Name",
+        lastName: "Last name",
+        email: "Email",
+        userName: "User",
+        password: "Password",
+        role: "Role",
+      },
+      submit: "Save",
+      cancel: "Cancel",
+      success: "User created.",
+      errors: {
+        fieldRequired: "This field is required.",
+        emailInvalid: "Enter a valid email address.",
+        emailTaken: "That email is already registered.",
+        userNameTaken: "That user name is already taken.",
+        weakPassword:
+          "Use 8 to 64 characters with at least one lowercase letter, one uppercase letter, one digit and one special character (@$!%*?&), without repeated consecutive characters or common sequences.",
+      },
+    },
   },
 };
 
