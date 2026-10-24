@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
+import { PasswordInput } from "@/components/password-input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -165,7 +166,12 @@ export function CreateUserForm() {
               <FormItem>
                 <FormLabel>{t("create.fields.password")}</FormLabel>
                 <FormControl>
-                  <Input type="password" autoComplete="new-password" {...field} />
+                  <PasswordInput
+                    showLabel={t("create.showPassword")}
+                    hideLabel={t("create.hidePassword")}
+                    autoComplete="new-password"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
                 <PasswordStrengthIndicator control={form.control} t={t} />
@@ -179,7 +185,12 @@ export function CreateUserForm() {
               <FormItem>
                 <FormLabel>{t("create.fields.confirmPassword")}</FormLabel>
                 <FormControl>
-                  <Input type="password" autoComplete="new-password" {...field} />
+                  <PasswordInput
+                    showLabel={t("create.showPassword")}
+                    hideLabel={t("create.hidePassword")}
+                    autoComplete="new-password"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

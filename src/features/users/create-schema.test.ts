@@ -87,6 +87,29 @@ describe("create user schema", () => {
     expect(errorsFor({ ...VALID, password }).password).toEqual([t("create.errors.weakPassword")]);
   });
 
+  it("accepts any non-alphanumeric character as the required special character", () => {
+    expect(
+      createUserFormSchema(t).safeParse({
+        ...VALID,
+        password: "Nx9mKpwx#",
+        confirmPassword: "Nx9mKpwx#",
+      }).success,
+    ).toBe(true);
+    expect(
+      createUserFormSchema(t).safeParse({
+        ...VALID,
+        password: "Nx9mKpwxñ",
+        confirmPassword: "Nx9mKpwxñ",
+      }).success,
+    ).toBe(true);
+  });
+
+  it("rejects a password whose only missing rule is a non-alphanumeric character", () => {
+    expect(errorsFor({ ...VALID, password: "Nx9mKpwx" }).password).toEqual([
+      t("create.errors.weakPassword"),
+    ]);
+  });
+
   it("accepts passwords at both length boundaries", () => {
     expect(createUserFormSchema(t).safeParse({ ...VALID, password: "Nx9!mKp2" }).success).toBe(
       true,

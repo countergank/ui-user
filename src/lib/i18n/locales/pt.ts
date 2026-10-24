@@ -281,13 +281,15 @@ export const pt: {
       submit: "Salvar",
       cancel: "Cancelar",
       success: "Usuário criado.",
+      showPassword: "Mostrar senha",
+      hidePassword: "Ocultar senha",
       errors: {
         fieldRequired: "Este campo é obrigatório.",
         emailInvalid: "Informe um email válido.",
         emailTaken: "Esse email já está registrado.",
         userNameTaken: "Esse nome de usuário já está em uso.",
         weakPassword:
-          "Use de 8 a 64 caracteres com pelo menos uma letra minúscula, uma maiúscula, um dígito e um caractere especial (@$!%*?&), sem caracteres repetidos consecutivos nem sequências comuns.",
+          "Use de 8 a 64 caracteres com pelo menos uma letra minúscula, uma maiúscula, um dígito e um caractere não alfanumérico (por exemplo #, - ou ñ), sem caracteres repetidos consecutivos nem sequências comuns.",
         passwordMismatch: "As senhas não coincidem.",
       },
       passwordStrength: {

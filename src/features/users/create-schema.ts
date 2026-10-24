@@ -7,7 +7,7 @@ const EMAIL_SHAPE = z.string().email();
 const PASSWORD_LOWER = /[a-z]/;
 const PASSWORD_UPPER = /[A-Z]/;
 const PASSWORD_DIGIT = /[0-9]/;
-const PASSWORD_SPECIAL = /[@$!%*?&]/;
+const PASSWORD_SPECIAL = /[^a-zA-Z0-9]/;
 const CONSECUTIVE_REPEAT = /(.)\1/;
 const COMMON_SEQUENCES = ["123", "abc", "qwe", "asd", "zxc"];
 

@@ -267,13 +267,15 @@ export const en = {
       submit: "Save",
       cancel: "Cancel",
       success: "User created.",
+      showPassword: "Show password",
+      hidePassword: "Hide password",
       errors: {
         fieldRequired: "This field is required.",
         emailInvalid: "Enter a valid email address.",
         emailTaken: "That email is already registered.",
         userNameTaken: "That user name is already taken.",
         weakPassword:
-          "Use 8 to 64 characters with at least one lowercase letter, one uppercase letter, one digit and one special character (@$!%*?&), without repeated consecutive characters or common sequences.",
+          "Use 8 to 64 characters with at least one lowercase letter, one uppercase letter, one digit and one non-alphanumeric character (for example #, - or ñ), without repeated consecutive characters or common sequences.",
         passwordMismatch: "Passwords do not match.",
       },
       passwordStrength: {

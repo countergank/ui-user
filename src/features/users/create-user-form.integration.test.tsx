@@ -112,6 +112,43 @@ async function fillForm({
   return user;
 }
 
+describe("create user form — show/hide password", () => {
+  it("renders an independent toggle on the password and the confirm field", async () => {
+    renderForm();
+
+    const user = userEvent.setup();
+    const password = screen.getByLabelText(tUsers("create.fields.password"));
+    const confirm = screen.getByLabelText(tUsers("create.fields.confirmPassword"));
+    await user.type(password, "secret");
+    await user.type(confirm, "secret");
+
+    const showToggles = screen.getAllByRole("button", { name: tUsers("create.showPassword") });
+    expect(showToggles).toHaveLength(2);
+    expect(showToggles[0]).toHaveAttribute("title", tUsers("create.showPassword"));
+    expect(password).toHaveAttribute("type", "password");
+    expect(confirm).toHaveAttribute("type", "password");
+
+    await user.click(showToggles[0]);
+
+    expect(password).toHaveAttribute("type", "text");
+    expect(password).toHaveValue("secret");
+    expect(confirm).toHaveAttribute("type", "password");
+
+    await user.click(screen.getByRole("button", { name: tUsers("create.showPassword") }));
+
+    expect(password).toHaveAttribute("type", "text");
+    expect(confirm).toHaveAttribute("type", "text");
+    expect(confirm).toHaveValue("secret");
+
+    const hideToggles = screen.getAllByRole("button", { name: tUsers("create.hidePassword") });
+    expect(hideToggles).toHaveLength(2);
+    await user.click(hideToggles[0]);
+
+    expect(password).toHaveAttribute("type", "password");
+    expect(confirm).toHaveAttribute("type", "text");
+  });
+});
+
 describe("create user form — MSW", () => {
   it("posts the payload, raises the toast, invalidates the list and returns to it", async () => {
     const { invalidateSpy } = renderForm();
