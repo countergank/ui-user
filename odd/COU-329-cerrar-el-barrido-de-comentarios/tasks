@@ -5,9 +5,15 @@ Mirror of `odd/tasks/COU-329-cerrar-el-barrido-de-comentarios.md`.
 ## Tasks
 
 - [x] T1 — 110 líneas de prosa quitadas en 44 archivos.
-  - Evidence: barrido por estado final; diff con sólo líneas `//` eliminadas y ninguna agregada.
+  - Evidence: barrido por estado final; en los 44 archivos de test/código el diff sólo elimina líneas `//`. El commit además **agrega** `/// <reference types="vite/client" />` en `vite-env.d.ts` (restaurada tras borrarla por error) y cambia 4 líneas de `AGENTS.md` para cubrir directivas del compilador.
 - [x] T2 — Escaneo final.
   - Evidence: 0 líneas de prosa; 32 bloques `/**`, verificación automática: todos sobre `export` con `@param`/`@returns`.
 - [x] T3 — Directiva `/// <reference>` restaurada.
   - Evidence: `vite-env.d.ts`; `AGENTS.md` actualizado para cubrir directivas del compilador.
 - [x] T4 — `make ci` EXIT=0 (lint + typecheck + tests + build).
+
+## Hallazgos de la review (informational, cerrada como aprobada)
+
+- `R2-task-evidence-mismatch` (warning): corregido arriba — la evidencia decía "ninguna línea agregada" y el commit sí agrega la directiva y el texto de `AGENTS.md`.
+- `R2-task-doc-mirror` (suggestion): esta cabecera y la del doc de feature describen el mismo estado; se mantienen alineadas.
+- `R2-rationale-record` (suggestion): `theme.test.ts` compara contra `index.html` y el porqué (script pre-paint que debe coincidir con `theme.ts`) se perdió con el barrido. **Costo aceptado y registrado**: si vuelve a hacer falta, su lugar es `docs/` o el propio ticket, no un comentario junto a la constante.
