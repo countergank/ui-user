@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
+import { PasswordInput } from "@/components/password-input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,6 +29,7 @@ import {
 import { type CreateUserInput, type CreateUserValues, createUserFormSchema } from "./create-schema";
 import { resolveCreateUserError } from "./create-user-errors";
 import { useCreateUser } from "./hooks/use-create-user";
+import { PasswordStrengthIndicator } from "./password-strength";
 import { USER_ROLES } from "./types";
 
 export function CreateUserForm() {
@@ -47,6 +49,7 @@ export function CreateUserForm() {
       email: "",
       userName: "",
       password: "",
+      confirmPassword: "",
       role: "user",
     },
   });
@@ -59,20 +62,30 @@ export function CreateUserForm() {
 
   const onSubmit = form.handleSubmit((values) => {
     setFormError(null);
-    createMutation.mutate(values, {
-      onSuccess: () => {
-        toast.success(t("create.success"));
-        void navigate("/app/users");
+    createMutation.mutate(
+      {
+        name: values.name,
+        lastName: values.lastName,
+        email: values.email,
+        userName: values.userName,
+        password: values.password,
+        role: values.role,
       },
-      onError: (error) => {
-        const mapped = resolveCreateUserError(error);
-        if (mapped === null) {
-          setFormError(tCommon("error.genericMessage"));
-          return;
-        }
-        form.setError(mapped.field, { message: t(mapped.messageKey) });
+      {
+        onSuccess: () => {
+          toast.success(t("create.success"));
+          void navigate("/app/users");
+        },
+        onError: (error) => {
+          const mapped = resolveCreateUserError(error);
+          if (mapped === null) {
+            setFormError(tCommon("error.genericMessage"));
+            return;
+          }
+          form.setError(mapped.field, { message: t(mapped.messageKey) });
+        },
       },
-    });
+    );
   });
 
   return (
@@ -153,7 +166,31 @@ export function CreateUserForm() {
               <FormItem>
                 <FormLabel>{t("create.fields.password")}</FormLabel>
                 <FormControl>
-                  <Input type="password" autoComplete="new-password" {...field} />
+                  <PasswordInput
+                    showLabel={t("create.showPassword")}
+                    hideLabel={t("create.hidePassword")}
+                    autoComplete="new-password"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+                <PasswordStrengthIndicator control={form.control} t={t} />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("create.fields.confirmPassword")}</FormLabel>
+                <FormControl>
+                  <PasswordInput
+                    showLabel={t("create.showPassword")}
+                    hideLabel={t("create.hidePassword")}
+                    autoComplete="new-password"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

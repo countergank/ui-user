@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { i18n } from "@/lib/i18n";
 
-import { createUserFormSchema } from "./create-schema";
+import { createUserFormSchema, passwordStrength } from "./create-schema";
 
 const t = i18n.getFixedT(null, "users");
 
@@ -12,6 +12,7 @@ const VALID = {
   email: "ada@example.com",
   userName: "ada",
   password: "Nx9!mKp2",
+  confirmPassword: "Nx9!mKp2",
   role: "user",
 };
 
@@ -86,12 +87,62 @@ describe("create user schema", () => {
     expect(errorsFor({ ...VALID, password }).password).toEqual([t("create.errors.weakPassword")]);
   });
 
+  it("accepts any non-alphanumeric character as the required special character", () => {
+    expect(
+      createUserFormSchema(t).safeParse({
+        ...VALID,
+        password: "Nx9mKpwx#",
+        confirmPassword: "Nx9mKpwx#",
+      }).success,
+    ).toBe(true);
+    expect(
+      createUserFormSchema(t).safeParse({
+        ...VALID,
+        password: "Nx9mKpwxñ",
+        confirmPassword: "Nx9mKpwxñ",
+      }).success,
+    ).toBe(true);
+  });
+
+  it("rejects a password whose only missing rule is a non-alphanumeric character", () => {
+    expect(errorsFor({ ...VALID, password: "Nx9mKpwx" }).password).toEqual([
+      t("create.errors.weakPassword"),
+    ]);
+  });
+
   it("accepts passwords at both length boundaries", () => {
     expect(createUserFormSchema(t).safeParse({ ...VALID, password: "Nx9!mKp2" }).success).toBe(
       true,
     );
     expect(
-      createUserFormSchema(t).safeParse({ ...VALID, password: "Nx9!mKp2".repeat(8) }).success,
+      createUserFormSchema(t).safeParse({
+        ...VALID,
+        password: "Nx9!mKp2".repeat(8),
+        confirmPassword: "Nx9!mKp2".repeat(8),
+      }).success,
     ).toBe(true);
+  });
+
+  it("accepts a payload whose confirmation matches the password", () => {
+    expect(
+      createUserFormSchema(t).safeParse({ ...VALID, confirmPassword: "Nx9!mKp2" }).success,
+    ).toBe(true);
+  });
+
+  it("lands the mismatch on the confirm field only", () => {
+    const errors = errorsFor({ ...VALID, confirmPassword: "Nx9!mKp3" });
+
+    expect(errors.confirmPassword).toEqual([t("create.errors.passwordMismatch")]);
+    expect(errors.password).toBeUndefined();
+  });
+});
+
+describe("password strength", () => {
+  it.each([
+    ["weak", "Nx9!"],
+    ["medium", "Nx9mKp2w"],
+    ["strong", "Nx9!mKp2"],
+  ] as const)("rates the %s band for %s", (band, password) => {
+    expect(passwordStrength(password)).toBe(band);
   });
 });
