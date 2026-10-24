@@ -8,12 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Can } from "@/features/authorization/components/can";
 import { PERMISSIONS } from "@/features/authorization/permissions";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { useUsers } from "./hooks/use-users";
+import { USER_ROLES } from "./types";
 import { useUsersColumns } from "./users-columns";
-import { USERS_LIST_PARAMS, USER_ROLES } from "./users-list-config";
+import { USERS_LIST_PARAMS } from "./users-list-config";
 
 export function UsersPage() {
   const { t } = useTranslation("users");
@@ -37,12 +39,8 @@ export function UsersPage() {
             isRefreshing={users.isFetching}
           />
           <Can permission={PERMISSIONS.userCreate}>
-            <Button
-              type="button"
-              title={`${t("list.actions.create")} · ${tCommon("ui.list.pending")}`}
-              disabled
-            >
-              {t("list.actions.create")}
+            <Button type="button" asChild>
+              <Link to="/app/users/new">{t("list.actions.create")}</Link>
             </Button>
           </Can>
         </div>
@@ -106,12 +104,8 @@ export function UsersPage() {
                 <div className="flex flex-col items-center gap-3 py-8">
                   <p className="text-sm text-muted-foreground">{t("list.empty")}</p>
                   <Can permission={PERMISSIONS.userCreate}>
-                    <Button
-                      type="button"
-                      title={`${t("list.actions.create")} · ${tCommon("ui.list.pending")}`}
-                      disabled
-                    >
-                      {t("list.actions.create")}
+                    <Button type="button" asChild>
+                      <Link to="/app/users/new">{t("list.actions.create")}</Link>
                     </Button>
                   </Can>
                 </div>

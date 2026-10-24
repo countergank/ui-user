@@ -261,5 +261,31 @@ export const es: {
         inactive: "Inactivo",
       },
     },
+    create: {
+      title: "Nuevo usuario",
+      groups: {
+        identity: "Identidad",
+        access: "Acceso",
+      },
+      fields: {
+        name: "Nombre",
+        lastName: "Apellido",
+        email: "Email",
+        userName: "Usuario",
+        password: "Contraseña",
+        role: "Rol",
+      },
+      submit: "Guardar",
+      cancel: "Cancelar",
+      success: "Usuario creado.",
+      errors: {
+        fieldRequired: "Este campo es obligatorio.",
+        emailInvalid: "Ingresá un email válido.",
+        emailTaken: "Ese email ya está registrado.",
+        userNameTaken: "Ese nombre de usuario ya está en uso.",
+        weakPassword:
+          "Usá entre 8 y 64 caracteres con al menos una minúscula, una mayúscula, un dígito y un carácter especial (@$!%*?&), sin caracteres repetidos consecutivos ni secuencias comunes.",
+      },
+    },
   },
 };

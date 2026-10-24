@@ -16,5 +16,3 @@ export const USERS_LIST_PARAMS: ListParamsConfig = {
   defaultSortOrder: "desc",
   filters: [{ name: "search" }, { name: "role" }, { name: "isActive", values: ["true", "false"] }],
 };
-
-export const USER_ROLES = ["admin", "user", "viewer"] as const;

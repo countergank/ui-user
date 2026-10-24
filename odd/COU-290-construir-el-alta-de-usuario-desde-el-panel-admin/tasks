@@ -1,0 +1,26 @@
+# COU-290 — Alta de usuario desde el panel admin
+
+Mirror of `odd/tasks/COU-290-construir-el-alta-de-usuario-desde-el-panel-admin.md`.
+
+## Tasks
+
+- [x] T1 — `create-schema.ts`: zod espejo de las reglas del API (S2, S6).
+  - Evidence: 8 reglas de contraseña incluidas repetidos consecutivos y secuencias comunes; tests de cada regla y de los límites 8/64.
+- [x] T2 — `createUser` + `useCreateUser` que invalida el listado (S8, S12).
+  - Evidence: zod de respuesta sin `id`; test de payload exacto y de invalidación.
+- [x] T3 — Página y formulario en `/app/users/new` (S1, S4).
+  - Evidence: `Card` + `Fieldset` + `Select` de rol; ruta lazy con `RequireSection` registrada antes del `*`.
+- [x] T4 — Duplicados y contraseña mapeados al campo (S3, S7).
+  - Evidence: `UA-COM-004` → email, `UA-COM-003` → userName, `PASSWORD_*` → password; tests de "sólo ese campo".
+- [x] T5 — CTA del listado con handler (S8).
+  - Evidence: pasó de `disabled` a `<Link>` dentro de `<Can user:create>`; tests actualizados a `role=link`.
+- [x] T6 — i18n `users.create.*` en en/es/pt (S5, S11).
+  - Evidence: paridad verde.
+- [x] T7 — Tests MSW + axe (S11).
+  - Evidence: 69 tests en el scope; éxito, duplicados, contraseña débil sin request, axe limpio.
+- [x] T8 — Gate completo.
+  - Evidence: `make ci` EXIT=0. Dos fallos previos y sus causas: tipos de react-hook-form (`role` con default → input ≠ output) y formato de Biome tras el refactor de imports.
+
+## Cerrado por el orquestador (fuera de las superficies del worker)
+
+- `<Toaster />` montado en `main.tsx`: sin eso, el toast de éxito de S8 no existía en runtime (sólo en los tests que lo montaban).
