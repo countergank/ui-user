@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { delay } from "msw";
 import { http, HttpResponse } from "msw";
@@ -179,6 +179,21 @@ describe("edit user form — PATCH", () => {
     expect(patchBody).toEqual({ name: "Ada King", role: "admin" });
     expect(await screen.findByText(tUsers("edit.success"))).toBeInTheDocument();
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: USERS_QUERY_KEY });
+  });
+
+  it("sends nothing when the only change is whitespace the schema trims away", async () => {
+    renderPage();
+    const user = await waitForPrefill();
+
+    const email = screen.getByLabelText(tUsers("edit.fields.email"));
+    await user.clear(email);
+    await user.type(email, "ada@example.com   ");
+    await user.click(screen.getByRole("button", { name: tUsers("edit.submit") }));
+
+    await waitFor(() => {
+      expect(patchCount).toBe(0);
+    });
+    expect(screen.queryByText("users-list")).toBeNull();
   });
 
   it("maps UA-COM-004 onto the email field only", async () => {

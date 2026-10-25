@@ -76,6 +76,10 @@ export function EditUserForm({ user }: { user: UserDTO }) {
   }, [formError]);
 
   const onSubmit = form.handleSubmit((values) => {
+    if (updateMutation.isPending) {
+      return;
+    }
+
     setFormError(null);
     const payload: UpdateUserPayload = {};
     if (values.name !== original.name) payload.name = values.name;
@@ -83,6 +87,10 @@ export function EditUserForm({ user }: { user: UserDTO }) {
     if (values.email !== original.email) payload.email = values.email;
     if (values.userName !== original.userName) payload.userName = values.userName;
     if (values.role !== original.role) payload.role = values.role;
+
+    if (Object.keys(payload).length === 0) {
+      return;
+    }
 
     updateMutation.mutate(payload, {
       onSuccess: () => {
