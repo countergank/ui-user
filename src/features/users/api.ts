@@ -5,8 +5,10 @@ import { httpClient } from "@/lib/session/session";
 import {
   type CreateUserResponseDTO,
   type PaginatedUsers,
+  type UserDTO,
   createUserResponseSchema,
   paginatedUsersSchema,
+  userSchema,
 } from "./types";
 import type { UserRoleName } from "./types";
 
@@ -17,6 +19,14 @@ export interface CreateUserPayload {
   userName: string;
   password: string;
   role: UserRoleName;
+}
+
+export interface UpdateUserPayload {
+  name?: string;
+  lastName?: string;
+  email?: string;
+  userName?: string;
+  role?: UserRoleName;
 }
 
 export interface UsersQuery {
@@ -86,4 +96,29 @@ export async function createUser(payload: CreateUserPayload): Promise<CreateUser
   });
 
   return createUserResponseSchema.parse(raw);
+}
+
+/**
+ * @param id - the user id; it is percent-encoded so a hostile id cannot change the path.
+ * @returns The validated `UserDTO`, so a contract drift on the detail shape fails here.
+ */
+export async function fetchUser(id: string): Promise<UserDTO> {
+  const raw = await httpClient.request<unknown>(`/admin/users/${encodeURIComponent(id)}`);
+
+  return userSchema.parse(raw);
+}
+
+/**
+ * @param id - the user id; it is percent-encoded so a hostile id cannot change the path.
+ * @param payload - the `UpdateUserDTO`: every field is optional and only the changed ones travel.
+ * There is no `password` here; password changes are a separate action.
+ * @returns The validated `UserDTO` as the API echoes it after the patch.
+ */
+export async function updateUser(id: string, payload: UpdateUserPayload): Promise<UserDTO> {
+  const raw = await httpClient.request<unknown>(`/admin/users/${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    body: payload,
+  });
+
+  return userSchema.parse(raw);
 }

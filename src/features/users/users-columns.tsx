@@ -5,6 +5,7 @@ import { Can } from "@/features/authorization/components/can";
 import { PERMISSIONS } from "@/features/authorization/permissions";
 import { LockOpen, Pencil, Power, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 import type { UserDTO } from "./types";
 
@@ -62,15 +63,14 @@ export function useUsersColumns(): DataTableColumn<UserDTO>[] {
       cell: (user) => (
         <div className="flex justify-end gap-1">
           <Can permission={PERMISSIONS.userUpdate}>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              aria-label={t("list.actions.edit")}
-              title={`${t("list.actions.edit")} · ${tCommon("ui.list.pending")}`}
-              disabled
-            >
-              <Pencil aria-hidden="true" />
+            <Button asChild variant="ghost" size="icon">
+              <Link
+                to={`/app/users/${encodeURIComponent(user.id)}/edit`}
+                aria-label={t("list.actions.edit")}
+                title={t("list.actions.edit")}
+              >
+                <Pencil aria-hidden="true" />
+              </Link>
             </Button>
             {user.isActive ? (
               <Button

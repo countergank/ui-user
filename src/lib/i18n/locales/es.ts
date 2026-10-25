@@ -299,5 +299,28 @@ export const es: {
         strong: "Fuerte",
       },
     },
+    edit: {
+      title: "Editar usuario",
+      loading: "Cargando usuario…",
+      groups: {
+        identity: "Identidad",
+        access: "Acceso",
+      },
+      fields: {
+        name: "Nombre",
+        lastName: "Apellido",
+        email: "Email",
+        userName: "Usuario",
+        role: "Rol",
+      },
+      roleImpact: "Cambiar el rol puede cambiar los permisos efectivos de este usuario.",
+      submit: "Guardar",
+      cancel: "Cancelar",
+      success: "Usuario actualizado.",
+      errors: {
+        fieldRequired: "Este campo es obligatorio.",
+        emailInvalid: "Ingresá un email válido.",
+      },
+    },
   },
 };

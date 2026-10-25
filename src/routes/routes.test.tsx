@@ -31,7 +31,7 @@ describe("routes", () => {
 
     expect(
       appRoute?.children?.map((route) => route.path ?? (route.index ? "index" : undefined)),
-    ).toEqual(["index", "users", "users/new", "*"]);
+    ).toEqual(["index", "users", "users/new", "users/:id/edit", "*"]);
   });
 
   it("registers the create-user route before any dynamic detail or fallback (COU-290)", () => {
@@ -40,6 +40,14 @@ describe("routes", () => {
 
     expect(paths.indexOf("users/new")).toBeGreaterThan(-1);
     expect(paths.indexOf("users/new")).toBeLessThan(paths.indexOf("*"));
+  });
+
+  it("registers the edit-user route after users/new and before the fallback (COU-292)", () => {
+    const appRoute = router.routes.find((route) => route.path === "/app");
+    const paths = appRoute?.children?.map((route) => route.path ?? undefined) ?? [];
+
+    expect(paths.indexOf("users/:id/edit")).toBeGreaterThan(paths.indexOf("users/new"));
+    expect(paths.indexOf("users/:id/edit")).toBeLessThan(paths.indexOf("*"));
   });
 
   it("puts every console route behind the session gate, and none of the public ones", () => {
