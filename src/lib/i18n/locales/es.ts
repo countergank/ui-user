@@ -170,7 +170,7 @@ export const es: {
       title: "Correrlo en local",
       body: "El backend trae su propio stack de Docker. Levantalo y después corré la consola contra él:",
       command: "docker compose up",
-      note: "La consola se sirve en localhost:3000 y la API responde en la URL de VITE_API_BASE_URL.",
+      note: "La consola corre en localhost:3001 y la API responde en la URL de VITE_API_BASE_URL.",
       terminalLabel: "Comando de shell",
     },
     stack: {

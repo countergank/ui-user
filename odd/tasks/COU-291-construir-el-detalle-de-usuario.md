@@ -195,3 +195,15 @@ Sin cambio, con razón:
 - `R4-001` (WARNING, resilience, `users-detail-page.tsx:69-78`): **no verificable**: su texto no se
   pudo recuperar del store y la cita cubre el bloque de error con retry y el inicio del bloque de
   datos, que ya tienen prueba. Queda como follow-up si vuelve a aparecer.
+
+**L14 — Convención de puerto del dev server** (resolución elegida para `R3-vite-proxy-self-loop`).
+Decisión del humano: mover el dev server a **3001** con `strictPort` y dejar la API en 3000. Motivo:
+elimina de raíz el lazo del proxy (una request a `/admin` con la API caída volvía al propio dev
+server y recibía el HTML del SPA en vez de un error) y elimina el fallback silencioso de puerto que
+hizo caer a Vite en 3001 sin avisar. Alcance aplicado: `vite.config.ts`, `README.md`, las tres
+locales (`landing.quickstart.note` describía `localhost:3000`) y el paréntesis de la spec viva
+`openspec/specs/docker-compose-local/spec.md` (decía `pnpm dev` (3000)). Ese último es un ajuste
+documental dentro de este ticket: el requisito de la spec —que el puerto de Docker no choque con el
+dev server ni con preview— se sigue cumpliendo (8080 ≠ 3001 ≠ 4173); sólo el número entre paréntesis
+quedó viejo. Si el equipo prefiere que ese cambio entre como artefacto openspec propio, se revierte
+la línea y se abre el cambio.

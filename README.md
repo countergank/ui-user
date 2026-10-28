@@ -26,7 +26,7 @@ missing). The full command surface lives in `package.json` and `Makefile`.
 
 ```bash
 pnpm install          # install dependencies (or: make install / make setup)
-pnpm dev              # Vite dev server on http://localhost:3000 (or: make dev)
+pnpm dev              # Vite dev server on http://localhost:3001 (or: make dev)
 pnpm test             # unit + component + a11y tests (or: make test)
 pnpm test:coverage    # with coverage report / 80% gate (or: make test-coverage)
 pnpm test:e2e         # Playwright critical journeys (or: make test-e2e)
@@ -36,14 +36,14 @@ pnpm preview          # serve the production build locally
 
 > First time running E2E on a fresh machine: `pnpm exec playwright install chromium`.
 
-> **Local dev talks to the API through the Vite proxy.** `pnpm dev` runs Vite with a relative
+> **Local dev talks to the API through the Vite proxy.** The dev server is fixed on **3001** with
+> `strictPort`, because the `api-user` container owns **3000**; `pnpm dev` runs Vite with a relative
 > `VITE_API_BASE_URL=/`, and `vite.config.ts` proxies `/auth` and `/admin` to
 > `http://localhost:3000` (override with `VITE_API_PROXY_TARGET`). The browser only ever talks to
-> its own origin, so a dev server that falls back to another port — because `api-user` already
-> owns 3000 — keeps working without any CORS change on the API. Builds are unaffected: they keep
-> the absolute URL from Doppler or the build args. The `dev` script assigns that variable inline, so
-> it needs a POSIX shell (Linux, macOS or WSL) — the same assumption the Makefile targets and the
-> husky hooks already make.
+> its own origin, so CORS stays out of the dev loop, and no port can collide: a fixed port fails
+> loudly instead of drifting onto the API's. Builds are unaffected: they keep the absolute URL from
+> Doppler or the build args. The `dev` script assigns that variable inline, so it needs a POSIX shell
+> (Linux, macOS or WSL) — the same assumption the Makefile targets and the husky hooks already make.
 
 Run the full local gate before pushing:
 
