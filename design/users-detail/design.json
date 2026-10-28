@@ -1,0 +1,28 @@
+{
+  "title": "Detalle de usuario",
+  "brief": "Tres direcciones visuales para /app/users/:id (COU-291): misma información del UserDTO, distinta estrategia de jerarquía y densidad.",
+  "feature": "odd/tasks/COU-291-construir-el-detalle-de-usuario.md",
+  "artboards": [
+    {
+      "file": "01-identity-header.html",
+      "title": "Identidad + secciones",
+      "tradeoff": "Encabezado humano (avatar con iniciales, badges de estado) y campos agrupados en Identidad / Acceso / Actividad: se escanea rápido y el estado se lee de un golpe. Suma peso vertical y un avatar que la API no entrega, así que son iniciales derivadas.",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "02-dense-grid.html",
+      "title": "Grilla densa",
+      "tradeoff": "Una sola tabla término/valor con filas zebra: máxima densidad y comparación vertical directa, y la más cercana a lo ya implementado. Menos jerarquía para quien llega sin contexto y sin jerarquía visual entre identidad y seguridad.",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "03-section-rail.html",
+      "title": "Riel de secciones + banda de estado",
+      "tradeoff": "Banda de estado arriba (estado, rol, bloqueo, intentos) y un riel numerado que ancla a las secciones: orienta en pantallas largas y prepara el detalle para las acciones de COU-293/294. Más cromo por campo y más alto que las otras dos.",
+      "width": 1440,
+      "height": 900
+    }
+  ]
+}

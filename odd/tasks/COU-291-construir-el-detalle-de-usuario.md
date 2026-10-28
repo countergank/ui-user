@@ -116,3 +116,12 @@ del proyecto (`design/system.md`, `design/system.html`, fuentes: `src/styles/tok
 artboard elegido todavía. Tema claro y copy en español. Observación registrada en el sistema: los
 tokens `--success`, `--warning` e `--info` existen y hoy no se usan; los estados de entidad se
 pintan con `default`/`outline`.
+
+**L11 — Estrategia de entrega**: el PR lleva tres commits como tres cortes de revisión.
+(1) `feat(users)`: página, ruta, icon button, i18n ×3, tests y este documento — 561 líneas
+autoradas, por encima del ideal de ~400 porque el documento ODD, los tests y las tres
+traducciones son el mismo comportamiento y separarlos rompería la verificabilidad.
+(2) `chore(dev)`: proxy y base relativa en desarrollo, sin relación con la feature salvo que fue
+el desbloqueo necesario para verificarla contra la API real. (3) `docs(design)`: sincronización del
+sistema de diseño y las tres direcciones visuales, propuestas y no código de producción; ningún
+artboard está elegido todavía. Revisión sugerida: commit por commit, no el diff completo.
