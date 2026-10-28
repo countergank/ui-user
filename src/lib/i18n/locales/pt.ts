@@ -253,6 +253,7 @@ export const pt: {
       actions: {
         create: "Novo usuário",
         edit: "Editar",
+        view: "Ver detalhes",
         activate: "Ativar",
         deactivate: "Desativar",
         unlock: "Desbloquear",
@@ -262,6 +263,28 @@ export const pt: {
         active: "Ativo",
         inactive: "Inativo",
       },
+    },
+    detail: {
+      title: "Detalhe do usuário",
+      loading: "Carregando usuário…",
+      fields: {
+        id: "ID do usuário",
+        name: "Nome",
+        lastName: "Sobrenome",
+        email: "Email",
+        userName: "Usuário",
+        role: "Papel",
+        status: "Status",
+        createdAt: "Criado",
+        updatedAt: "Atualizado",
+      },
+      actions: {
+        edit: "Editar",
+      },
+      back: "Voltar para a lista",
+      locked: "Bloqueado até",
+      failedAttempts: "Tentativas de login malsucedidas",
+      notFound: "Este usuário não existe ou foi excluído.",
     },
     create: {
       title: "Novo usuário",

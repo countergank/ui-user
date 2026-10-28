@@ -239,6 +239,7 @@ export const en = {
       actions: {
         create: "New user",
         edit: "Edit",
+        view: "View details",
         activate: "Activate",
         deactivate: "Deactivate",
         unlock: "Unlock",
@@ -248,6 +249,28 @@ export const en = {
         active: "Active",
         inactive: "Inactive",
       },
+    },
+    detail: {
+      title: "User details",
+      loading: "Loading user…",
+      fields: {
+        id: "User ID",
+        name: "Name",
+        lastName: "Last name",
+        email: "Email",
+        userName: "User",
+        role: "Role",
+        status: "Status",
+        createdAt: "Created",
+        updatedAt: "Updated",
+      },
+      actions: {
+        edit: "Edit",
+      },
+      back: "Back to users",
+      locked: "Locked until",
+      failedAttempts: "Failed sign-in attempts",
+      notFound: "This user does not exist or was deleted.",
     },
     create: {
       title: "New user",

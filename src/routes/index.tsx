@@ -40,6 +40,7 @@ export const router = createBrowserRouter([
       { path: "users", lazy: () => import("./users-route") },
       { path: "users/new", lazy: () => import("./users-create-route") },
       { path: "users/:id/edit", lazy: () => import("./users-edit-route") },
+      { path: "users/:id", lazy: () => import("./users-detail-route") },
       {
         path: "*",
         element: (
