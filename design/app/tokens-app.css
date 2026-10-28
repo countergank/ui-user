@@ -1,0 +1,127 @@
+/*
+ * tokens-app.css — paleta propuesta para el rebranding de ui-user (COU-342)
+ *
+ * Origen: design/app/*.html. Los 46 colores que usan los artboards están inventariados en
+ * palette.json, cada uno con su token. Este archivo es la propuesta lista para pegar en
+ * src/styles/tokens.css; el formato es el mismo: triples HSL consumidos como hsl(var(--token)).
+ *
+ * Convención (hoy ambigua en el repo: --success-foreground está definido y sin uso)
+ *   --X              color del indicador, el texto y el ícono del estado
+ *   --X-soft         fondo tenue del badge
+ *   --X-foreground   texto sobre un relleno sólido de ese color
+ *   --inverse-*      superficies oscuras dentro del tema claro
+ *   --avatar-N-*     rampa de avatares derivada del nombre, no del sistema
+ *
+ * Tipografia: tres familias. El repo hoy declara Inter y JetBrains Mono sin entregar los
+ * archivos, y Space Grotesk no existe en el repo. Las tres vienen en design/app/fonts/ como
+ * variables woff2 (subset latin, SIL OFL 1.1): cargarlas es parte de la implementacion.
+ *
+ * Solo tema claro: el diseño define el selector system/light/dark, pero todavía no tiene
+ * artboards en oscuro, así que el bloque .dark no se toca acá.
+ *
+ * Mapeo de los tokens existentes (actual del repo -> propuesto):
+ *   --accent                  251 100% 96%    → 276 42% 95%
+ *   --accent-foreground       262 83% 58%     → 306 54% 35%
+ *   --background              0 0% 100%       = 0 0% 100%
+ *   --border                  214 32% 91%     → 240 14% 93%
+ *   --card                    0 0% 100%       = 0 0% 100%
+ *   --card-foreground         222 47% 11%     → 240 8% 7%
+ *   --danger                  350 89% 60%     → 3 71% 41%
+ *   --danger-foreground       350 89% 42%     → 3 71% 41%
+ *   --destructive             347 77% 50%     → 3 71% 41%
+ *   --destructive-foreground  0 0% 100%       = 0 0% 100%
+ *   --foreground              222 47% 11%     → 240 8% 7%
+ *   --input                   214 32% 91%     → 240 13% 88%
+ *   --muted                   210 40% 96%     → 240 22% 96%
+ *   --muted-foreground        215 16% 45%     → 240 6% 36%
+ *   --popover                 0 0% 100%       = 0 0% 100%
+ *   --popover-foreground      222 47% 11%     → 240 8% 7%
+ *   --primary                 262 83% 58%     → 306 54% 35%
+ *   --primary-foreground      0 0% 100%       = 0 0% 100%
+ *   --primary-hover           263 70% 50%     → 306 54% 35%
+ *   --ring                    262 83% 58%     → 306 54% 35%
+ *   --secondary               210 40% 96%     → 240 22% 96%
+ *   --secondary-foreground    222 47% 11%     → 240 8% 7%
+ *   --success                 160 84% 39%     → 151 61% 30%
+ *   --success-foreground      160 84% 25%     → 151 61% 30%
+ *   --warning                 38 92% 50%      → 39 100% 27%
+ *   --warning-foreground      38 92% 29%      → 39 100% 27%
+ */
+
+:root {
+  /* base — tokens existentes del repo, remapeados a la identidad de Countergank */
+  --background: 0 0% 100%;
+  --card: 0 0% 100%;
+  --popover: 0 0% 100%;
+  --primary-foreground: 0 0% 100%;
+  --destructive-foreground: 0 0% 100%;
+  --foreground: 240 8% 7%;
+  --card-foreground: 240 8% 7%;
+  --popover-foreground: 240 8% 7%;
+  --secondary-foreground: 240 8% 7%;
+  --muted-foreground: 240 6% 36%;
+  --muted: 240 22% 96%;
+  --secondary: 240 22% 96%;
+  --border: 240 14% 93%;
+  --input: 240 13% 88%;
+  --primary: 306 54% 35%;
+  --primary-hover: 306 54% 35%;
+  --ring: 306 54% 35%;
+  --accent-foreground: 306 54% 35%;
+  --accent: 276 42% 95%;
+  --primary-soft: 276 42% 95%;
+  --success: 151 61% 30%;
+  --success-foreground: 151 61% 30%;
+  --success-soft: 141 41% 93%;
+  --warning: 39 100% 27%;
+  --warning-foreground: 39 100% 27%;
+  --danger: 3 71% 41%;
+  --destructive: 3 71% 41%;
+  --danger-foreground: 3 71% 41%;
+  --danger-soft: 3 69% 95%;
+
+  /* jerarquía de texto */
+  --muted-strong: 240 5% 45%;
+  --text-subtle: 240 6% 57%;
+  --text-faint: 240 7% 68%;
+  --text-placeholder: 240 6% 63%;
+  --text-divider: 240 9% 79%;
+
+  /* superficies y bordes */
+  --surface-raised: 240 25% 98%;
+  --surface-row-alt: 240 20% 99%;
+  --border-subtle: 240 15% 95%;
+  --border-strong: 240 19% 94%;
+  --track: 260 21% 95%;
+
+  /* superficies inversas (sidebar, panel de login, banda de seguridad) */
+  --inverse-card: 240 12% 11%;
+  --inverse-card-border: 240 11% 17%;
+  --inverse-raised: 273 14% 12%;
+  --inverse-border: 240 8% 15%;
+  --inverse-avatar: 268 20% 17%;
+  --inverse-accent-soft: 270 17% 14%;
+  --inverse-text: 240 12% 85%;
+  --inverse-text-subtle: 240 5% 57%;
+  --success-on-inverse: 150 50% 50%;
+
+  /* acentos de marca */
+  --accent-violet: 281 46% 75%;
+  --accent-plum: 262 35% 47%;
+
+  /* familias tipográficas — los tres archivos estan en design/app/fonts/ */
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", "Inter var", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* avatares: rampa de seis pares, derivada del nombre */
+  --avatar-1-bg: 145 40% 94%;
+  --avatar-2-bg: 215 68% 95%;
+  --avatar-3-bg: 189 47% 94%;
+  --avatar-4-bg: 340 36% 95%;
+  --avatar-5-bg: 36 31% 94%;
+  --avatar-6-bg: 258 68% 95%;
+  --avatar-2-fg: 214 57% 39%;
+  --avatar-3-fg: 187 59% 30%;
+  --avatar-4-fg: 336 47% 43%;
+}

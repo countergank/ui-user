@@ -1,0 +1,380 @@
+{
+  "source": "design/app/*.html (extracted from the exported artboards, not hand-listed)",
+  "total_colors": 46,
+  "groups": {
+    "base": 13,
+    "nuevo": 21,
+    "avatar": 9,
+    "mock": 3
+  },
+  "colors": [
+    {
+      "hex": "#111114",
+      "hsl": "240 8% 7%",
+      "token": "--foreground",
+      "group": "base",
+      "note": "texto principal",
+      "artboards": ["01", "02", "03", "04", "05", "06", "07"]
+    },
+    {
+      "hex": "#565661",
+      "hsl": "240 6% 36%",
+      "token": "--muted-foreground",
+      "group": "base",
+      "note": "texto de apoyo",
+      "artboards": ["01", "02", "03", "04", "05", "06", "07"]
+    },
+    {
+      "hex": "#6e6e7a",
+      "hsl": "240 5% 45%",
+      "token": "--muted-strong",
+      "group": "nuevo",
+      "note": "texto terciario: subtítulos, metadatos",
+      "artboards": ["01", "02", "03", "04", "05", "06", "07"]
+    },
+    {
+      "hex": "#8a8a98",
+      "hsl": "240 6% 57%",
+      "token": "--text-subtle",
+      "group": "nuevo",
+      "note": "labels de campo, columnas de tabla, pie",
+      "artboards": ["01", "02", "03", "04", "05", "06", "07"]
+    },
+    {
+      "hex": "#8b2a82",
+      "hsl": "306 54% 35%",
+      "token": "--primary / --ring",
+      "group": "base",
+      "note": "acción principal, link, foco",
+      "artboards": ["01", "02", "03", "04", "05", "06", "07"]
+    },
+    {
+      "hex": "#9a9aa6",
+      "hsl": "240 6% 63%",
+      "token": "--text-placeholder",
+      "group": "nuevo",
+      "note": "placeholder de inputs y nav inactivo",
+      "artboards": ["01", "02", "03", "04", "05", "06", "07"]
+    },
+    {
+      "hex": "#c9a0dc",
+      "hsl": "281 46% 75%",
+      "token": "--accent-violet",
+      "group": "nuevo",
+      "note": "barra activa de navegación e íconos sobre oscuro",
+      "artboards": ["01", "02", "03", "04", "05", "06", "07"]
+    },
+    {
+      "hex": "#f0f0f4",
+      "hsl": "240 15% 95%",
+      "token": "--border-subtle",
+      "group": "nuevo",
+      "note": "separador entre filas",
+      "artboards": ["01", "02", "03", "04", "05", "06", "07"]
+    },
+    {
+      "hex": "#ffffff",
+      "hsl": "0 0% 100%",
+      "token": "--background / --card / --primary-foreground",
+      "group": "base",
+      "note": "fondo de app, tarjetas y texto sobre primario",
+      "artboards": ["01", "02", "03", "04", "05", "06", "07"]
+    },
+    {
+      "hex": "#1e7a4d",
+      "hsl": "151 61% 30%",
+      "token": "--success",
+      "group": "base",
+      "note": "estado positivo",
+      "artboards": ["01", "02", "03", "04", "05", "07"]
+    },
+    {
+      "hex": "#201b24",
+      "hsl": "273 14% 12%",
+      "token": "--inverse-raised",
+      "group": "nuevo",
+      "note": "ítem activo de navegación",
+      "artboards": ["01", "03", "04", "05", "06", "07"]
+    },
+    {
+      "hex": "#232329",
+      "hsl": "240 8% 15%",
+      "token": "--inverse-border",
+      "group": "nuevo",
+      "note": "separador sobre inverso",
+      "artboards": ["02", "03", "04", "05", "06", "07"]
+    },
+    {
+      "hex": "#8b8b96",
+      "hsl": "240 5% 57%",
+      "token": "--inverse-text-subtle",
+      "group": "nuevo",
+      "note": "rol del usuario en el sidebar",
+      "artboards": ["02", "03", "04", "05", "06", "07"]
+    },
+    {
+      "hex": "#eaeaef",
+      "hsl": "240 14% 93%",
+      "token": "--border",
+      "group": "base",
+      "note": "borde de tarjeta",
+      "artboards": ["01", "03", "04", "05", "06", "07"]
+    },
+    {
+      "hex": "#f4eef8",
+      "hsl": "276 42% 95%",
+      "token": "--accent / --primary-soft",
+      "group": "base",
+      "note": "fondo suave de acento",
+      "artboards": ["01", "03", "04", "05", "06", "07"]
+    },
+    {
+      "hex": "#f4f4f8",
+      "hsl": "240 22% 96%",
+      "token": "--muted / --secondary",
+      "group": "base",
+      "note": "chips, inputs vacíos, botones secundarios",
+      "artboards": ["01", "03", "04", "05", "06", "07"]
+    },
+    {
+      "hex": "#2a2233",
+      "hsl": "268 20% 17%",
+      "token": "--inverse-avatar",
+      "group": "nuevo",
+      "note": "avatar sobre inverso",
+      "artboards": ["03", "04", "05", "06", "07"]
+    },
+    {
+      "hex": "#a8a8b4",
+      "hsl": "240 7% 68%",
+      "token": "--text-faint",
+      "group": "nuevo",
+      "note": "timestamps y metadatos de baja jerarquía",
+      "artboards": ["01", "02", "03", "04", "05"]
+    },
+    {
+      "hex": "#e7f5ec",
+      "hsl": "141 41% 93%",
+      "token": "--success-soft",
+      "group": "base",
+      "note": "fondo de badge positivo",
+      "artboards": ["01", "02", "03", "05", "07"]
+    },
+    {
+      "hex": "#ececf2",
+      "hsl": "240 19% 94%",
+      "token": "--border-strong",
+      "group": "nuevo",
+      "note": "borde de topbar y footer",
+      "artboards": ["03", "04", "05", "06", "07"]
+    },
+    {
+      "hex": "#fafafc",
+      "hsl": "240 25% 98%",
+      "token": "--surface-raised",
+      "group": "nuevo",
+      "note": "cabecera de tabla y fondo de KPI",
+      "artboards": ["01", "04", "06", "07"]
+    },
+    {
+      "hex": "#b3261e",
+      "hsl": "3 71% 41%",
+      "token": "--danger / --destructive",
+      "group": "base",
+      "note": "estado negativo y acción destructiva",
+      "artboards": ["01", "04", "05"]
+    },
+    {
+      "hex": "#fbeae9",
+      "hsl": "3 69% 95%",
+      "token": "--danger-soft",
+      "group": "base",
+      "note": "fondo de badge negativo",
+      "artboards": ["01", "04", "05"]
+    },
+    {
+      "hex": "#241e2a",
+      "hsl": "270 17% 14%",
+      "token": "--inverse-accent-soft",
+      "group": "nuevo",
+      "note": "fondo de ícono sobre inverso",
+      "artboards": ["01", "02"]
+    },
+    {
+      "hex": "#eaf1fb",
+      "hsl": "215 68% 95%",
+      "token": "--avatar-2-bg",
+      "group": "avatar",
+      "note": "fondo de avatar 2",
+      "artboards": ["01", "04"]
+    },
+    {
+      "hex": "#eaf6ef",
+      "hsl": "145 40% 94%",
+      "token": "--avatar-1-bg",
+      "group": "avatar",
+      "note": "fondo de avatar 1",
+      "artboards": ["01", "04"]
+    },
+    {
+      "hex": "#f0eef4",
+      "hsl": "260 21% 95%",
+      "token": "--track",
+      "group": "nuevo",
+      "note": "riel de barras de progreso y distribución",
+      "artboards": ["03", "04"]
+    },
+    {
+      "hex": "#191920",
+      "hsl": "240 12% 11%",
+      "token": "--inverse-card",
+      "group": "nuevo",
+      "note": "tarjeta sobre superficie inversa",
+      "artboards": ["01"]
+    },
+    {
+      "hex": "#1f6f7a",
+      "hsl": "187 59% 30%",
+      "token": "--avatar-3-fg",
+      "group": "avatar",
+      "note": "iniciales sobre avatar 3",
+      "artboards": ["04"]
+    },
+    {
+      "hex": "#26262f",
+      "hsl": "240 11% 17%",
+      "token": "--inverse-card-border",
+      "group": "nuevo",
+      "note": "borde de tarjeta inversa",
+      "artboards": ["01"]
+    },
+    {
+      "hex": "#2b5c9b",
+      "hsl": "214 57% 39%",
+      "token": "--avatar-2-fg",
+      "group": "avatar",
+      "note": "iniciales sobre avatar 2",
+      "artboards": ["04"]
+    },
+    {
+      "hex": "#3fbf7f",
+      "hsl": "150 50% 50%",
+      "token": "--success-on-inverse",
+      "group": "nuevo",
+      "note": "punto de estado sobre superficie oscura",
+      "artboards": ["02"]
+    },
+    {
+      "hex": "#6e4fa3",
+      "hsl": "262 35% 47%",
+      "token": "--accent-plum",
+      "group": "nuevo",
+      "note": "barras de distribución y avatar",
+      "artboards": ["04"]
+    },
+    {
+      "hex": "#8a5a00",
+      "hsl": "39 100% 27%",
+      "token": "--warning",
+      "group": "base",
+      "note": "advertencia",
+      "artboards": ["04"]
+    },
+    {
+      "hex": "#a03a63",
+      "hsl": "336 47% 43%",
+      "token": "--avatar-4-fg",
+      "group": "avatar",
+      "note": "iniciales sobre avatar 4",
+      "artboards": ["04"]
+    },
+    {
+      "hex": "#c4c4ce",
+      "hsl": "240 9% 79%",
+      "token": "--text-divider",
+      "group": "nuevo",
+      "note": "separador de breadcrumb",
+      "artboards": ["04"]
+    },
+    {
+      "hex": "#d5d5de",
+      "hsl": "240 12% 85%",
+      "token": "--inverse-text",
+      "group": "nuevo",
+      "note": "texto sobre pills y bullets oscuros",
+      "artboards": ["02"]
+    },
+    {
+      "hex": "#dcdce4",
+      "hsl": "240 13% 88%",
+      "token": "--input",
+      "group": "base",
+      "note": "contorno de campos",
+      "artboards": ["02"]
+    },
+    {
+      "hex": "#e6e6ee",
+      "hsl": "240 19% 92%",
+      "token": null,
+      "group": "mock",
+      "note": "punto de la ventana decorativa del hero",
+      "artboards": ["01"]
+    },
+    {
+      "hex": "#e9f5f7",
+      "hsl": "189 47% 94%",
+      "token": "--avatar-3-bg",
+      "group": "avatar",
+      "note": "fondo de avatar 3",
+      "artboards": ["04"]
+    },
+    {
+      "hex": "#efeafb",
+      "hsl": "258 68% 95%",
+      "token": "--avatar-6-bg",
+      "group": "avatar",
+      "note": "fondo de avatar 6",
+      "artboards": ["04"]
+    },
+    {
+      "hex": "#efeff4",
+      "hsl": "240 19% 95%",
+      "token": null,
+      "group": "mock",
+      "note": "borde del header dentro del mock del hero",
+      "artboards": ["01"]
+    },
+    {
+      "hex": "#f1f1f5",
+      "hsl": "240 17% 95%",
+      "token": null,
+      "group": "mock",
+      "note": "separador dentro del mock del hero",
+      "artboards": ["01"]
+    },
+    {
+      "hex": "#f4f0ea",
+      "hsl": "36 31% 94%",
+      "token": "--avatar-5-bg",
+      "group": "avatar",
+      "note": "fondo de avatar 5",
+      "artboards": ["04"]
+    },
+    {
+      "hex": "#f7eef1",
+      "hsl": "340 36% 95%",
+      "token": "--avatar-4-bg",
+      "group": "avatar",
+      "note": "fondo de avatar 4",
+      "artboards": ["04"]
+    },
+    {
+      "hex": "#fcfcfd",
+      "hsl": "240 20% 99%",
+      "token": "--surface-row-alt",
+      "group": "nuevo",
+      "note": "fila de grupo en la matriz de permisos",
+      "artboards": ["06"]
+    }
+  ]
+}
