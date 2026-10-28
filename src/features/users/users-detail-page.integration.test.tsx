@@ -12,6 +12,7 @@ import { permissionsQueryKey } from "@/features/authorization/hooks/use-permissi
 import { i18n } from "@/lib/i18n";
 import { initialSessionState, sessionStore } from "@/lib/session/session-store";
 
+import { userQueryKey } from "./hooks/use-user";
 import { UsersDetailPage } from "./users-detail-page";
 
 const USERS_URL = "https://test.invalid/admin/users";
@@ -79,7 +80,7 @@ function renderPage() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   client.setQueryData(permissionsQueryKey, ADMIN_PROFILE);
 
-  return render(
+  const view = render(
     <QueryClientProvider client={client}>
       <I18nextProvider i18n={i18n}>
         <MemoryRouter initialEntries={["/app/users/u1"]}>
@@ -92,6 +93,8 @@ function renderPage() {
       </I18nextProvider>
     </QueryClientProvider>,
   );
+
+  return { client, ...view };
 }
 
 describe("user detail — loaded user", () => {
@@ -191,6 +194,20 @@ describe("user detail — failures", () => {
     await user.click(screen.getByRole("button", { name: tCommon("error.retry") }));
 
     expect(await screen.findByText("ada@example.com")).toBeInTheDocument();
+  });
+
+  it("replaces the loaded detail with the not-found view when a refetch answers 404 (S8)", async () => {
+    const { client } = renderPage();
+
+    expect(await screen.findByText("ada@example.com")).toBeInTheDocument();
+
+    server.use(http.get(USER_URL, () => HttpResponse.json({}, { status: 404 })));
+    await client.refetchQueries({ queryKey: userQueryKey("u1") });
+
+    expect(await screen.findByText(tUsers("detail.notFound"))).toBeInTheDocument();
+    expect(screen.queryByText("ada@example.com")).toBeNull();
+    expect(screen.queryByText(tUsers("detail.fields.email"))).toBeNull();
+    expect(screen.queryByRole("link", { name: tUsers("detail.actions.edit") })).toBeNull();
   });
 
   it("has no axe violations on the loaded page (S8)", async () => {

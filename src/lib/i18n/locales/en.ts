@@ -264,6 +264,10 @@ export const en = {
         createdAt: "Created",
         updatedAt: "Updated",
       },
+      status: {
+        active: "Active",
+        inactive: "Inactive",
+      },
       actions: {
         edit: "Edit",
       },

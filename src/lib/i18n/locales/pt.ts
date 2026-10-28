@@ -278,6 +278,10 @@ export const pt: {
         createdAt: "Criado",
         updatedAt: "Atualizado",
       },
+      status: {
+        active: "Ativo",
+        inactive: "Inativo",
+      },
       actions: {
         edit: "Editar",
       },

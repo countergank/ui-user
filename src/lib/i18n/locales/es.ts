@@ -278,6 +278,10 @@ export const es: {
         createdAt: "Creado",
         updatedAt: "Actualizado",
       },
+      status: {
+        active: "Activo",
+        inactive: "Inactivo",
+      },
       actions: {
         edit: "Editar",
       },

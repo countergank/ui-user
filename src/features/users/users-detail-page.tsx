@@ -29,6 +29,19 @@ function DetailField({ term, children }: { term: string; children: ReactNode }) 
   );
 }
 
+function BackToList({ variant, className }: { variant: "ghost" | "outline"; className?: string }) {
+  const { t } = useTranslation("users");
+
+  return (
+    <Button asChild variant={variant} size="sm" className={className}>
+      <Link to={USERS_PATH}>
+        <ArrowLeft aria-hidden="true" />
+        {t("detail.back")}
+      </Link>
+    </Button>
+  );
+}
+
 /**
  * @returns The read-only user detail for the `:id` route param: every `UserDTO` field, the lock
  * state, an edit shortcut for `user:update` holders, and a dedicated view when the API answers 404.
@@ -50,12 +63,7 @@ export function UsersDetailPage() {
         {notFound ? (
           <section className="flex flex-col items-start gap-3">
             <h2 className="text-xl font-semibold text-destructive">{t("detail.notFound")}</h2>
-            <Button asChild variant="outline" size="sm">
-              <Link to={USERS_PATH}>
-                <ArrowLeft aria-hidden="true" />
-                {t("detail.back")}
-              </Link>
-            </Button>
+            <BackToList variant="outline" />
           </section>
         ) : null}
         {user.isError && !notFound ? (
@@ -67,15 +75,10 @@ export function UsersDetailPage() {
             }}
           />
         ) : null}
-        {user.data ? (
+        {user.data && !notFound ? (
           <>
             <div className="flex items-center justify-between gap-2">
-              <Button asChild variant="ghost" size="sm" className="-ml-3">
-                <Link to={USERS_PATH}>
-                  <ArrowLeft aria-hidden="true" />
-                  {t("detail.back")}
-                </Link>
-              </Button>
+              <BackToList variant="ghost" className="-ml-3" />
               <Can permission={PERMISSIONS.userUpdate}>
                 <Button asChild size="sm">
                   <Link to={`${USERS_PATH}/${encodeURIComponent(user.data.id)}/edit`}>
@@ -96,7 +99,7 @@ export function UsersDetailPage() {
               </DetailField>
               <DetailField term={t("detail.fields.status")}>
                 <Badge variant={user.data.isActive ? "default" : "outline"}>
-                  {t(user.data.isActive ? "list.status.active" : "list.status.inactive")}
+                  {t(user.data.isActive ? "detail.status.active" : "detail.status.inactive")}
                 </Badge>
               </DetailField>
               <DetailField term={t("detail.fields.createdAt")}>
