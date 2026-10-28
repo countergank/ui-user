@@ -36,6 +36,13 @@ pnpm preview          # serve the production build locally
 
 > First time running E2E on a fresh machine: `pnpm exec playwright install chromium`.
 
+> **Local dev talks to the API through the Vite proxy.** `pnpm dev` runs Vite with a relative
+> `VITE_API_BASE_URL=/`, and `vite.config.ts` proxies `/auth` and `/admin` to
+> `http://localhost:3000` (override with `VITE_API_PROXY_TARGET`). The browser only ever talks to
+> its own origin, so a dev server that falls back to another port — because `api-user` already
+> owns 3000 — keeps working without any CORS change on the API. Builds are unaffected: they keep
+> the absolute URL from Doppler or the build args.
+
 Run the full local gate before pushing:
 
 ```bash
