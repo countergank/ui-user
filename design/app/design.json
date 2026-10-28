@@ -1,0 +1,56 @@
+{
+  "title": "App — rebranding de Countergank",
+  "brief": "Siete pantallas que cubren el flujo completo de ui-user —landing pública, login, inicio, resumen, detalle de usuario, roles y permisos, sistema— con la identidad de Countergank (monograma real, magenta de marca) en lugar del violeta del design system actual. La aplicación se adapta al diseño: tokens-app.css propone el mapeo token por token, la paleta completa está inventariada en palette.json y las tres familias tipográficas (Inter, Space Grotesk, JetBrains Mono) vienen en fonts/ como variables woff2. El flujo es Landing → Login → Inicio; de ahí se entra a las cuatro pantallas de consola. El selector de tema (system/light/dark) y el botón de idioma viven en el shell compartido, así que aparecen en todas las pantallas de consola.",
+  "feature": "odd/tasks/COU-342-diseno-dashboard.md",
+  "artboards": [
+    {
+      "file": "01-landing.html",
+      "title": "Landing pública",
+      "tradeoff": "Página larga (2120px) donde cada capacidad explica de dónde viene en el backend, con una mini-ventana del producto como prueba visual en vez de una captura decorativa. El costo es scroll en una pantalla de decisión; se acepta porque quien entra acá necesita entender qué hay detrás antes de pedir acceso, no recorrer un resumen de marketing. Las acciones About y Sign in quedan permanentes en el header por la misma razón.",
+      "width": 1440,
+      "height": 2120
+    },
+    {
+      "file": "02-login.html",
+      "title": "Inicio de sesión",
+      "tradeoff": "Split 620/820: formulario a la izquierda, panel de marca a la derecha con las capacidades reales y el estado de los servicios. El costo es que en pantallas angostas el panel derecho no tiene lugar y se pierde la prueba de confiabilidad; se acepta porque el formulario queda completo y comprensible solo, y el panel aporta contexto, no requisitos.",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "03-inicio.html",
+      "title": "Inicio de la consola",
+      "tradeoff": "La landing de inicio prioriza el checklist de configuración (2 de 5) por encima de un tablero de métricas. El costo es que no hay gráfico de tendencia en la primera pantalla; se acepta porque la pregunta que trae al administrador recién llegado —¿está todo configurado?— no se responde en ningún otro lado, y los accesos rápidos ya cubren el salto a cada sección.",
+      "width": 1440,
+      "height": 1024
+    },
+    {
+      "file": "04-resumen.html",
+      "title": "Resumen de usuarios",
+      "tradeoff": "Tabla densa con anchos fijos por columna (250/96/120/96/90) en lugar de una tabla fluida, más filtros por rol y orden visibles en la barra. El costo es rigidez ante contenido más largo (un email largo trunca); se acepta porque el uso real es escanear y actuar, y las acciones administrativas viven en el detalle, no en la fila.",
+      "width": 1440,
+      "height": 1024
+    },
+    {
+      "file": "05-detalle-usuario.html",
+      "title": "Detalle de usuario",
+      "tradeoff": "Dos columnas: identidad, permisos efectivos y sesiones a la izquierda; acciones de administración a la derecha. El costo es que la página llega a 1360px de alto; se acepta porque separa lo destructivo (desbloquear, desactivar, eliminar) del dato que se lee, y porque los permisos efectivos —heredados del rol más los directos— son la pregunta más frecuente de soporte y merecen la columna principal.",
+      "width": 1440,
+      "height": 1360
+    },
+    {
+      "file": "06-roles-permisos.html",
+      "title": "Roles y permisos",
+      "tradeoff": "Matriz de 22 permisos por 3 roles con columnas de verificación, agrupada en USER y SYSTEM, en lugar de una tarjeta por rol. El costo es que no escala si la superficie de permisos se duplica; se acepta porque 22 es el tamaño real del backend hoy y comparar roles de un vistazo es la tarea, no editar un rol a la vez.",
+      "width": 1440,
+      "height": 1200
+    },
+    {
+      "file": "07-sistema.html",
+      "title": "Sistema",
+      "tradeoff": "Una sola pantalla con tabs para auditoría, plantillas, envíos, parámetros e i18n. El costo es que la tabla de auditoría comparte ancho con dos columnas de configuración y muestra menos eventos por pantalla; se acepta porque son tareas de mantenimiento que se hacen en ráfaga y la auditoría necesita sus filtros a la vista más que filas adicionales.",
+      "width": 1440,
+      "height": 1024
+    }
+  ]
+}
