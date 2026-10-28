@@ -1,0 +1,30 @@
+# COU-345 — Refactor design/ and retire the historical designs
+
+Mirror of `odd/tasks/COU-345-refactorizar-design-y-retirar-los-disenos-historicos.md`
+for ODD task recovery.
+
+- [x] Task 1 — Write the `design/` index: state per entry, source of truth, re-export flow.
+  - Target: `design/README.md` (S7, S9). Evidence: declares `design/app/` proposed and not
+    implemented, names `design/app/01-landing.html` as the canonical landing, documents the
+    `sha256sum` re-export flow and the retired paths with their replacements.
+- [x] Task 2 — Retire `design/users-detail/`, `designs/` and `design/system.html`.
+  - Target: `design/`, `designs/` (S2, S3, S10). Evidence: `design/` now lists only
+    `README.md`, `app/` and `system.md`; `designs/` no longer exists.
+- [x] Task 3 — Point `design/system.md` at the unapplied proposal, keep the violet values.
+  - Target: `design/system.md` (S6). Evidence: new `## Estado` section; 21 table tokens
+    compared against `src/styles/tokens.css`, 0 mismatches.
+- [x] Task 4 — Correct the source of truth in `docs/design-system.md`.
+  - Target: `docs/design-system.md` (S5). Evidence: values now come from
+    `src/styles/tokens.css`; `design/` documented as inventory; the retired boceto path is
+    gone, the token-name mapping kept as durable record.
+- [x] Task 5 — Add the `source` block with the computed `.fig` sha256.
+  - Target: `design/app/design.json` (S8). Evidence: `sha256`
+    `87845c1af89c182baaee211072402f0a750a82cf9f9d7a4f127754505ae3476d`, `sizeKb` 265.8
+    (272219 bytes), `exportedAt` 2026-10-28 from commit `4ecbf28`, `tool` openpencil 0.15.1.
+- [x] Task 6 — Record `4ecbf28` in the COU-342 task table and log.
+  - Target: `odd/tasks/COU-342-diseno-dashboard.md` (S11). Evidence: Commit column filled for
+    T1/T3/T4/T5/T6/T7 (T2 stays `n/a`, the `.fig` is out of the repo), plus Log `L9`.
+- [x] Task 7 — `npm run lint` + `npm run typecheck`, and a sweep for live references.
+  - Evidence: biome (237 files) + eslint + `tsc -b --noEmit` exit 0; only historical logs
+    still name the retired paths; `src/` untouched.
+- [ ] Task 8 — Commit, pending explicit human authorization (see `## Log` in the ticket file).
