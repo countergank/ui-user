@@ -41,7 +41,9 @@ pnpm preview          # serve the production build locally
 > `http://localhost:3000` (override with `VITE_API_PROXY_TARGET`). The browser only ever talks to
 > its own origin, so a dev server that falls back to another port — because `api-user` already
 > owns 3000 — keeps working without any CORS change on the API. Builds are unaffected: they keep
-> the absolute URL from Doppler or the build args.
+> the absolute URL from Doppler or the build args. The `dev` script assigns that variable inline, so
+> it needs a POSIX shell (Linux, macOS or WSL) — the same assumption the Makefile targets and the
+> husky hooks already make.
 
 Run the full local gate before pushing:
 

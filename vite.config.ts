@@ -2,6 +2,7 @@ import { URL, fileURLToPath } from "node:url";
 import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv } from "vite";
 
+const DEV_SERVER_PORT = 3000;
 const DEFAULT_API_TARGET = "http://localhost:3000";
 
 export default defineConfig(({ mode }) => {
@@ -15,7 +16,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
-      port: 3000,
+      port: DEV_SERVER_PORT,
       open: false,
       proxy: {
         "/admin": { target: apiTarget, changeOrigin: true },

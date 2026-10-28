@@ -125,3 +125,44 @@ traducciones son el mismo comportamiento y separarlos rompería la verificabilid
 el desbloqueo necesario para verificarla contra la API real. (3) `docs(design)`: sincronización del
 sistema de diseño y las tres direcciones visuales, propuestas y no código de producción; ningún
 artboard está elegido todavía. Revisión sugerida: commit por commit, no el diff completo.
+
+**L12 — Disposición de los hallazgos del review nativo** (`review-924bf1c97e398725`, aprobado con
+11 advisory y cero bloqueantes). Con cambios:
+
+- `R4-stale-detail-after-404-refetch` (WARNING, resilience): **defecto real y corregido**. El bloque
+  de detalle se renderizaba con solo mirar `user.data`, mientras el 404 se decidía con
+  `user.error`; TanStack Query conserva el `data` anterior cuando falla un refetch, así que un 404
+  posterior dejaba la vista 404 y el detalle viejo en pantalla. Ahora la condición es
+  `user.data && !notFound`, con test que lo fija y RED verificado quitando el fix.
+- `R2-1` y `R3-002` (dos WARNING, mismo origen): **refutados**. Afirmaban que
+  `server.listen({ onUnhandledFrame: "error" })` nombra una opción inexistente y que la correcta es
+  `onUnhandledRequest`. El MSW instalado es 3.0.3, y en v3 la opción se llama exactamente
+  `onUnhandledFrame`: lo documenta su propio tipo (`node_modules/msw/lib/_chunks/shared-options.d.ts`,
+  `@example server.listen({ onUnhandledFrame: 'error' })`). El reviewer aplicó la API de MSW v2. El
+  cambio propuesto se aplicó y `tsc` lo rechazó con TS2353; se revirtió y la guarda original queda
+  intacta. Lección: un hallazgo inferencial sobre una API de terceros se verifica contra los tipos
+  instalados antes de tocar el código.
+- `R2-5` (SUGGESTION): el estado del detalle leía `list.status.*`. Se agregaron
+  `detail.status.active|inactive` en es/en/pt.
+- `R2-6` (SUGGESTION): el control "Volver al listado" estaba escrito dos veces; extraído a
+  `BackToList`.
+- `R2-2` (SUGGESTION): `vite.config.ts` usaba `3000` para dos servicios distintos; ahora son
+  `DEV_SERVER_PORT` y `DEFAULT_API_TARGET`. La convención del repo prohíbe comentarios, así que el
+  nombre de la constante carga el significado.
+
+Sin cambios, con razón:
+
+- `R3-001` (WARNING): el script `dev` asigna `VITE_API_BASE_URL=/` inline y eso es POSIX. Se acepta
+  y se documenta en README: la alternativa es una dependencia nueva (cambio de stack, requiere
+  ADR) o un archivo de entorno, que la política de seguridad de la herramienta bloquea.
+- `R1-vite-proxy-loop` (SUGGESTION): el lazo sólo ocurre si el API está caído **y** Vite toma el
+  mismo puerto; se resuelve con política de puertos, no con código. Documentado en README.
+- `R2-3` (SUGGESTION, `design.json`): el formato del manifiesto lo define la skill de diseño y no
+  tiene campo libre para documentar la convención de rutas.
+- `R2-4` (SUGGESTION, tokens duplicados en los artboards): el HTML autocontenido es regla dura de la
+  skill, así que la duplicación es obligatoria.
+- `R1-detail-page-rendering` (SUGGESTION): confirma que no hay inyección; sin defecto.
+
+El recibo de aprobación **no se consumió**: al pedir el acknowledgement el target ya había cambiado
+porque el checkout pasó a otra rama, y native respondió `native-approved-acknowledgement-not-current`
+con `mutation_performed: none`. Este commit es, por lo tanto, trabajo nuevo para esa lineage.
