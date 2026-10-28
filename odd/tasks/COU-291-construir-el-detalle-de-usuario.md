@@ -44,17 +44,18 @@ diseño).
 
 | ID | Task | Specs | Commit |
 |---|---|---|---|
-| T1 | `users-detail-page.tsx`: `Card` + `<dl>`, `Badge` de rol/estado, loading, error genérico con retry, rama 404 dedicada | S1, S2, S4, S6, S8 | sin commit |
-| T2 | `users-detail-route.tsx` + registro de `users/:id` en `routes/index.tsx` (`RequireSection` hereda `user:read`) | S3, S9 | sin commit |
-| T3 | Icon button "ver detalle" en `users-columns.tsx` con `PERMISSIONS.userRead` | S9 | sin commit |
-| T4 | Claves `users.detail.*` en es/en/pt + paridad | S7, S8 | sin commit |
-| T5 | Tests: MSW 200/404/500 + axe, test de ruta y test de listado | S8, S9 | sin commit |
-| T6 | Gate completo (lint, typecheck, tests, build) | S8 | en verde |
+| T1 | `users-detail-page.tsx`: `Card` + `<dl>`, `Badge` de rol/estado, loading, error genérico con retry, rama 404 dedicada | S1, S2, S4, S6, S8 | b89a251 |
+| T2 | `users-detail-route.tsx` + registro de `users/:id` en `routes/index.tsx` (`RequireSection` hereda `user:read`) | S3, S9 | b89a251 |
+| T3 | Icon button "ver detalle" en `users-columns.tsx` con `PERMISSIONS.userRead` | S9 | b89a251 |
+| T4 | Claves `users.detail.*` en es/en/pt + paridad | S7, S8 | b89a251 / 849da4c |
+| T5 | Tests: MSW 200/404/500 + axe, test de ruta y test de listado | S8, S9 | b89a251 / 849da4c |
+| T6 | Gate completo (lint, typecheck, tests, build) | S8 | en verde (local y CI) |
 
-Estado: T1-T6 implementadas y verificadas. RED→GREEN observado en `src/features/users/`,
-`src/routes/` y `src/lib/i18n/` (10 archivos, 104 tests). `make ci` completo en verde: Biome, ESLint,
-`tsc --noEmit`, `test:coverage` con el piso de 80% y `build`. Sin commit: espera autorización del
-humano.
+Estado: T1-T6 implementadas, verificadas y commiteadas en cinco cortes —
+`b89a251` (feature), `583bb28` (proxy de desarrollo), `940ae39` (sistema de diseño y direcciones),
+`849da4c` (corrección del detalle stale), `7eaff87` (constantes de dev). `make ci` completo en verde
+local y en el CI del PR #37 (commitlint, quality-gates, preview build, e2e). Revisión nativa RDD:
+dos rondas, ambas aprobadas sin bloqueantes.
 
 ## Log
 
@@ -166,3 +167,31 @@ Sin cambios, con razón:
 El recibo de aprobación **no se consumió**: al pedir el acknowledgement el target ya había cambiado
 porque el checkout pasó a otra rama, y native respondió `native-approved-acknowledgement-not-current`
 con `mutation_performed: none`. Este commit es, por lo tanto, trabajo nuevo para esa lineage.
+
+**L13 — Segunda ronda de revisión** (`review-2ab3bb1f9c77b640`, aprobada, 8 advisory, 4 WARNING;
+autoridad quemada con `gentle-ai.review-acknowledged/v1`). Los runs se hicieron slot por slot porque
+el intento en grupo terminó una corrida del lens `readability` (`pi-failed`, sin admitir nada). El
+store de una lineage consumida no conserva el texto de los hallazgos, así que cada cita se verificó
+contra el código. Con cambio:
+
+- `R2-detail-status-test-uses-list-key` y `R3-status-key-mismatch-in-test` (WARNING + SUGGESTION):
+  **reales**. El test seguía afirmando `list.status.active|inactive` mientras la página ya renderiza
+  `detail.status.*`; pasaba sólo porque el copy coincide en los tres idiomas. Corregidas las dos
+  afirmaciones.
+- `R2-odd-delivery-state-contradictory` (WARNING): **real**. La tabla de tareas decía "sin commit" y
+  el párrafo de estado decía "espera autorización del humano" cuando ya había cinco commits.
+  Actualizados con sus SHA.
+
+Sin cambio, con razón:
+
+- `R3-vite-proxy-self-loop` (WARNING, segunda vez): el lazo requiere que la API esté caída **y** que
+  Vite tome el mismo puerto que el target del proxy. Se resuelve con política de puertos (por
+  ejemplo, fijar el dev server en 3001 con `strictPort` y la API en 3000), que es una decisión de
+  convención del equipo, no un arreglo mecánico.
+- `R3-dev-script-posix-only` (WARNING, repetido de la ronda 1): sigue aceptado y documentado.
+- `R1-dev-proxy-credential-passthrough` y `R1-backend-enforcement-detail` (SUGGESTION): el proxy de
+  desarrollo reenvía los headers de autenticación al target, que es su función; la autorización real
+  es del API y la UI no la reemplaza.
+- `R4-001` (WARNING, resilience, `users-detail-page.tsx:69-78`): **no verificable**: su texto no se
+  pudo recuperar del store y la cita cubre el bloque de error con retry y el inicio del bloque de
+  datos, que ya tienen prueba. Queda como follow-up si vuelve a aparecer.
