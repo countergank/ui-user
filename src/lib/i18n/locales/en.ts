@@ -156,7 +156,7 @@ export const en = {
       title: "Run it locally",
       body: "The backend ships with its own Docker stack. Start it, then run the console against it:",
       command: "docker compose up",
-      note: "The console is served at localhost:3000 and the API answers at the URL in VITE_API_BASE_URL.",
+      note: "The console runs at localhost:3001 and the API answers at the URL in VITE_API_BASE_URL.",
       terminalLabel: "Shell command",
     },
     stack: {
@@ -239,6 +239,7 @@ export const en = {
       actions: {
         create: "New user",
         edit: "Edit",
+        view: "View details",
         activate: "Activate",
         deactivate: "Deactivate",
         unlock: "Unlock",
@@ -248,6 +249,32 @@ export const en = {
         active: "Active",
         inactive: "Inactive",
       },
+    },
+    detail: {
+      title: "User details",
+      loading: "Loading user…",
+      fields: {
+        id: "User ID",
+        name: "Name",
+        lastName: "Last name",
+        email: "Email",
+        userName: "User",
+        role: "Role",
+        status: "Status",
+        createdAt: "Created",
+        updatedAt: "Updated",
+      },
+      status: {
+        active: "Active",
+        inactive: "Inactive",
+      },
+      actions: {
+        edit: "Edit",
+      },
+      back: "Back to users",
+      locked: "Locked until",
+      failedAttempts: "Failed sign-in attempts",
+      notFound: "This user does not exist or was deleted.",
     },
     create: {
       title: "New user",

@@ -25,11 +25,11 @@ The repo MUST ship `docker-compose.yml` at the repository root declaring exactly
 ### Requirement: DCL-2 — Host port mapping 8080:80
 
 The service MUST map host port `8080` to container port `80` (`ports: ["8080:80"]`). The host
-port MUST NOT conflict with `pnpm dev` (3000) or `pnpm preview` (4173).
+port MUST NOT conflict with `pnpm dev` (3001) or `pnpm preview` (4173).
 
 #### Scenario: Port exposed without conflict
 
-- GIVEN `pnpm dev` on 3000 or `pnpm preview` on 4173 is unrelated
+- GIVEN `pnpm dev` on 3001 or `pnpm preview` on 4173 is unrelated
 - WHEN the service is started
 - THEN the host reaches the SPA at `http://localhost:8080`
 

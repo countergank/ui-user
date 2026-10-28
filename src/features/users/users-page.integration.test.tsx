@@ -335,6 +335,7 @@ describe("users page — MSW", () => {
 
     expect(screen.queryByRole("link", { name: tUsers("list.actions.create") })).toBeNull();
     expect(screen.queryByRole("link", { name: tUsers("list.actions.edit") })).toBeNull();
+    expect(screen.getAllByRole("link", { name: tUsers("list.actions.view") })).toHaveLength(3);
     expect(screen.queryByRole("button", { name: tUsers("list.actions.activate") })).toBeNull();
     expect(screen.queryByRole("button", { name: tUsers("list.actions.deactivate") })).toBeNull();
     expect(screen.queryByRole("button", { name: tUsers("list.actions.unlock") })).toBeNull();
@@ -360,6 +361,17 @@ describe("users page — MSW", () => {
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: tUsers("list.actions.unlock") })).toBeInTheDocument();
     expect(screen.getAllByRole("button", { name: tUsers("list.actions.delete") })).toHaveLength(3);
+  });
+
+  it("links every row to its own detail page (COU-291 S9)", async () => {
+    renderPage();
+    await expectRows();
+
+    const viewLinks = screen.getAllByRole("link", { name: tUsers("list.actions.view") });
+    expect(viewLinks).toHaveLength(3);
+    expect(viewLinks[0]).toHaveAttribute("href", "/app/users/u1");
+    expect(viewLinks[1]).toHaveAttribute("href", "/app/users/u2");
+    expect(viewLinks[2]).toHaveAttribute("href", "/app/users/u3");
   });
 
   it("renders status and role badges and the local creation date (S5)", async () => {

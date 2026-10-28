@@ -9,7 +9,7 @@
   },
   "scripts": {
     "prepare": "husky",
-    "dev": "vite",
+    "dev": "VITE_API_BASE_URL=/ vite",
     "build": "tsc -b && vite build",
     "build:staging": "tsc -b && vite build --mode staging",
     "preview": "vite preview",

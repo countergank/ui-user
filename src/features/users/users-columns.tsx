@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Can } from "@/features/authorization/components/can";
 import { PERMISSIONS } from "@/features/authorization/permissions";
-import { LockOpen, Pencil, Power, Trash2 } from "lucide-react";
+import { Eye, LockOpen, Pencil, Power, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
@@ -62,6 +62,17 @@ export function useUsersColumns(): DataTableColumn<UserDTO>[] {
       align: "right",
       cell: (user) => (
         <div className="flex justify-end gap-1">
+          <Can permission={PERMISSIONS.userRead}>
+            <Button asChild variant="ghost" size="icon">
+              <Link
+                to={`/app/users/${encodeURIComponent(user.id)}`}
+                aria-label={t("list.actions.view")}
+                title={t("list.actions.view")}
+              >
+                <Eye aria-hidden="true" />
+              </Link>
+            </Button>
+          </Can>
           <Can permission={PERMISSIONS.userUpdate}>
             <Button asChild variant="ghost" size="icon">
               <Link

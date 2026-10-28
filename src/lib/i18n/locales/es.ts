@@ -170,7 +170,7 @@ export const es: {
       title: "Correrlo en local",
       body: "El backend trae su propio stack de Docker. Levantalo y después corré la consola contra él:",
       command: "docker compose up",
-      note: "La consola se sirve en localhost:3000 y la API responde en la URL de VITE_API_BASE_URL.",
+      note: "La consola corre en localhost:3001 y la API responde en la URL de VITE_API_BASE_URL.",
       terminalLabel: "Comando de shell",
     },
     stack: {
@@ -253,6 +253,7 @@ export const es: {
       actions: {
         create: "Nuevo usuario",
         edit: "Editar",
+        view: "Ver detalle",
         activate: "Activar",
         deactivate: "Desactivar",
         unlock: "Desbloquear",
@@ -262,6 +263,32 @@ export const es: {
         active: "Activo",
         inactive: "Inactivo",
       },
+    },
+    detail: {
+      title: "Detalle del usuario",
+      loading: "Cargando usuario…",
+      fields: {
+        id: "ID del usuario",
+        name: "Nombre",
+        lastName: "Apellido",
+        email: "Email",
+        userName: "Usuario",
+        role: "Rol",
+        status: "Estado",
+        createdAt: "Creado",
+        updatedAt: "Actualizado",
+      },
+      status: {
+        active: "Activo",
+        inactive: "Inactivo",
+      },
+      actions: {
+        edit: "Editar",
+      },
+      back: "Volver al listado",
+      locked: "Bloqueado hasta",
+      failedAttempts: "Intentos de inicio de sesión fallidos",
+      notFound: "Este usuario no existe o fue eliminado.",
     },
     create: {
       title: "Nuevo usuario",
