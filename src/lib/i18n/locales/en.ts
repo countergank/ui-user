@@ -285,6 +285,29 @@ export const en = {
         strong: "Strong",
       },
     },
+    edit: {
+      title: "Edit user",
+      loading: "Loading user…",
+      groups: {
+        identity: "Identity",
+        access: "Access",
+      },
+      fields: {
+        name: "Name",
+        lastName: "Last name",
+        email: "Email",
+        userName: "User",
+        role: "Role",
+      },
+      roleImpact: "Changing the role may change the effective permissions of this user.",
+      submit: "Save",
+      cancel: "Cancel",
+      success: "User updated.",
+      errors: {
+        fieldRequired: "This field is required.",
+        emailInvalid: "Enter a valid email address.",
+      },
+    },
   },
 };
 

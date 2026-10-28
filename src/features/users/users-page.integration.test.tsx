@@ -334,7 +334,7 @@ describe("users page — MSW", () => {
     await expectRows();
 
     expect(screen.queryByRole("link", { name: tUsers("list.actions.create") })).toBeNull();
-    expect(screen.queryByRole("button", { name: tUsers("list.actions.edit") })).toBeNull();
+    expect(screen.queryByRole("link", { name: tUsers("list.actions.edit") })).toBeNull();
     expect(screen.queryByRole("button", { name: tUsers("list.actions.activate") })).toBeNull();
     expect(screen.queryByRole("button", { name: tUsers("list.actions.deactivate") })).toBeNull();
     expect(screen.queryByRole("button", { name: tUsers("list.actions.unlock") })).toBeNull();
@@ -347,7 +347,11 @@ describe("users page — MSW", () => {
 
     const createLink = screen.getByRole("link", { name: tUsers("list.actions.create") });
     expect(createLink).toHaveAttribute("href", "/app/users/new");
-    expect(screen.getAllByRole("button", { name: tUsers("list.actions.edit") })).toHaveLength(3);
+    const editLinks = screen.getAllByRole("link", { name: tUsers("list.actions.edit") });
+    expect(editLinks).toHaveLength(3);
+    expect(editLinks[0]).toHaveAttribute("href", "/app/users/u1/edit");
+    expect(editLinks[1]).toHaveAttribute("href", "/app/users/u2/edit");
+    expect(editLinks[2]).toHaveAttribute("href", "/app/users/u3/edit");
     expect(screen.getAllByRole("button", { name: tUsers("list.actions.deactivate") })).toHaveLength(
       2,
     );
@@ -355,13 +359,6 @@ describe("users page — MSW", () => {
       screen.getByRole("button", { name: tUsers("list.actions.activate") }),
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: tUsers("list.actions.unlock") })).toBeInTheDocument();
-    const edit = screen.getAllByRole("button", { name: tUsers("list.actions.edit") })[0];
-    expect(edit).toHaveAttribute(
-      "title",
-      `${tUsers("list.actions.edit")} · ${i18n.t("ui.list.pending")}`,
-    );
-    expect(edit).toBeDisabled();
-    expect(edit).toHaveTextContent("");
     expect(screen.getAllByRole("button", { name: tUsers("list.actions.delete") })).toHaveLength(3);
   });
 

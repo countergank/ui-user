@@ -4,12 +4,28 @@ import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { permissionsQueryKey } from "@/features/authorization/hooks/use-permissions";
+import { userQueryKey } from "@/features/users/hooks/use-user";
 import { i18n } from "@/lib/i18n";
 import { initialSessionState, sessionStore } from "@/lib/session/session-store";
 
 import { router } from "./index";
 
 const tConsole = i18n.getFixedT(null, "console");
+const tUsers = i18n.getFixedT(null, "users");
+
+const USER = {
+  id: "u1",
+  name: "Ada",
+  lastName: "Lovelace",
+  email: "ada@example.com",
+  userName: "ada",
+  role: "user",
+  createdAt: "2024-06-01T10:00:00.000Z",
+  updatedAt: "2024-06-01T10:00:00.000Z",
+  isActive: true,
+  lockedUntil: null,
+  failedLoginAttempts: 0,
+};
 
 function startSession() {
   sessionStore.getState().startSession({
@@ -25,7 +41,7 @@ function startSession() {
   });
 }
 
-function renderApp(initialPath: string, permissions: string[] | null = null) {
+function renderApp(initialPath: string, permissions: string[] | null = null, user: unknown = null) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
 
   if (permissions !== null) {
@@ -37,6 +53,10 @@ function renderApp(initialPath: string, permissions: string[] | null = null) {
       role: "user",
       permissions,
     });
+  }
+
+  if (user !== null) {
+    client.setQueryData(userQueryKey("u1"), user);
   }
 
   const memoryRouter = createMemoryRouter(router.routes, { initialEntries: [initialPath] });
@@ -108,5 +128,32 @@ describe("route guards", () => {
       await screen.findByRole("heading", { level: 1, name: tConsole("forbidden.title") }),
     ).toBeInTheDocument();
     expect(memoryRouter.state.location.pathname).toBe("/forbidden");
+  });
+
+  it("with only user:read, the edit route is /forbidden and the form never renders (COU-292)", async () => {
+    startSession();
+    const memoryRouter = renderApp("/app/users/u1/edit", ["user:read"], USER);
+
+    expect(
+      await screen.findByRole("heading", { level: 1, name: tConsole("forbidden.title") }),
+    ).toBeInTheDocument();
+    expect(memoryRouter.state.location.pathname).toBe("/forbidden");
+    expect(screen.queryByLabelText(tUsers("edit.fields.name"))).not.toBeInTheDocument();
+  });
+
+  it("with user:read and user:update, the edit form renders (COU-292)", async () => {
+    startSession();
+    const memoryRouter = renderApp("/app/users/u1/edit", ["user:read", "user:update"], USER);
+
+    expect(await screen.findByLabelText(tUsers("edit.fields.name"))).toHaveValue("Ada");
+    expect(memoryRouter.state.location.pathname).toBe("/app/users/u1/edit");
+  });
+
+  it("with the wildcard permission, the edit form renders (COU-292)", async () => {
+    startSession();
+    const memoryRouter = renderApp("/app/users/u1/edit", ["*"], USER);
+
+    expect(await screen.findByLabelText(tUsers("edit.fields.name"))).toHaveValue("Ada");
+    expect(memoryRouter.state.location.pathname).toBe("/app/users/u1/edit");
   });
 });
