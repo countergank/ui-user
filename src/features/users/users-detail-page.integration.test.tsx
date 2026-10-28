@@ -118,7 +118,7 @@ describe("user detail — loaded user", () => {
     expect(screen.getByText(tUsers("detail.fields.role"))).toBeInTheDocument();
     expect(screen.getByText("admin")).toBeInTheDocument();
     expect(screen.getByText(tUsers("detail.fields.status"))).toBeInTheDocument();
-    expect(screen.getByText(tUsers("list.status.active"))).toBeInTheDocument();
+    expect(screen.getByText(tUsers("detail.status.active"))).toBeInTheDocument();
     expect(screen.getByText(tUsers("detail.fields.createdAt"))).toBeInTheDocument();
     expect(screen.getByText(dateFormatter.format(new Date(USER.createdAt)))).toBeInTheDocument();
     expect(screen.getByText(tUsers("detail.fields.updatedAt"))).toBeInTheDocument();
@@ -144,7 +144,7 @@ describe("user detail — loaded user", () => {
       await screen.findByText(dateFormatter.format(new Date("2024-06-03T10:00:00.000Z"))),
     ).toBeInTheDocument();
     expect(screen.getByText("4")).toBeInTheDocument();
-    expect(screen.getByText(tUsers("list.status.inactive"))).toBeInTheDocument();
+    expect(screen.getByText(tUsers("detail.status.inactive"))).toBeInTheDocument();
   });
 
   it("offers the edit link and the way back to the list (S5)", async () => {
