@@ -73,7 +73,7 @@ atarlo a los HTML publicados. El bloque `source` de `design/app/design.json` cub
 3. Calcular el hash del master y compararlo con el registrado:
 
    ```bash
-   sha256sum "/mnt/c/Users/leand/Documents/MEGA/Professional/Countergank/designs/Dashboard User UI.fig"
+   sha256sum "<ruta al .fig dentro de la carpeta MEGA del proyecto>"
    ```
 
 4. Actualizar en `design/app/design.json` el bloque `source`: `sha256`, `sizeKb` (bytes / 1024),
