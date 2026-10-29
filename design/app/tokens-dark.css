@@ -67,4 +67,8 @@
   --avatar-2-fg: 205 100% 88%; /* #c2e6ff */
   --avatar-3-fg: 350 100% 91%; /* #ffd1d9 */
   --avatar-4-fg: 48 96% 89%; /* #fef3c7 */
+  --sidebar-highlight: 281 46% 75%; /* #C9A0DC, acento sobre chrome */
+  --sidebar-muted: 240 12% 85%; /* #D4D4DD, texto atenuado sobre chrome */
+  --sidebar-subtle: 240 7% 68%; /* #A8A8B3, lead sobre chrome */
+  --sidebar-faint: 240 5% 57%; /* #8B8B96, pie sobre chrome */
 }

@@ -181,13 +181,40 @@ export const pt: {
   auth: {
     login: {
       title: "Entrar",
-      subtitle: "Acesse o console de gestão de usuários",
+      subtitle: "Acesse com sua conta de administrador.",
       fields: {
         email: "Email",
         password: "Senha",
       },
-      submit: "Entrar",
+      remember: "Lembrar de mim",
       forgotPassword: "Esqueceu sua senha?",
+      orDivider: "ou",
+      submit: "Entrar",
+      createAccount: "Criar uma conta",
+      createAccountHint: "O registro público ainda não está disponível.",
+      legal: {
+        prefix: "Ao continuar você aceita os",
+        terms: "termos",
+        middle: "e a",
+        privacy: "política de privacidade",
+      },
+      footer: {
+        copyright: "© {{year}} Countergank · Argentina",
+        backToSite: "Voltar ao site",
+      },
+      brand: {
+        eyebrow: "CONSOLE DE ADMINISTRAÇÃO",
+        status: "API · operacional",
+        headline: "Gerencie usuários sem perder o rastro de nada.",
+        lead: "Cada cadastro, cada permissão e cada sessão encerrada fica registrada com seu correlationId.",
+        bullets: {
+          rbac: "RBAC de 22 permissões com papéis editáveis",
+          audit: "Auditoria por request com correlationId",
+          revocation: "Revogação de sessões por epoch",
+          templates: "Modelos de e-mail e parâmetros editáveis em tempo real",
+        },
+        services: "MongoDB replica set · Redis · v1.1.0",
+      },
       showPassword: "Mostrar senha",
       hidePassword: "Ocultar senha",
       errors: {

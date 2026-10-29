@@ -167,13 +167,40 @@ export const en = {
   auth: {
     login: {
       title: "Sign in",
-      subtitle: "Access the user management console",
+      subtitle: "Sign in with your administrator account.",
       fields: {
         email: "Email",
         password: "Password",
       },
-      submit: "Sign in",
+      remember: "Remember me",
       forgotPassword: "Forgot your password?",
+      orDivider: "or",
+      submit: "Sign in",
+      createAccount: "Create an account",
+      createAccountHint: "Public registration is not available yet.",
+      legal: {
+        prefix: "By continuing you accept the",
+        terms: "terms",
+        middle: "and the",
+        privacy: "privacy policy",
+      },
+      footer: {
+        copyright: "© {{year}} Countergank · Argentina",
+        backToSite: "Back to the site",
+      },
+      brand: {
+        eyebrow: "ADMINISTRATION CONSOLE",
+        status: "API · healthy",
+        headline: "Manage users without losing track of anything.",
+        lead: "Every account, permission and signed-out session is recorded with its correlationId.",
+        bullets: {
+          rbac: "22-permission RBAC with editable roles",
+          audit: "Per-request audit trail with correlationId",
+          revocation: "Session revocation by epoch",
+          templates: "Email templates and hot-editable parameters",
+        },
+        services: "MongoDB replica set · Redis · v1.1.0",
+      },
       showPassword: "Show password",
       hidePassword: "Hide password",
       errors: {

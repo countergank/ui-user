@@ -86,6 +86,11 @@
   --font-sans: "Inter", "Inter var", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+
+  --sidebar-highlight: 281 46% 75%; /* #C9A0DC, acento sobre chrome */
+  --sidebar-muted: 240 12% 85%; /* #D4D4DD, texto atenuado sobre chrome */
+  --sidebar-subtle: 240 7% 68%; /* #A8A8B3, lead sobre chrome */
+  --sidebar-faint: 240 5% 57%; /* #8B8B96, pie sobre chrome */
 }
 
 .dark {
@@ -170,4 +175,9 @@
   --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.4);
   --shadow: 0 1px 3px 0 hsl(0 0% 0% / 0.5), 0 1px 2px -1px hsl(0 0% 0% / 0.4);
   --shadow-lg: 0 10px 24px -6px hsl(0 0% 0% / 0.6);
+
+  --sidebar-highlight: 281 46% 75%; /* #C9A0DC, acento sobre chrome */
+  --sidebar-muted: 240 12% 85%; /* #D4D4DD, texto atenuado sobre chrome */
+  --sidebar-subtle: 240 7% 68%; /* #A8A8B3, lead sobre chrome */
+  --sidebar-faint: 240 5% 57%; /* #8B8B96, pie sobre chrome */
 }

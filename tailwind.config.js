@@ -13,6 +13,16 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         "seg-thumb": "hsl(var(--seg-thumb))",
+        sidebar: {
+          DEFAULT: "hsl(var(--sidebar))",
+          foreground: "hsl(var(--sidebar-foreground))",
+          border: "hsl(var(--sidebar-border))",
+          accent: "hsl(var(--sidebar-accent))",
+          highlight: "hsl(var(--sidebar-highlight))",
+          muted: "hsl(var(--sidebar-muted))",
+          subtle: "hsl(var(--sidebar-subtle))",
+          faint: "hsl(var(--sidebar-faint))",
+        },
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",

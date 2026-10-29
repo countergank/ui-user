@@ -134,4 +134,8 @@
   --info: 209 100% 50%; /* #0090FF */
   --info-foreground: 208 88% 40%; /* #0C6CC0, minimo que pasa AA sobre tinte 14% (4.51) */
   --seg-thumb: 0 0% 100%; /* #FFFFFF */
+  --sidebar-highlight: 281 46% 75%; /* #C9A0DC, acento sobre chrome */
+  --sidebar-muted: 240 12% 85%; /* #D4D4DD, texto atenuado sobre chrome */
+  --sidebar-subtle: 240 7% 68%; /* #A8A8B3, lead sobre chrome */
+  --sidebar-faint: 240 5% 57%; /* #8B8B96, pie sobre chrome */
 }

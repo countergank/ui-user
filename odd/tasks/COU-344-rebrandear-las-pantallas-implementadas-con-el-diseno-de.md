@@ -49,6 +49,48 @@ Ticket: [COU-344](https://linear.app/countergank/issue/COU-344/rebrandear-las-pa
 > "Aplicar el rebranding a **todas las pantallas ya implementadas**, con un solo criterio visual: tokens + fuentes + shell, y cada pantalla alineada a su artboard cuando existe."
 > "* Implementar pantallas que existen sólo en el diseño: **inicio**, **roles y permisos** y **sistema** van en sus propios tickets."
 
+## Copy de los artboards (extraído el 2026-10-29)
+
+Texto visible real de los exports, extraído con shell. Es la fuente para alinear copy y bloques;
+las cadenas van a los bundles de i18n (ADR-12: `en`, `es`, `pt` con paridad obligatoria).
+
+**`02-login.html`** — split 620/820.
+
+* Izquierda: `CG` `COUNTERGANK` · `Iniciá sesión` · `Accedé con tu cuenta de administrador.` ·
+  `EMAIL` · `CONTRASEÑA` · `Recordarme` · `¿Olvidaste tu contraseña?` · `Sign in` ·
+  `Crear una cuenta` · `Al continuar aceptás los` `términos` `y la` `política de privacidad` ·
+  `© 2026 Countergank · Argentina` · `Volver al sitio`.
+* Derecha (panel de marca): `CONSOLA DE ADMINISTRACIÓN` · `API · healthy` ·
+  `Administrá usuarios sin perder el rastro de nada.` ·
+  `Cada alta, cada permiso y cada sesión cerrada queda registrada con su correlationId.` ·
+  bullets: `RBAC de 22 permisos con roles editables`, `Auditoría por request con correlationId`,
+  `Revocación de sesiones por epoch`, `Plantillas de email y parámetros en caliente` ·
+  pie: `MongoDB replica set · Redis · v1.1.0`.
+
+**`01-landing.html`** — 1440×2119.
+
+* Header: `COUNTERGANK` · `Producto` · `Capacidades` · `Seguridad` · `About` · `Sign in`.
+* Hero: eyebrow `PLATAFORMA DE ADMINISTRACIÓN DE USUARIOS` ·
+  título `Permisos reales, sesiones controladas, todo auditado.` ·
+  lead `Un backend de gestión de usuarios con RBAC de 22 permisos, revocación de sesiones y
+  auditoría por request. Esta aplicación es su consola de administración.` ·
+  CTA `Ver capacidades` · chips `JWT + refresh`, `RBAC 22 permisos`, `Auditoría por request`.
+* Mock del producto (prueba visual): sidebar `GESTIÓN` con `Usuarios`, `Roles y permisos`,
+  `Auditoría`, `Parámetros`; buscador `Buscar usuario…`; acción `Nuevo usuario`;
+  KPIs `TOTAL 1.248`, `ACTIVOS 1.187`, `BLOQUEADOS 12`; tabla con `Leandro Cepeda/admin/activo`,
+  `Marta Gómez/user/activo`, `Julián Pérez/viewer/activo`, `Diego Sosa/bloqueado`.
+* `CAPACIDADES` · `Lo que el backend ya resuelve` · `Nada de esto es una maqueta: son endpoints
+  en producción`, con seis bloques: `RBAC granular`, `Auditoría trazable`, `Sesiones revocables`,
+  `Email transaccional`, `i18n en caliente`, `Parámetros vivos` (cada uno con su descripción).
+* `SEGURIDAD` · `El modelo de amenaza está en el diseño, no en el README.` · `Access corto,
+  refresh con epoch verificable.` · `Lockout por intentos` · `lockedUntil por cuenta ante fuerza
+  bruta.`
+
+Diferencias medidas contra lo implementado: `Login` es una tarjeta centrada sin panel de marca ni
+`Recordarme`/`Crear una cuenta`/legales; `Landing` tiene hero distinto, no tiene mock, sus cuatro
+tarjetas genéricas no son las seis capacidades, no tiene sección de seguridad y sí tiene dos
+secciones (`Quickstart`, `Stack`) que no existen en el artboard.
+
 ## Tasks
 
 | ID | S# | Qué | Path | Commit |
