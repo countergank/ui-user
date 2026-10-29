@@ -40,13 +40,13 @@ Ticket: [COU-342](https://linear.app/countergank/issue/COU-342/rebrandear-la-int
 
 | ID | S# | Qué | Path | Commit |
 |---|---|---|---|---|
-| T1 | S1-S3 | Exportar los 7 artboards a HTML autocontenido | `design/app/01…07-*.html` | — |
+| T1 | S1-S3 | Exportar los 7 artboards a HTML autocontenido | `design/app/01…07-*.html` | `4ecbf28` |
 | T2 | S8 | Publicar el `.fig` editable fuera del repo (MEGA, con backup) | `MEGA/…/designs/Dashboard User UI.fig` | n/a |
-| T3 | S1-S5 | Documentar artboards y tradeoffs | `design/app/design.json` | — |
-| T4 | S7 | Proponer el mapeo de tokens en triples HSL (62 tokens: 27 remapeados, 21 nuevos, avatares y familias) | `design/app/tokens-app.css` | — |
-| T6 | S7 | Inventariar los 46 colores usados por los artboards, cada uno con su token | `design/app/palette.json` | — |
-| T7 | S7 | Empaquetar las tres familias como woff2 variables + licencias OFL | `design/app/fonts/`, `design/app/fonts.css` | — |
-| T5 | S6 | Registro ODD del ticket | `odd/tasks/COU-342-diseno-dashboard.md` | — |
+| T3 | S1-S5 | Documentar artboards y tradeoffs | `design/app/design.json` | `4ecbf28` |
+| T4 | S7 | Proponer el mapeo de tokens en triples HSL (62 tokens: 27 remapeados, 21 nuevos, avatares y familias) | `design/app/tokens-app.css` | `4ecbf28` |
+| T6 | S7 | Inventariar los 46 colores usados por los artboards, cada uno con su token | `design/app/palette.json` | `4ecbf28` |
+| T7 | S7 | Empaquetar las tres familias como woff2 variables + licencias OFL | `design/app/fonts/`, `design/app/fonts.css` | `4ecbf28` |
+| T5 | S6 | Registro ODD del ticket | `odd/tasks/COU-342-diseno-dashboard.md` | `4ecbf28` |
 
 Pendiente en tickets por pantalla: implementar componentes, aplicar `tokens-app.css` sobre `src/styles/tokens.css` y actualizar `design/system.md`, que hoy documenta la paleta anterior.
 
@@ -69,3 +69,9 @@ Pendiente en tickets por pantalla: implementar componentes, aplicar `tokens-app.
 **L7** — La paleta semántica no alcanzaba: los artboards usan 46 colores y sólo 13 caían en tokens existentes del repo. Se inventariaron todos (21 nuevos + rampa de avatares + 3 decorativos del mock del hero) en `palette.json`, generado desde los HTML para que no pueda divergir.
 
 **L8** — Riesgo de fidelidad tipográfica. En el `.fig` sólo Inter está disponible; JetBrains Mono (221 nodos) y Space Grotesk (36) se dibujan con **sustitutos**. El HTML declaraba los nombres sin `@font-face`, y el repo no entrega ninguna fuente. Se empaquetaron las tres familias como variables woff2 (subset latin, SIL OFL) con `@font-face` local, y se declaran `--font-display`/`--font-sans`/`--font-mono`. Consecuencia a tener presente: las alturas validadas se midieron con métricas sustituidas, así que con las fuentes reales algún título puede reflowar.
+
+**L9** — Cierre del registro. El diseño entró a `develop` por el merge del PR #38, commit
+`4ecbf28` (`docs(design): add app rebranding directions, palette and fonts (#38)`), que es el
+que sostiene cada task de la tabla. Se registra acá en COU-345 (el ticket que ya toca `design/`
+y `odd/`) para no abrir un PR de siete líneas sólo para anotar el hash. `source` en
+`design/app/design.json` ata desde ahora ese snapshot al `.fig`, ver `design/README.md`.

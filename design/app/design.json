@@ -2,6 +2,13 @@
   "title": "App — rebranding de Countergank",
   "brief": "Siete pantallas que cubren el flujo completo de ui-user —landing pública, login, inicio, resumen, detalle de usuario, roles y permisos, sistema— con la identidad de Countergank (monograma real, magenta de marca) en lugar del violeta del design system actual. La aplicación se adapta al diseño: tokens-app.css propone el mapeo token por token, la paleta completa está inventariada en palette.json y las tres familias tipográficas (Inter, Space Grotesk, JetBrains Mono) vienen en fonts/ como variables woff2. El flujo es Landing → Login → Inicio; de ahí se entra a las cuatro pantallas de consola. El selector de tema (system/light/dark) y el botón de idioma viven en el shell compartido, así que aparecen en todas las pantallas de consola.",
   "feature": "odd/tasks/COU-342-diseno-dashboard.md",
+  "source": {
+    "fig": "Dashboard User UI.fig",
+    "sha256": "87845c1af89c182baaee211072402f0a750a82cf9f9d7a4f127754505ae3476d",
+    "sizeKb": 265.8,
+    "exportedAt": "2026-10-28",
+    "tool": "openpencil 0.15.1"
+  },
   "artboards": [
     {
       "file": "01-landing.html",

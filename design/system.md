@@ -3,6 +3,17 @@
 Sincronizado el 2026-10-28 desde las fuentes del proyecto. Cada token nombra su origen. No hay
 valores inventados: si algo no aparece acá, no es un token del proyecto.
 
+## Estado
+
+Este documento describe la paleta **vigente en código**: violeta `262 83% 58%`, la de
+`src/styles/tokens.css`. Es la referencia de los valores actuales del proyecto.
+
+El rebranding está **propuesto y no aplicado** en `design/app/` (COU-342): su paleta vive en
+`design/app/tokens-app.css` y se aplica recién en COU-344. Mientras ese ticket no cierre, nada
+de esta página cambia por lo que diga aquel archivo: documentar la propuesta como vigente sería
+adelantar un cambio que el código todavía no hace. Índice completo de la carpeta:
+`design/README.md`.
+
 ## Sources
 
 | Path | Qué aporta |

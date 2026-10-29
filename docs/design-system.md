@@ -5,10 +5,20 @@
 > color. This doc is the contract later UI tickets inherit: where the values come from, the
 > naming rules that keep the CSS honest, and the checks that keep it true.
 
-The **source of truth for the values** is `designs/identity/index.html` (the brand boceto,
-versioned in git). The app port lives in `src/styles/tokens.css` and is exposed to
-components through `tailwind.config.js`. Tokens are bare HSL channels
-(`262 83% 58%`) consumed as `hsl(var(--primary))` so opacity works everywhere.
+The **source of truth for the values** is `src/styles/tokens.css`, exposed to components
+through `tailwind.config.js`. Tokens are bare HSL channels (`262 83% 58%`) consumed as
+`hsl(var(--primary))` so opacity works everywhere. Nothing in `design/` overrides a value: the
+folder is the **inventory** (what is, what is proposed), never the source.
+
+| Where | Role |
+|-------|------|
+| `src/styles/tokens.css` | The values the app renders — the only source of truth |
+| `tailwind.config.js` | Token → Tailwind utility map |
+| `design/system.md` | The same values, described with their component rules |
+| `design/app/tokens-app.css` | **Proposed** rebranding palette (COU-342), not applied; COU-344 applies it |
+| `design/README.md` | Index of `design/`: what is current, what is proposed |
+
+If `design/` and `tokens.css` ever disagree, `tokens.css` wins and `design/` has a defect.
 
 ## Quick path
 
@@ -124,11 +134,15 @@ Light `--destructive` is rose-600, not the boceto's `--danger` rose-500 (`#F43E5
 button paints it as a **background** under white text, where rose-500 reaches only 3.69:1.
 rose-600 reaches 4.67:1 and passes AA.
 
-## Token-name mapping (boceto → app)
+## Token-name mapping (COU-270 boceto → app)
 
 The app keeps shadcn/ui variable names because existing components and `tailwind.config.js`
-consume them. The boceto's names are mapped at the port, so **no class name changes** — and
-the mapping is written down here so the rename cannot recur silently.
+consume them. The original brand boceto's names are mapped at the port, so **no class name
+changes** — and the mapping is written down here so the rename cannot recur silently.
+
+The boceto itself (`designs/identity/index.html`) was retired in COU-345: it duplicated this
+system as a second, contradictory source. The tables below are the durable record of the
+mapping it defined; the local copy lives in the `tokens.css` header comment.
 
 | Boceto | App (shadcn) | Note |
 |--------|--------------|------|
@@ -221,7 +235,7 @@ margin-right: 8px`) and `.brand` already existed as standalone classes, and a
 properties leaked into the badge, so any badge carrying it became 14px wide and its text
 overflowed.
 
-Convention, from the boceto's own comments:
+Convention, from the retired COU-270 boceto's own comments:
 
 - **Flags unique to one component are namespaced** with `block--flag`: `.badge--dot`, not
   `.badge.dot`.
