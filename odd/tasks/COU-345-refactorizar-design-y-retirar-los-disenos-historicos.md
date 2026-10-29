@@ -127,7 +127,7 @@ Javier Cepeda, `branchName` presente), estado movido a `In Progress`, rama cread
 `origin/develop` con `--no-track`.
 
 **L3** — Evidencia del master editable. El `.fig` está fuera del repo, en
-`/mnt/c/Users/leand/Documents/MEGA/Professional/Countergank/designs/Dashboard User UI.fig`
+`<ruta al master .fig dentro de la carpeta MEGA del proyecto>`
 (MEGA montado sobre el `C:\` de Windows). Se leyó solo para calcular `sha256`
 (`87845c1af89c182baaee211072402f0a750a82cf9f9d7a4f127754505ae3476d`) y `sizeKb`
 (272219 bytes = 265.8 KiB); no se copió al repositorio. `tool` es la versión del CLI
