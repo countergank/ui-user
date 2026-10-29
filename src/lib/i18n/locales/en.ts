@@ -149,8 +149,59 @@ export const en = {
       },
     },
     hero: {
-      ctaRepository: "View the repository",
-      ctaDocs: "Read the docs",
+      eyebrow: "User administration platform",
+      headline: "Real permissions, controlled sessions, everything audited.",
+      lead: "A user management backend with 22-permission RBAC, session revocation and per-request audit. This app is its administration console.",
+      ctaCapabilities: "See capabilities",
+      chips: {
+        jwt: "JWT + refresh",
+        rbac: "RBAC 22 permissions",
+        audit: "Audit per request",
+      },
+    },
+    mock: {
+      sidebar: {
+        label: "MANAGEMENT",
+        users: "Users",
+        roles: "Roles & permissions",
+        audit: "Audit",
+        settings: "Settings",
+      },
+      search: {
+        placeholder: "Search users…",
+      },
+      actions: {
+        newUser: "New user",
+      },
+      kpi: {
+        total: "TOTAL",
+        totalValue: "1,248",
+        active: "ACTIVE",
+        activeValue: "1,187",
+        blocked: "BLOCKED",
+        blockedValue: "12",
+      },
+      users: {
+        leandro: {
+          name: "Leandro Cepeda",
+          role: "admin",
+        },
+        marta: {
+          name: "Marta Gómez",
+          role: "user",
+        },
+        julian: {
+          name: "Julián Pérez",
+          role: "viewer",
+        },
+        diego: {
+          name: "Diego Sosa",
+        },
+      },
+      status: {
+        active: "active",
+        blocked: "blocked",
+      },
     },
     quickstart: {
       title: "Run it locally",

@@ -6,7 +6,9 @@ describe("main entry", () => {
     document.body.innerHTML = '<div id="root"></div>';
     await import("@/main");
 
-    expect(await screen.findByRole("heading", { level: 1 })).toHaveTextContent("Countergank User");
+    expect(await screen.findByRole("heading", { level: 1 })).toHaveTextContent(
+      "Real permissions, controlled sessions, everything audited.",
+    );
 
     await new Promise((resolve) => {
       setTimeout(resolve, 0);

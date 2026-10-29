@@ -94,7 +94,7 @@ describe("routes", () => {
     );
 
     const heading = screen.getByRole("heading", { level: 1 });
-    expect(heading).toHaveTextContent(i18n.getFixedT(null, "landing")("title"));
+    expect(heading).toHaveTextContent(i18n.getFixedT(null, "landing")("hero.headline"));
     expect(screen.queryByRole("navigation", { name: i18n.t("shell.navigation.main") })).toBeNull();
   });
 

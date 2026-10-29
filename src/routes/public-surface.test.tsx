@@ -24,7 +24,9 @@ describe("public surface", () => {
 
     render(<RouterProvider router={memoryRouter} />);
 
-    expect(await screen.findByRole("heading", { level: 1 })).toHaveTextContent(tLanding("title"));
+    expect(await screen.findByRole("heading", { level: 1 })).toHaveTextContent(
+      tLanding("hero.headline"),
+    );
 
     await memoryRouter.navigate("/about");
     await waitFor(() => {

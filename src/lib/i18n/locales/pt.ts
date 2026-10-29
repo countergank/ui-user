@@ -163,8 +163,59 @@ export const pt: {
       },
     },
     hero: {
-      ctaRepository: "Ver o repositório",
-      ctaDocs: "Ler a documentação",
+      eyebrow: "Plataforma de administração de usuários",
+      headline: "Permissões reais, sessões controladas, tudo auditado.",
+      lead: "Um backend de gestão de usuários com RBAC de 22 permissões, revogação de sessões e auditoria por request. Este aplicativo é o console de administração.",
+      ctaCapabilities: "Ver capacidades",
+      chips: {
+        jwt: "JWT + refresh",
+        rbac: "RBAC 22 permissões",
+        audit: "Auditoria por request",
+      },
+    },
+    mock: {
+      sidebar: {
+        label: "GESTÃO",
+        users: "Usuários",
+        roles: "Papéis e permissões",
+        audit: "Auditoria",
+        settings: "Parâmetros",
+      },
+      search: {
+        placeholder: "Buscar usuário…",
+      },
+      actions: {
+        newUser: "Novo usuário",
+      },
+      kpi: {
+        total: "TOTAL",
+        totalValue: "1.248",
+        active: "ATIVOS",
+        activeValue: "1.187",
+        blocked: "BLOQUEADOS",
+        blockedValue: "12",
+      },
+      users: {
+        leandro: {
+          name: "Leandro Cepeda",
+          role: "admin",
+        },
+        marta: {
+          name: "Marta Gómez",
+          role: "user",
+        },
+        julian: {
+          name: "Julián Pérez",
+          role: "viewer",
+        },
+        diego: {
+          name: "Diego Sosa",
+        },
+      },
+      status: {
+        active: "ativo",
+        blocked: "bloqueado",
+      },
     },
     quickstart: {
       title: "Rodar localmente",
