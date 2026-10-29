@@ -137,11 +137,34 @@ const pairMessage = (
 describe("design tokens — WCAG 2.2 AA contrast", () => {
   for (const { name: mode, tokens } of MODES) {
     describe(`${mode} mode`, () => {
+      const background = hslToRgb(readToken(tokens, "--background", mode));
       const card = hslToRgb(readToken(tokens, "--card", mode));
+
+      it("keeps --foreground AA on --background", () => {
+        const text = hslToRgb(readToken(tokens, "--foreground", mode));
+        const ratio = contrastRatio(text, background);
+        expect(
+          ratio,
+          pairMessage(mode, "--foreground on --background", text, background, ratio),
+        ).toBeGreaterThanOrEqual(AA);
+      });
+
+      it("keeps --card-foreground AA on --card", () => {
+        const text = hslToRgb(readToken(tokens, "--card-foreground", mode));
+        const ratio = contrastRatio(text, card);
+        expect(
+          ratio,
+          pairMessage(mode, "--card-foreground on --card", text, card, ratio),
+        ).toBeGreaterThanOrEqual(AA);
+      });
 
       for (const tone of TONES) {
         it(`keeps ${tone} text AA on its own ${TINT_LABEL} tint`, () => {
-          const tint = composite(hslToRgb(readToken(tokens, `--${tone}`, mode)), TINT_ALPHA, card);
+          const tint = composite(
+            hslToRgb(readToken(tokens, `--${tone}`, mode)),
+            TINT_ALPHA,
+            background,
+          );
           const text = hslToRgb(readToken(tokens, `--${tone}-foreground`, mode));
           const ratio = contrastRatio(text, tint);
           const message = pairMessage(
@@ -154,6 +177,16 @@ describe("design tokens — WCAG 2.2 AA contrast", () => {
           expect(ratio, message).toBeGreaterThanOrEqual(AA);
         });
       }
+
+      it("keeps --primary-foreground AA on the --primary fill", () => {
+        const fill = hslToRgb(readToken(tokens, "--primary", mode));
+        const text = hslToRgb(readToken(tokens, "--primary-foreground", mode));
+        const ratio = contrastRatio(text, fill);
+        expect(
+          ratio,
+          pairMessage(mode, "--primary-foreground on --primary", text, fill, ratio),
+        ).toBeGreaterThanOrEqual(AA);
+      });
 
       it("keeps --destructive-foreground AA on the --destructive button", () => {
         const button = hslToRgb(readToken(tokens, "--destructive", mode));
@@ -173,7 +206,7 @@ describe("design tokens — WCAG 2.2 AA contrast", () => {
         const text = hslToRgb(readToken(tokens, "--muted-foreground", mode));
         const surfaces: readonly (readonly [string, Rgb])[] = [
           ["--muted", hslToRgb(readToken(tokens, "--muted", mode))],
-          ["--background", hslToRgb(readToken(tokens, "--background", mode))],
+          ["--background", background],
           ["--card", card],
         ];
         for (const [surface, background] of surfaces) {

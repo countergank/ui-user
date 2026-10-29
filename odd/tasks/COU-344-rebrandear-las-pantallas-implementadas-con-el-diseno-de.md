@@ -390,3 +390,24 @@ pantalla** switcheable (`Inicio` o `Landing`) para comparar → recién entonces
 
 Pendiente único del lado del diseño: **guardar el documento desde la app** para que todo quede en
 MEGA.
+
+**L16** — **T1 aplicado a `src/` y dos valores del diseño corregidos.** El worker escribió
+`src/styles/tokens.css` con los 66 tokens en ambos bloques (tomados de `tokens-app.css` y
+`tokens-dark.css`), agregó las tres familias con `@font-face` desde `public/fonts/`, `--font-display`
+con su utilidad en Tailwind y extendió `src/styles/tokens.test.ts` a 21 casos de contraste más
+paridad. `npx vitest run src/styles`: **23/23**, `npm run typecheck` limpio, `npm run lint` limpio.
+
+Dos valores del diseño **no pasaban AA** y el worker los bajó al mínimo que sí pasa:
+
+| Token (claro) | Diseño | Aplicado | Medición |
+|---|---|---|---|
+| `--success-foreground` | `151 61% 30%` | `151 61% 29%` (`#1D774B`) | 4.33 → **4.57** sobre tinte 14% |
+| `--info-foreground` | `208 88% 43%` | `208 88% 40%` (`#0C6CC0`) | 4.00 → **4.51** sobre tinte 14% |
+
+El de success ya estaba registrado como riesgo en L5; el de info es un hallazgo nuevo de haber
+agregado el token después (ver L6). Para no reabrir la contradicción que cerró COU-345, se
+corrigieron **los archivos de diseño**, no sólo el código: `design/app/tokens-app.css` ahora dice
+29% y 40% con su hex. El diseño y el código vuelven a coincidir.
+
+Detalle menor: `@font-face` de Space Grotesk quedó con `font-weight: 300 700`, que es el eje real
+de la fuente, en lugar de `100 900`.

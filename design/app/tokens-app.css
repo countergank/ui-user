@@ -71,7 +71,7 @@
   --accent: 276 42% 95%;
   --primary-soft: 276 42% 95%;
   --success: 151 61% 30%;
-  --success-foreground: 151 61% 30%;
+  --success-foreground: 151 61% 29%; /* #1D774B, minimo que pasa AA sobre tinte 14% (4.57) */
   --success-soft: 141 41% 93%;
   --warning: 39 100% 27%;
   --warning-foreground: 39 100% 27%;
@@ -132,6 +132,6 @@
   --sidebar-accent: 270 17% 14%; /* #241E2A */
   /* tonos y controles que faltaban para igualar ambos modos */
   --info: 209 100% 50%; /* #0090FF */
-  --info-foreground: 208 88% 43%; /* #0D74CE */
+  --info-foreground: 208 88% 40%; /* #0C6CC0, minimo que pasa AA sobre tinte 14% (4.51) */
   --seg-thumb: 0 0% 100%; /* #FFFFFF */
 }
