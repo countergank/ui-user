@@ -27,4 +27,7 @@ for ODD task recovery.
 - [x] Task 7 — `npm run lint` + `npm run typecheck`, and a sweep for live references.
   - Evidence: biome (237 files) + eslint + `tsc -b --noEmit` exit 0; only historical logs
     still name the retired paths; `src/` untouched.
-- [ ] Task 8 — Commit, pending explicit human authorization (see `## Log` in the ticket file).
+- [x] Task 8 — Commit `fbaed17` (`docs(design): retire historical designs and pin the fig
+  master`), 13 files, +338/−2831. Single work unit despite the line count: the deletions are
+  the retirement of the exploratory HTML and cannot be split without leaving dangling
+  references between commits.

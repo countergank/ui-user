@@ -59,13 +59,13 @@ Ticket: [COU-345](https://linear.app/countergank/issue/COU-345/refactorizar-desi
 
 | ID | S# | Qué | Path | Commit |
 |---|---|---|---|---|
-| T1 | S7, S9 | Escribir el índice de `design/` con estado, fuente de verdad y flujo de re-export | `design/README.md` | — |
-| T2 | S2, S3, S10 | Retirar `design/users-detail/`, `designs/` y `design/system.html` | `design/`, `designs/` | — |
-| T3 | S6 | Puntero explícito a la propuesta no aplicada, sin tocar los valores vigentes | `design/system.md` | — |
-| T4 | S5 | Corregir la fuente de verdad y las referencias muertas | `docs/design-system.md` | — |
-| T5 | S8 | Agregar el bloque `source` con `sha256` calculado sobre el `.fig` real | `design/app/design.json` | — |
-| T6 | S11 | Registrar `4ecbf28` en la tabla y el Log de COU-342 | `odd/tasks/COU-342-diseno-dashboard.md` | — |
-| T7 | S12 | `npm run lint` + `npm run typecheck`, y revisión de referencias vivas | n/a | — |
+| T1 | S7, S9 | Escribir el índice de `design/` con estado, fuente de verdad y flujo de re-export | `design/README.md` | `fbaed17` |
+| T2 | S2, S3, S10 | Retirar `design/users-detail/`, `designs/` y `design/system.html` | `design/`, `designs/` | `fbaed17` |
+| T3 | S6 | Puntero explícito a la propuesta no aplicada, sin tocar los valores vigentes | `design/system.md` | `fbaed17` |
+| T4 | S5 | Corregir la fuente de verdad y las referencias muertas | `docs/design-system.md` | `fbaed17` |
+| T5 | S8 | Agregar el bloque `source` con `sha256` calculado sobre el `.fig` real | `design/app/design.json` | `fbaed17` |
+| T6 | S11 | Registrar `4ecbf28` en la tabla y el Log de COU-342 | `odd/tasks/COU-342-diseno-dashboard.md` | `fbaed17` |
+| T7 | S12 | `npm run lint` + `npm run typecheck`, y revisión de referencias vivas | n/a | `fbaed17` |
 
 ## Log
 
@@ -157,3 +157,11 @@ Verificación de S5/S6 por script: los 21 tokens de tabla de `design/system.md` 
 `src/styles/tokens.css` (0 diferencias) y los valores clave de `docs/design-system.md`
 (`--primary`, `--ring`, `--muted-foreground`, `--destructive`, `--success`, `--danger`) siguen
 en violeta; la paleta propuesta no se adelantó. `src/` sin cambios.
+
+**L8** — Commit `fbaed17` (`docs(design): retire historical designs and pin the fig master`),
+13 archivos, 338 inserciones y 2831 borrados. El diff supera el slice de ~400 líneas
+autoradas, pero es un solo work unit: 2831 de esas líneas son el retiro de los HTML de
+exploración (`designs/identity/index.html`, `design/users-detail/*`, `design/system.html`),
+que no se puede partir sin dejar referencias colgadas entre commits — el índice, la
+desviación de `docs/` y el retiro se sostienen entre sí. Cierre del slice: este commit es el
+último del ticket; el siguiente paso es PR a `develop`.
