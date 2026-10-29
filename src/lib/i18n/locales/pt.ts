@@ -104,6 +104,10 @@ export const pt: {
     nav: {
       label: "Navegação pública",
       home: "Início",
+      product: "Produto",
+      capabilities: "Capacidades",
+      security: "Segurança",
+      sectionsLabel: "Seções",
       about: "Sobre",
       signIn: "Entrar",
     },
@@ -111,6 +115,8 @@ export const pt: {
       docs: "Documentação",
       repository: "Repositório",
       license: "Licença",
+      copyright: "© {{year}} Countergank · Argentina",
+      github: "GitHub",
     },
     about: {
       title: "Sobre",
@@ -129,38 +135,65 @@ export const pt: {
       },
       body: "Countergank User faz parte do stack open source da countergank: o frontend da API de usuários, construído com o molde padrão de frontend (React 19, Vite, TypeScript estrito). Este repositório também guarda os padrões que o projeto segue — ADRs, padrões de componentes, acessibilidade, tratamento de erros e regras de testes — em docs/.",
     },
-    what: {
-      title: "O que é",
-      body: "Countergank User é o console open source de gestão da API de usuários da countergank. É uma single-page app em React: fala com api-user por HTTP e não tem backend próprio.",
-    },
-    service: {
-      title: "O que oferece",
-      body: "Entrar contra a API e depois navegar e administrar usuários, papéis e permissões, e revisar a auditoria: a superfície diária de uma administração de usuários, sem construí-la do zero.",
-    },
-    features: {
-      title: "O que inclui",
+    capabilities: {
+      eyebrow: "Capacidades",
+      heading: "O que o backend já resolve",
+      lead: "Nada disso é uma maquete: são endpoints em produção",
       items: {
-        session: {
-          title: "Sessão que se renova sozinha",
+        rbac: {
+          title: "RBAC granular",
           description:
-            "Access e refresh tokens, renovação proativa antes de expirar, um único refresh para 401 concorrentes e logout local primeiro.",
+            "22 permissões em 2 categorias e papéis editáveis. Cada ação é autorizada por permissão, não por papel hardcoded.",
         },
-        accessibility: {
-          title: "Acessibilidade como piso",
+        audit: {
+          title: "Auditoria rastreável",
           description:
-            "Landmarks, skip link, anúncio de rotas, gestão de foco e axe na suíte de testes.",
+            "Cada request deixa correlationId, usuário, método, endpoint, status e duração. Com before/after da mudança.",
         },
-        languages: {
-          title: "Três idiomas",
+        sessions: {
+          title: "Sessões revogáveis",
           description:
-            "Inglês, espanhol e português do Brasil, com paridade de chaves exigida pelo sistema de tipos e pelos testes.",
+            "sessionEpoch monotônico: encerrar todas as sessões invalida cada refresh token emitido antes, sem TTL.",
         },
-        typed: {
-          title: "Tipagem de ponta a ponta",
+        email: {
+          title: "E-mail transacional",
           description:
-            "TypeScript estrito, o envelope de erro da API tipado e um gateway de configuração que falha rápido quando falta uma variável.",
+            "Modelos com slug, variáveis e estado. Envio por modelo ou direto, com log por provedor.",
+        },
+        i18n: {
+          title: "i18n a quente",
+          description:
+            "Traduções recarregáveis sem reiniciar o serviço (nestjs-i18n), com mensagens de erro localizadas.",
+        },
+        params: {
+          title: "Parâmetros vivos",
+          description:
+            "SMTP, provedor de e-mail, resend e throttler configuráveis por grupo e chave, sem redeploy.",
         },
       },
+    },
+    security: {
+      eyebrow: "Segurança",
+      heading: "O modelo de ameaça está no design, não no README.",
+      lead: "Access curto, refresh com epoch verificável.",
+      items: {
+        jwt: {
+          title: "JWT + refresh",
+          description: "Access curto, refresh verificável por epoch.",
+        },
+        lockout: {
+          title: "Lockout por tentativas",
+          description: "lockedUntil por conta contra força bruta.",
+        },
+        emailChange: {
+          title: "Troca de e-mail em 2 etapas",
+          description: "Token de confirmação e reversão.",
+        },
+      },
+    },
+    cta: {
+      heading: "Começamos pelos seus usuários?",
+      lead: "Entre com sua conta de administrador ou peça acesso ao time.",
     },
     hero: {
       eyebrow: "Plataforma de administração de usuários",
@@ -196,8 +229,8 @@ export const pt: {
         blockedValue: "12",
       },
       users: {
-        leandro: {
-          name: "Leandro Cepeda",
+        ana: {
+          name: "Ana Duarte",
           role: "admin",
         },
         marta: {
@@ -216,17 +249,6 @@ export const pt: {
         active: "ativo",
         blocked: "bloqueado",
       },
-    },
-    quickstart: {
-      title: "Rodar localmente",
-      body: "O backend traz seu próprio stack Docker. Suba ele e depois rode o console contra ele:",
-      command: "docker compose up",
-      note: "O console roda em localhost:3001 e a API responde na URL de VITE_API_BASE_URL.",
-      terminalLabel: "Comando de shell",
-    },
-    stack: {
-      title: "Stack",
-      body: "Node 22, Vite 6, React 19, TypeScript estrito, Tailwind + shadcn/ui, TanStack Query 5, React Router 7, Vitest + Testing Library + Playwright, Biome + ESLint.",
     },
   },
   auth: {

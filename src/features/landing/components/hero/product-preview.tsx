@@ -1,7 +1,7 @@
 import { Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-type MockUserNameKey = "leandro" | "marta" | "julian" | "diego";
+type MockUserNameKey = "ana" | "marta" | "julian" | "diego";
 type MockUserRoleKey = Exclude<MockUserNameKey, "diego">;
 
 interface MockUser {
@@ -11,11 +11,33 @@ interface MockUser {
   status: "active" | "blocked";
 }
 
+const initials = (name: string) =>
+  name
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part.charAt(0).toUpperCase())
+    .join("");
+
 const MOCK_USERS: MockUser[] = [
-  { key: "leandro", roleKey: "leandro", avatar: "bg-accent", status: "active" },
-  { key: "marta", roleKey: "marta", avatar: "bg-[hsl(var(--avatar-2-bg))]", status: "active" },
-  { key: "julian", roleKey: "julian", avatar: "bg-success-soft", status: "active" },
-  { key: "diego", avatar: "bg-danger-soft", status: "blocked" },
+  {
+    key: "ana",
+    roleKey: "ana",
+    avatar: "bg-[hsl(var(--avatar-2-bg))] text-[hsl(var(--avatar-2-fg))]",
+    status: "active",
+  },
+  {
+    key: "marta",
+    roleKey: "marta",
+    avatar: "bg-[hsl(var(--avatar-3-bg))] text-[hsl(var(--avatar-3-fg))]",
+    status: "active",
+  },
+  {
+    key: "julian",
+    roleKey: "julian",
+    avatar: "bg-[hsl(var(--avatar-4-bg))] text-[hsl(var(--avatar-4-fg))]",
+    status: "active",
+  },
+  { key: "diego", avatar: "bg-danger-soft text-destructive", status: "blocked" },
 ];
 
 /**
@@ -96,7 +118,11 @@ export function ProductPreview() {
                 key={user.key}
                 className="flex items-center gap-2.5 border-t border-[hsl(var(--border-subtle))] px-3.5 py-2.5 first:border-t-0"
               >
-                <span className={`size-6 shrink-0 rounded-full ${user.avatar}`} />
+                <span
+                  className={`flex size-6 shrink-0 items-center justify-center rounded-full font-mono text-[0.5rem] font-semibold ${user.avatar}`}
+                >
+                  {initials(t(`mock.users.${user.key}.name`))}
+                </span>
                 <span className="flex min-w-0 flex-col gap-0.5">
                   <span className="truncate text-[0.7rem] font-medium leading-tight text-foreground">
                     {t(`mock.users.${user.key}.name`)}
@@ -110,11 +136,11 @@ export function ProductPreview() {
                 <span
                   className={`ml-auto shrink-0 rounded-full px-2 py-1 font-mono text-[0.6rem] leading-none ${
                     user.status === "active"
-                      ? "bg-success-soft text-success"
-                      : "bg-danger-soft text-destructive"
+                      ? "bg-success/15 text-success"
+                      : "bg-destructive/15 text-destructive"
                   }`}
                 >
-                  {t(`mock.status.${user.status}`)}
+                  <span>{t(`mock.status.${user.status}`)}</span>
                 </span>
               </div>
             ))}

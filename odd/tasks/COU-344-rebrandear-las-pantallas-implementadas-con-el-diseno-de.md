@@ -478,3 +478,44 @@ cinco observaciones no bloqueantes; el humano pidió corregirlas todas antes de 
 
 Verificación: `npx vitest run src/styles` 31/31, `npm run typecheck` limpio, `npm run lint`
 limpio (238 archivos).
+
+**L18** — **Landing contra la captura del diseño.** El humano pasó `Landing@1x.png`, el render del
+artboard, y se midieron los fondos al píxel: header/hero/CTA/footer `#121113`, banda de
+capacidades `#2B292D`, cards de seguridad y banda del CTA `#232225`. **No hace falta una escala
+nueva de tokens**: son los tokens oscuros que ya existen, mal mapeados.
+
+Mapeo confirmado por el humano (en los dos temas, porque los tokens se adaptan):
+
+| Sección | Fondo |
+|---|---|
+| Hero | `background` |
+| Capacidades | **`surface-raised`** (`#2B292D` en oscuro) |
+| Seguridad | **`surface-row-alt`** (`#1A191B` en oscuro) |
+| CTA final | `muted` |
+
+Regla de trabajo acordada: antes de tocar código, repetir el pedido en una línea y mostrar el
+cambio exacto.
+
+Pendiente del landing, medido contra la captura:
+
+1. Grilla **3×2** en capacidades (hoy 2 columnas), con el subtítulo a la derecha del título.
+2. `Ver capacidades` como **link de texto**, no botón con borde.
+3. **Tildes verdes** en los chips del hero.
+4. **CTA final centrado**: `Sign in` magenta + `About` como texto.
+5. **Header**: nav `Producto · Capacidades · Seguridad` a la izquierda, `Sign in` como botón claro.
+6. **Footer**: `About · Capacidades · Sign in · GitHub`.
+
+**L19** — **Review nativa del bloque de landing, abierta.** Candidato staged de 18 archivos
+(1.065 líneas): las cuatro secciones del landing, el shell público, los tres locales y `About`.
+
+- Lineage: **`review-5947c96183121bf6`** · target `sha256:3ff0ae0a…` · tier **high**.
+- El tier salió high por una señal del clasificador sobre `src/features/landing/components/security.tsx`:
+  el clasificador lo marcó como *hot path* por el **nombre del archivo**, no por su contenido
+  (son tres cards estáticas con un `Lock` y un `Mail`). No hay superficie de seguridad ahí.
+- Lentes: `readability` y `reliability`.
+- Estado: `collect` con dos slots pendientes — `reviewer-readability` (order 0) y
+  `reviewer-reliability` (order 1). Cada uno requiere primero el forecast y después el
+  acknowledgement con el mismo binding exacto.
+
+Para retomar: `gentle_review` con `{"operation":"status","lineageId":"review-5947c96183121bf6"}`
+y seguir los `collectBindings` que devuelve.
