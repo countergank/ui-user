@@ -519,3 +519,31 @@ Pendiente del landing, medido contra la captura:
 
 Para retomar: `gentle_review` con `{"operation":"status","lineageId":"review-5947c96183121bf6"}`
 y seguir los `collectBindings` que devuelve.
+
+## Handoff para retomar
+
+**Rama**: `feature/cou-344-rebrandear-las-pantallas-implementadas-con-el-diseno-de` · 8 commits
+sobre `origin/develop` · último `854a10e` · árbol limpio.
+
+**Hecho**: T0 (paleta y modos en el `.fig`), T1 (tokens y fuentes), T2 (selectores verificados),
+T3 (login `d581ec5` + landing `854a10e`).
+
+**Pendiente, con lo que falta en cada uno:**
+
+* **T4 — pantallas de consola (S1, S6).** `src/features/users/` y `src/features/console/`.
+  Pantallas: lista (`04-resumen`), detalle (`05-detalle-usuario`), alta, edición y 403.
+  **Primer paso obligatorio**: extraer el copy de `design/app/04-*.html` y `05-*.html` con shell,
+  igual que se hizo para landing y login (son archivos de una línea; usar
+  `replace(/<[^>]+>/g,"\n")` y quedarse con las líneas únicas). Sin eso no hay con qué alinear.
+  Alta, edición y 403 no tienen artboard: se resuelven con el shell y los tokens (S6).
+* **T5 — docs (S9, S10).** Reescribir `design/system.md` y `docs/design-system.md` con la paleta
+  aplicada (hoy describen la violeta anterior) y dejar una sola fuente de verdad.
+* **T6 — gate (S7).** `npm run lint`, `npm run typecheck`, `npm run test` y axe sin regresiones.
+
+**Abierto fuera del ticket:**
+
+* Review del landing: `review-5947c96183121bf6` quedó sin reviewers ejecutados y su candidato ya
+  cambió con `854a10e`; hay que **abrir una nueva** sobre el rango `ae3c91b..854a10e`.
+* Flake `ReferenceError: window is not defined` en un test de entorno node: tumba el CI de
+  cualquier PR de forma intermitente. Merece ticket propio.
+* PR #40 (redacción de rutas) está verde y espera el merge del humano.
