@@ -178,6 +178,22 @@ describe("design tokens — WCAG 2.2 AA contrast", () => {
         });
       }
 
+      for (const tone of TONES) {
+        it(`keeps ${tone} text AA on its own ${TINT_LABEL} tint over the card`, () => {
+          const tint = composite(hslToRgb(readToken(tokens, `--${tone}`, mode)), TINT_ALPHA, card);
+          const text = hslToRgb(readToken(tokens, `--${tone}-foreground`, mode));
+          const ratio = contrastRatio(text, tint);
+          const message = pairMessage(
+            mode,
+            `--${tone}-foreground on --${tone} / ${TINT_LABEL} over --card`,
+            text,
+            tint,
+            ratio,
+          );
+          expect(ratio, message).toBeGreaterThanOrEqual(AA);
+        });
+      }
+
       it("keeps --primary-foreground AA on the --primary fill", () => {
         const fill = hslToRgb(readToken(tokens, "--primary", mode));
         const text = hslToRgb(readToken(tokens, "--primary-foreground", mode));

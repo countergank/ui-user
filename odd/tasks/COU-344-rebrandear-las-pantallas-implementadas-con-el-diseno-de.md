@@ -112,8 +112,7 @@ que levanta la app.
 **L9** — **Requisito de entorno descubierto (no es del repo).** OpenPencil 0.16.0 sacó el
 servidor MCP del binario: vive en el paquete npm `@open-pencil/mcp`, y su versión debe
 coincidir con la de la app. Windows no tenía Node, así que la app no podía lanzar
-`openpencil-mcp-http`. Instalado con nvm-windows (`NVM_HOME=<raiz de nvm>`,
-`NVM_SYMLINK=<symlink de node>`) + `npm i -g @open-pencil/mcp@0.16.0`. Consecuencias para la
+`openpencil-mcp-http`. Instalado con nvm-windows (nvm-windows, con su raiz en el perfil del usuario y el symlink de node) + `npm i -g @open-pencil/mcp@0.16.0`. Consecuencias para la
 próxima sesión: (1) tras cada actualización mayor de la app hay que reinstalar el paquete con
 la versión nueva; (2) con nvm-windows los globales viven dentro de cada versión de node, así
 que cambiar de versión con `nvm use` borra el shim hasta reinstalarlo; (3) una app lanzada
@@ -411,3 +410,29 @@ corrigieron **los archivos de diseño**, no sólo el código: `design/app/tokens
 
 Detalle menor: `@font-face` de Space Grotesk quedó con `font-weight: 300 700`, que es el eje real
 de la fuente, en lugar de `100 900`.
+
+**L17** — **Los cinco hallazgos advisories del review, resueltos.** El review aprobado dejó
+cinco observaciones no bloqueantes; el humano pidió corregirlas todas antes de seguir con T3.
+
+* `R1-local-env-details-in-committed-log` — **corregido**. El Log y `design/README.md` ya no
+  contienen rutas del perfil del usuario ni de MEGA: el paso de re-export nombra la carpeta MEGA
+  del proyecto de forma genérica. Ojo: los commits `3690ae2` y `c02b1b3` todavía llevan la ruta
+  dentro de su contenido; la rama nunca se publicó, así que reescribir la historia local está
+  sobre la mesa y pendiente de decisión.
+* `R3-readme-token-count` — **corregido**: el índice decía 63 tokens y 63 muestras; la paleta
+  tiene 66. Ahora dice 66 en ambas líneas.
+* `R3-dark-placeholder-contrast` — **corregido**. `text-faint` y `text-placeholder` oscuros
+  estaban en `251 5% 55%`: 4.30 sobre `--surface-raised`, por debajo de AA. Subieron a
+  `251 5% 58%` (`#918F99`): **4.52 sobre la superficie elevada** y 5.91 sobre el fondo. Aplicado
+  en `design/app/tokens-dark.css`, en el bloque `.dark` de `src/styles/tokens.css` y en el modo
+  `Dark` de la colección del `.fig`, para que los tres lados sigan coincidiendo.
+* `R3-tint-surface-coverage` — **corregido**. El test sólo componía los tintes sobre
+  `--background`; se agregaron **8 aserciones** (4 tonos × 2 modos) que los componen sobre
+  `--card`. `tokens.test.ts` pasó de 21 a **29 casos**, y los 31 del directorio pasan.
+* `R3-light-hover-collapsed` — **aceptado, sin cambio**. El diseño de OpenPencil define
+  `--primary` y `--primary-hover` con el mismo valor (`306 54% 35%`), así que el hover no se
+  distingue en claro. El humano eligió dejarlo tal cual está en el diseño y revisarlo más
+  adelante; queda documentado como decisión, no como defecto.
+
+Verificación: `npx vitest run src/styles` 31/31, `npm run typecheck` limpio, `npm run lint`
+limpio (238 archivos).

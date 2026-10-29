@@ -47,8 +47,8 @@ Archivos de soporte:
 |---|---|
 | `design/app/design.json` | Título, brief, artboards con sus tradeoffs y el bloque `source` que ata este snapshot al `.fig` |
 | `design/app/tokens-app.css` | Paleta clara propuesta, token por token, en triples HSL; lista para reemplazar los valores de `src/styles/tokens.css`. Incluye los cuatro tokens de chrome (`--sidebar*`) |
-| `design/app/tokens-dark.css` | Paleta **oscura** propuesta (63 tokens, base Radix Colors: `mauve` neutros, `plum` marca, `grass`/`amber`/`red`/`blue` estados). Formato `.dark` listo para `src/styles/tokens.css` |
-| `design/app/palette-dark.html` | Tablero autocontenido de la paleta oscura: 63 muestras con token, hex y HSL, más la tabla de contraste (25 pares AA) |
+| `design/app/tokens-dark.css` | Paleta **oscura** propuesta (66 tokens, base Radix Colors: `mauve` neutros, `plum` marca, `grass`/`amber`/`red`/`blue` estados). Formato `.dark` listo para `src/styles/tokens.css` |
+| `design/app/palette-dark.html` | Tablero autocontenido de la paleta oscura: 66 muestras con token, hex y HSL, más la tabla de contraste (25 pares AA) |
 | `design/app/palette.json` | Los 46 colores que usan los artboards claros, cada uno con su token y grupo |
 | `design/app/fonts.css` | `@font-face` de las tres familias |
 | `design/app/fonts/` | Inter, Space Grotesk y JetBrains Mono como woff2 variables (subset latin) con sus licencias SIL OFL |
@@ -90,7 +90,7 @@ atarlo a los HTML publicados. El bloque `source` de `design/app/design.json` cub
 3. Calcular el hash del master y compararlo con el registrado:
 
    ```bash
-   sha256sum "<ruta al master .fig en MEGA>"
+   sha256sum "<ruta al .fig dentro de la carpeta MEGA del proyecto>"
    ```
 
 4. Actualizar en `design/app/design.json` el bloque `source`: `sha256`, `sizeKb` (bytes / 1024),
