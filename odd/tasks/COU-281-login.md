@@ -191,7 +191,7 @@ existing route nor the bootstrap changed behavior.
 > perfecto! vamos
 
 **L2 — user request (verbatim), resume on 2026-10-17:**
-> Retomá COU-281 en /home/leandrojaviercepeda/countergank/ui-user.
+> Retomá COU-281 en este repositorio.
 >    Leé odd/tasks/COU-281-login.md hasta ## Log antes de tocar nada.
 >    T1 está commiteado en feat/COU-281-login (e6e363c); seguí por T2.
 >    Antes de instalar msw (T6) pedime autorización. No pushees ni abras PR sin mi OK.
