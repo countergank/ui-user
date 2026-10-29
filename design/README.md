@@ -46,10 +46,27 @@ Archivos de soporte:
 | Path | Qué es |
 |---|---|
 | `design/app/design.json` | Título, brief, artboards con sus tradeoffs y el bloque `source` que ata este snapshot al `.fig` |
-| `design/app/tokens-app.css` | Paleta propuesta, token por token, en triples HSL; lista para reemplazar los valores de `src/styles/tokens.css` |
-| `design/app/palette.json` | Los 46 colores que usan los artboards, cada uno con su token y grupo |
+| `design/app/tokens-app.css` | Paleta clara propuesta, token por token, en triples HSL; lista para reemplazar los valores de `src/styles/tokens.css`. Incluye los cuatro tokens de chrome (`--sidebar*`) |
+| `design/app/tokens-dark.css` | Paleta **oscura** propuesta (63 tokens, base Radix Colors: `mauve` neutros, `plum` marca, `grass`/`amber`/`red`/`blue` estados). Formato `.dark` listo para `src/styles/tokens.css` |
+| `design/app/palette-dark.html` | Tablero autocontenido de la paleta oscura: 63 muestras con token, hex y HSL, más la tabla de contraste (25 pares AA) |
+| `design/app/palette.json` | Los 46 colores que usan los artboards claros, cada uno con su token y grupo |
 | `design/app/fonts.css` | `@font-face` de las tres familias |
 | `design/app/fonts/` | Inter, Space Grotesk y JetBrains Mono como woff2 variables (subset latin) con sus licencias SIL OFL |
+
+### Modos claro y oscuro en el `.fig`
+
+El archivo de diseño tiene una colección de variables `Tokens` con **dos modos, `Light` y `Dark`**, y los rellenos y trazos de las siete pantallas están atados a esas variables. El modo se aplica **por capa o por página** (control *Apply variable mode*): la colección por sí sola no repinta el lienzo.
+
+Los valores viven en dos archivos versionados, uno por modo, y el propio archivo los puede emitir como CSS condicional:
+
+| Modo | Archivo |
+|---|---|
+| Claro | `design/app/tokens-app.css` |
+| Oscuro | `design/app/tokens-dark.css` |
+
+`design_to_tokens` sobre la colección devuelve `:root` con los valores claros y `@media (prefers-color-scheme: dark)` con los oscuros, así que la implementación puede salir del propio diseño en vez de transcribirse a mano.
+
+Verificación: **25/25 pares AA** en la paleta y **710 textos medidos en contexto oscuro sin fallas**. Los artboards HTML versionados son del tema claro; el oscuro se revisa en `palette-dark.html` y aplicando el modo en el archivo.
 
 ## Trazabilidad del master editable
 
@@ -73,7 +90,7 @@ atarlo a los HTML publicados. El bloque `source` de `design/app/design.json` cub
 3. Calcular el hash del master y compararlo con el registrado:
 
    ```bash
-   sha256sum "/mnt/c/Users/leand/Documents/MEGA/Professional/Countergank/designs/Dashboard User UI.fig"
+   sha256sum "<ruta al master .fig en MEGA>"
    ```
 
 4. Actualizar en `design/app/design.json` el bloque `source`: `sha256`, `sizeKb` (bytes / 1024),

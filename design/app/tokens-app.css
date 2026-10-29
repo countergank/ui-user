@@ -124,4 +124,14 @@
   --avatar-2-fg: 214 57% 39%;
   --avatar-3-fg: 187 59% 30%;
   --avatar-4-fg: 336 47% 43%;
+
+  /* chrome del shell (rebranding): paneles oscuros en ambos temas */
+  --sidebar: 240 8% 7%; /* #111114 */
+  --sidebar-foreground: 240 6% 94%; /* #EEEEF0 */
+  --sidebar-border: 270 5% 17%; /* #2B292D */
+  --sidebar-accent: 270 17% 14%; /* #241E2A */
+  /* tonos y controles que faltaban para igualar ambos modos */
+  --info: 209 100% 50%; /* #0090FF */
+  --info-foreground: 208 88% 43%; /* #0D74CE */
+  --seg-thumb: 0 0% 100%; /* #FFFFFF */
 }
