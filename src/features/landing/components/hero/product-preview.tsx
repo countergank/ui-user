@@ -80,8 +80,8 @@ export function ProductPreview() {
         <div className="flex min-w-0 flex-1 flex-col">
           <div className="flex items-center gap-2.5 border-b border-border px-3.5 py-3">
             <span className="flex min-w-0 flex-1 items-center gap-1.5 rounded-md bg-muted px-2 py-1.5">
-              <Search className="size-2.5 shrink-0 text-[hsl(var(--text-faint))]" />
-              <span className="truncate text-[0.6rem] text-[hsl(var(--text-faint))]">
+              <Search className="size-2.5 shrink-0 text-muted-foreground" />
+              <span className="truncate text-[0.6rem] text-muted-foreground">
                 {t("mock.search.placeholder")}
               </span>
             </span>
@@ -95,7 +95,7 @@ export function ProductPreview() {
                 key={kpi}
                 className="flex min-w-0 flex-1 flex-col gap-0.5 rounded-lg border border-[hsl(var(--border-subtle))] bg-[hsl(var(--surface-raised))] px-2.5 py-2"
               >
-                <span className="font-mono text-[0.5rem] uppercase tracking-wide text-[hsl(var(--text-faint))]">
+                <span className="font-mono text-[0.5rem] uppercase tracking-wide text-muted-foreground">
                   {t(`mock.kpi.${kpi}`)}
                 </span>
                 <span
@@ -128,7 +128,7 @@ export function ProductPreview() {
                     {t(`mock.users.${user.key}.name`)}
                   </span>
                   {user.roleKey ? (
-                    <span className="font-mono text-[0.55rem] leading-tight text-[hsl(var(--text-faint))]">
+                    <span className="font-mono text-[0.55rem] leading-tight text-muted-foreground">
                       {t(`mock.users.${user.roleKey}.role`)}
                     </span>
                   ) : null}
@@ -136,8 +136,8 @@ export function ProductPreview() {
                 <span
                   className={`ml-auto shrink-0 rounded-full px-2 py-1 font-mono text-[0.6rem] leading-none ${
                     user.status === "active"
-                      ? "bg-success/15 text-success"
-                      : "bg-destructive/15 text-destructive"
+                      ? "bg-success/15 text-success-foreground"
+                      : "bg-danger/15 text-danger-foreground"
                   }`}
                 >
                   <span>{t(`mock.status.${user.status}`)}</span>
