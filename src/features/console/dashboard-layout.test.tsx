@@ -1,3 +1,30 @@
+it.each([
+  ["/app", () => [tConsole("nav.home")]],
+  ["/app/users", () => [tConsole("nav.home"), tConsole("nav.users")]],
+  ["/app/users/new", () => [tConsole("nav.home"), tConsole("nav.users"), tUsers("create.title")]],
+  ["/app/users/u9", () => [tConsole("nav.home"), tConsole("nav.users"), tUsers("detail.title")]],
+  ["/app/users/u9/edit", () => [tConsole("nav.home"), tConsole("nav.users"), tUsers("edit.title")]],
+])("renders %s with its full trail", (path, expectedFn) => {
+  const expected = expectedFn();
+  renderShell(path);
+
+  const banner = screen.queryByRole("banner");
+
+  if (banner === null) {
+    expect(path).not.toBe("/app");
+    expect(screen.getByText(tConsole("nav.home"))).toBeTruthy();
+    return;
+  }
+
+  const trail = within(banner)
+    .getByRole("navigation", { name: tCommon("ui.breadcrumb.label") })
+    .textContent.trim();
+
+  for (const label of expected) {
+    expect(trail).toContain(label);
+  }
+});
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -16,6 +43,7 @@ import { DashboardLayout } from "./dashboard-layout";
 
 const tCommon = i18n.getFixedT(null, "common");
 const tConsole = i18n.getFixedT(null, "console");
+const tUsers = i18n.getFixedT(null, "users");
 
 interface RenderOptions {
   permissions?: string[];
@@ -56,7 +84,15 @@ function renderShell(initialPath = "/app", options: RenderOptions = {}) {
         Component: DashboardLayout,
         children: [
           { index: true, Component: () => <h1>Summary content</h1> },
-          { path: "users", Component: () => <h1>Users content</h1> },
+          {
+            path: "users",
+            Component: function UsersContent() {
+              return <h1>Users content</h1>;
+            },
+          },
+          { path: "users/new", Component: () => <h1>New user content</h1> },
+          { path: "users/:id", Component: () => <h1>User detail content</h1> },
+          { path: "users/:id/edit", Component: () => <h1>User edit content</h1> },
         ],
       },
       { path: "/login", Component: () => <h1>Login content</h1> },
@@ -94,7 +130,7 @@ describe("DashboardLayout landmarks and focus (S4)", () => {
     expect(screen.getByRole("banner")).toBeInTheDocument();
     expect(sectionNav()).toBeInTheDocument();
     expect(screen.getByRole("main")).toBeInTheDocument();
-    expect(screen.getByRole("contentinfo")).toBeInTheDocument();
+    expect(screen.queryByRole("contentinfo")).toBeNull();
   });
 
   it("keeps the skip link as the first focusable element, pointing at main", () => {
@@ -106,19 +142,25 @@ describe("DashboardLayout landmarks and focus (S4)", () => {
     expect(screen.getByRole("main")).toHaveAttribute("id", "main-content");
   });
 
-  it("keeps the theme switcher and adds the language control in the topbar", () => {
+  it("groups the three theme modes, the language code, the bell and the profile in the topbar", () => {
     renderShell();
 
     const header = screen.getByRole("banner");
+    const theme = within(header).getByRole("group", { name: tCommon("shell.theme.group") });
 
+    expect(within(theme).getAllByRole("button")).toHaveLength(3);
     expect(
-      within(header).getByRole("button", {
-        name: tCommon("shell.theme.switchTo", { mode: tCommon("shell.theme.light") }),
-      }),
-    ).toBeInTheDocument();
+      within(theme).getByRole("button", { name: tCommon("shell.theme.system") }),
+    ).toBeVisible();
+    expect(within(theme).getByRole("button", { name: tCommon("shell.theme.light") })).toBeVisible();
+    expect(within(theme).getByRole("button", { name: tCommon("shell.theme.dark") })).toBeVisible();
     expect(
       within(header).getByRole("button", { name: tCommon("shell.language.switch") }),
-    ).toBeInTheDocument();
+    ).toHaveTextContent(/^[A-Z]{2}$/);
+    expect(
+      within(header).getByRole("button", { name: tConsole("shell.notifications") }),
+    ).toBeDisabled();
+    expect(within(header).getByRole("button", { name: tConsole("shell.profile") })).toBeVisible();
   });
 
   it("announces the section name after navigation instead of the template title", async () => {
@@ -223,7 +265,7 @@ describe("DashboardLayout active section and permissions (S7, S8)", () => {
       "page",
     );
     expect(
-      within(sectionNav()).getByRole("link", { name: tConsole("nav.summary") }),
+      within(sectionNav()).getByRole("link", { name: tConsole("nav.roles") }),
     ).not.toHaveAttribute("aria-current");
   });
 
@@ -243,6 +285,64 @@ describe("DashboardLayout active section and permissions (S7, S8)", () => {
 
     expect(within(sectionNav()).getByRole("link", { name: tConsole("nav.users") })).toBeVisible();
     expect(within(sectionNav()).queryByRole("link", { name: tConsole("nav.roles") })).toBeNull();
+  });
+});
+
+describe("DashboardLayout search (COU-347)", () => {
+  it("hands the term to the users list when the console search is submitted", async () => {
+    const user = userEvent.setup();
+    const { router } = renderShell();
+
+    const search = screen.getByRole("searchbox", { name: tConsole("shell.searchLabel") });
+    await user.type(search, "ada{Enter}");
+
+    expect(router.state.location.pathname).toBe("/app/users");
+    expect(router.state.location.search).toBe("?search=ada");
+  });
+});
+
+describe("DashboardLayout breadcrumbs (S5)", () => {
+  it("renders the full trail on the user sub-pages", () => {
+    for (const [path, expected] of [
+      ["/app/users/new", [tConsole("nav.home"), tConsole("nav.users"), tUsers("create.title")]],
+      ["/app/users/u9", [tConsole("nav.home"), tConsole("nav.users"), tUsers("detail.title")]],
+      ["/app/users/u9/edit", [tConsole("nav.home"), tConsole("nav.users"), tUsers("edit.title")]],
+    ] as const) {
+      const { container } = renderShell(path);
+
+      const banner = within(container).getByRole("banner");
+      const trail = within(banner)
+        .getByRole("navigation", { name: tCommon("ui.breadcrumb.label") })
+        .textContent.trim();
+
+      for (const label of expected) {
+        expect(trail).toContain(label);
+      }
+    }
+  });
+
+  it("keeps the two-level trail on the section roots", () => {
+    for (const path of ["/app", "/app/users"]) {
+      const { container } = renderShell(path);
+
+      const banner = within(container).getByRole("banner");
+      const trail = within(banner)
+        .getByRole("navigation", { name: tCommon("ui.breadcrumb.label") })
+        .textContent.trim();
+
+      expect(trail).toContain(tConsole("nav.home"));
+    }
+  });
+});
+
+describe("DashboardLayout sidebar identity (S1)", () => {
+  it("shows the signed-in user with their role under the name", () => {
+    renderShell("/app/users");
+
+    const block = screen.getByRole("button", { name: tConsole("shell.userMenu") });
+
+    expect(block).toHaveTextContent("Ada Lovelace");
+    expect(block).toHaveTextContent("admin");
   });
 });
 
@@ -295,13 +395,19 @@ describe("DashboardLayout keyboard and accessibility (S9, S10, S11)", () => {
 
     const expectedOrder = [
       tCommon("shell.skipLink"),
-      ...CONSOLE_NAV.map((item) => tConsole(item.labelKey)),
+      tConsole("shell.title"),
+      ...CONSOLE_NAV.filter((item) => item.implemented !== false).map((item) =>
+        tConsole(item.labelKey),
+      ),
+      tConsole("shell.userMenu"),
       tConsole("shell.openMenu"),
       tConsole("shell.collapseSidebar"),
-      tConsole("shell.title"),
+      tConsole("shell.searchLabel"),
+      tCommon("shell.theme.system"),
+      tCommon("shell.theme.light"),
+      tCommon("shell.theme.dark"),
       tCommon("shell.language.switch"),
-      tCommon("shell.theme.switchTo", { mode: tCommon("shell.theme.light") }),
-      tConsole("shell.userMenu"),
+      tConsole("shell.profile"),
     ];
 
     const reached: string[] = [];

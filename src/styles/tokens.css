@@ -44,6 +44,16 @@
   --text-divider: 240 9% 79%;
 
   --surface-raised: 240 25% 98%;
+  --canvas: 240 20% 98%;
+  --panel: 0 0% 100%;
+  --avatar: 276 42% 95%;
+  --avatar-ring: 306 54% 35%;
+  --panel-foreground: 240 8% 7%;
+  --panel-muted: 240 5% 45%;
+  --panel-subtle: 240 6% 36%;
+  --panel-faint: 240 5% 57%;
+  --panel-accent: 306 54% 35%;
+  --panel-border: 240 14% 93%;
   --surface-row-alt: 240 20% 99%;
   --border-subtle: 240 15% 95%;
   --border-strong: 240 19% 94%;
@@ -139,6 +149,16 @@
   --text-divider: 270 5% 24%;
 
   --surface-raised: 270 5% 17%;
+  --canvas: 270 4.7% 16.9%;
+  --panel: 240 8.1% 7.3%;
+  --avatar: 297 42% 20%;
+  --avatar-ring: 291.7 48.2% 56.1%;
+  --panel-foreground: 240 6% 94%;
+  --panel-muted: 240 12% 85%;
+  --panel-subtle: 240 7% 68%;
+  --panel-faint: 240 5% 57%;
+  --panel-accent: 281 46% 75%;
+  --panel-border: 270 5% 24%;
   --surface-row-alt: 270 4% 10%;
   --border-subtle: 270 5% 17%;
   --border-strong: 257 5% 29%;

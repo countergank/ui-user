@@ -19,6 +19,11 @@ describe("activeNavItem", () => {
     expect(activeNavItem(CONSOLE_NAV, "/app")?.to).toBe("/app");
   });
 
+  it("ignores a trailing slash, so the root does not stay marked on a child path", () => {
+    expect(activeNavItem(CONSOLE_NAV, "/app/users/")?.to).toBe("/app/users");
+    expect(activeNavItem(CONSOLE_NAV, "/app/")?.to).toBe("/app");
+  });
+
   it("resolves an empty manifest to nothing instead of throwing", () => {
     expect(activeNavItem([], "/app")).toBeUndefined();
     expect(activeNavItem([], "/app/users")).toBeUndefined();

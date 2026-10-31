@@ -547,3 +547,16 @@ T3 (login `d581ec5` + landing `854a10e`).
 * Flake `ReferenceError: window is not defined` en un test de entorno node: tumba el CI de
   cualquier PR de forma intermitente. Merece ticket propio.
 * PR #40 (redacción de rutas) está verde y espera el merge del humano.
+
+**L20** — **T4 arrancado: copy de las pantallas de consola.** Se corrió la extracción sobre
+`design/app/04-resumen.html` (**103** cadenas únicas) y `05-detalle-usuario.html` (**108**). La
+extracción es determinista, así que no se pega acá: el comando está en la sección de handoff y se
+vuelve a correr al retomar. Lo que ya se ve: el resumen trae KPIs (`1.248 / 1.187 / 12 / 49` con
+sus subtítulos), barra de acciones (`Exportar CSV`, `Nuevo usuario`), filtros por rol
+(`Todos / user / viewer`), orden por `creado`, paginación `20 / pág` y las columnas
+`USUARIO · ROL · ESTADO · EMAIL`; el detalle trae `Ficha, permisos y acciones administrativas`,
+perfil con `Nombre / Apellido / Nombre de usuario / Email / Rol / Creado / Actualizado`, y
+`Permisos efectivos` con `22 heredados del rol + 2 directos`.
+
+Nota: el sidebar del artboard tiene **Sesiones** como ítem propio, que hoy no existe en
+`src/features/console/navigation.ts` — hay que decidir si entra en T4 o queda como ticket aparte.

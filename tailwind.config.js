@@ -23,6 +23,24 @@ export default {
           subtle: "hsl(var(--sidebar-subtle))",
           faint: "hsl(var(--sidebar-faint))",
         },
+        panel: {
+          DEFAULT: "hsl(var(--panel))",
+          foreground: "hsl(var(--panel-foreground))",
+          muted: "hsl(var(--panel-muted))",
+          subtle: "hsl(var(--panel-subtle))",
+          faint: "hsl(var(--panel-faint))",
+          accent: "hsl(var(--panel-accent))",
+          border: "hsl(var(--panel-border))",
+        },
+        canvas: "hsl(var(--canvas))",
+        avatar: {
+          DEFAULT: "hsl(var(--avatar))",
+          ring: "hsl(var(--avatar-ring))",
+        },
+        surface: {
+          raised: "hsl(var(--surface-raised))",
+          "row-alt": "hsl(var(--surface-row-alt))",
+        },
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
