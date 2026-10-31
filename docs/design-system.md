@@ -6,7 +6,7 @@
 > naming rules that keep the CSS honest, and the checks that keep it true.
 
 The **source of truth for the values** is `src/styles/tokens.css`, exposed to components
-through `tailwind.config.js`. Tokens are bare HSL channels (`262 83% 58%`) consumed as
+through `tailwind.config.js`. Tokens are bare HSL channels (`306 54% 35%`) consumed as
 `hsl(var(--primary))` so opacity works everywhere. Nothing in `design/` overrides a value: the
 folder is the **inventory** (what is, what is proposed), never the source.
 
@@ -15,10 +15,17 @@ folder is the **inventory** (what is, what is proposed), never the source.
 | `src/styles/tokens.css` | The values the app renders — the only source of truth |
 | `tailwind.config.js` | Token → Tailwind utility map |
 | `design/system.md` | The same values, described with their component rules |
-| `design/app/tokens-app.css` | **Proposed** rebranding palette (COU-342), not applied; COU-344 applies it |
+| `design/app/tokens-app.css` | Light half of the applied palette, imported into `tokens.css` by COU-344 |
+| `design/app/tokens-dark.css` | Dark half of the applied palette (Radix base: mauve/plum/grass/amber/red/blue) |
 | `design/README.md` | Index of `design/`: what is current, what is proposed |
 
 If `design/` and `tokens.css` ever disagree, `tokens.css` wins and `design/` has a defect.
+
+- The canonical landing is the **implemented one** (`src/features/landing/`), aligned to
+  artboard `01-landing.html`.
+- The old `Resumen` nav entry is removed; `Inicio` is the first entry and points at `/app`.
+- Artboards: `04-usuarios` replaces `04-resumen` (re-export pending); `Crear usuario` and
+  `Editar usuario` were built directly in the `.fig` (HTML export pending).
 
 ## Quick path
 
@@ -45,94 +52,99 @@ Enforced by:
 | every text file under `src/` (incl. `.css`) | `src/styles/no-hardcoded-hex.test.ts` (`pnpm test`) |
 
 The two live in different tools on purpose: **Biome 1.9.4 ships no hex-color rule**
-(`nursery/noHexColors` and `suspicious/noHexColors` both report "This rule doesn't exist")
-and **ESLint cannot lint CSS**, so each tool covers the half the other cannot. The disk-scan
+(`nursery/noHexColors` and `suspicious/noHexColors` both report "This rule doesn't exist") and
+**ESLint cannot lint CSS**, so each tool covers the half the other cannot. The disk-scan
 test strips CSS comments, because a comment cannot render a color.
+
+## Adding a token
+
+**Any change to `tailwind.config.js` — a new token or a new key — requires restarting the
+Vite dev server.** Tailwind generates utilities at startup, so HMR does not pick new keys up:
+the classes silently do not exist. This bit the team three times during COU-344.
 
 ## Palette
 
 Semantic tokens, both modes. Values are bare HSL channels; each maps to a Tailwind color
-(`bg-background`, `text-foreground`, `border-border`, …).
+(`bg-background`, `text-foreground`, `border-border`, …). The palette was applied by COU-344
+from `design/app/tokens-app.css` + `tokens-dark.css`; the previous violet brand
+(`262 83% 58%`) is gone.
 
 ### Surfaces and chrome
 
 | Token | Light | Dark | Use |
 |-------|-------|------|-----|
-| `--background` | `0 0% 100%` | `222 47% 9%` | Page surface |
-| `--foreground` | `222 47% 11%` | `210 40% 98%` | Primary text |
-| `--card` | `0 0% 100%` | `222 47% 13%` | Panels, cards, inputs |
-| `--card-foreground` | `222 47% 11%` | `210 40% 98%` | Text on a card |
-| `--popover` | `0 0% 100%` | `222 47% 13%` | Elevation (derived, = card) |
-| `--popover-foreground` | `222 47% 11%` | `210 40% 98%` | Text in a popover |
-| `--muted` | `210 40% 96%` | `217 33% 17%` | Subtle surfaces, table headers |
-| `--muted-foreground` | `215 16% 45%` | `215 20% 65%` | Secondary text |
-| `--secondary` | `210 40% 96%` | `217 33% 17%` | Secondary surface (derived, = muted) |
-| `--secondary-foreground` | `222 47% 11%` | `210 40% 98%` | Text on a secondary surface |
-| `--border` | `214 32% 91%` | `217 33% 20%` | Dividers, outlines |
-| `--input` | `214 32% 91%` | `217 33% 20%` | Form-control outline |
-| `--seg-thumb` | `0 0% 100%` | `217 33% 24%` | Selected segment thumb |
+| `--background` | `0 0% 100%` | `270 6% 7%` | Page surface |
+| `--foreground` | `240 8% 7%` | `240 6% 94%` | Primary text |
+| `--card` / `--card-foreground` | `0 0% 100%` / `240 8% 7%` | `270 4% 10%` / `240 6% 94%` | Generic panels, cards, inputs |
+| `--popover` / `--popover-foreground` | `0 0% 100%` / `240 8% 7%` | `260 4% 14%` / `240 6% 94%` | Elevation |
+| `--muted` | `240 22% 96%` | `260 4% 14%` | Subtle surfaces, table headers |
+| `--muted-foreground` | `240 6% 36%` | `258 7% 72%` | Secondary text |
+| `--secondary` | `240 22% 96%` | `260 4% 14%` | Secondary surface |
+| `--secondary-foreground` | `240 8% 7%` | `240 6% 94%` | Text on a secondary surface |
+| `--border` | `240 14% 93%` | `270 5% 24%` | Dividers, outlines |
+| `--input` | `240 13% 88%` | `270 5% 24%` | Form-control outline |
+| `--canvas` | `240 20% 98%` (`#F9F9FB`) | `270 4.7% 16.9%` (`#2B292D`) | Console screen background, behind every panel |
+| `--panel` | `0 0% 100%` (`#FFFFFF`) | `240 8.1% 7.3%` (`#111114`) | The console card surface: user-detail cards, users-list KPI cards, table card, side cards |
+| `--panel-foreground` / `--panel-muted` / `--panel-subtle` / `--panel-faint` | `240 8% 7%` / `240 5% 45%` / `240 6% 36%` / `240 5% 57%` | `240 6% 94%` / `240 12% 85%` / `240 7% 68%` / `240 5% 57%` | Text hierarchy on a panel |
+| `--panel-accent` / `--panel-border` | `306 54% 35%` / `240 14% 93%` | `281 46% 75%` / `270 5% 24%` | Panel accent and border |
+| `--avatar` / `--avatar-ring` | `276 42% 95%` (`#F3EDF8`) / `306 54% 35%` (`#892980`) | `297 42% 20%` (`#461E48`) / `291.7 48.2% 56.1%` (`#B659C5`) | Topbar user button and its ring |
+| `--avatar-1-bg`…`--avatar-6-bg` + `--avatar-2-fg`…`--avatar-4-fg` | six backgrounds, three texts | theme-aware | Initials palette across the app |
+| `--surface-raised` | `240 25% 98%` | `270 5% 17%` | Raised surface (`bg-surface-raised`) |
+| `--surface-row-alt` | `240 20% 99%` | `270 4% 10%` | Alternating table row (`bg-surface-row-alt`) |
+| `--sidebar` family | `240 8% 7%` / `240 6% 94%` / `270 5% 17%` / `270 17% 14%` | `260 4% 14%` / `240 6% 94%` / `270 5% 24%` / `300 34% 15%` | Console rail and login brand-panel chrome (`sidebar`, `-foreground`, `-border`, `-accent`, plus `-highlight/muted/subtle/faint`) |
 
-> **One deliberate deviation from the boceto**: light `--muted-foreground` is `45%`, not the
-> boceto's `47%`. It is also the text color *on* `--muted` (neutral badges, disabled inputs,
-> table headers); at 47% that pairing measured 4.299:1 — below AA. At 45% it measures 4.616:1
-> on `--muted` and 5.066:1 on `--background`. `src/styles/tokens.test.ts` asserts all three
-> pairings so the fix cannot regress.
+`surface.raised` and `surface.row-alt` have Tailwind keys (`bg-surface-raised`,
+`bg-surface-row-alt`) — no more arbitrary `bg-[hsl(var(--surface-raised))]`. Contrast
+pairings are asserted in `src/styles/tokens.test.ts`.
 
 ### Brand
 
 | Token | Light | Dark | Use |
 |-------|-------|------|-----|
-| `--primary` | `262 83% 58%` | `255 92% 76%` | Primary action, active nav |
-| `--primary-foreground` | `0 0% 100%` | `222 47% 9%` | Text on `--primary` |
-| `--primary-hover` | `263 70% 50%` | `258 90% 66%` | Primary hover |
-| `--accent` | `251 100% 96%` | `263 69% 20%` | Highlight surface (brand tint) |
-| `--accent-foreground` | `262 83% 58%` | `255 92% 76%` | Text on `--accent` |
-| `--ring` | `262 83% 58%` | `255 92% 76%` | Focus ring (see [Focus](#focus)) |
+| `--primary` | `306 54% 35%` (`#892980`) | `292 48% 56%` | Primary action, active nav |
+| `--primary-foreground` | `0 0% 100%` | `291 39% 6%` | Text on `--primary` |
+| `--primary-hover` | `306 54% 35%` | `293 47% 63%` | Primary hover |
+| `--primary-soft` / `--accent` | `276 42% 95%` | `297 42% 20%` | Highlight surface (brand tint) |
+| `--accent-foreground` | `306 54% 35%` | `292 79% 77%` | Text on `--accent` |
+| `--ring` | `306 54% 35%` | `292 30% 47%` | Focus ring (see [Focus](#focus)) |
+| `--accent-violet` / `--accent-plum` | `281 46% 75%` / `262 35% 47%` | `296 34% 28%` / `294 31% 36%` | Decorative brand accents |
 
-The brand hue is the violet of the real Countergank logo: violet-500 (`#8B5CF6`). The
-semantic tokens pick the ramp step that passes AA — light `--primary` is violet-600
-(`#7C3AED`, `262 83% 58%`) and dark `--primary` is violet-400 (`#A78BFA`, `255 92% 76%`).
-The brand ramp is the reference palette, **not** exposed as tokens — the app consumes only
-the semantic values above:
-
-| Step | 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 950 |
-|------|----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
-| Violet | `#F5F3FF` | `#EDE9FE` | `#DDD6FE` | `#C4B5FD` | `#A78BFA` | `#8B5CF6` | `#7C3AED` | `#6D28D9` | `#5B21B6` | `#4C1D95` | `#2E1065` |
-| Slate (neutral) | `#F8FAFC` | `#F1F5F9` | `#E2E8F0` | `#CBD5E1` | `#94A3B8` | `#64748B` | `#475569` | `#334155` | `#1E293B` | `#0F172A` | `#020617` |
-
-The step matters for contrast, not taste: violet-500 reaches only 3.6:1 on white, so the
-light primary steps up to violet-600 (5.7:1, AA for button text); in dark mode the primary
-lightens and its foreground inverts to near-black instead.
+The brand hue is the magenta/plum of the Countergank identity, not the old violet. The dark
+scale is built on Radix `plum`; the light primary (`306 54% 35%`) is the AA-safe step. In
+light mode `--primary-hover` equals `--primary` — that is how the design file defines it, a
+recorded decision, not a defect.
 
 ### Status tones
 
-Four tones, each with a `-foreground` pair. The bare tone is for dots, borders, icon fills
-and — in dark mode — text on a shaded surface. In **light** mode a tone used as *text* on a
-tint of itself fails AA (measured 1.92:1 warning, 2.27:1 success, 2.47:1 info, 3.07:1
-danger), so each tone ships a darker `-foreground` that is the AA-safe text color.
+Four tones, each with a `-foreground` pair. The bare tone is for dots, borders and icon
+fills; the `-foreground` is the AA-safe text color on a tint of the tone (asserted in
+`src/styles/tokens.test.ts`, over both `--background` and `--card`).
 
 | Token pair | Light | Dark |
 |------------|-------|------|
-| `--success` / `--success-foreground` | `160 84% 39%` / `160 84% 25%` | `160 84% 45%` / `160 84% 45%` |
-| `--warning` / `--warning-foreground` | `38 92% 50%` / `38 92% 29%` | `43 96% 56%` / `43 96% 56%` |
-| `--danger` / `--danger-foreground` | `350 89% 60%` / `350 89% 42%` | `350 89% 65%` / `350 89% 66%` |
-| `--info` / `--info-foreground` | `199 89% 48%` / `199 89% 33%` | `199 89% 60%` / `199 89% 60%` |
+| `--success` / `--success-foreground` | `151 61% 30%` / `151 61% 29%` | `151 55% 42%` / `151 65% 54%` |
+| `--warning` / `--warning-foreground` | `39 100% 27%` / `39 100% 27%` | `39 100% 57%` / `46 100% 54%` |
+| `--danger` / `--danger-foreground` | `3 71% 41%` / `3 71% 41%` | `358 45% 49%` / `2 100% 79%` |
+| `--info` / `--info-foreground` | `209 100% 50%` / `208 88% 40%` | `206 100% 50%` / `210 100% 72%` |
+| `--success-soft` / `--danger-soft` | `141 41% 93%` / `3 69% 95%` | `152 41% 13%` / `350 53% 15%` |
 
-In dark mode `-foreground` reuses the tone: a light tone on a dark surface already clears AA.
-Usage in Tailwind: `text-success-foreground`, `bg-success/14`, `border-success/30`.
+Usage in Tailwind: `text-success-foreground`, `bg-success/14`, `border-success/30`. On the
+users table, status is a dot + text: `text-success` active, `text-muted-foreground` inactive,
+`text-destructive` locked (`lockedUntil` overrides `isActive`). The KPI percentages, role
+distribution counts, audit rows and the verification column are placeholders (`—`) awaiting
+`api-user` work tracked in COU-347 — not real features.
 
 ### Destructive
 
-`--destructive` is the shadcn button background, separate from the `--danger` **status tone**:
+`--destructive` is the shadcn button background, separate in role from the `--danger` **status
+tone** (in value they coincide in both modes; the foregrounds differ):
 
 | Token | Light | Dark |
 |-------|-------|------|
-| `--destructive` | `347 77% 50%` | `350 89% 65%` |
-| `--destructive-foreground` | `0 0% 100%` | `222 47% 9%` |
+| `--destructive` | `3 71% 41%` | `358 45% 49%` |
+| `--destructive-foreground` | `0 0% 100%` | `0 0% 100%` |
 
-Light `--destructive` is rose-600, not the boceto's `--danger` rose-500 (`#F43E5C`): the
-button paints it as a **background** under white text, where rose-500 reaches only 3.69:1.
-rose-600 reaches 4.67:1 and passes AA.
+White text on both steps is asserted by `src/styles/tokens.test.ts`.
 
 ## Token-name mapping (COU-270 boceto → app)
 
@@ -142,7 +154,7 @@ changes** — and the mapping is written down here so the rename cannot recur si
 
 The boceto itself (`designs/identity/index.html`) was retired in COU-345: it duplicated this
 system as a second, contradictory source. The tables below are the durable record of the
-mapping it defined; the local copy lives in the `tokens.css` header comment.
+mapping it defined.
 
 | Boceto | App (shadcn) | Note |
 |--------|--------------|------|
@@ -150,7 +162,7 @@ mapping it defined; the local copy lives in the `tokens.css` header comment.
 | `--fg` | `--foreground` | rename |
 | `--card-fg` | `--card-foreground` | rename |
 | `--primary-fg` | `--primary-foreground` | rename |
-| `--muted-fg` | `--muted-foreground` | rename, plus the AA value fix above |
+| `--muted-fg` | `--muted-foreground` | rename |
 | `--accent-fg` | `--accent-foreground` | rename |
 | `--card`, `--muted`, `--border`, `--input`, `--ring` | same | unchanged |
 | `--primary`, `--primary-hover`, `--accent`, `--seg-thumb` | same | unchanged |
@@ -160,29 +172,29 @@ mapping it defined; the local copy lives in the `tokens.css` header comment.
 Tokens the boceto does **not** define, derived without inventing hues:
 `--popover` (= `--card`), `--popover-foreground` (= `--foreground`), `--secondary`
 (= `--muted`), `--secondary-foreground` (= `--foreground`), `--destructive-foreground`, and
-every `--{success,warning,danger,info}-foreground`.
-
-The local copy of this mapping lives in the `tokens.css` header comment; this table is the
-durable explanation.
+every `--{success,warning,danger,info}-foreground`. This table is the durable explanation;
+the COU-344 palette replaced the boceto's values.
 
 ## Typography
 
-One family: **Inter** (variable, free, sober). The boceto's ramp:
+Three self-hosted families:
 
-| Role | Size / weight | Notes |
-|------|---------------|-------|
-| KPI metric | 26px / 650 | `tabular-nums` so columns don't jitter |
-| Page title | 20px / 650 | |
-| Section title | 15px / 650 | |
-| Body | 14px / 400 | |
-| UI / controls | 13px / 500 | Buttons, inputs |
-| Secondary | 12.5px / 400 | `--muted-foreground` |
-| Label | 10.5px / 600 | uppercase, `letter-spacing: .06em` |
-| Technical data | 11px mono | IDs, `user:update` |
+| Token | Family | Use |
+|-------|--------|-----|
+| `--font-sans` | Inter | All UI |
+| `--font-display` | Space Grotesk (weight axis 300–700) | Page titles |
+| `--font-mono` | JetBrains Mono | Identifiers, the wordmark, column headers |
 
-Tokens: `--font-sans` (`"Inter var", Inter, ui-sans-serif, system-ui, …`) and `--font-mono`.
-Tailwind utilities: `font-sans`, `font-mono`. The body applies `font-feature-settings:
-"rlig" 1, "calt" 1` in `src/styles/index.css`.
+| Role | Pattern | Notes |
+|------|---------|-------|
+| Page title | `font-display text-[26px] font-bold` | |
+| Column header | mono 11px, uppercase, `tracking-[0.16em]` | |
+| Body | `text-sm` | |
+| Secondary | `text-muted-foreground` | |
+| Technical data | `font-mono` | IDs, `user:update` |
+
+Tailwind utilities: `font-sans`, `font-display`, `font-mono`. The body applies
+`font-feature-settings: "rlig" 1, "calt" 1` in `src/styles/index.css`.
 
 ## Spacing
 
@@ -215,7 +227,7 @@ Tailwind: `shadow-sm`, `shadow`, `shadow-lg`.
 
 ## Focus
 
-`--ring` is the focus color: light `262 83% 58%`, dark `255 92% 76%`. Focus must be visible
+`--ring` is the focus color: light `306 54% 35%`, dark `292 30% 47%`. Focus must be visible
 on every interactive element — this is a WCAG 2.2 requirement, not decoration.
 
 - Buttons and links: `focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2`
@@ -265,12 +277,14 @@ translation bundles, never be hardcoded.
 | No hex in `.ts` / `.tsx` | `no-restricted-syntax` | `eslint.config.js` (`pnpm lint`) |
 | No hex anywhere under `src/` (CSS comments exempt) | disk scan | `src/styles/no-hardcoded-hex.test.ts` |
 | `en`/`es`/`pt` key parity | parity test + type system | `src/lib/i18n/parity.test.ts` (ADR-12) |
+| New Tailwind color keys exist at runtime | restart the dev server after editing `tailwind.config.js` | process rule |
 
 ## Rule of thumb checklist
 
 - [ ] Color comes from a token (`bg-primary`, `hsl(var(--success))`) — never a hex
 - [ ] A new state/tone has a light **and** dark value, and its AA pair is measured
 - [ ] A new token is added to both `tokens.css` blocks **and** `tailwind.config.js`
+- [ ] After editing `tailwind.config.js`, the Vite dev server is restarted (HMR does not pick up new keys)
 - [ ] Spacing uses the 4px scale; radii/shadows use the tokens
 - [ ] Focus stays visible on every interactive element
 - [ ] A CSS modifier's suffix is not an existing standalone class name (namespace with `--`)

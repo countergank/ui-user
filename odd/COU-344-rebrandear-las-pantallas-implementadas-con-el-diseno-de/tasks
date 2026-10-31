@@ -1,0 +1,21 @@
+# COU-344 — Rebrand the implemented screens with the design/app design
+
+Mirror of `odd/tasks/COU-344-rebrandear-las-pantallas-implementadas-con-el-diseno-de.md`
+for ODD task recovery.
+
+- [ ] Task 1 — New tokens, remapped `.dark`, three font families with `@font-face`, AA verified.
+  - Target: `src/styles/tokens.css`, `src/styles/index.css`, `tailwind.config.js`,
+    `src/styles/tokens.test.ts` (S1, S2, S3, S8).
+  - Blocker: the dark palette does not exist in the design; `tokens.test.ts` parity requires
+    every tone token in both `:root` and `.dark`.
+- [ ] Task 2 — Verify the theme and language switchers still work against the new palette.
+  - Target: `src/components/theme/`, `src/lib/i18n/` (S3, S4). Both already exist; no new UI.
+- [ ] Task 3 — Landing and login aligned to their artboards.
+  - Target: `src/features/landing/`, `src/features/auth/` (S5). Public header already has
+    About + Sign in.
+- [ ] Task 4 — Users list, detail, create, edit and 403 on tokens + shell.
+  - Target: `src/features/users/`, `src/features/console/` (S1, S6).
+- [ ] Task 5 — Design docs follow the applied palette.
+  - Target: `design/system.md`, `docs/design-system.md` (S9, S10).
+- [ ] Task 6 — Full gate green and axe without regressions.
+  - Evidence: pending.

@@ -1,33 +1,76 @@
 import { PERMISSIONS, type Permission, hasPermission } from "@/features/authorization/permissions";
 
 export type ConsoleNavLabelKey =
-  | "nav.summary"
+  | "nav.home"
   | "nav.users"
   | "nav.roles"
-  | "nav.permissions"
+  | "nav.sessions"
   | "nav.audit"
-  | "nav.settings";
+  | "nav.emailTemplates"
+  | "nav.deliveries"
+  | "nav.parameters"
+  | "nav.i18n";
+
+export type ConsoleNavGroup = "management" | "system";
 
 export interface ConsoleNavItem {
   to: string;
   labelKey: ConsoleNavLabelKey;
+  group: ConsoleNavGroup;
   requiredPermission?: Permission;
+  /** False when the screen exists only in the design, so the item renders disabled. */
+  implemented?: boolean;
 }
 
 export const CONSOLE_NAV: readonly ConsoleNavItem[] = [
-  { to: "/app", labelKey: "nav.summary" },
-  { to: "/app/users", labelKey: "nav.users", requiredPermission: PERMISSIONS.userRead },
-  { to: "/app/roles", labelKey: "nav.roles", requiredPermission: PERMISSIONS.roleRead },
+  { to: "/app", labelKey: "nav.home", group: "management" },
   {
-    to: "/app/permissions",
-    labelKey: "nav.permissions",
-    requiredPermission: PERMISSIONS.permissionRead,
+    to: "/app/users",
+    labelKey: "nav.users",
+    group: "management",
+    requiredPermission: PERMISSIONS.userRead,
   },
-  { to: "/app/audit", labelKey: "nav.audit", requiredPermission: PERMISSIONS.auditRead },
+  {
+    to: "/app/roles",
+    labelKey: "nav.roles",
+    group: "management",
+    requiredPermission: PERMISSIONS.roleRead,
+  },
+  {
+    to: "/app/sessions",
+    labelKey: "nav.sessions",
+    group: "management",
+    implemented: false,
+  },
+  {
+    to: "/app/audit",
+    labelKey: "nav.audit",
+    group: "management",
+    requiredPermission: PERMISSIONS.auditRead,
+  },
+  {
+    to: "/app/settings/email-templates",
+    labelKey: "nav.emailTemplates",
+    group: "system",
+    implemented: false,
+  },
+  {
+    to: "/app/settings/deliveries",
+    labelKey: "nav.deliveries",
+    group: "system",
+    implemented: false,
+  },
   {
     to: "/app/settings",
-    labelKey: "nav.settings",
+    labelKey: "nav.parameters",
+    group: "system",
     requiredPermission: PERMISSIONS.parameterRead,
+  },
+  {
+    to: "/app/settings/i18n",
+    labelKey: "nav.i18n",
+    group: "system",
+    implemented: false,
   },
 ];
 
@@ -37,20 +80,20 @@ export const CONSOLE_NAV: readonly ConsoleNavItem[] = [
  */
 export function activeNavItem(
   items: readonly ConsoleNavItem[],
-  pathname: string,
+  rawPathname: string,
 ): ConsoleNavItem | undefined {
-  const root = items.at(0);
+  const pathname = rawPathname.length > 1 ? rawPathname.replace(/\/+$/, "") : rawPathname;
+  const exact = items.find((item) => item.to === pathname);
 
-  if (root === undefined) {
-    return undefined;
+  if (exact !== undefined) {
+    return exact;
   }
 
-  if (pathname === root.to) {
-    return root;
-  }
+  const leaves = items.filter(
+    (item) => !items.some((other) => other !== item && other.to.startsWith(`${item.to}/`)),
+  );
 
-  return items
-    .slice(1)
+  return leaves
     .filter((item) => pathname === item.to || pathname.startsWith(`${item.to}/`))
     .sort((a, b) => b.to.length - a.to.length)[0];
 }

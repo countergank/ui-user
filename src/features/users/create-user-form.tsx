@@ -9,14 +9,7 @@ import { toast } from "sonner";
 import { PasswordInput } from "@/components/password-input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -26,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { UserFormField, userControlClass } from "./components/user-form-field";
 import { type CreateUserInput, type CreateUserValues, createUserFormSchema } from "./create-schema";
 import { resolveCreateUserError } from "./create-user-errors";
 import { useCreateUser } from "./hooks/use-create-user";
@@ -98,113 +92,109 @@ export function CreateUserForm() {
         }}
       >
         <fieldset className="space-y-4">
-          <legend className="text-sm font-medium text-muted-foreground">
+          <legend className="text-sm font-medium text-panel-foreground">
             {t("create.groups.identity")}
           </legend>
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("create.fields.name")}</FormLabel>
+              <UserFormField label={t("create.fields.name")}>
                 <FormControl>
-                  <Input autoComplete="given-name" {...field} />
+                  <Input autoComplete="given-name" className={userControlClass} {...field} />
                 </FormControl>
-                <FormMessage />
-              </FormItem>
+              </UserFormField>
             )}
           />
           <FormField
             control={form.control}
             name="lastName"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("create.fields.lastName")}</FormLabel>
+              <UserFormField label={t("create.fields.lastName")}>
                 <FormControl>
-                  <Input autoComplete="family-name" {...field} />
+                  <Input autoComplete="family-name" className={userControlClass} {...field} />
                 </FormControl>
-                <FormMessage />
-              </FormItem>
+              </UserFormField>
             )}
           />
         </fieldset>
 
         <fieldset className="space-y-4">
-          <legend className="text-sm font-medium text-muted-foreground">
+          <legend className="text-sm font-medium text-panel-foreground">
             {t("create.groups.access")}
           </legend>
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("create.fields.email")}</FormLabel>
+              <UserFormField label={t("create.fields.email")}>
                 <FormControl>
-                  <Input type="email" autoComplete="email" {...field} />
+                  <Input
+                    type="email"
+                    autoComplete="email"
+                    className={userControlClass}
+                    {...field}
+                  />
                 </FormControl>
-                <FormMessage />
-              </FormItem>
+              </UserFormField>
             )}
           />
           <FormField
             control={form.control}
             name="userName"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("create.fields.userName")}</FormLabel>
+              <UserFormField label={t("create.fields.userName")}>
                 <FormControl>
-                  <Input autoComplete="username" {...field} />
+                  <Input autoComplete="username" className={userControlClass} {...field} />
                 </FormControl>
-                <FormMessage />
-              </FormItem>
+              </UserFormField>
             )}
           />
           <FormField
             control={form.control}
             name="password"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("create.fields.password")}</FormLabel>
+              <UserFormField
+                label={t("create.fields.password")}
+                after={<PasswordStrengthIndicator control={form.control} t={t} />}
+              >
                 <FormControl>
                   <PasswordInput
                     showLabel={t("create.showPassword")}
                     hideLabel={t("create.hidePassword")}
                     autoComplete="new-password"
+                    className={userControlClass}
                     {...field}
                   />
                 </FormControl>
-                <FormMessage />
-                <PasswordStrengthIndicator control={form.control} t={t} />
-              </FormItem>
+              </UserFormField>
             )}
           />
           <FormField
             control={form.control}
             name="confirmPassword"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("create.fields.confirmPassword")}</FormLabel>
+              <UserFormField label={t("create.fields.confirmPassword")}>
                 <FormControl>
                   <PasswordInput
                     showLabel={t("create.showPassword")}
                     hideLabel={t("create.hidePassword")}
                     autoComplete="new-password"
+                    className={userControlClass}
                     {...field}
                   />
                 </FormControl>
-                <FormMessage />
-              </FormItem>
+              </UserFormField>
             )}
           />
           <FormField
             control={form.control}
             name="role"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("create.fields.role")}</FormLabel>
+              <UserFormField label={t("create.fields.role")}>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className={userControlClass}>
                       <SelectValue />
                     </SelectTrigger>
                   </FormControl>
@@ -216,8 +206,7 @@ export function CreateUserForm() {
                     ))}
                   </SelectContent>
                 </Select>
-                <FormMessage />
-              </FormItem>
+              </UserFormField>
             )}
           />
         </fieldset>

@@ -71,7 +71,7 @@
   --accent: 276 42% 95%;
   --primary-soft: 276 42% 95%;
   --success: 151 61% 30%;
-  --success-foreground: 151 61% 30%;
+  --success-foreground: 151 61% 29%; /* #1D774B, minimo que pasa AA sobre tinte 14% (4.57) */
   --success-soft: 141 41% 93%;
   --warning: 39 100% 27%;
   --warning-foreground: 39 100% 27%;
@@ -124,4 +124,18 @@
   --avatar-2-fg: 214 57% 39%;
   --avatar-3-fg: 187 59% 30%;
   --avatar-4-fg: 336 47% 43%;
+
+  /* chrome del shell (rebranding): paneles oscuros en ambos temas */
+  --sidebar: 240 8% 7%; /* #111114 */
+  --sidebar-foreground: 240 6% 94%; /* #EEEEF0 */
+  --sidebar-border: 270 5% 17%; /* #2B292D */
+  --sidebar-accent: 270 17% 14%; /* #241E2A */
+  /* tonos y controles que faltaban para igualar ambos modos */
+  --info: 209 100% 50%; /* #0090FF */
+  --info-foreground: 208 88% 40%; /* #0C6CC0, minimo que pasa AA sobre tinte 14% (4.51) */
+  --seg-thumb: 0 0% 100%; /* #FFFFFF */
+  --sidebar-highlight: 281 46% 75%; /* #C9A0DC, acento sobre chrome */
+  --sidebar-muted: 240 12% 85%; /* #D4D4DD, texto atenuado sobre chrome */
+  --sidebar-subtle: 240 7% 68%; /* #A8A8B3, lead sobre chrome */
+  --sidebar-faint: 240 5% 57%; /* #8B8B96, pie sobre chrome */
 }

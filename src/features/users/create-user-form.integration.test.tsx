@@ -13,6 +13,7 @@ import { i18n } from "@/lib/i18n";
 
 import { CreateUserForm } from "./create-user-form";
 import { USERS_QUERY_KEY } from "./hooks/use-users";
+import { UsersCreatePage } from "./users-create-page";
 
 const USERS_URL = "https://test.invalid/admin/users";
 
@@ -85,6 +86,24 @@ function renderForm() {
   );
 
   return { invalidateSpy, container };
+}
+
+function renderPage() {
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+  });
+
+  return render(
+    <QueryClientProvider client={client}>
+      <I18nextProvider i18n={i18n}>
+        <MemoryRouter initialEntries={["/app/users/new"]}>
+          <Routes>
+            <Route path="/app/users/new" element={<UsersCreatePage />} />
+          </Routes>
+        </MemoryRouter>
+      </I18nextProvider>
+    </QueryClientProvider>,
+  );
 }
 
 async function fillForm({
@@ -366,5 +385,42 @@ describe("create user form — MSW", () => {
     ] as const) {
       expect(screen.getByLabelText(tUsers(`create.fields.${key}`))).toBeInTheDocument();
     }
+  });
+
+  it("associates every visible label with its control", () => {
+    renderForm();
+
+    for (const key of [
+      "name",
+      "lastName",
+      "email",
+      "userName",
+      "password",
+      "confirmPassword",
+      "role",
+    ] as const) {
+      const control = screen.getByLabelText(tUsers(`create.fields.${key}`));
+      const label = screen.getByText(tUsers(`create.fields.${key}`));
+      expect(label).toHaveAttribute("for", control.id);
+    }
+  });
+
+  it("keeps the submit and the cancel actions reachable", () => {
+    renderForm();
+
+    expect(screen.getByRole("button", { name: tUsers("create.submit") })).toBeEnabled();
+    expect(screen.getByRole("link", { name: tUsers("create.cancel") })).toHaveAttribute(
+      "href",
+      "/app/users",
+    );
+  });
+
+  it("shows the page header above the panel", () => {
+    renderPage();
+
+    expect(
+      screen.getByRole("heading", { level: 1, name: tUsers("create.title") }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(tUsers("create.subtitle"))).toBeInTheDocument();
   });
 });

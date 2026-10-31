@@ -17,6 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 import { useLogin } from "./hooks/use-login";
 import { resolveLoginError } from "./login-errors";
@@ -104,10 +105,20 @@ export function LoginForm() {
           )}
         />
 
-        <div className="flex justify-end">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <input
+              id="login-remember"
+              type="checkbox"
+              className="h-4 w-4 rounded-sm border border-input bg-background accent-primary"
+            />
+            <Label htmlFor="login-remember" className="text-sm font-normal text-muted-foreground">
+              {t("login.remember")}
+            </Label>
+          </div>
           <Link
             to="/forgot-password"
-            className="text-sm text-primary underline-offset-4 hover:underline"
+            className="text-sm font-medium text-primary underline-offset-4 hover:underline"
           >
             {t("login.forgotPassword")}
           </Link>
@@ -128,6 +139,36 @@ export function LoginForm() {
             <AlertDescription>{errorMessage}</AlertDescription>
           </Alert>
         ) : null}
+
+        <div className="flex items-center gap-3" aria-hidden="true">
+          <span className="h-px flex-1 bg-border" />
+          <span className="text-xs text-muted-foreground">{t("login.orDivider")}</span>
+          <span className="h-px flex-1 bg-border" />
+        </div>
+
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full"
+          disabled
+          aria-describedby="login-create-account-hint"
+        >
+          {t("login.createAccount")}
+        </Button>
+        <p id="login-create-account-hint" className="sr-only">
+          {t("login.createAccountHint")}
+        </p>
+
+        <p className="text-center text-xs text-muted-foreground">
+          {t("login.legal.prefix")}{" "}
+          <button type="button" disabled className="text-primary underline-offset-4">
+            {t("login.legal.terms")}
+          </button>{" "}
+          {t("login.legal.middle")}{" "}
+          <button type="button" disabled className="text-primary underline-offset-4">
+            {t("login.legal.privacy")}
+          </button>
+        </p>
       </form>
     </Form>
   );

@@ -9,6 +9,20 @@
     "exportedAt": "2026-10-28",
     "tool": "openpencil 0.15.1"
   },
+  "modes": {
+    "collection": "Tokens",
+    "default": "Light",
+    "alternate": "Dark",
+    "howToApply": "Por capa o por página con el control Apply variable mode; el lienzo no cambia de modo desde la colección.",
+    "generates": "design_to_tokens emite :root con Light y @media (prefers-color-scheme: dark) con Dark.",
+    "files": {
+      "light": "design/app/tokens-app.css",
+      "dark": "design/app/tokens-dark.css",
+      "board": "design/app/palette-dark.html"
+    },
+    "contrast": "25/25 pares AA en la paleta; 710 textos medidos en contexto oscuro sin fallas.",
+    "tokens": 66
+  },
   "artboards": [
     {
       "file": "01-landing.html",

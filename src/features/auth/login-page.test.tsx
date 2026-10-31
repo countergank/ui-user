@@ -38,6 +38,64 @@ describe("login page", () => {
     expect(screen.getByRole("main")).toBeInTheDocument();
   });
 
+  it("renders the brand panel copy without adding another heading", () => {
+    renderPage();
+
+    expect(screen.getByText(t("login.brand.eyebrow"))).toBeInTheDocument();
+    expect(screen.getByText(t("login.brand.status"))).toBeInTheDocument();
+    expect(screen.getByText(t("login.brand.headline"))).toBeInTheDocument();
+    expect(screen.getByText(t("login.brand.lead"))).toBeInTheDocument();
+    expect(screen.getByText(t("login.brand.bullets.rbac"))).toBeInTheDocument();
+    expect(screen.getByText(t("login.brand.bullets.audit"))).toBeInTheDocument();
+    expect(screen.getByText(t("login.brand.bullets.revocation"))).toBeInTheDocument();
+    expect(screen.getByText(t("login.brand.bullets.templates"))).toBeInTheDocument();
+    expect(screen.getByText(t("login.brand.services"))).toBeInTheDocument();
+
+    expect(screen.getAllByRole("heading")).toHaveLength(1);
+  });
+
+  it("offers the remember-me checkbox next to the forgot-password link", () => {
+    renderPage();
+
+    const checkbox = screen.getByRole("checkbox", { name: t("login.remember") });
+
+    expect(checkbox).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: t("login.forgotPassword") })).toHaveAttribute(
+      "href",
+      "/forgot-password",
+    );
+  });
+
+  it("renders the create-account action as a disabled button described by its own hint", () => {
+    renderPage();
+
+    const button = screen.getByRole("button", { name: t("login.createAccount") });
+
+    expect(button).toBeDisabled();
+    expect(button).toHaveAttribute("aria-describedby", "login-create-account-hint");
+    expect(screen.getByText(t("login.createAccountHint"))).toHaveAttribute(
+      "id",
+      "login-create-account-hint",
+    );
+  });
+
+  it("renders the legal terms and privacy placeholders as disabled link-styled buttons", () => {
+    renderPage();
+
+    expect(screen.getByRole("button", { name: t("login.legal.terms") })).toBeDisabled();
+    expect(screen.getByRole("button", { name: t("login.legal.privacy") })).toBeDisabled();
+  });
+
+  it("keeps the form-column footer with the copyright and a link back to the site", () => {
+    renderPage();
+
+    expect(screen.getByText(t("login.footer.copyright", { year: 2026 }))).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: t("login.footer.backToSite") })).toHaveAttribute(
+      "href",
+      "/",
+    );
+  });
+
   it("renders without any of the app shell's landmarks", () => {
     renderPage();
 

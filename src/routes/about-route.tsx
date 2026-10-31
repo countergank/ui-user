@@ -15,7 +15,7 @@ export function Component() {
   const { t } = useTranslation("landing");
 
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-12">
+    <div className="mx-auto w-full max-w-[1440px] px-6 sm:px-8 lg:px-16 mx-auto flex w-full max-w-4xl flex-col gap-12">
       <header className="flex flex-col gap-3">
         <h1 className="text-3xl font-semibold tracking-tight">{t("about.title")}</h1>
         <p className="max-w-prose text-muted-foreground">{t("about.body")}</p>

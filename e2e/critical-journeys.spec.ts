@@ -5,7 +5,9 @@ import type { Locator, Page } from "@playwright/test";
 import { en } from "../src/lib/i18n/locales/en";
 
 const SITE_TITLE = en.landing.title;
+const LANDING_HEADLINE = en.landing.hero.headline;
 const ABOUT_TITLE = en.landing.about.title;
+const SECTION_LINKS = ["product", "capabilities", "security"] as const;
 const skipLinkLabel = en.common.shell.skipLink;
 const publicNavLabel = en.landing.nav.label;
 const loadedAnnouncement = (title: string) =>
@@ -41,7 +43,7 @@ test.describe("public surface journeys", () => {
     await expect(publicNav(page)).toBeVisible();
     await expect(page.getByRole("main")).toBeVisible();
     await expect(page.getByRole("contentinfo")).toBeVisible();
-    await expect(page.getByText("docker compose up")).toBeVisible();
+    await expect(page.getByText(en.landing.hero.lead)).toBeVisible();
   });
 
   test("skip link is the first Tab stop and jumps focus to main content", async ({ page }) => {
@@ -62,6 +64,12 @@ test.describe("public surface journeys", () => {
     await expectFocused(skipLink(page));
     await page.keyboard.press("Tab");
     await expectFocused(page.getByRole("banner").getByRole("link", { name: SITE_TITLE }));
+    for (const section of SECTION_LINKS) {
+      await page.keyboard.press("Tab");
+      await expectFocused(
+        page.getByRole("banner").getByRole("link", { name: en.landing.nav[section] }),
+      );
+    }
     await page.keyboard.press("Tab");
     await expectFocused(publicNav(page).getByRole("link", { name: en.landing.nav.home }));
     await page.keyboard.press("Tab");
@@ -124,7 +132,9 @@ test.describe("motion journey", () => {
 test.describe("automated accessibility audits", () => {
   test("landing and about pages pass axe scans in a real browser", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByRole("heading", { level: 1, name: SITE_TITLE })).toBeVisible();
+    await expect(
+        page.getByRole("heading", { level: 1, name: LANDING_HEADLINE }),
+      ).toBeVisible();
     const landingResults = await new AxeBuilder({ page }).analyze();
     expect(landingResults.violations).toEqual([]);
 

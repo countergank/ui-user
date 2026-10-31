@@ -44,6 +44,7 @@ export const es: {
       },
       theme: {
         switchTo: "Cambiar a {{mode}}",
+        group: "Tema",
         system: "Automático",
         light: "Claro",
         dark: "Oscuro",
@@ -89,7 +90,7 @@ export const es: {
           by: "Ordenar por {{column}}",
         },
         pagination: {
-          summary: "Mostrando {{from}} a {{to}} de {{total}}",
+          summary: "Mostrando {{from}} - {{to}} de {{total}}",
           previous: "Página anterior",
           next: "Página siguiente",
           page: "Ir a la página {{page}}",
@@ -104,6 +105,10 @@ export const es: {
     nav: {
       label: "Navegación pública",
       home: "Inicio",
+      product: "Producto",
+      capabilities: "Capacidades",
+      security: "Seguridad",
+      sectionsLabel: "Secciones",
       about: "Acerca de",
       signIn: "Iniciar sesión",
     },
@@ -111,6 +116,8 @@ export const es: {
       docs: "Documentación",
       repository: "Repositorio",
       license: "Licencia",
+      copyright: "© {{year}} Countergank · Argentina",
+      github: "GitHub",
     },
     about: {
       title: "Acerca de",
@@ -129,65 +136,159 @@ export const es: {
       },
       body: "Countergank User es parte del stack open source de countergank: el frontend de la API de usuarios, construido con el molde estándar de frontend (React 19, Vite, TypeScript estricto). Este repositorio también guarda los estándares que sigue el proyecto — ADRs, patrones de componentes, accesibilidad, manejo de errores y reglas de testing — en docs/.",
     },
-    what: {
-      title: "Qué es",
-      body: "Countergank User es la consola open source de gestión de la API de usuarios de countergank. Es una single-page app en React: habla con api-user por HTTP y no tiene backend propio.",
-    },
-    service: {
-      title: "Qué ofrece",
-      body: "Iniciar sesión contra la API y después recorrer y administrar usuarios, roles y permisos, y revisar la auditoría: la superficie diaria de una administración de usuarios, sin construirla desde cero.",
-    },
-    features: {
-      title: "Qué incluye",
+    capabilities: {
+      eyebrow: "Capacidades",
+      heading: "Lo que el backend ya resuelve",
+      lead: "Nada de esto es una maqueta: son endpoints en producción",
       items: {
-        session: {
-          title: "Sesión que se renueva sola",
+        rbac: {
+          title: "RBAC granular",
           description:
-            "Access y refresh tokens, renovación proactiva antes de vencer, un solo refresh para 401 concurrentes y logout local primero.",
+            "22 permisos en 2 categorías y roles editables. Cada acción se autoriza por permiso, no por rol hardcodeado.",
         },
-        accessibility: {
-          title: "Accesibilidad como piso",
+        audit: {
+          title: "Auditoría trazable",
           description:
-            "Landmarks, skip link, anuncio de rutas, manejo de foco y axe en la suite de tests.",
+            "Cada request deja correlationId, usuario, método, endpoint, status y duración. Con before/after del cambio.",
         },
-        languages: {
-          title: "Tres idiomas",
+        sessions: {
+          title: "Sesiones revocables",
           description:
-            "Inglés, español y portugués de Brasil, con paridad de claves exigida por el sistema de tipos y los tests.",
+            "sessionEpoch monotónico: cerrar todas las sesiones invalida cada refresh token emitido antes, sin TTL.",
         },
-        typed: {
-          title: "Tipado de punta a punta",
+        email: {
+          title: "Email transaccional",
           description:
-            "TypeScript estricto, el envelope de error de la API tipado, y un gateway de configuración que falla rápido si falta una variable.",
+            "Plantillas con slug, variables y estado. Envío por plantilla o directo, con log por proveedor.",
+        },
+        i18n: {
+          title: "i18n en caliente",
+          description:
+            "Traducciones recargables sin reiniciar el servicio (nestjs-i18n), con mensajes de error localizados.",
+        },
+        params: {
+          title: "Parámetros vivos",
+          description:
+            "SMTP, proveedor de email, resend y throttler configurables por grupo y clave, sin redeploy.",
         },
       },
     },
+    security: {
+      eyebrow: "Seguridad",
+      heading: "El modelo de amenaza está en el diseño, no en el README.",
+      lead: "Access corto, refresh con epoch verificable.",
+      items: {
+        jwt: {
+          title: "JWT + refresh",
+          description: "Access corto, refresh con epoch verificable.",
+        },
+        lockout: {
+          title: "Lockout por intentos",
+          description: "lockedUntil por cuenta ante fuerza bruta.",
+        },
+        emailChange: {
+          title: "Cambio de email en 2 pasos",
+          description: "Token de confirmación y reversión.",
+        },
+      },
+    },
+    cta: {
+      heading: "¿Empezamos por tus usuarios?",
+      lead: "Iniciá sesión con tu cuenta de administrador o pedí acceso al equipo.",
+    },
     hero: {
-      ctaRepository: "Ver el repositorio",
-      ctaDocs: "Leer la documentación",
+      eyebrow: "Plataforma de administración de usuarios",
+      headline: "Permisos reales, sesiones controladas, todo auditado.",
+      lead: "Un backend de gestión de usuarios con RBAC de 22 permisos, revocación de sesiones y auditoría por request. Esta aplicación es su consola de administración.",
+      ctaCapabilities: "Ver capacidades",
+      chips: {
+        jwt: "JWT + refresh",
+        rbac: "RBAC 22 permisos",
+        audit: "Auditoría por request",
+      },
     },
-    quickstart: {
-      title: "Correrlo en local",
-      body: "El backend trae su propio stack de Docker. Levantalo y después corré la consola contra él:",
-      command: "docker compose up",
-      note: "La consola corre en localhost:3001 y la API responde en la URL de VITE_API_BASE_URL.",
-      terminalLabel: "Comando de shell",
-    },
-    stack: {
-      title: "Stack",
-      body: "Node 22, Vite 6, React 19, TypeScript estricto, Tailwind + shadcn/ui, TanStack Query 5, React Router 7, Vitest + Testing Library + Playwright, Biome + ESLint.",
+    mock: {
+      sidebar: {
+        label: "GESTIÓN",
+        users: "Usuarios",
+        roles: "Roles y permisos",
+        audit: "Auditoría",
+        settings: "Parámetros",
+      },
+      search: {
+        placeholder: "Buscar usuario…",
+      },
+      actions: {
+        newUser: "Nuevo usuario",
+      },
+      kpi: {
+        total: "TOTAL",
+        totalValue: "1.248",
+        active: "ACTIVOS",
+        activeValue: "1.187",
+        blocked: "BLOQUEADOS",
+        blockedValue: "12",
+      },
+      users: {
+        ana: {
+          name: "Ana Duarte",
+          role: "admin",
+        },
+        marta: {
+          name: "Marta Gómez",
+          role: "user",
+        },
+        julian: {
+          name: "Julián Pérez",
+          role: "viewer",
+        },
+        diego: {
+          name: "Diego Sosa",
+        },
+      },
+      status: {
+        active: "activo",
+        blocked: "bloqueado",
+      },
     },
   },
   auth: {
     login: {
-      title: "Iniciar sesión",
-      subtitle: "Accedé a la consola de gestión de usuarios",
+      title: "Iniciá sesión",
+      subtitle: "Accedé con tu cuenta de administrador.",
       fields: {
         email: "Email",
         password: "Contraseña",
       },
-      submit: "Iniciar sesión",
+      remember: "Recordarme",
       forgotPassword: "¿Olvidaste tu contraseña?",
+      orDivider: "o",
+      submit: "Iniciar sesión",
+      createAccount: "Crear una cuenta",
+      createAccountHint: "El registro público todavía no está disponible.",
+      legal: {
+        prefix: "Al continuar aceptás los",
+        terms: "términos",
+        middle: "y la",
+        privacy: "política de privacidad",
+      },
+      footer: {
+        copyright: "© {{year}} Countergank · Argentina",
+        backToSite: "Volver al sitio",
+      },
+      brand: {
+        eyebrow: "CONSOLA DE ADMINISTRACIÓN",
+        status: "API · healthy",
+        headline: "Administrá usuarios sin perder el rastro de nada.",
+        lead: "Cada alta, cada permiso y cada sesión cerrada queda registrada con su correlationId.",
+        bullets: {
+          rbac: "RBAC de 22 permisos con roles editables",
+          audit: "Auditoría por request con correlationId",
+          revocation: "Revocación de sesiones por epoch",
+          templates: "Plantillas de email y parámetros en caliente",
+        },
+        services: "MongoDB replica set · Redis · v1.1.0",
+      },
       showPassword: "Mostrar contraseña",
       hidePassword: "Ocultar contraseña",
       errors: {
@@ -204,18 +305,28 @@ export const es: {
   console: {
     nav: {
       label: "Secciones de la consola",
-      summary: "Resumen",
+      home: "Inicio",
       users: "Usuarios",
-      roles: "Roles",
-      permissions: "Permisos",
+      roles: "Roles y permisos",
+      sessions: "Sesiones",
       audit: "Auditoría",
-      settings: "Configuración",
+      emailTemplates: "Plantillas de email",
+      deliveries: "Envíos",
+      parameters: "Parámetros",
+      i18n: "i18n",
+      group: {
+        management: "Gestión",
+        system: "Sistema",
+      },
+      pending: "Próximamente",
     },
     shell: {
       title: "Consola Countergank",
-      footerLabel: "Countergank User — consola de administración",
       expandSidebar: "Expandir la navegación",
       collapseSidebar: "Colapsar la navegación",
+      notifications: "Notificaciones",
+      searchLabel: "Búsqueda global",
+      searchPlaceholder: "Buscar nombre, email o @usuario",
       openMenu: "Abrir el menú de navegación",
       userMenu: "Menú de usuario",
       profile: "Mi perfil",
@@ -233,8 +344,44 @@ export const es: {
   },
   users: {
     list: {
+      side: {
+        roles: {
+          title: "Distribución por rol",
+          footnote: "Roles de sistema · editables en Roles y permisos",
+        },
+        audit: {
+          title: "Auditoría reciente",
+          seeAll: "Ver todo",
+          m2: "hace 2 min",
+          m6: "hace 6 min",
+          m14: "hace 14 min",
+          m21: "hace 21 min",
+          m38: "hace 38 min",
+          m45: "hace 45 min",
+        },
+      },
+      pageShort: "pág",
+      pageSize: "Elementos por página",
       title: "Usuarios",
+      subtitle: "{{count}} cuentas · {{roles}} roles de sistema · {{permissions}} permisos",
+      footer: {
+        range: "Mostrando {{from}} a {{to}} de {{total}}",
+      },
+      exportLabel: "Exportar CSV",
+      pendingFeature: "Espera COU-347",
+      kpi: {
+        total: "Usuarios totales",
+        active: "Usuarios activos",
+        blocked: "Usuarios bloqueados",
+        unverified: "Email sin verificar",
+        totalHint: "+4,2% vs mes anterior",
+        activeHint: "95,1% del total",
+        blockedHint: "lockout por intentos",
+        unverifiedHint: "reenviar verificación",
+      },
       columns: {
+        user: "Usuario",
+        verification: "Email",
         name: "Nombre",
         email: "Email",
         userName: "Usuario",
@@ -244,6 +391,8 @@ export const es: {
         actions: "Acciones",
       },
       filters: {
+        roles: "Roles",
+        all: "Todos",
         search: "Buscar usuarios",
         role: "Rol",
         status: "Estado",
@@ -253,6 +402,7 @@ export const es: {
       actions: {
         create: "Nuevo usuario",
         edit: "Editar",
+        more: "Más acciones",
         view: "Ver detalle",
         activate: "Activar",
         deactivate: "Desactivar",
@@ -260,21 +410,21 @@ export const es: {
         delete: "Eliminar",
       },
       status: {
+        blocked: "Bloqueado",
         active: "Activo",
         inactive: "Inactivo",
       },
     },
     detail: {
-      title: "Detalle del usuario",
+      title: "Detalle de usuario",
+      subtitle: "Ficha, permisos y acciones administrativas",
       loading: "Cargando usuario…",
       fields: {
-        id: "ID del usuario",
         name: "Nombre",
         lastName: "Apellido",
         email: "Email",
         userName: "Usuario",
         role: "Rol",
-        status: "Estado",
         createdAt: "Creado",
         updatedAt: "Actualizado",
       },
@@ -283,15 +433,55 @@ export const es: {
         inactive: "Inactivo",
       },
       actions: {
+        more: "Más acciones",
         edit: "Editar",
       },
+      pending: "Pendiente de implementación",
       back: "Volver al listado",
-      locked: "Bloqueado hasta",
-      failedAttempts: "Intentos de inicio de sesión fallidos",
       notFound: "Este usuario no existe o fue eliminado.",
+      profile: {
+        title: "Perfil",
+        updated: "actualizado {{value}}",
+      },
+      permissions: {
+        title: "Permisos efectivos",
+        direct: "Directos:",
+        groupUser: "USER",
+        groupSystem: "SYSTEM",
+      },
+      sessions: {
+        title: "Sesiones y seguridad",
+        lastAccess: "Último acceso",
+        activeDevices: "Sesiones activas",
+        lock: "Bloqueo",
+        noLock: "sin bloqueo (lockedUntil —)",
+        failedAttempts: "Intentos fallidos",
+        closeAll: "Cerrar todas las sesiones",
+        closeAllHint: "POST /auth/logout-all · invalida todos los refresh",
+      },
+      adminActions: {
+        title: "Acciones de administración",
+        unlock: "Desbloquear cuenta",
+        deactivate: "Desactivar usuario",
+        resetPassword: "Restablecer contraseña",
+        resendVerification: "Reenviar verificación",
+        changeEmail: "Cambiar email (2 pasos)",
+        delete: "Eliminar usuario",
+      },
+      accountStatus: {
+        title: "Estado de la cuenta",
+        pendingEmail: "Email pendiente",
+        passwordReset: "Reset de contraseña",
+        verification: "Verificación",
+      },
+      activity: {
+        title: "Actividad del usuario",
+        viewAll: "Ver todo",
+      },
     },
     create: {
       title: "Nuevo usuario",
+      subtitle: "Registra un nuevo usuario y asigna su rol.",
       groups: {
         identity: "Identidad",
         access: "Acceso",
@@ -328,6 +518,7 @@ export const es: {
     },
     edit: {
       title: "Editar usuario",
+      subtitle: "Actualiza el perfil y el rol de este usuario.",
       loading: "Cargando usuario…",
       groups: {
         identity: "Identidad",

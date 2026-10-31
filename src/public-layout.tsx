@@ -14,6 +14,12 @@ interface PublicNavItem {
   labelKey: "nav.home" | "nav.about";
 }
 
+const SECTION_LINKS = [
+  { href: "/#producto", labelKey: "nav.product" },
+  { href: "/#capacidades", labelKey: "nav.capabilities" },
+  { href: "/#seguridad", labelKey: "nav.security" },
+] as const;
+
 const PUBLIC_NAV: PublicNavItem[] = [
   { to: "/", labelKey: "nav.home" },
   { to: "/about", labelKey: "nav.about" },
@@ -63,11 +69,24 @@ export function PublicLayout() {
       <RouteAnnouncer message={tCommon("shell.routeAnnouncer.loaded", { title })} />
 
       <header className="border-b bg-background">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
-          <Link to="/" className="flex items-center gap-2 text-sm font-semibold">
-            <AppLogo className="h-9" />
-            {t("title")}
-          </Link>
+        <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between gap-4 px-6 sm:px-8 lg:px-16">
+          <div className="flex items-center gap-8">
+            <Link to="/" className="flex items-center gap-2 text-sm font-semibold">
+              <AppLogo className="h-9" />
+              {t("title")}
+            </Link>
+            <nav aria-label={t("nav.sectionsLabel")} className="hidden items-center gap-6 md:flex">
+              {SECTION_LINKS.map((section) => (
+                <a
+                  key={section.href}
+                  href={section.href}
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {t(section.labelKey)}
+                </a>
+              ))}
+            </nav>
+          </div>
           <div className="flex items-center gap-3">
             {renderNav(PUBLIC_NAV, t("nav.label"), t)}
             <Link
@@ -86,7 +105,7 @@ export function PublicLayout() {
         id="main-content"
         ref={containerRef}
         tabIndex={-1}
-        className="mx-auto w-full max-w-6xl flex-1 px-4 py-12 focus:outline-none"
+        className="flex-1 w-full focus:outline-none"
       >
         <Suspense
           fallback={
@@ -102,32 +121,35 @@ export function PublicLayout() {
       </main>
 
       <footer className="mt-auto border-t bg-background">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-6 text-sm text-muted-foreground">
-          <span>{t("title")}</span>
+        <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-6 py-6 text-sm text-muted-foreground sm:px-8 lg:px-16">
+          <div className="flex items-center gap-2.5">
+            <AppLogo className="h-7" />
+            <span>{t("footer.copyright", { year: 2026 })}</span>
+          </div>
           <nav aria-label={tCommon("shell.navigation.footer")}>
             <ul className="flex items-center gap-4">
+              <li>
+                <Link
+                  className="underline-offset-4 hover:text-foreground hover:underline"
+                  to="/about"
+                >
+                  {t("nav.about")}
+                </Link>
+              </li>
+              <li>
+                <a
+                  className="underline-offset-4 hover:text-foreground hover:underline"
+                  href="/#capacidades"
+                >
+                  {t("nav.capabilities")}
+                </a>
+              </li>
               <li>
                 <a
                   className="underline-offset-4 hover:text-foreground hover:underline"
                   href="https://github.com/countergank/ui-user"
                 >
-                  {t("footer.repository")}
-                </a>
-              </li>
-              <li>
-                <a
-                  className="underline-offset-4 hover:text-foreground hover:underline"
-                  href="https://github.com/countergank/ui-user/tree/develop/docs"
-                >
-                  {t("footer.docs")}
-                </a>
-              </li>
-              <li>
-                <a
-                  className="underline-offset-4 hover:text-foreground hover:underline"
-                  href="https://github.com/countergank/ui-user/blob/develop/LICENSE"
-                >
-                  {t("footer.license")}
+                  {t("footer.github")}
                 </a>
               </li>
             </ul>

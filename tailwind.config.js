@@ -13,6 +13,34 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         "seg-thumb": "hsl(var(--seg-thumb))",
+        sidebar: {
+          DEFAULT: "hsl(var(--sidebar))",
+          foreground: "hsl(var(--sidebar-foreground))",
+          border: "hsl(var(--sidebar-border))",
+          accent: "hsl(var(--sidebar-accent))",
+          highlight: "hsl(var(--sidebar-highlight))",
+          muted: "hsl(var(--sidebar-muted))",
+          subtle: "hsl(var(--sidebar-subtle))",
+          faint: "hsl(var(--sidebar-faint))",
+        },
+        panel: {
+          DEFAULT: "hsl(var(--panel))",
+          foreground: "hsl(var(--panel-foreground))",
+          muted: "hsl(var(--panel-muted))",
+          subtle: "hsl(var(--panel-subtle))",
+          faint: "hsl(var(--panel-faint))",
+          accent: "hsl(var(--panel-accent))",
+          border: "hsl(var(--panel-border))",
+        },
+        canvas: "hsl(var(--canvas))",
+        avatar: {
+          DEFAULT: "hsl(var(--avatar))",
+          ring: "hsl(var(--avatar-ring))",
+        },
+        surface: {
+          raised: "hsl(var(--surface-raised))",
+          "row-alt": "hsl(var(--surface-row-alt))",
+        },
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -22,8 +50,8 @@ export default {
           foreground: "hsl(var(--secondary-foreground))",
         },
         destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+          DEFAULT: "hsl(var(--destructive) / <alpha-value>)",
+          foreground: "hsl(var(--destructive-foreground) / <alpha-value>)",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
@@ -72,6 +100,7 @@ export default {
       fontFamily: {
         sans: ["var(--font-sans)"],
         mono: ["var(--font-mono)"],
+        display: ["var(--font-display)"],
       },
       keyframes: {
         "accordion-down": {

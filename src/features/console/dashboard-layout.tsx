@@ -1,9 +1,8 @@
 import { Suspense, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 
 import { RouteAnnouncer } from "@/components/a11y/route-announcer";
-import { AppLogo } from "@/components/branding/app-logo";
 import { SessionExpiryBridge } from "@/components/session/session-expiry-bridge";
 import { useFocusManagement } from "@/hooks/use-focus-management";
 import { selectSidebarOpen, useUiStore } from "@/stores/use-ui-store";
@@ -22,8 +21,20 @@ export function DashboardLayout() {
   const toggleSidebar = useUiStore((state) => state.toggleSidebar);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  const { t: tUsers } = useTranslation("users");
   const section: ConsoleNavItem | undefined = activeNavItem(CONSOLE_NAV, location.pathname);
   const sectionLabel = section ? tConsole(section.labelKey) : tConsole("nav.label");
+
+  const usersMatch = /\/app\/users\/([^/]+)(\/edit)?$/.exec(location.pathname);
+  const pageTrail: { label: string; to?: string }[] = [];
+  if (location.pathname === "/app/users/new") {
+    pageTrail.push({ label: tUsers("create.title") });
+  } else if (usersMatch) {
+    pageTrail.push({ label: tUsers("detail.title") });
+    if (usersMatch[2]) {
+      pageTrail[0] = { label: tUsers("edit.title") };
+    }
+  }
 
   return (
     <>
@@ -33,14 +44,14 @@ export function DashboardLayout() {
 
       <RouteAnnouncer message={tCommon("shell.routeAnnouncer.loaded", { title: sectionLabel })} />
 
-      <div className="flex min-h-screen bg-muted/30">
+      <div className="fixed inset-0 flex overflow-hidden bg-canvas">
         <ConsoleSidebar
           open={sidebarOpen}
           drawerOpen={drawerOpen}
           onDrawerOpenChange={setDrawerOpen}
         />
 
-        <div className="flex min-w-0 flex-1 flex-col">
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col">
           <ConsoleTopbar
             sidebarOpen={sidebarOpen}
             onToggleSidebar={toggleSidebar}
@@ -49,6 +60,7 @@ export function DashboardLayout() {
             }}
             sectionLabel={sectionLabel}
             atRoot={location.pathname === "/app"}
+            pageTrail={pageTrail}
           />
 
           <SessionExpiryBridge />
@@ -57,7 +69,7 @@ export function DashboardLayout() {
             id="main-content"
             ref={containerRef}
             tabIndex={-1}
-            className="w-full flex-1 px-4 py-8 focus:outline-none md:px-6"
+            className="min-h-0 w-full flex-1 overflow-y-auto px-4 py-8 focus:outline-none md:px-6"
           >
             <Suspense
               fallback={
@@ -71,18 +83,6 @@ export function DashboardLayout() {
               </div>
             </Suspense>
           </main>
-
-          <footer className="mt-auto border-t bg-background">
-            <div className="flex w-full items-center px-4 py-6 text-sm text-muted-foreground md:px-6">
-              <Link
-                to="/app"
-                className="flex items-center gap-2 rounded-md transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                <AppLogo className="h-5 w-5" />
-                <span>{tConsole("shell.footerLabel")}</span>
-              </Link>
-            </div>
-          </footer>
         </div>
       </div>
     </>

@@ -62,7 +62,7 @@ describe("ConsoleNav", () => {
   it("offers only the sections whose permission the user holds", () => {
     renderNav(["user:read"]);
 
-    expect(visibleSectionNames()).toEqual([t("nav.summary"), t("nav.users")].sort());
+    expect(visibleSectionNames()).toEqual([t("nav.home"), t("nav.users")].sort());
   });
 
   it("hides roles and audit from a user who only reads users", () => {
@@ -76,15 +76,22 @@ describe("ConsoleNav", () => {
     const { container } = renderNav(["*"]);
 
     expect(visibleSectionNames()).toEqual(
-      [
-        t("nav.summary"),
-        t("nav.users"),
-        t("nav.roles"),
-        t("nav.permissions"),
-        t("nav.audit"),
-        t("nav.settings"),
-      ].sort(),
+      [t("nav.home"), t("nav.users"), t("nav.roles"), t("nav.audit"), t("nav.parameters")].sort(),
     );
     expect(await axe(container)).toHaveNoViolations();
+  });
+});
+
+describe("ConsoleNav pending sections (S6)", () => {
+  it("shows a section that only exists in the design as a disabled item, with no link", () => {
+    const { container } = renderNav([]);
+
+    const disabled = [...container.querySelectorAll('[aria-disabled="true"]')]
+      .map((element) => element.textContent)
+      .find((text) => text.includes(t("nav.sessions")));
+
+    expect(disabled).toContain(t("nav.sessions"));
+    expect(disabled).toContain(t("nav.pending"));
+    expect(screen.queryByRole("link", { name: new RegExp(t("nav.sessions")) })).toBeNull();
   });
 });

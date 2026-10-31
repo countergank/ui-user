@@ -87,6 +87,9 @@ export function serializeListParams(params: ListParams, config: ListParamsConfig
   if (params.page !== 1) {
     search.set("page", String(params.page));
   }
+  if (params.limit !== config.limit) {
+    search.set("limit", String(params.limit));
+  }
   for (const spec of config.filters) {
     const value = params.filters[spec.name];
     if (value !== undefined) {
@@ -132,6 +135,13 @@ export function withSort(params: ListParams, sortBy: string): ListParams {
   const sortOrder = sameField ? (params.sortOrder === "asc" ? "desc" : "asc") : "asc";
 
   return { ...params, sortBy, sortOrder, page: 1 };
+}
+
+/**
+ * @returns The params with a new page size, back on the first page.
+ */
+export function withLimit(params: ListParams, limit: number): ListParams {
+  return { ...params, limit: Math.max(1, limit), page: 1 };
 }
 
 export function withPage(params: ListParams, page: number): ListParams {

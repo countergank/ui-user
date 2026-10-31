@@ -7,14 +7,14 @@ const tableContainerVariants = cva("relative w-full overflow-auto");
 
 const tableVariants = cva("w-full caption-bottom text-sm");
 
-const tableHeaderVariants = cva("[&_tr]:border-b");
+const tableHeaderVariants = cva("w-full [&_tr]:border-b");
 
 const tableBodyVariants = cva("[&_tr:last-child]:border-0");
 
 const tableFooterVariants = cva("border-t bg-muted/50 font-medium [&>tr]:last:border-b-0");
 
 const tableRowVariants = cva(
-  "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
+  "w-full border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
 );
 
 const tableHeadVariants = cva(

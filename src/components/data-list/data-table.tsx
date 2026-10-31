@@ -12,6 +12,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import { cn } from "@/lib/utils";
+
 import type { SortOrder } from "./params";
 
 export interface DataTableColumn<T> {
@@ -55,7 +57,7 @@ export function DataTable<T>({
   return (
     <div className="relative w-full overflow-auto">
       <Table aria-label={caption}>
-        <TableHeader className="sticky top-0 z-10 bg-background">
+        <TableHeader className="sticky top-0 z-10 bg-canvas">
           <TableRow>
             {columns.map((column) => {
               const sorted = column.sortKey !== undefined && column.sortKey === sortBy;
@@ -63,7 +65,7 @@ export function DataTable<T>({
               return (
                 <TableHead
                   key={column.key}
-                  className={alignClass(column)}
+                  className={cn("font-mono text-[11px] tracking-[0.16em]", alignClass(column))}
                   aria-sort={
                     sorted ? (sortOrder === "asc" ? "ascending" : "descending") : undefined
                   }

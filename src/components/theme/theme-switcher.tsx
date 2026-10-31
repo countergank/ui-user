@@ -20,10 +20,54 @@ const THEME_MODE_KEYS: Record<
   system: "shell.theme.system",
 };
 
-export function ThemeSwitcher() {
+const MODES: readonly ThemePreference[] = ["system", "light", "dark"];
+
+interface ThemeSwitcherProps {
+  variant?: "toggle" | "segmented";
+}
+
+/**
+ * @param variant - `toggle` cycles through the three modes in a single button; `segmented`
+ * renders the three modes side by side, which is how the console topbar shows them.
+ */
+export function ThemeSwitcher({ variant = "toggle" }: ThemeSwitcherProps = {}) {
   const { t } = useTranslation();
   const preference = useUiStore(selectTheme);
   const setTheme = useUiStore((state) => state.setTheme);
+
+  if (variant === "segmented") {
+    return (
+      <fieldset
+        aria-label={t("shell.theme.group")}
+        className="flex h-9 items-center gap-0.5 rounded-md border border-input bg-muted p-0.5"
+      >
+        {MODES.map((mode) => {
+          const Icon = THEME_ICONS[mode];
+          const isActive = preference === mode;
+
+          return (
+            <button
+              key={mode}
+              type="button"
+              aria-label={t(THEME_MODE_KEYS[mode])}
+              aria-pressed={isActive}
+              title={t(THEME_MODE_KEYS[mode])}
+              onClick={() => {
+                setTheme(mode);
+              }}
+              className={`flex h-7 w-7 items-center justify-center rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 ${
+                isActive
+                  ? "bg-accent text-accent-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Icon aria-hidden="true" className="h-4 w-4" />
+            </button>
+          );
+        })}
+      </fieldset>
+    );
+  }
 
   const Icon = THEME_ICONS[preference];
   const next = nextPreference(preference);
