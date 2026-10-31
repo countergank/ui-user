@@ -1,7 +1,3 @@
-// vite.config.ts
-// Reusable Vite configuration template for React + TypeScript projects.
-// Includes: path aliases, env variable handling, proxy for API dev, build optimization.
-
 import { resolve } from "path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
@@ -16,7 +12,6 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    // Proxy API calls to the backend during development
     proxy: {
       "/api": {
         target: "http://localhost:8080",
@@ -36,6 +31,4 @@ export default defineConfig({
     // Generate sourcemaps for production debugging
     sourcemap: true,
   },
-  // Environment variable prefix is VITE_ by default
-  // Access via import.meta.env.VITE_*
 });
