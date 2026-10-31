@@ -664,3 +664,29 @@ duplicaba la entrada de inicio.
 
 **Pendiente**: los exports `design/app/*.html` quedaron desactualizados respecto del `.fig` y hay que
 re-exportarlos; `04-resumen.html` probablemente pase a `04-usuarios.html`.
+
+**L27** — **Cierre de sesión: T5 y T6 hechos, bloque commiteado y pusheado.**
+
+- **T5**: `design/system.md` (español, 127 líneas) y `docs/design-system.md` (inglés, 291) reescritas
+  a la paleta aplicada — familias canvas/panel/avatar con valores exactos, tres tipografías, regla
+  Vite-restart, landing canónica declarada (S10). Cero lenguaje "propuesto".
+- **T6**: gate verde — lint, typecheck, **646/646** con cobertura 98.23%/94.5%, build, axe sin
+  violaciones.
+- **Commits** (autorizados, con `GIT_COMMIT_APPROVED=1`): `2e3c9d3` shell de consola (23 archivos,
+  +941/−237), `ebdf24c` pantallas de usuarios (26, +1.271/−386), `4fd3e4a` docs (3, +295/−151).
+  Pusheados; árbol limpio; rama sincronizada.
+- **Review nativa**: tres intentos (ticket completo, commit shell con 2 y 1 lente) terminaron en
+  `lens_context_budget_exceeded` — el presupuesto de contexto del reviewer no alcanza ni para un
+  commit de ~950 líneas con una sola lente. Sin autoridad creada; no reparable. **Decisión
+  pendiente del humano**: A) PR sin review nativa (recomendado, el gate ya está verde), B)
+  reescribir el historial en commits más chicos (exige force-push, bloqueado por la org), C)
+  dejarla pendiente.
+
+**Pendientes del ticket**: decisión de review (arriba), PR a `develop` con `fixes COU-344`,
+re-export de los HTML del `.fig` (tarea del humano) + renombrar `04-resumen.html` → `04-usuarios.html`
+y actualizar `design/README.md`/`design.json`, y el filtro de estado (sin control desde el
+rediseño — decidir si vuelve o muere).
+
+**Pendientes fuera del ticket**: ampliar **COU-347** (porcentajes de KPI, estado de verificación,
+distribución por rol, auditoría reciente — todo simulado hoy), flake `window is not defined`,
+merge del PR #40, y las 25 vulnerabilidades que DependaBot marcó en la branch default.
