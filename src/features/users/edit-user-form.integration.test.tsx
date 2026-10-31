@@ -299,4 +299,35 @@ describe("edit user form — accessibility", () => {
       expect(screen.getByLabelText(tUsers(`edit.fields.${key}`))).toBeInTheDocument();
     }
   });
+
+  it("associates every visible label with its control", async () => {
+    renderPage();
+    await waitForPrefill();
+
+    for (const key of ["name", "lastName", "email", "userName", "role"] as const) {
+      const control = screen.getByLabelText(tUsers(`edit.fields.${key}`));
+      const label = screen.getByText(tUsers(`edit.fields.${key}`));
+      expect(label).toHaveAttribute("for", control.id);
+    }
+  });
+
+  it("keeps the submit and the cancel actions reachable", async () => {
+    renderPage();
+    await waitForPrefill();
+
+    expect(screen.getByRole("button", { name: tUsers("edit.submit") })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: tUsers("edit.cancel") })).toHaveAttribute(
+      "href",
+      "/app/users",
+    );
+  });
+
+  it("shows the page header above the panel", () => {
+    renderPage();
+
+    expect(
+      screen.getByRole("heading", { level: 1, name: tUsers("edit.title") }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(tUsers("edit.subtitle"))).toBeInTheDocument();
+  });
 });

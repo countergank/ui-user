@@ -172,43 +172,8 @@ describe("users page — MSW", () => {
     expect(lastUrl?.searchParams.get("sortOrder")).toBe("asc");
   });
 
-  it("writes an applied filter back to the URL and resets the page (S14)", async () => {
+  it("applies the role filter through the URL and resets the page (S14)", async () => {
     renderPage("/app/users?page=3");
-    await expectRows();
-    const user = userEvent.setup();
-
-    await user.type(screen.getByRole("searchbox", { name: tUsers("list.filters.search") }), "ada");
-
-    const probe = screen.getByTestId("route-search");
-    await waitFor(
-      () => {
-        expect(probe).toHaveTextContent("search=ada");
-      },
-      { timeout: 2000 },
-    );
-    expect(probe).not.toHaveTextContent("page=");
-    await waitFor(() => {
-      expect(lastUrl?.searchParams.get("search")).toBe("ada");
-      expect(lastUrl?.searchParams.get("page")).toBe("1");
-    });
-  });
-
-  it("applies the status filter through the URL", async () => {
-    renderPage();
-    await expectRows();
-    const user = userEvent.setup();
-
-    await user.click(screen.getByRole("combobox", { name: tUsers("list.filters.status") }));
-    await user.click(await screen.findByRole("option", { name: tUsers("list.status.inactive") }));
-
-    const probe = screen.getByTestId("route-search");
-    await waitFor(() => {
-      expect(probe).toHaveTextContent("isActive=false");
-    });
-  });
-
-  it("applies the role filter through the URL", async () => {
-    renderPage();
     await expectRows();
     const user = userEvent.setup();
 
@@ -219,46 +184,84 @@ describe("users page — MSW", () => {
     await waitFor(() => {
       expect(probe).toHaveTextContent("role=admin");
     });
+    expect(probe).not.toHaveTextContent("page=");
+    await waitFor(() => {
+      expect(lastUrl?.searchParams.get("role")).toBe("admin");
+      expect(lastUrl?.searchParams.get("page")).toBe("1");
+    });
   });
 
-  it("offers every API role even when a filter is already applied (S3)", async () => {
+  it("clears the role filter with the every-role option", async () => {
     renderPage("/app/users?role=admin");
     await expectRows();
     const user = userEvent.setup();
 
     await user.click(screen.getByRole("combobox", { name: tUsers("list.filters.role") }));
-
-    expect(await screen.findByRole("option", { name: "admin" })).toBeInTheDocument();
-    expect(screen.getByRole("option", { name: "user" })).toBeInTheDocument();
-    expect(screen.getByRole("option", { name: "viewer" })).toBeInTheDocument();
-  });
-
-  it("labels every filter control visibly", async () => {
-    renderPage();
-    await expectRows();
-
-    const filters = screen.getByRole("search");
-
-    for (const key of ["search", "role", "status"] as const) {
-      expect(within(filters).getByText(tUsers(`list.filters.${key}`)).tagName).toBe("LABEL");
-      expect(within(filters).getByLabelText(tUsers(`list.filters.${key}`))).toBeInTheDocument();
-    }
-  });
-
-  it("clears every filter with the labelled icon button", async () => {
-    renderPage("/app/users?search=ada&role=admin&isActive=false&page=2");
-    await expectRows();
-    const user = userEvent.setup();
-
-    const clear = screen.getByRole("button", { name: tUsers("list.filters.clear") });
-    expect(clear).toHaveAttribute("title", tUsers("list.filters.clear"));
-    expect(clear).toHaveTextContent("");
-    await user.click(clear);
+    await user.click(await screen.findByRole("option", { name: tUsers("list.filters.roles") }));
 
     const probe = screen.getByTestId("route-search");
     await waitFor(() => {
-      expect(probe.textContent).toBe("");
+      expect(probe.textContent).not.toContain("role=");
     });
+  });
+
+  it("offers every API role in the selector and reflects the active one (S3)", async () => {
+    renderPage("/app/users?role=admin");
+    await expectRows();
+    const user = userEvent.setup();
+
+    const trigger = screen.getByRole("combobox", { name: tUsers("list.filters.role") });
+    expect(trigger).toHaveTextContent("admin");
+
+    await user.click(trigger);
+    expect(await screen.findByRole("option", { name: "user" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "viewer" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: tUsers("list.filters.roles") })).toBeInTheDocument();
+  });
+
+  it("paints consecutive avatars with different palette tones", async () => {
+    renderPage();
+    await expectRows();
+
+    const tones = screen
+      .getAllByText(/Ada Lovelace|Grace Hopper|Alan Turing/)
+      .map((name) => name.closest("div")?.querySelector("span:first-child")?.className ?? "");
+
+    expect(tones[0]).not.toBe(tones[1]);
+    expect(tones[1]).not.toBe(tones[2]);
+    expect(tones.every((tone) => /avatar-\d-bg/.test(tone))).toBe(true);
+  });
+
+  it("changes the page size from the toolbar and goes back to the first page", async () => {
+    renderPage("/app/users?page=2");
+    await expectRows();
+    const user = userEvent.setup();
+
+    await user.click(screen.getByRole("combobox", { name: tUsers("list.pageSize") }));
+    await user.click(
+      await screen.findByRole("option", { name: `5 / ${tUsers("list.pageShort")}` }),
+    );
+
+    const probe = screen.getByTestId("route-search");
+    await waitFor(() => {
+      expect(probe).toHaveTextContent("limit=5");
+    });
+    expect(probe).not.toHaveTextContent("page=");
+  });
+
+  it("shows the page size selector and the summary once", async () => {
+    renderPage();
+    await expectRows();
+
+    expect(screen.getByRole("combobox", { name: tUsers("list.pageSize") })).toHaveTextContent("20");
+
+    const summary = i18n.getFixedT(null, "common")("ui.list.pagination.summary", {
+      from: 1,
+      to: 3,
+      total: 3,
+    });
+
+    expect(screen.getAllByText(summary)).toHaveLength(1);
   });
 
   it("sorts from the table header through the URL (S2)", async () => {
@@ -266,7 +269,9 @@ describe("users page — MSW", () => {
     await expectRows();
     const user = userEvent.setup();
 
-    await user.click(screen.getByRole("button", { name: "Sort by Name" }));
+    await user.click(
+      screen.getByRole("button", { name: `Sort by ${tUsers("list.columns.user").toUpperCase()}` }),
+    );
 
     const probe = screen.getByTestId("route-search");
     await waitFor(() => {
@@ -287,7 +292,7 @@ describe("users page — MSW", () => {
     await expectRows();
     const user = userEvent.setup();
 
-    await user.click(screen.getByRole("button", { name: "Go to page 2" }));
+    await user.click(screen.getByRole("button", { name: "Next page" }));
 
     const probe = screen.getByTestId("route-search");
     await waitFor(() => {
@@ -374,12 +379,21 @@ describe("users page — MSW", () => {
     expect(viewLinks[2]).toHaveAttribute("href", "/app/users/u3");
   });
 
-  it("renders status and role badges and the local creation date (S5)", async () => {
+  it("renders each status in its own tone, the role and the local creation date (S5)", async () => {
     renderPage();
     await expectRows();
 
-    expect(screen.getAllByText(tUsers("list.status.active"))).toHaveLength(2);
-    expect(screen.getByText(tUsers("list.status.inactive"))).toBeInTheDocument();
+    const table = within(screen.getByRole("table"));
+    const active = table.getAllByText(new RegExp(tUsers("list.status.active")));
+
+    expect(active).toHaveLength(1);
+    expect(active[0]).toHaveClass("text-success");
+    expect(table.getByText(new RegExp(tUsers("list.status.inactive")))).toHaveClass(
+      "text-muted-foreground",
+    );
+    expect(table.getByText(new RegExp(tUsers("list.status.blocked")))).toHaveClass(
+      "text-destructive",
+    );
     expect(screen.getAllByText("admin").length).toBeGreaterThan(0);
     expect(screen.getAllByText(/2024/)).toHaveLength(3);
   });
@@ -406,5 +420,32 @@ describe("users page — MSW", () => {
     await expectRows();
 
     expect(await axe(container)).toHaveNoViolations();
+  });
+});
+
+describe("UsersPage KPIs", () => {
+  it("shows the percentage line under the total and the active counts", async () => {
+    renderPage();
+
+    const tUsers = i18n.getFixedT(null, "users");
+
+    expect(await screen.findByText(tUsers("list.kpi.totalHint"))).toBeTruthy();
+    expect(screen.getByText(tUsers("list.kpi.activeHint"))).toBeTruthy();
+  });
+});
+
+describe("UsersPage header", () => {
+  it("reports how many accounts exist, from the list total", async () => {
+    server.use(http.get(USERS_URL, () => HttpResponse.json({ ...PAGE, total: 1248 })));
+
+    renderPage();
+
+    const expected = i18n.getFixedT(null, "users")("list.subtitle", {
+      count: 1248,
+      roles: 3,
+      permissions: 22,
+    });
+
+    expect(await screen.findByText(expected)).toBeTruthy();
   });
 });

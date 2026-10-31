@@ -8,14 +8,7 @@ import { toast } from "sonner";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -26,6 +19,7 @@ import {
 } from "@/components/ui/select";
 
 import type { UpdateUserPayload } from "./api";
+import { UserFormField, userControlClass } from "./components/user-form-field";
 import { resolveCreateUserError } from "./create-user-errors";
 import { type EditUserInput, type EditUserValues, editUserFormSchema } from "./edit-schema";
 import { useUpdateUser } from "./hooks/use-update-user";
@@ -118,76 +112,82 @@ export function EditUserForm({ user }: { user: UserDTO }) {
         }}
       >
         <fieldset className="space-y-4">
-          <legend className="text-sm font-medium text-muted-foreground">
+          <legend className="text-sm font-medium text-panel-foreground">
             {t("edit.groups.identity")}
           </legend>
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("edit.fields.name")}</FormLabel>
+              <UserFormField label={t("edit.fields.name")}>
                 <FormControl>
-                  <Input autoComplete="given-name" {...field} />
+                  <Input autoComplete="given-name" className={userControlClass} {...field} />
                 </FormControl>
-                <FormMessage />
-              </FormItem>
+              </UserFormField>
             )}
           />
           <FormField
             control={form.control}
             name="lastName"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("edit.fields.lastName")}</FormLabel>
+              <UserFormField label={t("edit.fields.lastName")}>
                 <FormControl>
-                  <Input autoComplete="family-name" {...field} />
+                  <Input autoComplete="family-name" className={userControlClass} {...field} />
                 </FormControl>
-                <FormMessage />
-              </FormItem>
+              </UserFormField>
             )}
           />
         </fieldset>
 
         <fieldset className="space-y-4">
-          <legend className="text-sm font-medium text-muted-foreground">
+          <legend className="text-sm font-medium text-panel-foreground">
             {t("edit.groups.access")}
           </legend>
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("edit.fields.email")}</FormLabel>
+              <UserFormField label={t("edit.fields.email")}>
                 <FormControl>
-                  <Input type="email" autoComplete="email" {...field} />
+                  <Input
+                    type="email"
+                    autoComplete="email"
+                    className={userControlClass}
+                    {...field}
+                  />
                 </FormControl>
-                <FormMessage />
-              </FormItem>
+              </UserFormField>
             )}
           />
           <FormField
             control={form.control}
             name="userName"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("edit.fields.userName")}</FormLabel>
+              <UserFormField label={t("edit.fields.userName")}>
                 <FormControl>
-                  <Input autoComplete="username" {...field} />
+                  <Input autoComplete="username" className={userControlClass} {...field} />
                 </FormControl>
-                <FormMessage />
-              </FormItem>
+              </UserFormField>
             )}
           />
           <FormField
             control={form.control}
             name="role"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("edit.fields.role")}</FormLabel>
+              <UserFormField
+                label={t("edit.fields.role")}
+                after={
+                  roleChanged ? (
+                    // biome-ignore lint/a11y/useSemanticElements: intentional status live region, not an <output>
+                    <Alert role="status" className="border-border bg-muted/50">
+                      <AlertDescription>{t("edit.roleImpact")}</AlertDescription>
+                    </Alert>
+                  ) : null
+                }
+              >
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className={userControlClass}>
                       <SelectValue />
                     </SelectTrigger>
                   </FormControl>
@@ -199,14 +199,7 @@ export function EditUserForm({ user }: { user: UserDTO }) {
                     ))}
                   </SelectContent>
                 </Select>
-                <FormMessage />
-                {roleChanged ? (
-                  // biome-ignore lint/a11y/useSemanticElements: intentional status live region, not an <output>
-                  <Alert role="status" className="border-border bg-muted/50">
-                    <AlertDescription>{t("edit.roleImpact")}</AlertDescription>
-                  </Alert>
-                ) : null}
-              </FormItem>
+              </UserFormField>
             )}
           />
         </fieldset>

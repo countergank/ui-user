@@ -5,9 +5,12 @@ import { Can } from "@/features/authorization/components/can";
 import { PERMISSIONS } from "@/features/authorization/permissions";
 import { Eye, LockOpen, Pencil, Power, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+
+const upper = (label: string): string => label.toUpperCase();
 import { Link } from "react-router-dom";
 
 import type { UserDTO } from "./types";
+import { avatarToneOf, initialsOf } from "./users-detail/format";
 
 export function isLocked(user: UserDTO): boolean {
   return user.lockedUntil !== null && new Date(user.lockedUntil).getTime() > Date.now();
@@ -22,43 +25,68 @@ export function useUsersColumns(): DataTableColumn<UserDTO>[] {
 
   return [
     {
-      key: "name",
-      header: t("list.columns.name"),
-      cell: (user) => `${user.name} ${user.lastName}`,
+      key: "user",
+      header: upper(t("list.columns.user")),
+      cell: (user) => (
+        <div className="flex items-center gap-2.5">
+          <span
+            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${avatarToneOf()}`}
+          >
+            {initialsOf(user.name, user.lastName)}
+          </span>
+          <span className="flex min-w-0 flex-col">
+            <span className="truncate text-sm font-medium">
+              {user.name} {user.lastName}
+            </span>
+            <span className="truncate text-xs text-muted-foreground">{user.email}</span>
+          </span>
+        </div>
+      ),
       sortKey: "name",
-    },
-    { key: "email", header: t("list.columns.email"), cell: (user) => user.email, sortKey: "email" },
-    {
-      key: "userName",
-      header: t("list.columns.userName"),
-      cell: (user) => user.userName,
-      sortKey: "userName",
     },
     {
       key: "role",
-      header: t("list.columns.role"),
+      header: upper(t("list.columns.role")),
       cell: (user) => <Badge variant="secondary">{user.role}</Badge>,
       sortKey: "role",
     },
     {
       key: "status",
-      header: t("list.columns.status"),
-      cell: (user) => (
-        <Badge variant={user.isActive ? "default" : "outline"}>
-          {t(user.isActive ? "list.status.active" : "list.status.inactive")}
-        </Badge>
-      ),
+      header: upper(t("list.columns.status")),
+      cell: (user) => {
+        const locked = isLocked(user);
+        const tone = locked
+          ? "text-destructive"
+          : user.isActive
+            ? "text-success"
+            : "text-muted-foreground";
+        const label = locked
+          ? t("list.status.blocked")
+          : t(user.isActive ? "list.status.active" : "list.status.inactive");
+
+        return (
+          <span className={`inline-flex items-center gap-1.5 text-sm ${tone}`}>
+            <span aria-hidden="true" className="h-[7px] w-[7px] rounded-full bg-current" />
+            {label}
+          </span>
+        );
+      },
       sortKey: "isActive",
     },
     {
+      key: "verification",
+      header: upper(t("list.columns.verification")),
+      cell: () => "—",
+    },
+    {
       key: "createdAt",
-      header: t("list.columns.createdAt"),
+      header: upper(t("list.columns.createdAt")),
       cell: (user) => dateFormatter(i18n.language).format(new Date(user.createdAt)),
       sortKey: "createdAt",
     },
     {
       key: "actions",
-      header: t("list.columns.actions"),
+      header: upper(t("list.columns.actions")),
       align: "right",
       cell: (user) => (
         <div className="flex justify-end gap-1">
@@ -88,6 +116,7 @@ export function useUsersColumns(): DataTableColumn<UserDTO>[] {
                 type="button"
                 variant="ghost"
                 size="icon"
+                className="bg-canvas"
                 aria-label={t("list.actions.deactivate")}
                 title={`${t("list.actions.deactivate")} · ${tCommon("ui.list.pending")}`}
                 disabled
@@ -99,6 +128,7 @@ export function useUsersColumns(): DataTableColumn<UserDTO>[] {
                 type="button"
                 variant="ghost"
                 size="icon"
+                className="bg-canvas"
                 aria-label={t("list.actions.activate")}
                 title={`${t("list.actions.activate")} · ${tCommon("ui.list.pending")}`}
                 disabled
@@ -111,6 +141,7 @@ export function useUsersColumns(): DataTableColumn<UserDTO>[] {
                 type="button"
                 variant="ghost"
                 size="icon"
+                className="bg-canvas"
                 aria-label={t("list.actions.unlock")}
                 title={`${t("list.actions.unlock")} · ${tCommon("ui.list.pending")}`}
                 disabled
@@ -124,6 +155,7 @@ export function useUsersColumns(): DataTableColumn<UserDTO>[] {
               type="button"
               variant="ghost"
               size="icon"
+              className="bg-canvas"
               aria-label={t("list.actions.delete")}
               title={`${t("list.actions.delete")} · ${tCommon("ui.list.pending")}`}
               disabled

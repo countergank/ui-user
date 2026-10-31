@@ -35,7 +35,23 @@ const USER = {
   failedLoginAttempts: 0,
 };
 
-const dateFormatter = new Intl.DateTimeFormat(i18n.language, { dateStyle: "medium" });
+const dateTimeFormatter = {
+  date: new Intl.DateTimeFormat(i18n.language, { day: "numeric", month: "short", year: "numeric" }),
+  time: new Intl.DateTimeFormat(i18n.language, {
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }),
+};
+
+function formatDateTime(value: string): string {
+  const date = new Date(value);
+  return `${dateTimeFormatter.date.format(date)} · ${dateTimeFormatter.time.format(date)}`;
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
 const ADMIN_PROFILE = {
   id: "u1",
@@ -98,36 +114,55 @@ function renderPage() {
 }
 
 describe("user detail — loaded user", () => {
-  it("shows every UserDTO field with its term (S4, S8)", async () => {
+  it("renders the seven artboard section headings", async () => {
     renderPage();
 
     expect(
       await screen.findByRole("heading", { name: tUsers("detail.title"), level: 1 }),
     ).toBeInTheDocument();
 
-    expect(await screen.findByText(tUsers("detail.fields.id"))).toBeInTheDocument();
-    expect(screen.getByText("u1")).toBeInTheDocument();
+    for (const key of [
+      "profile.title",
+      "permissions.title",
+      "sessions.title",
+      "adminActions.title",
+      "accountStatus.title",
+      "activity.title",
+    ] as const) {
+      expect(
+        screen.getByRole("heading", { name: tUsers(`detail.${key}`), level: 2 }),
+      ).toBeInTheDocument();
+    }
+  });
+
+  it("renders the real profile values from the fixture (S2, S3)", async () => {
+    renderPage();
+
+    expect(await screen.findByText("Ada Lovelace")).toBeInTheDocument();
+    expect(screen.getByText("@ada · ada@example.com")).toBeInTheDocument();
+    expect(screen.getAllByText("admin")).toHaveLength(2);
+    expect(screen.getByText(tUsers("detail.status.active"))).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: tUsers("detail.actions.edit") })).toHaveAttribute(
+      "href",
+      "/app/users/u1/edit",
+    );
+
     expect(screen.getByText(tUsers("detail.fields.name"))).toBeInTheDocument();
     expect(screen.getByText("Ada")).toBeInTheDocument();
     expect(screen.getByText(tUsers("detail.fields.lastName"))).toBeInTheDocument();
     expect(screen.getByText("Lovelace")).toBeInTheDocument();
-    expect(screen.getByText(tUsers("detail.fields.email"))).toBeInTheDocument();
-    expect(screen.getByText("ada@example.com")).toBeInTheDocument();
     expect(screen.getByText(tUsers("detail.fields.userName"))).toBeInTheDocument();
     expect(screen.getByText("ada")).toBeInTheDocument();
+    expect(screen.getByText(tUsers("detail.fields.email"))).toBeInTheDocument();
+    expect(screen.getByText("ada@example.com")).toBeInTheDocument();
     expect(screen.getByText(tUsers("detail.fields.role"))).toBeInTheDocument();
-    expect(screen.getByText("admin")).toBeInTheDocument();
-    expect(screen.getByText(tUsers("detail.fields.status"))).toBeInTheDocument();
-    expect(screen.getByText(tUsers("detail.status.active"))).toBeInTheDocument();
     expect(screen.getByText(tUsers("detail.fields.createdAt"))).toBeInTheDocument();
-    expect(screen.getByText(dateFormatter.format(new Date(USER.createdAt)))).toBeInTheDocument();
+    expect(screen.getByText(formatDateTime(USER.createdAt))).toBeInTheDocument();
     expect(screen.getByText(tUsers("detail.fields.updatedAt"))).toBeInTheDocument();
-    expect(screen.getByText(dateFormatter.format(new Date(USER.updatedAt)))).toBeInTheDocument();
-    expect(screen.getByText(tUsers("detail.locked"))).toBeInTheDocument();
-    expect(screen.getByText(tUsers("detail.failedAttempts"))).toBeInTheDocument();
+    expect(screen.getByText(formatDateTime(USER.updatedAt))).toBeInTheDocument();
   });
 
-  it("shows the lock state and the failed attempts of a user the api reports locked (S2, S8)", async () => {
+  it("renders the real session rows with lockedUntil and failedLoginAttempts (S5)", async () => {
     server.use(
       http.get(USER_URL, () =>
         HttpResponse.json({
@@ -140,11 +175,34 @@ describe("user detail — loaded user", () => {
     );
     renderPage();
 
-    expect(
-      await screen.findByText(dateFormatter.format(new Date("2024-06-03T10:00:00.000Z"))),
-    ).toBeInTheDocument();
+    expect(await screen.findByText(formatDateTime("2024-06-03T10:00:00.000Z"))).toBeInTheDocument();
     expect(screen.getByText("4")).toBeInTheDocument();
     expect(screen.getByText(tUsers("detail.status.inactive"))).toBeInTheDocument();
+  });
+
+  it("renders the sections without an endpoint as placeholders and disables every action (S4–S8)", async () => {
+    renderPage();
+    await screen.findByText("Ada Lovelace");
+
+    expect(screen.getAllByText("—")).toHaveLength(12);
+
+    const pending = tCommon("ui.list.pending");
+    for (const key of [
+      "unlock",
+      "deactivate",
+      "resetPassword",
+      "resendVerification",
+      "changeEmail",
+      "delete",
+    ] as const) {
+      const button = screen.getByRole("button", {
+        name: new RegExp(`^${escapeRegExp(tUsers(`detail.adminActions.${key}`))} `),
+      });
+      expect(button).toBeDisabled();
+      expect(button).toHaveAttribute("title", expect.stringContaining(pending));
+    }
+    expect(screen.getByRole("button", { name: tUsers("detail.sessions.closeAll") })).toBeDisabled();
+    expect(screen.getByRole("button", { name: tUsers("detail.activity.viewAll") })).toBeDisabled();
   });
 
   it("offers the edit link and the way back to the list (S5)", async () => {
@@ -155,16 +213,6 @@ describe("user detail — loaded user", () => {
 
     const backLink = screen.getByRole("link", { name: tUsers("detail.back") });
     expect(backLink).toHaveAttribute("href", "/app/users");
-  });
-
-  it("exposes no mutation action (S11)", async () => {
-    renderPage();
-    await screen.findByRole("heading", { name: tUsers("detail.title"), level: 1 });
-
-    for (const key of ["activate", "deactivate", "unlock", "delete"] as const) {
-      expect(screen.queryByRole("button", { name: tUsers(`list.actions.${key}`) })).toBeNull();
-    }
-    expect(screen.queryByRole("alertdialog")).toBeNull();
   });
 });
 
