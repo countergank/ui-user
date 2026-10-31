@@ -560,3 +560,107 @@ perfil con `Nombre / Apellido / Nombre de usuario / Email / Rol / Creado / Actua
 
 Nota: el sidebar del artboard tiene **Sesiones** como ítem propio, que hoy no existe en
 `src/features/console/navigation.ts` — hay que decidir si entra en T4 o queda como ticket aparte.
+
+**L21** — **U1 hecho: shell de consola alineado al chrome del artboard.** Decisión del humano:
+**Sesiones se muestra deshabilitado y documentado** (el ítem existe, no navega, anuncia
+"Próximamente" por `sr-only`), y la funcionalidad real llega en una sesión de backend aparte.
+
+- `navigation.ts`: `ConsoleNavItem` suma `group` (`management | system`) e `implemented`;
+  el nuevo ítem `/app/sessions` entra con `implemented: false`.
+- `console-nav.tsx`: dos grupos con rótulo mono en mayúsculas (`Gestión` / `Sistema`), el ítem
+  no implementado se renderiza como `span[aria-disabled]` con `cursor-not-allowed`, y los
+  enlaces pasan a los tokens de chrome (`bg-sidebar`, `sidebar-accent` activo,
+  `sidebar-highlight`, `sidebar-muted`, `sidebar-faint`).
+- `console-sidebar.tsx`: aside y drawer sobre `bg-sidebar` + `border-sidebar-border`.
+- i18n: `nav.sessions`, `nav.group.management`, `nav.group.system`, `nav.pending` en los tres locales.
+- Tests: se filtran los ítems no implementados del orden de tabulación (un deshabilitado no es
+  focusable) y se agrega uno que exige el ítem deshabilitado sin enlace. **628/628**, lint y
+  typecheck limpios.
+
+**Gap detectado para U2**: el artboard tiene buscador (`Buscar nombre, email o @usuario`) en la
+topbar de `04` y `05`. No se agregó en U1 porque es funcionalidad, no rebranding; corresponde a la
+lista y depende de que el backend exponga búsqueda.
+
+**L22** — **U2 hecho en la parte que tiene datos.** La lista de usuarios pasa a tener encabezado de
+página fuera del `Card`: título con `--font-display` y subtítulo con la **cuenta viva** del total
+(`list.subtitle` con `count`, interpolado por i18next). Se sumó la clave en los tres locales y un
+test que exige el total real (`1248` en el fixture). **629/629**, lint y typecheck limpios.
+
+**Gaps de U2, a resolver con backend o decisión de producto — no se inventan:**
+
+- **KPIs** (`1.187 activos`, `12 bloqueados`, `49 sin verificar`): `api-user` devuelve usuarios
+  paginados más un `total`, no agregados por estado. Necesita endpoint de métricas o tres
+  consultas filtradas.
+- **`Exportar CSV`**: no existe la función.
+- **Chips de rol** (`Todos / user / viewer`): el filtro existe como `<select>` dentro de
+  `ListFilters`, que es **compartido** con las listas de auditoría, roles y permisos; cambiarlo
+  por chips es una modificación de contrato compartido (riesgo alto, ítem 3) y va con su ticket.
+- **Buscador en la topbar**: depende de búsqueda global en backend; hoy la búsqueda vive en la
+  barra de filtros de cada lista.
+
+**L23** — **La UI queda idéntica al artboard; lo que falta de backend se construye después.**
+Decisión del humano: no se recortan bloques del diseño por falta de datos. Se renderizan, y los que
+dependen de endpoints nuevos quedan deshabilitados y rotulados.
+
+- **COU-347** cargado en `api-user`: búsqueda global (nombre, apellido, email, `@usuario`) con
+  paginado, `GET /users/metrics` con los cuatro conteos y `GET /users/export.csv` con filtros.
+- **Lista** (`users-page.tsx`): cuatro tarjetas de KPI con las etiquetas del artboard — el total sale
+  vivo del endpoint y los otros tres muestran `—` hasta COU-347 —, botón `Exportar CSV` deshabilitado
+  con el rótulo de pendiente, y el encabezado de página con el conteo real.
+- **Topbar** (`console-topbar.tsx`): buscador del artboard como campo deshabilitado, con
+  `sr-only` para lectores de pantalla y el rótulo de pendiente en el `title`.
+- **Colisión resuelta**: el KPI `Active` y el estado `Active` eran el mismo texto; los KPIs pasan a
+  `Usuarios activos` / `Usuarios bloqueados` en los tres locales.
+- **629/629** tests, lint y typecheck limpios.
+
+**L24** — **Sidebar con el orden del diseño y estado activo violeta.** Orden pedido por el humano:
+GESTIÓN (`Inicio`, `Usuarios`, `Roles y permisos`, `Sesiones`, `Auditoría`) y SISTEMA
+(`Plantillas de email`, `Envíos`, `Parámetros`, `i18n`). Los que no existen van deshabilitados:
+Inicio, Sesiones, Plantillas de email, Envíos e i18n; **Parámetros** es la ruta que ya existe
+(`/app/settings`). La sección activa lleva barra vertical violeta
+(`inset_2px` con `--sidebar-highlight`) y las siglas del avatar usan ese mismo violeta con texto
+oscuro.
+
+**Punto abierto:** `Resumen` (`/app`) quedó **fuera** de la navegación porque no estaba en la lista
+pedida; la marca del sidebar sigue enlazando ahí. Hay que decidir si `Inicio` es esa misma pantalla
+o si `/app` se alcanza sólo desde la marca.
+
+**Nota de proceso:** al reescribir las claves de i18n mi script tomó una ancla fuera del namespace
+de consola y pisó `ui.pagination` en los tres locales. Se restauró desde HEAD y se reaplicaron las
+claves con anclas acotadas; el tipo generado de `i18next` lo detectó de inmediato y el suite completo
+lo confirma.
+
+**L25** — **Iteración visual del shell de consola, guiada por el humano sobre el navegador.**
+Todo quedó **sin commitear** (instrucción explícita).
+
+- **Sidebar**: marca (logo + wordmark) arriba y bloque de identidad abajo (avatar, nombre y rol);
+  navegación en dos grupos con el orden del diseño —Gestión: Inicio, Resumen, Usuarios,
+  Roles y permisos, Sesiones, Auditoría; Sistema: Plantillas de email, Envíos, Parámetros, i18n—;
+  los inexistentes deshabilitados. Sección activa con **barra de 3×16 px violeta**, radio 2 px,
+  separada del borde 8 px, y etiqueta en blanco sobre `sidebar-accent`. Avatar del sidebar y del
+  topbar: círculo `sidebar-accent` con siglas violetas en mono.
+- **Topbar**: botón de ocultar primero, breadcrumbs después (sin el separador `>`), buscador de
+  320 px, módulo de tema segmentado (`fieldset` con system/light/dark), idioma con ícono + código,
+  campana deshabilitada y botón de perfil **sin recuadro** con avatar de 32 px. Los cuatro controles
+  comparten borde, `bg-muted`, alto 36 px y radio 6 px.
+- **Shell**: `h-screen overflow-hidden`; el sidebar ocupa el alto completo con scroll propio y
+  **sólo la columna de contenido scrollea**. Se retiró el footer dentro de la app y sus claves.
+- **Detalle de usuario**: reconstruido por un subagente en `src/features/users/users-detail/`
+  (siete secciones según `odd/tasks/COU-344-detalle-spec.md`), **sin revisar todavía**.
+- Estado: **631/631** tests, lint y typecheck limpios.
+
+**L26** — **`Resumen` sale del sidebar; `Inicio` pasa a ser la primera entrada.** Decisión del humano:
+el artboard llamado `Resumen` en realidad contiene la lista de usuarios, y tener `Inicio` + `Resumen`
+duplicaba la entrada de inicio.
+
+- **App**: `CONSOLE_NAV` queda con `Inicio` apuntando a `/app` (habilitado), y se retira `nav.summary`
+  de los tres locales. Los tests de navegación se actualizaron.
+- **`.fig`**: el frame `0:357` se renombró a **`Usuarios`**; en él el ítem `Resumen` se renombró a
+  `Inicio` conservando su posición (así se evita el problema de que el MCP no reordena hijos), se
+  movió la barra activa al ítem `Usuarios` y se borró el clon sobrante. En los otros cuatro
+  artboards —`Inicio`, `Detalle de usuario`, `Roles y permisos`, `Sistema`— se borró `NavItem-Resumen`.
+- Resultado verificado: los cinco sidebars quedan idénticos — `Inicio`, `Usuarios`,
+  `Roles y permisos`, `Sesiones`, `Auditoría` / `Plantillas de email`, `Envíos`, `Parámetros`, `i18n`.
+
+**Pendiente**: los exports `design/app/*.html` quedaron desactualizados respecto del `.fig` y hay que
+re-exportarlos; `04-resumen.html` probablemente pase a `04-usuarios.html`.
