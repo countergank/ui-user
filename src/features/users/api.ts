@@ -122,3 +122,16 @@ export async function updateUser(id: string, payload: UpdateUserPayload): Promis
 
   return userSchema.parse(raw);
 }
+
+/**
+ * @param id - the user id; it is percent-encoded so a hostile id cannot change the path. The
+ * endpoint toggles the active flag server-side, so the client sends no body.
+ * @returns The validated `UserDTO` echoing the new `isActive`.
+ */
+export async function toggleUserActive(id: string): Promise<UserDTO> {
+  const raw = await httpClient.request<unknown>(`/admin/users/${encodeURIComponent(id)}/active`, {
+    method: "PATCH",
+  });
+
+  return userSchema.parse(raw);
+}

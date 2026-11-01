@@ -71,7 +71,7 @@ export function UsersDetailPage() {
               <SessionsCard user={user.data} />
             </div>
             <div className="flex min-w-0 flex-col gap-6">
-              <AdminActionsCard />
+              <AdminActionsCard user={user.data} />
               <AccountStatusCard />
               <ActivityCard />
             </div>

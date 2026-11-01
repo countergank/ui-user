@@ -415,6 +415,14 @@ export const pt: {
         inactive: "Inativo",
       },
     },
+    active: {
+      confirmTitle: "Confirmar mudança de estado",
+      confirmBody: "Esta ação alterará imediatamente o acesso de {{name}}.",
+      deactivate: "Desativar",
+      activate: "Ativar",
+      success: "Estado do usuário atualizado.",
+      selfBlocked: "Você não pode desativar o seu próprio usuário.",
+    },
     detail: {
       title: "Detalhe do usuário",
       subtitle: "Ficha, permissões e ações administrativas",

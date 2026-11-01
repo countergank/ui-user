@@ -401,6 +401,14 @@ export const en = {
         inactive: "Inactive",
       },
     },
+    active: {
+      confirmTitle: "Confirm status change",
+      confirmBody: "This will immediately change {{name}}'s access.",
+      deactivate: "Deactivate",
+      activate: "Activate",
+      success: "User status updated.",
+      selfBlocked: "You cannot deactivate your own user.",
+    },
     detail: {
       title: "User details",
       subtitle: "Profile, permissions and administrative actions",

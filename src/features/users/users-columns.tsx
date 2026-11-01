@@ -19,7 +19,9 @@ export function isLocked(user: UserDTO): boolean {
 const dateFormatter = (language: string) =>
   new Intl.DateTimeFormat(language, { dateStyle: "medium" });
 
-export function useUsersColumns(): DataTableColumn<UserDTO>[] {
+export function useUsersColumns(
+  onToggleActive?: (user: UserDTO) => void,
+): DataTableColumn<UserDTO>[] {
   const { t, i18n } = useTranslation("users");
   const { t: tCommon } = useTranslation();
 
@@ -111,31 +113,19 @@ export function useUsersColumns(): DataTableColumn<UserDTO>[] {
                 <Pencil aria-hidden="true" />
               </Link>
             </Button>
-            {user.isActive ? (
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="bg-canvas"
-                aria-label={t("list.actions.deactivate")}
-                title={`${t("list.actions.deactivate")} · ${tCommon("ui.list.pending")}`}
-                disabled
-              >
-                <Power aria-hidden="true" />
-              </Button>
-            ) : (
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="bg-canvas"
-                aria-label={t("list.actions.activate")}
-                title={`${t("list.actions.activate")} · ${tCommon("ui.list.pending")}`}
-                disabled
-              >
-                <Power aria-hidden="true" />
-              </Button>
-            )}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="bg-canvas"
+              aria-label={t(user.isActive ? "list.actions.deactivate" : "list.actions.activate")}
+              title={t(user.isActive ? "list.actions.deactivate" : "list.actions.activate")}
+              onClick={() => {
+                onToggleActive?.(user);
+              }}
+            >
+              <Power aria-hidden="true" />
+            </Button>
             {isLocked(user) ? (
               <Button
                 type="button"
