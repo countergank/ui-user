@@ -38,3 +38,4 @@ de caché. Branch `feature/cou-293-construir-la-activacion-y-desactivacion-de-us
 - L4: Decisión de UX del guard (S3/S8): al intentar desactivar el propio usuario se muestra `toast.error(users.active.selfBlocked)` y no se abre el diálogo; el guard también vive en el hook.
 - L5: Verificación completa: `pnpm test` 662/662, `pnpm lint` limpio, `pnpm typecheck` limpio, `pnpm build` ok. El test de detalle destapó que la invalidación refresca el detalle vía GET; el handler del test simula el backend con estado.
 - L6: Commit pendiente de autorización explícita del humano (AGENTS.md); propuesto: `feat(users): add the active toggle with confirmation dialog (COU-293)`.
+- L7: Commit autorizado y ejecutado: `9117442` `feat(users): add the active toggle with confirmation dialog (COU-293)` (14 archivos, 708 inserciones). Cambios de `design/` (renombrado `04-resumen` → `04-usuarios`) presentes en el árbol pero ajenos a este ticket: quedan fuera, los maneja su propio trabajo.
