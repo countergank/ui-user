@@ -5,8 +5,11 @@ import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
 import { I18nextProvider } from "react-i18next";
 import { MemoryRouter, useLocation } from "react-router-dom";
+import { toast } from "sonner";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { axe } from "vitest-axe";
+
+import { Toaster } from "@/components/ui/sonner";
 
 import { permissionsQueryKey } from "@/features/authorization/hooks/use-permissions";
 import { i18n } from "@/lib/i18n";
@@ -92,6 +95,7 @@ beforeAll(() => {
 });
 
 afterEach(() => {
+  toast.dismiss();
   server.resetHandlers();
   lastUrl = null;
   requestCount = 0;
@@ -137,6 +141,7 @@ function renderPage(entry = "/app/users", permissions: string[] = ["*"]) {
         <MemoryRouter initialEntries={[entry]}>
           <UsersPage />
           <RouteProbe />
+          <Toaster />
         </MemoryRouter>
       </I18nextProvider>
     </QueryClientProvider>,
@@ -447,5 +452,79 @@ describe("UsersPage header", () => {
     });
 
     expect(await screen.findByText(expected)).toBeTruthy();
+  });
+});
+
+function rowOf(text: string): HTMLElement {
+  const row = screen.getByText(text).closest("tr");
+  if (row === null) {
+    throw new Error(`missing table row for ${text}`);
+  }
+
+  return row;
+}
+
+describe("users page — active toggle (COU-293)", () => {
+  it("confirms and PATCHes the toggle endpoint from the row action (S1, S7, S9)", async () => {
+    let patchCount = 0;
+    server.use(
+      http.patch(`${USERS_URL}/u3/active`, () => {
+        patchCount += 1;
+
+        return HttpResponse.json({ ...USERS[2], isActive: false });
+      }),
+    );
+    renderPage();
+    await expectRows();
+    const user = userEvent.setup();
+
+    const row = rowOf("Alan Turing");
+    await user.click(within(row).getByRole("button", { name: tUsers("list.actions.deactivate") }));
+
+    const dialog = screen.getByRole("alertdialog");
+    expect(dialog).toHaveTextContent(tUsers("active.confirmTitle"));
+    expect(
+      within(dialog).getByRole("button", { name: tUsers("active.deactivate") }),
+    ).toBeInTheDocument();
+
+    await user.click(within(dialog).getByRole("button", { name: tUsers("active.deactivate") }));
+
+    expect(await screen.findByText(tUsers("active.success"))).toBeInTheDocument();
+    expect(patchCount).toBe(1);
+  });
+
+  it("opens the activate confirmation for an inactive row (S1, S5)", async () => {
+    renderPage();
+    await expectRows();
+    const user = userEvent.setup();
+
+    const row = rowOf("Grace Hopper");
+    await user.click(within(row).getByRole("button", { name: tUsers("list.actions.activate") }));
+
+    const dialog = screen.getByRole("alertdialog");
+    expect(
+      within(dialog).getByRole("button", { name: tUsers("active.activate") }),
+    ).toBeInTheDocument();
+  });
+
+  it("blocks deactivating the session's own row with a clear message and no request (S3, S8)", async () => {
+    let patchCount = 0;
+    server.use(
+      http.patch(`${USERS_URL}/u1/active`, () => {
+        patchCount += 1;
+
+        return HttpResponse.json(USERS[0]);
+      }),
+    );
+    renderPage();
+    await expectRows();
+    const user = userEvent.setup();
+
+    const row = rowOf("Ada Lovelace");
+    await user.click(within(row).getByRole("button", { name: tUsers("list.actions.deactivate") }));
+
+    expect(await screen.findByText(tUsers("active.selfBlocked"))).toBeInTheDocument();
+    expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+    expect(patchCount).toBe(0);
   });
 });

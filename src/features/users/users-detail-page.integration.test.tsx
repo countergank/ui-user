@@ -1,13 +1,15 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
 import { I18nextProvider } from "react-i18next";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { toast } from "sonner";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { axe } from "vitest-axe";
 
+import { Toaster } from "@/components/ui/sonner";
 import { permissionsQueryKey } from "@/features/authorization/hooks/use-permissions";
 import { i18n } from "@/lib/i18n";
 import { initialSessionState, sessionStore } from "@/lib/session/session-store";
@@ -17,6 +19,7 @@ import { UsersDetailPage } from "./users-detail-page";
 
 const USERS_URL = "https://test.invalid/admin/users";
 const USER_URL = `${USERS_URL}/u1`;
+const USER_ACTIVE_URL = `${USER_URL}/active`;
 
 const tUsers = i18n.getFixedT(null, "users");
 const tCommon = i18n.getFixedT(null, "common");
@@ -85,6 +88,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  toast.dismiss();
   server.resetHandlers();
 });
 
@@ -105,6 +109,7 @@ function renderPage() {
             <Route path="/app/users" element={<p>users-list</p>} />
             <Route path="/app/users/:id/edit" element={<p>edit-form</p>} />
           </Routes>
+          <Toaster />
         </MemoryRouter>
       </I18nextProvider>
     </QueryClientProvider>,
@@ -180,7 +185,7 @@ describe("user detail — loaded user", () => {
     expect(screen.getByText(tUsers("detail.status.inactive"))).toBeInTheDocument();
   });
 
-  it("renders the sections without an endpoint as placeholders and disables every action (S4–S8)", async () => {
+  it("renders the sections without an endpoint as placeholders and keeps the toggle wired (S4–S8)", async () => {
     renderPage();
     await screen.findByText("Ada Lovelace");
 
@@ -189,7 +194,6 @@ describe("user detail — loaded user", () => {
     const pending = tCommon("ui.list.pending");
     for (const key of [
       "unlock",
-      "deactivate",
       "resetPassword",
       "resendVerification",
       "changeEmail",
@@ -201,8 +205,71 @@ describe("user detail — loaded user", () => {
       expect(button).toBeDisabled();
       expect(button).toHaveAttribute("title", expect.stringContaining(pending));
     }
+    const toggle = screen.getByRole("button", {
+      name: new RegExp(`^${escapeRegExp(tUsers("detail.adminActions.deactivate"))}`),
+    });
+    expect(toggle).toBeEnabled();
     expect(screen.getByRole("button", { name: tUsers("detail.sessions.closeAll") })).toBeDisabled();
     expect(screen.getByRole("button", { name: tUsers("detail.activity.viewAll") })).toBeDisabled();
+  });
+
+  it("opens the confirmation and toggles the active flag from the detail (COU-293 S1, S7, S9)", async () => {
+    sessionStore.setState(initialSessionState);
+    sessionStore.getState().startSession({
+      user: {
+        id: "admin-9",
+        email: "root@example.com",
+        userName: "root",
+        name: "Root",
+        lastName: "Admin",
+      },
+      accessToken: "access-1",
+      refreshToken: "refresh-1",
+    });
+    let patchCount = 0;
+    let patchBodyText: string | null = null;
+    server.use(
+      http.patch(USER_ACTIVE_URL, async ({ request }) => {
+        patchCount += 1;
+        patchBodyText = await request.text();
+
+        return HttpResponse.json({ ...USER, isActive: false });
+      }),
+      http.get(USER_URL, () =>
+        HttpResponse.json({ ...USER, isActive: patchCount > 0 ? false : USER.isActive }),
+      ),
+    );
+    const { client } = renderPage();
+    const user = userEvent.setup();
+    await screen.findByText("Ada Lovelace");
+
+    await user.click(
+      screen.getByRole("button", {
+        name: new RegExp(`^${escapeRegExp(tUsers("detail.adminActions.deactivate"))}`),
+      }),
+    );
+    const dialog = screen.getByRole("alertdialog");
+    expect(dialog).toHaveTextContent(tUsers("active.confirmTitle"));
+
+    await user.click(within(dialog).getByRole("button", { name: tUsers("active.deactivate") }));
+
+    expect(await screen.findByText(tUsers("active.success"))).toBeInTheDocument();
+    expect(patchCount).toBe(1);
+    expect(patchBodyText).toBe("");
+    await waitFor(() => {
+      expect(client.getQueryData(userQueryKey("u1"))).toMatchObject({ isActive: false });
+    });
+  });
+
+  it("labels the toggle row activate for an inactive user (COU-293 S5)", async () => {
+    server.use(http.get(USER_URL, () => HttpResponse.json({ ...USER, isActive: false })));
+    renderPage();
+
+    expect(
+      await screen.findByRole("button", {
+        name: new RegExp(`^${escapeRegExp(tUsers("active.activate"))}`),
+      }),
+    ).toBeEnabled();
   });
 
   it("offers the edit link and the way back to the list (S5)", async () => {

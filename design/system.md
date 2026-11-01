@@ -116,9 +116,9 @@ Escala Tailwind por defecto (múltiplos de 0.25rem): `p-6` en headers/contenidos
 ## Navegación y artboards
 
 - `Resumen` salió del sidebar; `Inicio` es la primera entrada y apunta a `/app`.
-- Artboards: `01-landing`, `02-login`, `03-inicio`, `04-usuarios` (renombrado desde
-  `04-resumen`, pendiente de re-export), `05-detalle-usuario`, `06-roles-permisos`,
-  `07-sistema`, más `Crear usuario` y `Editar usuario` en el `.fig` (export HTML pendiente).
+- Artboards: `01-landing`, `02-login`, `03-inicio`, `04-usuarios`, `05-detalle-usuario`,
+  `06-roles-permisos`, `07-sistema`, más `Crear usuario` y `Editar usuario` en el `.fig`
+  (export HTML pendiente).
 
 ## Cambiar un token
 

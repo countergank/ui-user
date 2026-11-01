@@ -1,4 +1,5 @@
 import { Download } from "lucide-react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
@@ -12,9 +13,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Can } from "@/features/authorization/components/can";
 import { PERMISSIONS } from "@/features/authorization/permissions";
 
+import { ActiveConfirmDialog } from "./components/active-confirm-dialog";
 import { useUsers } from "./hooks/use-users";
 import { RecentAuditCard } from "./recent-audit-card";
 import { RolesDistributionCard } from "./roles-distribution-card";
+import type { UserDTO } from "./types";
 import { useUsersColumns } from "./users-columns";
 import { USERS_LIST_PARAMS } from "./users-list-config";
 import { SIMULATED_METRICS } from "./users-list-metrics";
@@ -31,7 +34,8 @@ export function UsersPage() {
   const { t } = useTranslation("users");
   const { t: tCommon } = useTranslation();
   const { params, setFilter, setSort, setPage, setLimit } = useListParams(USERS_LIST_PARAMS);
-  const columns = useUsersColumns();
+  const [activeTarget, setActiveTarget] = useState<UserDTO | null>(null);
+  const columns = useUsersColumns(setActiveTarget);
   const users = useUsers(params);
 
   const rows = users.data?.data ?? [];
@@ -152,6 +156,16 @@ export function UsersPage() {
           <RecentAuditCard />
         </div>
       </div>
+
+      <ActiveConfirmDialog
+        user={activeTarget}
+        open={activeTarget !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setActiveTarget(null);
+          }
+        }}
+      />
     </div>
   );
 }
