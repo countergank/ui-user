@@ -1,12 +1,6 @@
-// RouteAnnouncer.tsx
-// Accessible route change announcer for SPAs.
-// Uses aria-live="polite" to announce page transitions to screen reader users.
-// Mount once at the app root; call announce() after route changes complete.
-
 import { useEffect, useRef, useState, useCallback } from "react";
 
 interface RouteAnnouncerProps {
-  /** Message to announce after route change (e.g., page title) */
   message: string;
 }
 
@@ -41,7 +35,6 @@ export function RouteAnnouncer({ message }: RouteAnnouncerProps) {
   );
 }
 
-// Hook-based usage for programmatic announcements
 export function useAnnouncer() {
   const announcerRef = useRef<((msg: string) => void) | null>(null);
 
