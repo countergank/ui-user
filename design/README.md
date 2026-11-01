@@ -33,7 +33,7 @@ que ese ticket cierre, el aspecto real de la aplicación es el que describe `sys
 | `01-landing.html` | Landing pública |
 | `02-login.html` | Inicio de sesión |
 | `03-inicio.html` | Inicio de la consola |
-| `04-resumen.html` | Resumen de usuarios |
+| `04-usuarios.html` | Usuarios (listado) |
 | `05-detalle-usuario.html` | Detalle de usuario |
 | `06-roles-permisos.html` | Roles y permisos |
 | `07-sistema.html` | Sistema |

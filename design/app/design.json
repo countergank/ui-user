@@ -4,9 +4,9 @@
   "feature": "odd/tasks/COU-342-diseno-dashboard.md",
   "source": {
     "fig": "Dashboard User UI.fig",
-    "sha256": "87845c1af89c182baaee211072402f0a750a82cf9f9d7a4f127754505ae3476d",
-    "sizeKb": 265.8,
-    "exportedAt": "2026-10-28",
+    "sha256": "de7f5618bbca7c5b08cf6114eeeb8bb33ddeafa7c964bbc3d35c94fe30ec95d4",
+    "sizeKb": 581.9,
+    "exportedAt": "2026-11-01",
     "tool": "openpencil 0.15.1"
   },
   "modes": {
