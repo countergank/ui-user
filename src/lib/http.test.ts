@@ -81,6 +81,15 @@ describe("http client", () => {
     expect(new Headers(init.headers).get("accept-language")).toBeNull();
   });
 
+  it("omits Accept-Language when no locale source is configured", async () => {
+    const fetchImpl = fetchStub(200, {});
+
+    await createHttpClient({ baseUrl: BASE, fetchImpl }).request("auth/me");
+
+    const [, init] = fetchImpl.mock.calls[0] as [string, RequestInit];
+    expect(new Headers(init.headers).get("accept-language")).toBeNull();
+  });
+
   it("maps the API error envelope onto AppError with its code and status", async () => {
     const fetchImpl = fetchStub(401, {
       statusCode: 401,

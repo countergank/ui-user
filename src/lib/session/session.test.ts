@@ -90,9 +90,14 @@ describe("session composition root", () => {
     const fetchImpl = fetchSequence(response(200, { id: "u1" }));
     const { httpClient } = createSessionRuntime(fetchImpl);
 
-    await httpClient.request("/auth/me");
+    await i18n.changeLanguage("pt");
+    try {
+      await httpClient.request("/auth/me");
 
-    expect(headersOf(fetchImpl.mock.calls[0]).get("accept-language")).toBe(i18n.language);
+      expect(headersOf(fetchImpl.mock.calls[0]).get("accept-language")).toBe("pt");
+    } finally {
+      await i18n.changeLanguage("en");
+    }
   });
 
   it("refreshes once on 401 and retries with the rotated token", async () => {
