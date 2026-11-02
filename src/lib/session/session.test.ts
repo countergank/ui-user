@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { AppError } from "@/lib/errors";
+import { i18n } from "@/lib/i18n";
 
 import { createSessionRuntime, startProactiveRefresh } from "./session";
 import { initialSessionState, sessionStore } from "./session-store";
@@ -83,6 +84,20 @@ describe("session composition root", () => {
     await httpClient.request("/auth/me");
 
     expect(headersOf(fetchImpl.mock.calls[0]).get("authorization")).toBeNull();
+  });
+
+  it("sends the active locale as Accept-Language on every request", async () => {
+    const fetchImpl = fetchSequence(response(200, { id: "u1" }));
+    const { httpClient } = createSessionRuntime(fetchImpl);
+
+    await i18n.changeLanguage("pt");
+    try {
+      await httpClient.request("/auth/me");
+
+      expect(headersOf(fetchImpl.mock.calls[0]).get("accept-language")).toBe("pt");
+    } finally {
+      await i18n.changeLanguage("en");
+    }
   });
 
   it("refreshes once on 401 and retries with the rotated token", async () => {

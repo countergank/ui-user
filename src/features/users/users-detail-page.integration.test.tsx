@@ -39,7 +39,11 @@ const USER = {
 };
 
 const dateTimeFormatter = {
-  date: new Intl.DateTimeFormat(i18n.language, { day: "numeric", month: "short", year: "numeric" }),
+  date: new Intl.DateTimeFormat(i18n.language, {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }),
   time: new Intl.DateTimeFormat(i18n.language, {
     hour: "2-digit",
     minute: "2-digit",

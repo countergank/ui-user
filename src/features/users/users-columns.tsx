@@ -5,19 +5,16 @@ import { Can } from "@/features/authorization/components/can";
 import { PERMISSIONS } from "@/features/authorization/permissions";
 import { Eye, LockOpen, Pencil, Power, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-
-const upper = (label: string): string => label.toUpperCase();
 import { Link } from "react-router-dom";
 
 import type { UserDTO } from "./types";
-import { avatarToneOf, initialsOf } from "./users-detail/format";
+import { avatarToneOf, formatDate, initialsOf } from "./users-detail/format";
+
+const upper = (label: string): string => label.toUpperCase();
 
 export function isLocked(user: UserDTO): boolean {
   return user.lockedUntil !== null && new Date(user.lockedUntil).getTime() > Date.now();
 }
-
-const dateFormatter = (language: string) =>
-  new Intl.DateTimeFormat(language, { dateStyle: "medium" });
 
 export function useUsersColumns(
   onToggleActive?: (user: UserDTO) => void,
@@ -83,7 +80,7 @@ export function useUsersColumns(
     {
       key: "createdAt",
       header: upper(t("list.columns.createdAt")),
-      cell: (user) => dateFormatter(i18n.language).format(new Date(user.createdAt)),
+      cell: (user) => formatDate(user.createdAt, i18n.language),
       sortKey: "createdAt",
     },
     {

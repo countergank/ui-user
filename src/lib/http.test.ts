@@ -61,6 +61,35 @@ describe("http client", () => {
     expect(new Headers(anonInit.headers).get("authorization")).toBeNull();
   });
 
+  it("sends the Accept-Language header from the injected locale", async () => {
+    const fetchImpl = fetchStub(200, {});
+
+    await createHttpClient({ baseUrl: BASE, fetchImpl, getLocale: () => "es-AR" }).request(
+      "auth/me",
+    );
+
+    const [, init] = fetchImpl.mock.calls[0] as [string, RequestInit];
+    expect(new Headers(init.headers).get("accept-language")).toBe("es-AR");
+  });
+
+  it("omits Accept-Language when the injected locale is empty", async () => {
+    const fetchImpl = fetchStub(200, {});
+
+    await createHttpClient({ baseUrl: BASE, fetchImpl, getLocale: () => null }).request("auth/me");
+
+    const [, init] = fetchImpl.mock.calls[0] as [string, RequestInit];
+    expect(new Headers(init.headers).get("accept-language")).toBeNull();
+  });
+
+  it("omits Accept-Language when no locale source is configured", async () => {
+    const fetchImpl = fetchStub(200, {});
+
+    await createHttpClient({ baseUrl: BASE, fetchImpl }).request("auth/me");
+
+    const [, init] = fetchImpl.mock.calls[0] as [string, RequestInit];
+    expect(new Headers(init.headers).get("accept-language")).toBeNull();
+  });
+
   it("maps the API error envelope onto AppError with its code and status", async () => {
     const fetchImpl = fetchStub(401, {
       statusCode: 401,

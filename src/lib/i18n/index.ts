@@ -1,7 +1,7 @@
 import i18next, { type i18n as I18nInstance, type InitOptions } from "i18next";
 import { initReactI18next } from "react-i18next";
 
-import { applyDocumentLanguage, readStoredLanguage } from "./language";
+import { applyDocumentLanguage, detectBrowserLanguage, readStoredLanguage } from "./language";
 import { defaultLanguage, defaultNamespace, languages, namespaces, resources } from "./resources";
 
 const baseOptions = {
@@ -24,7 +24,7 @@ export function createI18nInstance(options: InitOptions = {}): I18nInstance {
   void instance.use(initReactI18next);
   void instance.init({
     ...baseOptions,
-    lng: readStoredLanguage() ?? defaultLanguage,
+    lng: readStoredLanguage() ?? detectBrowserLanguage() ?? defaultLanguage,
     ...options,
   });
 
