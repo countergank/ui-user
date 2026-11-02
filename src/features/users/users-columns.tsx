@@ -17,7 +17,7 @@ export function isLocked(user: UserDTO): boolean {
 }
 
 const dateFormatter = (language: string) =>
-  new Intl.DateTimeFormat(language, { dateStyle: "medium" });
+  new Intl.DateTimeFormat(language, { day: "2-digit", month: "2-digit", year: "numeric" });
 
 export function useUsersColumns(
   onToggleActive?: (user: UserDTO) => void,

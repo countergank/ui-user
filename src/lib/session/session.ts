@@ -1,4 +1,5 @@
 import { type HttpClient, createHttpClient } from "@/lib/http";
+import { i18n } from "@/lib/i18n";
 import type { StoreApi } from "zustand/vanilla";
 
 import { decodeAccessToken } from "./jwt";
@@ -20,6 +21,7 @@ export function createSessionRuntime(fetchImpl?: typeof fetch): SessionRuntime {
   const httpClient = createHttpClient({
     fetchImpl,
     getAccessToken: () => sessionStore.getState().accessToken,
+    getLocale: () => i18n.language,
     onUnauthorized: () => sessionManager.handleUnauthorized(),
   });
 

@@ -3,8 +3,8 @@ export const NO_VALUE = "—";
 export function formatDateTime(value: string, language: string): string {
   const date = new Date(value);
   const datePart = new Intl.DateTimeFormat(language, {
-    day: "numeric",
-    month: "short",
+    day: "2-digit",
+    month: "2-digit",
     year: "numeric",
   }).format(date);
   const timePart = new Intl.DateTimeFormat(language, {

@@ -16,6 +16,7 @@ export interface HttpClientDeps {
   baseUrl?: string;
   fetchImpl?: typeof fetch;
   getAccessToken?: () => string | null;
+  getLocale?: () => string | null;
   onUnauthorized?: () => Promise<boolean>;
 }
 
@@ -54,7 +55,7 @@ async function toAppError(response: Response): Promise<AppError> {
 }
 
 /**
- * @param deps - optional overrides: `baseUrl`, `fetchImpl`, `getAccessToken`, and
+ * @param deps - optional overrides: `baseUrl`, `fetchImpl`, `getAccessToken`, `getLocale`, and
  * `onUnauthorized`, which owns the single retry after a session renewal.
  * @returns A minimal JSON client that does not know about sessions.
  */
@@ -75,6 +76,11 @@ export function createHttpClient(deps: HttpClientDeps = {}): HttpClient {
     const token = deps.getAccessToken?.() ?? null;
     if (token !== null && token !== "") {
       headers.set("authorization", `Bearer ${token}`);
+    }
+
+    const locale = deps.getLocale?.() ?? null;
+    if (locale !== null && locale !== "") {
+      headers.set("accept-language", locale);
     }
 
     let response: Response;

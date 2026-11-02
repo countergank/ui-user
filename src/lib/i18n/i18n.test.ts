@@ -1,6 +1,12 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { createI18nInstance, defaultLanguage, defaultNamespace, i18n } from "./index";
+import { LANGUAGE_STORAGE_KEY } from "./language";
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+  window.localStorage.clear();
+});
 
 describe("i18n foundation", () => {
   it("initializes the app instance with bundled English resources", () => {
@@ -19,5 +25,30 @@ describe("i18n foundation", () => {
     expect(instance.isInitialized).toBe(true);
     expect(instance.resolvedLanguage).toBe(defaultLanguage);
     expect(instance.t("meta.productName")).toBe("Countergank User");
+  });
+
+  it("adopts the browser language when no preference is stored", () => {
+    vi.stubGlobal("navigator", { language: "es-AR" });
+
+    const instance = createI18nInstance();
+
+    expect(instance.language).toBe("es");
+  });
+
+  it("keeps English for an unsupported browser language", () => {
+    vi.stubGlobal("navigator", { language: "de-DE" });
+
+    const instance = createI18nInstance();
+
+    expect(instance.language).toBe(defaultLanguage);
+  });
+
+  it("prefers the stored preference over the browser language", () => {
+    window.localStorage.setItem(LANGUAGE_STORAGE_KEY, "pt");
+    vi.stubGlobal("navigator", { language: "es-AR" });
+
+    const instance = createI18nInstance();
+
+    expect(instance.language).toBe("pt");
   });
 });

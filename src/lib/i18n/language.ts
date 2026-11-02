@@ -16,6 +16,16 @@ export function readStoredLanguage(): AppLanguage | null {
   }
 }
 
+export function detectBrowserLanguage(): AppLanguage | null {
+  try {
+    const raw = navigator.language.split("-")[0];
+
+    return isAppLanguage(raw) ? raw : null;
+  } catch {
+    return null;
+  }
+}
+
 export function writeStoredLanguage(language: AppLanguage): void {
   try {
     window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
