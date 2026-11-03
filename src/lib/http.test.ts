@@ -107,6 +107,22 @@ describe("http client", () => {
     expect((error as AppError).message).toBe("Invalid refresh token");
   });
 
+  it("captures the API traceId from the error envelope", async () => {
+    const fetchImpl = fetchStub(502, {
+      statusCode: 502,
+      code: "UA-XXX-999",
+      message: "boom",
+      traceId: "trace-123",
+    });
+
+    const error = await createHttpClient({ baseUrl: BASE, fetchImpl })
+      .request("auth/me")
+      .catch((e: unknown) => e);
+
+    expect(error).toBeInstanceOf(AppError);
+    expect((error as AppError).traceId).toBe("trace-123");
+  });
+
   it("still produces an AppError when the error body is not JSON", async () => {
     const notJson = {
       ok: false,

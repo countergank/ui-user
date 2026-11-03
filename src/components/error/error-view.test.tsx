@@ -31,6 +31,34 @@ describe("ErrorView", () => {
     expect(screen.queryByRole("button", { name: i18n.t("error.retry") })).not.toBeInTheDocument();
   });
 
+  it("shows the traceId with a copy action when one is provided", async () => {
+    const user = userEvent.setup();
+    const writeText = vi.fn(() => Promise.resolve());
+    const originalClipboard = navigator.clipboard;
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText },
+      configurable: true,
+    });
+
+    render(<ErrorView title="Boom" message="Details" traceId="trace-123" />);
+
+    expect(screen.getByText("trace-123")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: i18n.t("error.traceId.copy") }));
+    expect(writeText).toHaveBeenCalledWith("trace-123");
+    Object.defineProperty(navigator, "clipboard", {
+      value: originalClipboard,
+      configurable: true,
+    });
+  });
+
+  it("does not show a traceId section when none is provided", () => {
+    render(<ErrorView title="Boom" message="Details" />);
+
+    expect(
+      screen.queryByRole("button", { name: i18n.t("error.traceId.copy") }),
+    ).not.toBeInTheDocument();
+  });
+
   it("has no axe violations", async () => {
     const { container } = render(
       <ErrorView

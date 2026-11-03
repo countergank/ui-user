@@ -12,6 +12,12 @@ describe("typed errors", () => {
     expect(err.message).toBe("boom");
   });
 
+  it("AppError carries an API traceId when provided", () => {
+    const error = new AppError("Request failed", { code: "UA-XXX-999", traceId: "trace-123" });
+
+    expect(error.traceId).toBe("trace-123");
+  });
+
   it("AppError propagates a cause when provided", () => {
     const cause = new Error("root");
     const err = new AppError("wrapped", { cause });
