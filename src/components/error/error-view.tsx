@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,16 @@ interface ErrorViewProps {
 export function ErrorView({ title, message, traceId, onRetry }: ErrorViewProps) {
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
+  const revertTimer = useRef<number | null>(null);
+
+  useEffect(
+    () => () => {
+      if (revertTimer.current !== null) {
+        window.clearTimeout(revertTimer.current);
+      }
+    },
+    [],
+  );
   return (
     <section
       role="alert"
@@ -36,7 +46,10 @@ export function ErrorView({ title, message, traceId, onRetry }: ErrorViewProps) 
                 .writeText(traceId)
                 .then(() => {
                   setCopied(true);
-                  window.setTimeout(() => {
+                  if (revertTimer.current !== null) {
+                    window.clearTimeout(revertTimer.current);
+                  }
+                  revertTimer.current = window.setTimeout(() => {
                     setCopied(false);
                   }, 2000);
                 })

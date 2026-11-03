@@ -82,6 +82,12 @@ describe("resolveApiErrorPresentation", () => {
     expect(resolveApiErrorPresentation(error).level).toBe("page");
   });
 
+  it("marks form level by status even for non-UA codes", () => {
+    const transportError = new AppError(RAW_BACKEND_MESSAGE, { code: "HTTP_ERROR", status: 400 });
+
+    expect(resolveApiErrorPresentation(transportError).level).toBe("form");
+  });
+
   it("falls back to the family key for an AppError carrying a non-UA code", () => {
     const serverError = new AppError(RAW_BACKEND_MESSAGE, { code: "HTTP_ERROR", status: 503 });
     expect(resolveApiErrorPresentation(serverError)).toEqual({
@@ -92,7 +98,7 @@ describe("resolveApiErrorPresentation", () => {
 
     const requestError = new AppError(RAW_BACKEND_MESSAGE, { code: "HTTP_ERROR", status: 400 });
     expect(resolveApiErrorPresentation(requestError)).toEqual({
-      level: "page",
+      level: "form",
       messageKey: "error.family.request",
       traceId: null,
     });

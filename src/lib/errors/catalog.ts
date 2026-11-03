@@ -35,21 +35,30 @@ export const UA_ERROR_CODES = [
 
 export type UaErrorCode = (typeof UA_ERROR_CODES)[number];
 
+export type ApiErrorMessageKey =
+  | "error.genericMessage"
+  | "error.family.request"
+  | "error.family.server"
+  | `error.ua.${UaErrorCode}`;
+
 const UA_ERROR_CODES_SET = new Set<string>(UA_ERROR_CODES);
 
 export function isUaErrorCode(value: unknown): value is UaErrorCode {
   return typeof value === "string" && UA_ERROR_CODES_SET.has(value);
 }
 
-export function uaErrorKey(code: UaErrorCode): string {
+export function uaErrorKey(code: UaErrorCode): ApiErrorMessageKey {
   return `error.ua.${code}`;
 }
 
-const FAMILY_SERVER_KEY = "error.family.server";
-const FAMILY_REQUEST_KEY = "error.family.request";
-const GENERIC_MESSAGE_KEY = "error.genericMessage";
+const FAMILY_SERVER_KEY: ApiErrorMessageKey = "error.family.server";
+const FAMILY_REQUEST_KEY: ApiErrorMessageKey = "error.family.request";
+const GENERIC_MESSAGE_KEY: ApiErrorMessageKey = "error.genericMessage";
 
-export function resolveApiErrorKey(code: string | null | undefined, status?: number): string {
+export function resolveApiErrorKey(
+  code: string | null | undefined,
+  status?: number,
+): ApiErrorMessageKey {
   if (isUaErrorCode(code)) {
     return uaErrorKey(code);
   }

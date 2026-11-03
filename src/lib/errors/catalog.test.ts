@@ -15,6 +15,18 @@ describe("UA-* error catalog", () => {
     ).toBe(true);
   });
 
+  it("has family fallback copy in every shipped language", () => {
+    for (const key of [
+      "error.genericMessage",
+      "error.family.request",
+      "error.family.server",
+    ] as const) {
+      for (const language of ["es", "en", "pt"] as const) {
+        expect(i18n.exists(key, { lng: language }), `${key} has no copy in ${language}`).toBe(true);
+      }
+    }
+  });
+
   it("holds unique, well-formed codes", () => {
     expect(new Set(UA_ERROR_CODES).size).toBe(UA_ERROR_CODES.length);
     for (const code of UA_ERROR_CODES) {

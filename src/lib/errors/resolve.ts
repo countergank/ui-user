@@ -1,13 +1,9 @@
 import { AppError } from "../errors";
-import { type UaErrorCode, isUaErrorCode, resolveApiErrorKey, uaErrorKey } from "./catalog";
+import { type ApiErrorMessageKey, isUaErrorCode, resolveApiErrorKey, uaErrorKey } from "./catalog";
 
 export type ApiErrorLevel = "field" | "form" | "page";
 
-export type ApiErrorMessageKey =
-  | "error.genericMessage"
-  | "error.family.request"
-  | "error.family.server"
-  | `error.ua.${UaErrorCode}`;
+export type { ApiErrorMessageKey };
 
 export interface ApiErrorPresentation {
   level: ApiErrorLevel;
@@ -40,20 +36,16 @@ export function resolveApiErrorPresentation(error: unknown): ApiErrorPresentatio
   if (typeof error.code !== "string" || error.code === "") {
     return {
       level: "page",
-      messageKey: resolveApiErrorKey(null, error.status) as ApiErrorMessageKey,
+      messageKey: resolveApiErrorKey(null, error.status),
       traceId,
     };
   }
 
-  const messageKey = (
-    isUaErrorCode(error.code)
-      ? uaErrorKey(error.code)
-      : resolveApiErrorKey(error.code, error.status)
-  ) as ApiErrorMessageKey;
-  const level =
-    isUaErrorCode(error.code) && error.status !== undefined && FORM_LEVEL_STATUSES.has(error.status)
-      ? "form"
-      : "page";
+  const messageKey: ApiErrorMessageKey = isUaErrorCode(error.code)
+    ? uaErrorKey(error.code)
+    : resolveApiErrorKey(error.code, error.status);
+  const level: ApiErrorLevel =
+    error.status !== undefined && FORM_LEVEL_STATUSES.has(error.status) ? "form" : "page";
 
   return { level, messageKey, traceId };
 }
