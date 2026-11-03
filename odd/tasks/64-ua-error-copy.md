@@ -19,9 +19,9 @@ Notes: the issue says 29 types; `api-user`'s `error-kind.ts` now holds 32 entrie
 
 ## Tasks
 
-- T1 (S1, S4, S5): catalog + code→key map in `src/lib/errors/catalog.ts`, copy under `error.ua.*` in `common` ns for `es`/`en`/`pt`, plus family fallback keys and the catalog-walking parity test. Commit:
-- T2 (S2, S3): `traceId` captured from the API envelope in `src/lib/http.ts` and carried by `AppError`; copyable traceId shown on unknown codes. Commit:
-- T3 (S3, S6, S7): pure resolver (`field`/`form`/`page` levels) wired into `ErrorView`/route boundary; never renders raw backend `message`. Commit:
+- T1 (S1, S4, S5): catalog + code→key map in `src/lib/errors/catalog.ts`, copy under `error.ua.*` in `common` ns for `es`/`en`/`pt`, plus family fallback keys and the catalog-walking parity test. Commit: 6b91f12
+- T2 (S2, S3): `traceId` captured from the API envelope in `src/lib/http.ts` and carried by `AppError`; copyable traceId shown on unknown codes. Commit: 6b91f12
+- T3 (S3, S6, S7): pure resolver (`field`/`form`/`page` levels) wired into `ErrorView`/route boundary; never renders raw backend `message`. Commit: this commit
 - T4: full gate (`make ci` equivalent) and close-out. Commit:
 
 ## Log

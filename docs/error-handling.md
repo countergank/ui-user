@@ -69,7 +69,23 @@ a route guard (`RequireAuth`, `RequirePermission`) never throws at all — it re
 protected route renders, so an authorization decision cannot end up in the error path.
 
 `RouteErrorBoundary` reads `useRouteError()`, distinguishes React Router responses
-(`isRouteErrorResponse`) from app errors, normalizes both, and renders `ErrorView`.
+(`isRouteErrorResponse`) from app errors, and for app errors delegates to
+`resolveApiErrorPresentation()` in `src/lib/errors/resolve.ts`: a pure resolver that maps an
+`AppError`'s `code` to the `error.ua.*` catalog (with a family fallback for unknown codes and
+`error.genericMessage` for non-`AppError` throws), classifies the failure as form-level
+(validation statuses 400/409/422) or page-level, and returns the envelope's `traceId` so the
+boundary can pass it to `ErrorView`. The backend `message` is never rendered: copy always
+comes from the i18n catalog. Field-level errors belong to form internals and are resolved
+there, not by this resolver.
+
+The boundary renders `ErrorView` with the resolved `messageKey` and `traceId`, so an unknown
+code still shows the copyable trace identifier.
+
+```tsx
+const presentation = resolveApiErrorPresentation(error);
+message = t(presentation.messageKey);
+traceId = presentation.traceId ?? undefined;
+```
 
 ## 3. The error UI — `src/components/error/error-view.tsx`
 
@@ -79,6 +95,7 @@ One accessible presentation, announced to assistive technology and reused everyw
 <section role="alert" aria-live="assertive" className="…">
   <h2>{title}</h2>
   <p>{message}</p>
+  {traceId ? <p>{traceId} <Button>Copy trace identifier</Button></p> : null}
   {onRetry ? <Button variant="outline" onClick={onRetry}>Try again</Button> : null}
 </section>
 ```
@@ -116,7 +133,9 @@ Causality is honest: the test fails if the mapping, the transport or the alert r
 ## Rule of thumb checklist
 
 - [ ] Exception sites throw typed `Error` subclasses, never strings
-- [ ] Boundaries normalize unknowns through `toError()`
+- [ ] Boundaries resolve unknowns through `resolveApiErrorPresentation()` (route level) or
+      `toError()` (where only a normalized `Error` is needed)
 - [ ] Route-level crashes are covered by `errorElement`
 - [ ] Query/loading errors render `ErrorView` with a retry that refetches
-- [ ] Error copy is user-facing text, not a stack trace or dev-only message
+- [ ] Error copy is user-facing text from the i18n catalog, never the backend `message`, a
+      stack trace or dev-only output
