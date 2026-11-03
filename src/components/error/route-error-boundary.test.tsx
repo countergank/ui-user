@@ -147,14 +147,14 @@ describe("RouteErrorBoundary", () => {
     expect(screen.getByRole("button", { name: i18n.t("error.retry") })).toBeInTheDocument();
   });
 
-  it("omits the reload retry for form-level failures", async () => {
+  it("keeps the reload retry for every failure at a route boundary", async () => {
     renderWithLoader(() => {
       throw new AppError("boom", { code: "UA-COM-004", status: 409 });
     });
 
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent(i18n.t("error.ua.UA-COM-004"));
-    expect(screen.queryByRole("button", { name: i18n.t("error.retry") })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: i18n.t("error.retry") })).toBeInTheDocument();
   });
 
   it("normalizes a raw thrown error into generic copy without exposing its message", async () => {

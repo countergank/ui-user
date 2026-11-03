@@ -113,10 +113,10 @@ describe("resolveApiErrorPresentation", () => {
       traceId: "trace-7",
     });
 
-    const requestError = new AppError(RAW_BACKEND_MESSAGE, { status: 404 });
+    const requestError = new AppError(RAW_BACKEND_MESSAGE, { status: 400 });
 
     expect(resolveApiErrorPresentation(requestError)).toEqual({
-      level: "page",
+      level: "form",
       messageKey: "error.family.request",
       traceId: null,
     });

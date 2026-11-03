@@ -96,7 +96,8 @@ describe("ErrorView", () => {
     }
   });
 
-  it("keeps the copy label when the clipboard write fails", async () => {
+  it("shows a failure label when the clipboard write fails and reverts it", async () => {
+    vi.useFakeTimers();
     const writeText = vi.fn(() => Promise.reject(new Error("denied")));
     const originalClipboard = navigator.clipboard;
     Object.defineProperty(navigator, "clipboard", {
@@ -114,12 +115,17 @@ describe("ErrorView", () => {
 
       expect(writeText).toHaveBeenCalledWith("trace-123");
       expect(
+        screen.getByRole("button", { name: i18n.t("error.traceId.copyFailed") }),
+      ).toBeInTheDocument();
+
+      act(() => {
+        vi.advanceTimersByTime(2500);
+      });
+      expect(
         screen.getByRole("button", { name: i18n.t("error.traceId.copy") }),
       ).toBeInTheDocument();
-      expect(
-        screen.queryByRole("button", { name: i18n.t("error.traceId.copied") }),
-      ).not.toBeInTheDocument();
     } finally {
+      vi.useRealTimers();
       Object.defineProperty(navigator, "clipboard", {
         value: originalClipboard,
         configurable: true,

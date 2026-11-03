@@ -12,11 +12,13 @@ interface ErrorViewProps {
 
 export function ErrorView({ title, message, traceId, onRetry }: ErrorViewProps) {
   const { t } = useTranslation();
-  const [copied, setCopied] = useState(false);
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
   const revertTimer = useRef<number | null>(null);
+  const mounted = useRef(true);
 
   useEffect(
     () => () => {
+      mounted.current = false;
       if (revertTimer.current !== null) {
         window.clearTimeout(revertTimer.current);
       }
@@ -45,20 +47,40 @@ export function ErrorView({ title, message, traceId, onRetry }: ErrorViewProps) 
               navigator.clipboard
                 .writeText(traceId)
                 .then(() => {
-                  setCopied(true);
+                  if (!mounted.current) {
+                    return;
+                  }
+                  setCopyState("copied");
                   if (revertTimer.current !== null) {
                     window.clearTimeout(revertTimer.current);
                   }
                   revertTimer.current = window.setTimeout(() => {
-                    setCopied(false);
+                    if (mounted.current) {
+                      setCopyState("idle");
+                    }
                   }, 2000);
                 })
                 .catch(() => {
-                  setCopied(false);
+                  if (!mounted.current) {
+                    return;
+                  }
+                  setCopyState("failed");
+                  if (revertTimer.current !== null) {
+                    window.clearTimeout(revertTimer.current);
+                  }
+                  revertTimer.current = window.setTimeout(() => {
+                    if (mounted.current) {
+                      setCopyState("idle");
+                    }
+                  }, 2000);
                 });
             }}
           >
-            {copied ? t("error.traceId.copied") : t("error.traceId.copy")}
+            {copyState === "copied"
+              ? t("error.traceId.copied")
+              : copyState === "failed"
+                ? t("error.traceId.copyFailed")
+                : t("error.traceId.copy")}
           </Button>
         </p>
       ) : null}

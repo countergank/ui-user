@@ -33,9 +33,12 @@ export function resolveApiErrorPresentation(error: unknown): ApiErrorPresentatio
     return { level: "page", messageKey: "error.genericMessage", traceId: null };
   }
 
+  const level: ApiErrorLevel =
+    error.status !== undefined && FORM_LEVEL_STATUSES.has(error.status) ? "form" : "page";
+
   if (typeof error.code !== "string" || error.code === "") {
     return {
-      level: "page",
+      level,
       messageKey: resolveApiErrorKey(null, error.status),
       traceId,
     };
@@ -44,8 +47,6 @@ export function resolveApiErrorPresentation(error: unknown): ApiErrorPresentatio
   const messageKey: ApiErrorMessageKey = isUaErrorCode(error.code)
     ? uaErrorKey(error.code)
     : resolveApiErrorKey(error.code, error.status);
-  const level: ApiErrorLevel =
-    error.status !== undefined && FORM_LEVEL_STATUSES.has(error.status) ? "form" : "page";
 
   return { level, messageKey, traceId };
 }

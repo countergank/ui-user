@@ -58,6 +58,7 @@ export const pt: {
     error: {
       traceId: {
         copy: "Copiar identificador de rastreio",
+        copyFailed: "Falha ao copiar",
         copied: "Copiado",
       },
       genericTitle: "Algo deu errado",
