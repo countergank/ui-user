@@ -44,6 +44,7 @@ export const en = {
     error: {
       traceId: {
         copy: "Copy trace identifier",
+        copied: "Copied",
       },
       genericTitle: "Something went wrong",
       genericMessage: "An unexpected error occurred.",

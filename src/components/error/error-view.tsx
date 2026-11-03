@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ interface ErrorViewProps {
 
 export function ErrorView({ title, message, traceId, onRetry }: ErrorViewProps) {
   const { t } = useTranslation();
+  const [copied, setCopied] = useState(false);
   return (
     <section
       role="alert"
@@ -30,10 +32,20 @@ export function ErrorView({ title, message, traceId, onRetry }: ErrorViewProps) 
             size="sm"
             className="h-6 px-2 text-xs"
             onClick={() => {
-              void navigator.clipboard.writeText(traceId);
+              navigator.clipboard
+                .writeText(traceId)
+                .then(() => {
+                  setCopied(true);
+                  window.setTimeout(() => {
+                    setCopied(false);
+                  }, 2000);
+                })
+                .catch(() => {
+                  setCopied(false);
+                });
             }}
           >
-            {t("error.traceId.copy")}
+            {copied ? t("error.traceId.copied") : t("error.traceId.copy")}
           </Button>
         </p>
       ) : null}

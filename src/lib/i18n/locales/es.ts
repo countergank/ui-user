@@ -58,6 +58,7 @@ export const es: {
     error: {
       traceId: {
         copy: "Copiar identificador de traza",
+        copied: "Copiado",
       },
       genericTitle: "Algo salió mal",
       genericMessage: "Ocurrió un error inesperado.",

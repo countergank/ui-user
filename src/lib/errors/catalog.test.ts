@@ -4,15 +4,15 @@ import { i18n } from "../i18n";
 import { UA_ERROR_CODES, resolveApiErrorKey, uaErrorKey } from "./catalog";
 
 describe("UA-* error catalog", () => {
-  it("walks every catalog code and finds copy in every shipped language", () => {
-    for (const code of UA_ERROR_CODES) {
-      const key = uaErrorKey(code);
-      for (const language of ["es", "en", "pt"] as const) {
-        expect(i18n.exists(key, { lng: language }), `${code} has no copy in ${language}`).toBe(
-          true,
-        );
-      }
-    }
+  it.each(
+    UA_ERROR_CODES.flatMap((code) =>
+      (["es", "en", "pt"] as const).map((language) => ({ code, language })),
+    ),
+  )("has $language copy for $code", ({ code, language }) => {
+    expect(
+      i18n.exists(uaErrorKey(code), { lng: language }),
+      `${code} has no copy in ${language}`,
+    ).toBe(true);
   });
 
   it("holds unique, well-formed codes", () => {

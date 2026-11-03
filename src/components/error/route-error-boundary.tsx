@@ -25,6 +25,9 @@ export function RouteErrorBoundary() {
   let title: string = t("error.genericTitle");
   let message: string = t("error.genericMessage");
   let traceId: string | undefined;
+  let retry: (() => void) | undefined = () => {
+    window.location.reload();
+  };
 
   if (isRouteErrorResponse(error)) {
     title = t("error.statusTitle", { status: String(error.status) });
@@ -39,16 +42,10 @@ export function RouteErrorBoundary() {
     if (error instanceof DataFetchError) {
       title = t("error.dataFetchTitle");
     }
+    if (presentation.level === "form") {
+      retry = undefined;
+    }
   }
 
-  return (
-    <ErrorView
-      title={title}
-      message={message}
-      traceId={traceId}
-      onRetry={() => {
-        window.location.reload();
-      }}
-    />
-  );
+  return <ErrorView title={title} message={message} traceId={traceId} onRetry={retry} />;
 }

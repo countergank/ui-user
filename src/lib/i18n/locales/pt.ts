@@ -58,6 +58,7 @@ export const pt: {
     error: {
       traceId: {
         copy: "Copiar identificador de rastreio",
+        copied: "Copiado",
       },
       genericTitle: "Algo deu errado",
       genericMessage: "Ocorreu um erro inesperado.",

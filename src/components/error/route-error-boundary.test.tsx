@@ -75,7 +75,7 @@ describe("RouteErrorBoundary", () => {
 
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent(i18n.t("error.dataFetchTitle"));
-    expect(alert).toHaveTextContent(i18n.t("error.genericMessage"));
+    expect(alert).toHaveTextContent(i18n.t("error.family.server"));
     expect(screen.queryByText("Network boom")).toBeNull();
   });
 
@@ -135,6 +135,26 @@ describe("RouteErrorBoundary", () => {
       "/login?redirect=%2Fguard%2F42",
     );
     expect(screen.queryByRole("heading", { name: "Forbidden page" })).toBeNull();
+  });
+
+  it("keeps the reload retry for page-level failures", async () => {
+    renderWithLoader(() => {
+      throw new AppError("boom", { code: "UA-COM-001", status: 500, traceId: "trace-1" });
+    });
+
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent(i18n.t("error.ua.UA-COM-001"));
+    expect(screen.getByRole("button", { name: i18n.t("error.retry") })).toBeInTheDocument();
+  });
+
+  it("omits the reload retry for form-level failures", async () => {
+    renderWithLoader(() => {
+      throw new AppError("boom", { code: "UA-COM-004", status: 409 });
+    });
+
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent(i18n.t("error.ua.UA-COM-004"));
+    expect(screen.queryByRole("button", { name: i18n.t("error.retry") })).not.toBeInTheDocument();
   });
 
   it("normalizes a raw thrown error into generic copy without exposing its message", async () => {

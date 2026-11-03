@@ -33,8 +33,16 @@ const FORM_LEVEL_STATUSES = new Set([400, 409, 422]);
 export function resolveApiErrorPresentation(error: unknown): ApiErrorPresentation {
   const traceId = error instanceof AppError && error.traceId ? error.traceId : null;
 
-  if (!(error instanceof AppError) || typeof error.code !== "string" || error.code === "") {
-    return { level: "page", messageKey: "error.genericMessage", traceId };
+  if (!(error instanceof AppError)) {
+    return { level: "page", messageKey: "error.genericMessage", traceId: null };
+  }
+
+  if (typeof error.code !== "string" || error.code === "") {
+    return {
+      level: "page",
+      messageKey: resolveApiErrorKey(null, error.status) as ApiErrorMessageKey,
+      traceId,
+    };
   }
 
   const messageKey = (

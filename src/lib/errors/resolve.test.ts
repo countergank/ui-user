@@ -98,6 +98,24 @@ describe("resolveApiErrorPresentation", () => {
     });
   });
 
+  it("falls back by family for an AppError without a code but with a status", () => {
+    const serverError = new AppError(RAW_BACKEND_MESSAGE, { status: 502, traceId: "trace-7" });
+
+    expect(resolveApiErrorPresentation(serverError)).toEqual({
+      level: "page",
+      messageKey: "error.family.server",
+      traceId: "trace-7",
+    });
+
+    const requestError = new AppError(RAW_BACKEND_MESSAGE, { status: 404 });
+
+    expect(resolveApiErrorPresentation(requestError)).toEqual({
+      level: "page",
+      messageKey: "error.family.request",
+      traceId: null,
+    });
+  });
+
   it("never exposes the backend message", () => {
     const error = new AppError(RAW_BACKEND_MESSAGE, {
       code: "UA-AUTH-002",
