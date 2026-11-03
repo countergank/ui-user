@@ -1,18 +1,21 @@
 export interface AppErrorOptions {
   code?: string;
   status?: number;
+  traceId?: string;
   cause?: unknown;
 }
 
 export class AppError extends Error {
   readonly code?: string;
   readonly status?: number;
+  readonly traceId?: string;
 
   constructor(message: string, options: AppErrorOptions = {}) {
     super(message, options.cause !== undefined ? { cause: options.cause } : undefined);
     this.name = "AppError";
     this.code = options.code;
     this.status = options.status;
+    this.traceId = options.traceId;
   }
 }
 

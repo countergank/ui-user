@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import { i18n } from "@/lib/i18n";
 
-import { DataFetchError } from "@/lib/errors";
+import { AppError, DataFetchError } from "@/lib/errors";
 import { initialSessionState, sessionStore } from "@/lib/session/session-store";
 import { RouteErrorBoundary } from "./route-error-boundary";
 
@@ -68,14 +68,45 @@ describe("RouteErrorBoundary", () => {
     expect(alert).toHaveTextContent("Not Found");
   });
 
-  it("renders the DataFetchError title and message", async () => {
+  it("renders the DataFetchError title and the catalog copy instead of the backend message", async () => {
     renderWithLoader(() => {
       throw new DataFetchError("Network boom", { status: 503 });
     });
 
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent(i18n.t("error.dataFetchTitle"));
-    expect(alert).toHaveTextContent("Network boom");
+    expect(alert).toHaveTextContent(i18n.t("error.family.server"));
+    expect(screen.queryByText("Network boom")).toBeNull();
+  });
+
+  it("renders the UA catalog copy and a copyable traceId for a known code", async () => {
+    renderWithLoader(() => {
+      throw new AppError("jwt expired: signature verification failed", {
+        code: "UA-AUTH-002",
+        status: 401,
+        traceId: "trace-42",
+      });
+    });
+
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent(i18n.t("error.ua.UA-AUTH-002"));
+    expect(screen.getByText("trace-42")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: i18n.t("error.traceId.copy") })).toBeInTheDocument();
+  });
+
+  it("renders the family fallback and the traceId for an unknown code", async () => {
+    renderWithLoader(() => {
+      throw new AppError("codigo raro del backend", {
+        code: "UA-XXX-999",
+        status: 400,
+        traceId: "trace-9",
+      });
+    });
+
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent(i18n.t("error.family.request"));
+    expect(screen.queryByText("codigo raro del backend")).toBeNull();
+    expect(screen.getByText("trace-9")).toBeInTheDocument();
   });
 
   it("sends an authenticated 403 to the forbidden page (COU-275, S6 / COU-274, S3)", async () => {
@@ -106,13 +137,34 @@ describe("RouteErrorBoundary", () => {
     expect(screen.queryByRole("heading", { name: "Forbidden page" })).toBeNull();
   });
 
-  it("normalizes a raw thrown error into the generic title", async () => {
+  it("keeps the reload retry for page-level failures", async () => {
+    renderWithLoader(() => {
+      throw new AppError("boom", { code: "UA-COM-001", status: 500, traceId: "trace-1" });
+    });
+
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent(i18n.t("error.ua.UA-COM-001"));
+    expect(screen.getByRole("button", { name: i18n.t("error.retry") })).toBeInTheDocument();
+  });
+
+  it("keeps the reload retry for every failure at a route boundary", async () => {
+    renderWithLoader(() => {
+      throw new AppError("boom", { code: "UA-COM-004", status: 409 });
+    });
+
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent(i18n.t("error.ua.UA-COM-004"));
+    expect(screen.getByRole("button", { name: i18n.t("error.retry") })).toBeInTheDocument();
+  });
+
+  it("normalizes a raw thrown error into generic copy without exposing its message", async () => {
     renderWithLoader(() => {
       throw new Error("unexpected");
     });
 
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent(i18n.t("error.genericTitle"));
-    expect(alert).toHaveTextContent("unexpected");
+    expect(alert).toHaveTextContent(i18n.t("error.genericMessage"));
+    expect(screen.queryByText("unexpected")).toBeNull();
   });
 });

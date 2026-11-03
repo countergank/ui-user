@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
@@ -5,11 +6,25 @@ import { Button } from "@/components/ui/button";
 interface ErrorViewProps {
   title: string;
   message: string;
+  traceId?: string;
   onRetry?: () => void;
 }
 
-export function ErrorView({ title, message, onRetry }: ErrorViewProps) {
+export function ErrorView({ title, message, traceId, onRetry }: ErrorViewProps) {
   const { t } = useTranslation();
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
+  const revertTimer = useRef<number | null>(null);
+  const mounted = useRef(true);
+
+  useEffect(
+    () => () => {
+      mounted.current = false;
+      if (revertTimer.current !== null) {
+        window.clearTimeout(revertTimer.current);
+      }
+    },
+    [],
+  );
   return (
     <section
       role="alert"
@@ -20,6 +35,55 @@ export function ErrorView({ title, message, onRetry }: ErrorViewProps) {
         <h2 className="text-xl font-semibold text-destructive">{title}</h2>
         <p className="max-w-prose text-foreground">{message}</p>
       </div>
+      {traceId ? (
+        <p className="flex items-center gap-2 text-xs text-muted-foreground">
+          <span className="font-mono">{traceId}</span>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="h-6 px-2 text-xs"
+            onClick={() => {
+              navigator.clipboard
+                .writeText(traceId)
+                .then(() => {
+                  if (!mounted.current) {
+                    return;
+                  }
+                  setCopyState("copied");
+                  if (revertTimer.current !== null) {
+                    window.clearTimeout(revertTimer.current);
+                  }
+                  revertTimer.current = window.setTimeout(() => {
+                    if (mounted.current) {
+                      setCopyState("idle");
+                    }
+                  }, 2000);
+                })
+                .catch(() => {
+                  if (!mounted.current) {
+                    return;
+                  }
+                  setCopyState("failed");
+                  if (revertTimer.current !== null) {
+                    window.clearTimeout(revertTimer.current);
+                  }
+                  revertTimer.current = window.setTimeout(() => {
+                    if (mounted.current) {
+                      setCopyState("idle");
+                    }
+                  }, 2000);
+                });
+            }}
+          >
+            {copyState === "copied"
+              ? t("error.traceId.copied")
+              : copyState === "failed"
+                ? t("error.traceId.copyFailed")
+                : t("error.traceId.copy")}
+          </Button>
+        </p>
+      ) : null}
       {onRetry ? (
         <Button type="button" variant="outline" onClick={onRetry}>
           {t("error.retry")}

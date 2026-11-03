@@ -5,6 +5,7 @@ export interface ApiErrorEnvelope {
   statusCode?: number;
   code?: string;
   message?: string;
+  traceId?: string;
 }
 
 export interface HttpRequestOptions extends Omit<RequestInit, "body" | "headers"> {
@@ -51,7 +52,14 @@ async function toAppError(response: Response): Promise<AppError> {
       ? envelope.message
       : `Request failed with status ${String(response.status)}`;
 
-  return new AppError(message, { code, status: response.status });
+  return new AppError(message, {
+    code,
+    status: response.status,
+    traceId:
+      typeof envelope.traceId === "string" && envelope.traceId !== ""
+        ? envelope.traceId
+        : undefined,
+  });
 }
 
 /**

@@ -3,7 +3,8 @@ import { Navigate, isRouteErrorResponse, useLocation, useRouteError } from "reac
 
 import { loginDestination } from "@/features/auth/login-destination";
 import { isForbiddenError } from "@/features/authorization/forbidden";
-import { DataFetchError, toError } from "@/lib/errors";
+import { DataFetchError } from "@/lib/errors";
+import { resolveApiErrorPresentation } from "@/lib/errors/resolve";
 import { selectSessionStatus, useSession } from "@/lib/session/session-store";
 import { ErrorView } from "./error-view";
 
@@ -23,6 +24,11 @@ export function RouteErrorBoundary() {
 
   let title: string = t("error.genericTitle");
   let message: string = t("error.genericMessage");
+  let traceId: string | undefined;
+
+  const retry = () => {
+    window.location.reload();
+  };
 
   if (isRouteErrorResponse(error)) {
     title = t("error.statusTitle", { status: String(error.status) });
@@ -31,20 +37,13 @@ export function RouteErrorBoundary() {
         ? error.statusText
         : t("error.routeFallbackMessage");
   } else {
-    const normalized = toError(error);
-    message = normalized.message || message;
+    const presentation = resolveApiErrorPresentation(error);
+    message = t(presentation.messageKey);
+    traceId = presentation.traceId ?? undefined;
     if (error instanceof DataFetchError) {
       title = t("error.dataFetchTitle");
     }
   }
 
-  return (
-    <ErrorView
-      title={title}
-      message={message}
-      onRetry={() => {
-        window.location.reload();
-      }}
-    />
-  );
+  return <ErrorView title={title} message={message} traceId={traceId} onRetry={retry} />;
 }
