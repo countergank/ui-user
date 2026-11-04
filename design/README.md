@@ -21,7 +21,7 @@ Regla de lectura: si `design/` y `src/styles/tokens.css` no coinciden, **gana
 |---|---|---|
 | `README.md` | vigente | este índice |
 | `system.md` | vigente | sistema de diseño tal como está **en código**: violeta `262 83% 58%`, tokens de `src/styles/tokens.css` y reglas de los componentes reales |
-| `app/` | **propuesto, no implementado** | rebranding de Countergank (COU-342): 7 artboards, tokens propuestos, paleta y tipografías |
+| `app/` | **propuesto, no implementado** | rebranding de Countergank (COU-342) ampliado en COU-101: 13 artboards, tokens propuestos, paleta y tipografías |
 
 ### `design/app/` — propuesto, no implementado
 
@@ -36,7 +36,18 @@ que ese ticket cierre, el aspecto real de la aplicación es el que describe `sys
 | `04-usuarios.html` | Usuarios (listado) |
 | `05-detalle-usuario.html` | Detalle de usuario |
 | `06-roles-permisos.html` | Roles y permisos |
-| `07-sistema.html` | Sistema |
+| `08-sesiones.html` | Sesiones |
+| `09-auditoria.html` | Auditoría (pantalla propia; ya no es un tab de Sistema) |
+| `10-plantillas-email.html` | Plantillas de email |
+| `11-editor-plantilla.html` | Editor de plantilla |
+| `12-parametros.html` | Parámetros |
+| `13-i18n.html` | i18n |
+| `14-envios.html` | Envíos (diseño propuesto: el endpoint del log aún no existe) |
+
+La navegación del master ya no usa tabs en Sistema: el acceso "Sistema" es un grupo del
+sidebar con sub-items (Auditoría, Plantillas de email, Envíos, Parámetros, i18n), cada uno
+con su pantalla. Los frames nuevos de COU-101 usan fills literales (no atados a la colección
+de variables `Tokens`), por lo que el modo Dark del `.fig` no los repinta automáticamente.
 
 **Landing canónica: `design/app/01-landing.html`.** Es la única landing del repositorio. La
 pantalla `03-inicio.html` es el inicio de la consola autenticada, no una segunda landing.
@@ -106,6 +117,7 @@ Se retiraron en COU-345 (2026-10-28) para dejar una sola convención:
 
 | Path | Por qué se retiró | Reemplazo |
 |---|---|---|
+| `design/app/07-sistema.html` | La pantalla Sistema se dividió en COU-101: Auditoría pasó a pantalla propia y los tabs se volvieron sub-items del sidebar | `design/app/09-auditoria.html` y `10-plantillas-email.html` a `14-envios.html` |
 | `design/users-detail/` | Tres direcciones de exploración de COU-291, ya implementadas | `design/app/05-detalle-usuario.html` |
 | `designs/` (`designs/identity/index.html`) | Convención plural heredada; se leía como fuente de valores siendo un boceto | `design/system.md` para lo vigente, `design/app/tokens-app.css` para lo propuesto |
 | `design/system.html` | Replicaba en HTML los mismos valores de `system.md` | `design/system.md` |

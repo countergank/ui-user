@@ -4,10 +4,10 @@
   "feature": "odd/tasks/COU-342-diseno-dashboard.md",
   "source": {
     "fig": "Dashboard User UI.fig",
-    "sha256": "de7f5618bbca7c5b08cf6114eeeb8bb33ddeafa7c964bbc3d35c94fe30ec95d4",
-    "sizeKb": 581.9,
-    "exportedAt": "2026-11-01",
-    "tool": "openpencil 0.15.1"
+    "sha256": "c56c7f8445a36d87a54e85450b1511b35b8f094c00c45830ebda873021d983ba",
+    "sizeKb": 2146.0,
+    "exportedAt": "2026-11-04",
+    "tool": "openpencil 0.16.0"
   },
   "modes": {
     "collection": "Tokens",
@@ -67,11 +67,54 @@
       "height": 1200
     },
     {
-      "file": "07-sistema.html",
-      "title": "Sistema",
-      "tradeoff": "Una sola pantalla con tabs para auditoría, plantillas, envíos, parámetros e i18n. El costo es que la tabla de auditoría comparte ancho con dos columnas de configuración y muestra menos eventos por pantalla; se acepta porque son tareas de mantenimiento que se hacen en ráfaga y la auditoría necesita sus filtros a la vista más que filas adicionales.",
+      "file": "08-sesiones.html",
+      "title": "Sesiones",
+      "tradeoff": "Pantalla propia para sesiones activas (antes era un acceso sin contenido). Tabla de dispositivos con badge de sesión actual, revocación por fila y cierre global; el costo es una pantalla más en la navegación para una acción poco frecuente; se acepta porque revocar una sesión comprometida es una operación de seguridad que no debe mezclarse con el detalle de usuario.",
+      "width": 1440,
+      "height": 1024
+    },
+    {
+      "file": "09-auditoria.html",
+      "title": "Auditoría",
+      "tradeoff": "La auditoría deja de ser un tab de Sistema y pasa a ser pantalla propia (opción A): tabla completa reutilizando AuditTableCard más un panel de detalle del evento seleccionado. El costo es un clic de navegación más para llegar a los eventos; se acepta porque gana ancho de tabla y el detalle sin cambiar de contexto.",
+      "width": 1440,
+      "height": 1024
+    },
+    {
+      "file": "10-plantillas-email.html",
+      "title": "Plantillas de email",
+      "tradeoff": "Listado CRUD con estado activa/borrador por slug, filtros y acción de nueva plantilla. El costo es que el contenido de la plantilla no se edita acá sino en el editor; se acepta porque el listado responde la pregunta de mantenimiento (¿qué hay y en qué estado?) y el editor merece pantalla propia.",
+      "width": 1440,
+      "height": 1024
+    },
+    {
+      "file": "11-editor-plantilla.html",
+      "title": "Editor de plantilla",
+      "tradeoff": "Formulario (slug, nombre, asunto, cuerpo con variables insertables) a la izquierda y preview renderizada más envío de prueba a la derecha. El costo es ancho dividido entre edición y preview; se acepta porque editar y verificar el render son la misma tarea y el envío de prueba (POST /email/send) cierra el ciclo sin salir de la pantalla.",
+      "width": 1440,
+      "height": 1024
+    },
+    {
+      "file": "12-parametros.html",
+      "title": "Parámetros",
+      "tradeoff": "Formularios agrupados por grupo de configuración (smtp a la izquierda; email, resend y throttle apilados a la derecha) en vez de una lista plana de claves. El costo es altura variable por grupo; se acepta porque cada grupo se lee como una unidad y las acciones (restaurar defaults, guardar) quedan a nivel de pantalla.",
+      "width": 1440,
+      "height": 1024
+    },
+    {
+      "file": "13-i18n.html",
+      "title": "i18n",
+      "tradeoff": "Tabla namespace × locale (es/en/pt) con celda en guión y pill contadora por claves faltantes, con fallback es declarado en el pie. El costo es una fila por clave con tres traducciones visibles; se acepta porque detectar faltantes es el trabajo real de esta pantalla y así no requiere abrir el detalle.",
+      "width": 1440,
+      "height": 1024
+    },
+    {
+      "file": "14-envios.html",
+      "title": "Envíos",
+      "tradeoff": "Log de envíos con destinatario, plantilla, estado (enviado/fallido/reintentando/en cola), fecha y error, con reintentos y endpoint propuestos (PROPUESTA: api-user aún no expone el log). El costo es diseñar sobre un contrato inexistente; se acepta porque el volumen y la retención de 30 días condicionan la tabla y conviene fijar el diseño antes de definir el endpoint.",
       "width": 1440,
       "height": 1024
     }
-  ]
+  ],
+  "notaTema": "Los artboards 08-14 (COU-101) exportan con los valores Dark almacenados del master; los 01-07 permanecen en Light."
 }
