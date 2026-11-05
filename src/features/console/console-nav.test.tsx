@@ -76,7 +76,14 @@ describe("ConsoleNav", () => {
     const { container } = renderNav(["*"]);
 
     expect(visibleSectionNames()).toEqual(
-      [t("nav.home"), t("nav.users"), t("nav.roles"), t("nav.audit"), t("nav.parameters")].sort(),
+      [
+        t("nav.home"),
+        t("nav.users"),
+        t("nav.roles"),
+        t("nav.audit"),
+        t("nav.emailTemplates"),
+        t("nav.parameters"),
+      ].sort(),
     );
     expect(await axe(container)).toHaveNoViolations();
   });

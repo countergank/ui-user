@@ -31,7 +31,15 @@ describe("routes", () => {
 
     expect(
       appRoute?.children?.map((route) => route.path ?? (route.index ? "index" : undefined)),
-    ).toEqual(["index", "users", "users/new", "users/:id/edit", "users/:id", "*"]);
+    ).toEqual([
+      "index",
+      "users",
+      "users/new",
+      "users/:id/edit",
+      "users/:id",
+      "settings/email-templates",
+      "*",
+    ]);
   });
 
   it("registers the create-user route before any dynamic detail or fallback (COU-290)", () => {

@@ -1,6 +1,7 @@
 import type {
   AuthTranslationTree,
   ConsoleTranslationTree,
+  EmailTranslationTree,
   LandingTranslationTree,
   TranslationTree,
   UsersTranslationTree,
@@ -12,6 +13,7 @@ export const es: {
   landing: LandingTranslationTree;
   console: ConsoleTranslationTree;
   users: UsersTranslationTree;
+  email: EmailTranslationTree;
 } = {
   common: {
     meta: {
@@ -590,6 +592,87 @@ export const es: {
       errors: {
         fieldRequired: "Este campo es obligatorio.",
         emailInvalid: "Ingresá un email válido.",
+      },
+    },
+  },
+  email: {
+    templates: {
+      title: "Plantillas de email",
+      subtitle: "{{count}} plantillas en el catálogo",
+      columns: {
+        name: "Plantilla",
+        subject: "Asunto",
+        status: "Estado",
+        version: "Versión",
+        updatedAt: "Actualizada",
+        actions: "Acciones",
+      },
+      filters: {
+        status: "Estado",
+        all: "Todas",
+        active: "Activas",
+        inactive: "Inactivas",
+        clear: "Limpiar filtros",
+      },
+      empty: "No se encontraron plantillas",
+      actions: {
+        create: "Nueva plantilla",
+        edit: "Editar",
+        preview: "Previsualizar",
+        test: "Envío de prueba",
+        delete: "Eliminar",
+      },
+      status: {
+        active: "Activa",
+        inactive: "Inactiva",
+      },
+      editor: {
+        createTitle: "Nueva plantilla",
+        editTitle: "Editar plantilla",
+        name: "Nombre",
+        slug: "Slug",
+        slugHint: "Identificador en minúsculas que usa el API, p. ej. password-reset.",
+        subject: "Asunto",
+        body: "Cuerpo",
+        variables: "Variables",
+        variablesHint: "Usalas en el asunto o el cuerpo como {{variable}}.",
+        variablesEmpty: "No hay variables declaradas.",
+        addVariable: "Agregar variable",
+        active: "Activa",
+        save: "Guardar",
+        saving: "Guardando…",
+        cancel: "Cancelar",
+        preview: "Previsualizar",
+      },
+      preview: {
+        title: "Previsualización",
+        sampleNote: "Renderizada con datos de ejemplo.",
+        close: "Cerrar",
+      },
+      test: {
+        title: "Enviar email de prueba",
+        description:
+          "La plantilla se renderiza con valores de ejemplo y se envía a un destinatario.",
+        to: "Destinatario",
+        toPlaceholder: "nombre@example.com",
+        send: "Enviar",
+        sending: "Enviando…",
+        success: "Email de prueba enviado a {{to}}.",
+        emailInvalid: "Ingresá un email válido.",
+      },
+      delete: {
+        title: "Eliminar plantilla",
+        body: "Esto elimina definitivamente la plantilla {{name}}. Los emails que la usen dejan de enviarse.",
+        confirm: "Eliminar",
+        cancel: "Cancelar",
+      },
+      success: "Plantilla guardada.",
+      deleteSuccess: "Plantilla eliminada.",
+      errors: {
+        fieldRequired: "Este campo es obligatorio.",
+        slugInvalid: "Usá minúsculas, números y guiones.",
+        subjectRequired: "El asunto es obligatorio.",
+        bodyRequired: "El cuerpo es obligatorio.",
       },
     },
   },

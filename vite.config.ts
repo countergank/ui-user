@@ -22,6 +22,10 @@ export default defineConfig(({ mode }) => {
       proxy: {
         "/admin": { target: apiTarget, changeOrigin: true },
         "/auth": { target: apiTarget, changeOrigin: true },
+        "/email": { target: apiTarget, changeOrigin: true },
+        "/users": { target: apiTarget, changeOrigin: true },
+        "/roles": { target: apiTarget, changeOrigin: true },
+        "/permissions": { target: apiTarget, changeOrigin: true },
       },
       watch: {
         ignored: ["**/node_modules/**", "**/.git/**", "**/dist/**", "**/coverage/**"],

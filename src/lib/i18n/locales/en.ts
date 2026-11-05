@@ -579,6 +579,86 @@ export const en = {
       },
     },
   },
+  email: {
+    templates: {
+      title: "Email templates",
+      subtitle: "{{count}} templates in the catalog",
+      columns: {
+        name: "Template",
+        subject: "Subject",
+        status: "Status",
+        version: "Version",
+        updatedAt: "Updated",
+        actions: "Actions",
+      },
+      filters: {
+        status: "Status",
+        all: "All",
+        active: "Active",
+        inactive: "Inactive",
+        clear: "Clear filters",
+      },
+      empty: "No templates found",
+      actions: {
+        create: "New template",
+        edit: "Edit",
+        preview: "Preview",
+        test: "Send test",
+        delete: "Delete",
+      },
+      status: {
+        active: "Active",
+        inactive: "Inactive",
+      },
+      editor: {
+        createTitle: "New template",
+        editTitle: "Edit template",
+        name: "Name",
+        slug: "Slug",
+        slugHint: "Lowercase identifier used by the API, e.g. password-reset.",
+        subject: "Subject",
+        body: "Body",
+        variables: "Variables",
+        variablesHint: "Use them in the subject or body as {{variable}}.",
+        variablesEmpty: "No variables declared.",
+        addVariable: "Add variable",
+        active: "Active",
+        save: "Save",
+        saving: "Saving…",
+        cancel: "Cancel",
+        preview: "Preview",
+      },
+      preview: {
+        title: "Preview",
+        sampleNote: "Rendered with sample data.",
+        close: "Close",
+      },
+      test: {
+        title: "Send test email",
+        description: "The template is rendered with sample values and sent to one recipient.",
+        to: "Recipient",
+        toPlaceholder: "name@example.com",
+        send: "Send",
+        sending: "Sending…",
+        success: "Test email sent to {{to}}.",
+        emailInvalid: "Enter a valid email address.",
+      },
+      delete: {
+        title: "Delete template",
+        body: "This permanently deletes the template {{name}}. Emails that use it will stop sending.",
+        confirm: "Delete",
+        cancel: "Cancel",
+      },
+      success: "Template saved.",
+      deleteSuccess: "Template deleted.",
+      errors: {
+        fieldRequired: "This field is required.",
+        slugInvalid: "Use lowercase letters, numbers and hyphens.",
+        subjectRequired: "The subject is required.",
+        bodyRequired: "The body is required.",
+      },
+    },
+  },
 };
 
 export type TranslationTree = typeof en.common;
@@ -590,3 +670,5 @@ export type LandingTranslationTree = typeof en.landing;
 export type ConsoleTranslationTree = typeof en.console;
 
 export type UsersTranslationTree = typeof en.users;
+
+export type EmailTranslationTree = typeof en.email;

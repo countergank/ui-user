@@ -11,6 +11,11 @@ export const PERMISSIONS = {
   permissionRead: "permission:read",
   auditRead: "audit:read",
   parameterRead: "parameter:read",
+  emailRead: "email:read",
+  emailCreate: "email:create",
+  emailUpdate: "email:update",
+  emailDelete: "email:delete",
+  emailSend: "email:send",
 } as const;
 
 function resourceOf(permission: Permission): string {

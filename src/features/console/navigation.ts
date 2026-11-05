@@ -52,7 +52,7 @@ export const CONSOLE_NAV: readonly ConsoleNavItem[] = [
     to: "/app/settings/email-templates",
     labelKey: "nav.emailTemplates",
     group: "system",
-    implemented: false,
+    requiredPermission: PERMISSIONS.emailRead,
   },
   {
     to: "/app/settings/deliveries",
