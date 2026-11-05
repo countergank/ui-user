@@ -1,6 +1,7 @@
 import type {
   AuthTranslationTree,
   ConsoleTranslationTree,
+  EmailTranslationTree,
   LandingTranslationTree,
   TranslationTree,
   UsersTranslationTree,
@@ -12,6 +13,7 @@ export const pt: {
   landing: LandingTranslationTree;
   console: ConsoleTranslationTree;
   users: UsersTranslationTree;
+  email: EmailTranslationTree;
 } = {
   common: {
     meta: {
@@ -590,6 +592,86 @@ export const pt: {
       errors: {
         fieldRequired: "Este campo é obrigatório.",
         emailInvalid: "Informe um email válido.",
+      },
+    },
+  },
+  email: {
+    templates: {
+      title: "Modelos de email",
+      subtitle: "{{count}} modelos no catálogo",
+      columns: {
+        name: "Modelo",
+        subject: "Assunto",
+        status: "Estado",
+        version: "Versão",
+        updatedAt: "Atualizado",
+        actions: "Ações",
+      },
+      filters: {
+        status: "Estado",
+        all: "Todos",
+        active: "Ativos",
+        inactive: "Inativos",
+        clear: "Limpar filtros",
+      },
+      empty: "Nenhum modelo encontrado",
+      actions: {
+        create: "Novo modelo",
+        edit: "Editar",
+        preview: "Pré-visualizar",
+        test: "Envio de teste",
+        delete: "Excluir",
+      },
+      status: {
+        active: "Ativo",
+        inactive: "Inativo",
+      },
+      editor: {
+        createTitle: "Novo modelo",
+        editTitle: "Editar modelo",
+        name: "Nome",
+        slug: "Slug",
+        slugHint: "Identificador em minúsculas que a API usa, ex.: password-reset.",
+        subject: "Assunto",
+        body: "Corpo",
+        variables: "Variáveis",
+        variablesHint: "Use-as no assunto ou no corpo como {{variable}}.",
+        variablesEmpty: "Nenhuma variável declarada.",
+        addVariable: "Adicionar variável",
+        active: "Ativo",
+        save: "Salvar",
+        saving: "Salvando…",
+        cancel: "Cancelar",
+        preview: "Pré-visualizar",
+      },
+      preview: {
+        title: "Pré-visualização",
+        sampleNote: "Renderizado com dados de exemplo.",
+        close: "Fechar",
+      },
+      test: {
+        title: "Enviar email de teste",
+        description: "O modelo é renderizado com valores de exemplo e enviado a um destinatário.",
+        to: "Destinatário",
+        toPlaceholder: "nome@example.com",
+        send: "Enviar",
+        sending: "Enviando…",
+        success: "Email de teste enviado para {{to}}.",
+        emailInvalid: "Informe um email válido.",
+      },
+      delete: {
+        title: "Excluir modelo",
+        body: "Isso exclui definitivamente o modelo {{name}}. Os emails que o usam deixam de ser enviados.",
+        confirm: "Excluir",
+        cancel: "Cancelar",
+      },
+      success: "Modelo salvo.",
+      deleteSuccess: "Modelo excluído.",
+      errors: {
+        fieldRequired: "Este campo é obrigatório.",
+        slugInvalid: "Use minúsculas, números e hífens.",
+        subjectRequired: "O assunto é obrigatório.",
+        bodyRequired: "O corpo é obrigatório.",
       },
     },
   },
