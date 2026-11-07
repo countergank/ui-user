@@ -4,7 +4,7 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-const avatarVariants = cva("relative flex shrink-0 overflow-hidden rounded-full", {
+const avatarVariants = cva("relative flex shrink-0 rounded-full", {
   variants: {
     size: {
       sm: "h-8 w-8",
@@ -38,7 +38,7 @@ const AvatarImage = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <AvatarPrimitive.Image
     ref={ref}
-    className={cn("aspect-square h-full w-full", className)}
+    className={cn("aspect-square h-full w-full overflow-hidden rounded-full", className)}
     {...props}
   />
 ));
@@ -51,7 +51,7 @@ const AvatarFallback = React.forwardRef<
   <AvatarPrimitive.Fallback
     ref={ref}
     className={cn(
-      "flex h-full w-full items-center justify-center rounded-full bg-muted text-sm font-medium text-muted-foreground",
+      "flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-muted text-sm font-medium text-muted-foreground",
       className,
     )}
     {...props}
@@ -59,4 +59,17 @@ const AvatarFallback = React.forwardRef<
 ));
 AvatarFallback.displayName = AvatarPrimitive.Fallback.displayName;
 
-export { Avatar, AvatarImage, AvatarFallback, avatarVariants };
+function AvatarBadge({ className, ...props }: React.ComponentPropsWithoutRef<"span">) {
+  return (
+    <span
+      className={cn(
+        "absolute bottom-0 right-0 z-10 inline-flex select-none items-center justify-center rounded-full ring-2 ring-card",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+AvatarBadge.displayName = "AvatarBadge";
+
+export { Avatar, AvatarImage, AvatarFallback, AvatarBadge, avatarVariants };

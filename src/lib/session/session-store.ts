@@ -27,6 +27,7 @@ export interface SessionState {
 export interface SessionActions {
   startSession: (auth: { user: SessionUser; accessToken: string; refreshToken: string }) => void;
   rotateTokens: (tokens: { accessToken: string; refreshToken: string }) => void;
+  updateSessionUser: (profile: { name: string; lastName: string }) => void;
   markExpired: () => void;
   clearSession: () => void;
 }
@@ -86,6 +87,13 @@ export const sessionStore = createStore<SessionStore>()(
       },
       rotateTokens: ({ accessToken, refreshToken }) => {
         set({ accessToken, refreshToken });
+      },
+      updateSessionUser: (profile) => {
+        set((state) =>
+          state.user === null
+            ? state
+            : { user: { ...state.user, name: profile.name, lastName: profile.lastName } },
+        );
       },
       markExpired: () => {
         set({ status: "expired", user: null, accessToken: null, refreshToken: null });

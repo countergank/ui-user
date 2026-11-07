@@ -96,6 +96,44 @@ describe("session store", () => {
     expect(state.refreshToken).toBeNull();
   });
 
+  it("updates the session user name without touching the email or the tokens", () => {
+    sessionStore.getState().startSession(AUTH);
+
+    sessionStore.getState().updateSessionUser({ name: "Grace", lastName: "Hopper" });
+
+    const state = sessionStore.getState();
+    expect(state.user?.name).toBe("Grace");
+    expect(state.user?.lastName).toBe("Hopper");
+    expect(state.user?.id).toBe("u1");
+    expect(state.user?.email).toBe("user@example.com");
+    expect(state.accessToken).toBe("access-1");
+    expect(state.refreshToken).toBe("refresh-1");
+  });
+
+  it("persists the updated session user", () => {
+    sessionStore.getState().startSession(AUTH);
+
+    sessionStore.getState().updateSessionUser({ name: "Grace", lastName: "Hopper" });
+
+    const raw = window.localStorage.getItem(SESSION_STORAGE_KEY);
+    if (raw === null) {
+      throw new Error("the session was not persisted");
+    }
+
+    const persisted = JSON.parse(raw) as { state: { user: { name: string } } };
+    expect(persisted.state.user.name).toBe("Grace");
+  });
+
+  it("leaves an anonymous session untouched when the profile updates", () => {
+    expect(sessionStore.getState().status).toBe("anonymous");
+
+    sessionStore.getState().updateSessionUser({ name: "Grace", lastName: "Hopper" });
+
+    const state = sessionStore.getState();
+    expect(state.status).toBe("anonymous");
+    expect(state.user).toBeNull();
+  });
+
   it("keeps a persisted payload that matches the schema", () => {
     const migrated = migratePersistedSession(AUTH, 1);
 
