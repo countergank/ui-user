@@ -36,7 +36,7 @@ directo desde el botón de usuario (sidebar + topbar). Diseño: `design/app/07-m
 
 ## Tasks
 
-- T1 (S1,S9,S12) `src/features/profile/api.ts` + schema zod del perfil + tests. commit: —
+- T1 (S1,S9,S12) `src/features/profile/api.ts` + schema zod del perfil + tests. commit: 5f3ed39→bdb671f (T1-T8)
 - T2 (S8,S13) namespace `profile` en es/en/pt + `resources.ts`. commit: —
 - T3 (S3,S4,S6,S7,S10,S12) `profile-form.tsx` + `profile-page.tsx` (estado sucio, toasts,
   email readonly) + tests MSW/axe. commit: —
@@ -45,7 +45,7 @@ directo desde el botón de usuario (sidebar + topbar). Diseño: `design/app/07-m
 - T6 (S14) ~~navegación directa + segundo trigger~~ REVERTIDO: `user-menu.tsx` y
   `dashboard-layout.test.tsx` vuelven a la versión de `origin/develop`. commit: —
 - T7 (S16) acción de actualización de usuario en `session-store.ts` + persistencia + test. commit: —
-- T8 (S15) bloque avatar (iniciales desde `sessionStore`, badge lápiz sin acción). commit: —
+- T8 (S15) bloque avatar (iniciales desde `sessionStore`, badge lápiz con `AvatarBadge`). commit: bdb671f (T1-T8; diseño en 5f3ed39)
 
 ## Log
 
@@ -86,3 +86,9 @@ directo desde el botón de usuario (sidebar + topbar). Diseño: `design/app/07-m
   y enviarla al backend... hay que ver si el backend tiene la funcionalidad» → backend no
   tiene la feature: ticket creado en api-user countergank/api-user#539 (board, Todo); la
   carga de fotos queda fuera de este ticket y bloqueada por ese issue.
+- L15 (incidente de sesión): el review nativo se inició y aprobó el freeze (lineage
+  `review-cfad547355f670f5`, tier high, lentes risk/resilience/readability/reliability,
+  budget 200) pero el transporte del facade quedó trabado en `status` y `abandon`
+  («Review controller input must be a string», ~50 intentos). El lineage queda ABIERTO:
+  reintentar `gentle_review` status en una sesión fresca; pista: la única llamada que
+  atravesó devolvió `unknown-field` con `lineageId`/`lineage` como input serializado.
