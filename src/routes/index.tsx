@@ -58,9 +58,8 @@ export const router = createBrowserRouter([
     children: [{ index: true, Component: ForbiddenPage }],
   },
   {
+    ...consoleRoute,
     path: "/profile",
-    children: [{ index: true, Component: ConsolePlaceholder }],
-    element: consoleRoute.element,
-    errorElement: <RouteErrorBoundary />,
+    children: [{ index: true, lazy: () => import("./profile-route") }],
   },
 ]);

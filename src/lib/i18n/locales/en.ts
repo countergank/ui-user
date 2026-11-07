@@ -659,6 +659,33 @@ export const en = {
       },
     },
   },
+  profile: {
+    view: {
+      heading: "My profile",
+      title: "Personal data",
+      subtitle: "Your personal account information.",
+      loading: "Loading profile…",
+    },
+    fields: {
+      name: "Name",
+      lastName: "Last name",
+      email: "Email",
+      readOnly: "Read only",
+    },
+    actions: {
+      changePhoto: "Change profile photo",
+      edit: "Edit",
+      save: "Save",
+      cancel: "Cancel",
+    },
+    success: {
+      updated: "Profile updated.",
+    },
+    errors: {
+      saveFailure: "The profile could not be saved. Try again.",
+      fieldRequired: "This field is required.",
+    },
+  },
 };
 
 export type TranslationTree = typeof en.common;
@@ -672,3 +699,5 @@ export type ConsoleTranslationTree = typeof en.console;
 export type UsersTranslationTree = typeof en.users;
 
 export type EmailTranslationTree = typeof en.email;
+
+export type ProfileTranslationTree = typeof en.profile;
