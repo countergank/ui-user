@@ -3,6 +3,7 @@ import type {
   ConsoleTranslationTree,
   EmailTranslationTree,
   LandingTranslationTree,
+  ProfileTranslationTree,
   TranslationTree,
   UsersTranslationTree,
 } from "./en";
@@ -14,6 +15,7 @@ export const es: {
   console: ConsoleTranslationTree;
   users: UsersTranslationTree;
   email: EmailTranslationTree;
+  profile: ProfileTranslationTree;
 } = {
   common: {
     meta: {
@@ -674,6 +676,33 @@ export const es: {
         subjectRequired: "El asunto es obligatorio.",
         bodyRequired: "El cuerpo es obligatorio.",
       },
+    },
+  },
+  profile: {
+    view: {
+      heading: "Mi perfil",
+      title: "Datos personales",
+      subtitle: "Tu información personal de la cuenta.",
+      loading: "Cargando perfil…",
+    },
+    fields: {
+      name: "Nombre",
+      lastName: "Apellido",
+      email: "Correo electrónico",
+      readOnly: "Solo lectura",
+    },
+    actions: {
+      changePhoto: "Cambiar foto de perfil",
+      edit: "Editar",
+      save: "Guardar",
+      cancel: "Cancelar",
+    },
+    success: {
+      updated: "Perfil actualizado",
+    },
+    errors: {
+      saveFailure: "No se pudo guardar el perfil. Intentá de nuevo.",
+      fieldRequired: "Este campo es obligatorio.",
     },
   },
 };

@@ -4,10 +4,10 @@
   "feature": "odd/tasks/COU-342-diseno-dashboard.md",
   "source": {
     "fig": "Dashboard User UI.fig",
-    "sha256": "c56c7f8445a36d87a54e85450b1511b35b8f094c00c45830ebda873021d983ba",
-    "sizeKb": 2146.0,
-    "exportedAt": "2026-11-04",
-    "tool": "openpencil 0.16.0"
+    "sha256": "23fc72c07607fdc01ad480d08dfbaa7d1a771694aa7222e049aa023255c68696",
+    "sizeKb": 1483.5,
+    "exportedAt": "2026-11-06",
+    "tool": "openpencil 0.17.0-beta.1"
   },
   "modes": {
     "collection": "Tokens",
@@ -65,6 +65,13 @@
       "tradeoff": "Matriz de 22 permisos por 3 roles con columnas de verificación, agrupada en USER y SYSTEM, en lugar de una tarjeta por rol. El costo es que no escala si la superficie de permisos se duplica; se acepta porque 22 es el tamaño real del backend hoy y comparar roles de un vistazo es la tarea, no editar un rol a la vez.",
       "width": 1440,
       "height": 1200
+    },
+    {
+      "file": "07-mi-perfil.html",
+      "title": "Mi perfil",
+      "tradeoff": "Card único de datos personales con avatar y edición de foto integrada (badge de lápiz sobre el círculo), email de solo lectura con pill y acciones al tamaño estándar del sistema (33px). El estado sucio y el toast se documentan en el issue COU-285 (#59).",
+      "width": 1440,
+      "height": 900
     },
     {
       "file": "08-sesiones.html",

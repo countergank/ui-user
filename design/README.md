@@ -36,6 +36,7 @@ que ese ticket cierre, el aspecto real de la aplicación es el que describe `sys
 | `04-usuarios.html` | Usuarios (listado) |
 | `05-detalle-usuario.html` | Detalle de usuario |
 | `06-roles-permisos.html` | Roles y permisos |
+| `07-mi-perfil.html` | Mi perfil (#59) |
 | `08-sesiones.html` | Sesiones |
 | `09-auditoria.html` | Auditoría (pantalla propia; ya no es un tab de Sistema) |
 | `10-plantillas-email.html` | Plantillas de email |
