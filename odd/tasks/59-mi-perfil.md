@@ -92,3 +92,11 @@ directo desde el botón de usuario (sidebar + topbar). Diseño: `design/app/07-m
   («Review controller input must be a string», ~50 intentos). El lineage queda ABIERTO:
   reintentar `gentle_review` status en una sesión fresca; pista: la única llamada que
   atravesó devolvió `unknown-field` con `lineageId`/`lineage` como input serializado.
+- L16 (resolución del incidente, sesión fresca): transporte saneado. `status` requiere
+  input serializado con `untrackedScope`+`expectedUntrackedInventory`. START →
+  `answer-consent` sin token `consentBinding` en el envelope (defecto del beta 0.17:
+  el usuario otorgó `granted` y el binding es inaceptable — `consent-binding-unknown`);
+  abandon + re-START reproduce el mismo defecto. AMBOS lineages abandonados
+  (`operator_disposition`, quarantine committed). La review nativa queda disponible
+  para reintentar cuando el beta incluya el binding en el envelope; el delivery sigue
+  por política ordinaria (PR #107).
