@@ -167,7 +167,7 @@ describe("forgot password page — MSW", () => {
   });
 
   it("does not surface an unhandled rejection when the response arrives after unmount", async () => {
-    let release: (() => void) | null = null;
+    let release: () => void = () => undefined;
     const gate = new Promise<void>((resolve) => {
       release = resolve;
     });
@@ -191,7 +191,7 @@ describe("forgot password page — MSW", () => {
     await user.click(screen.getByRole("button", { name: tAuth("forgot.submit") }));
     unmount();
 
-    release?.();
+    release();
     await new Promise((resolve) => setTimeout(resolve, 50));
     window.removeEventListener("unhandledrejection", onUnhandled);
 
