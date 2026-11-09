@@ -15,6 +15,9 @@ export const userSchema = z.object({
   isActive: z.boolean(),
   lockedUntil: z.string().nullable(),
   failedLoginAttempts: z.number(),
+  emailVerified: z.boolean(),
+  hasPendingEmailChange: z.boolean(),
+  hasPendingPasswordReset: z.boolean(),
 });
 
 export const paginatedUsersSchema = z.object({

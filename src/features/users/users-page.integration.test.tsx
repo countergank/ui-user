@@ -34,6 +34,9 @@ const USERS = [
     isActive: true,
     lockedUntil: null,
     failedLoginAttempts: 0,
+    emailVerified: true,
+    hasPendingEmailChange: false,
+    hasPendingPasswordReset: false,
   },
   {
     id: "u2",
@@ -47,6 +50,9 @@ const USERS = [
     isActive: false,
     lockedUntil: null,
     failedLoginAttempts: 2,
+    emailVerified: false,
+    hasPendingEmailChange: false,
+    hasPendingPasswordReset: false,
   },
   {
     id: "u3",
@@ -60,6 +66,9 @@ const USERS = [
     isActive: true,
     lockedUntil: new Date(Date.now() + 3_600_000).toISOString(),
     failedLoginAttempts: 5,
+    emailVerified: true,
+    hasPendingEmailChange: true,
+    hasPendingPasswordReset: false,
   },
 ];
 
@@ -401,6 +410,21 @@ describe("users page — MSW", () => {
     );
     expect(screen.getAllByText("admin").length).toBeGreaterThan(0);
     expect(screen.getAllByText(/2024/)).toHaveLength(3);
+  });
+
+  it("renders the email verification state from the row fields", async () => {
+    renderPage();
+    await expectRows();
+
+    expect(
+      within(rowOf("Ada Lovelace")).getByText(tUsers("list.verification.verified")),
+    ).toHaveClass("text-success");
+    expect(
+      within(rowOf("Grace Hopper")).getByText(tUsers("list.verification.pending")),
+    ).toHaveClass("text-warning");
+    expect(
+      within(rowOf("Alan Turing")).getByText(tUsers("list.verification.verified")),
+    ).toBeInTheDocument();
   });
 
   it("refetches the current page from the refresh control", async () => {

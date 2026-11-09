@@ -462,6 +462,10 @@ export const pt: {
         active: "Ativo",
         inactive: "Inativo",
       },
+      verification: {
+        verified: "Verificado",
+        pending: "Pendente",
+      },
     },
     active: {
       confirmTitle: "Confirmar mudança de estado",
@@ -529,6 +533,8 @@ export const pt: {
         pendingEmail: "Email pendente",
         passwordReset: "Reset de senha",
         verification: "Verificação",
+        yes: "Sim",
+        no: "Não",
       },
       activity: {
         title: "Atividade do usuário",
