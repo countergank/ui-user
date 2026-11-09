@@ -166,7 +166,7 @@ describe("forgot password page — MSW", () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 
-  it("keeps the mutation quiet after unmount", async () => {
+  it("renders a clean form after an in-flight submit was unmounted", async () => {
     server.use(http.post(FORGOT_URL, () => apiFailure(429, "HTTP_ERROR")));
 
     const { unmount } = renderPage();
@@ -175,8 +175,10 @@ describe("forgot password page — MSW", () => {
     await user.click(screen.getByRole("button", { name: tAuth("forgot.submit") }));
     unmount();
 
-    await waitFor(() => {
-      expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-    });
+    renderPage();
+
+    expect(await screen.findByLabelText(tAuth("forgot.fields.email"))).toHaveValue("");
+    expect(screen.getByRole("button", { name: tAuth("forgot.submit") })).toBeEnabled();
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 });
