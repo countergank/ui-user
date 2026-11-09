@@ -32,8 +32,9 @@ function BackToList() {
 
 /**
  * @returns The user detail matching the COU-344 artboard: the header with avatar, chips and the
- * edit shortcut for `user:update` holders, plus the `Perfil` and `Sesiones y seguridad` cards fed
- * by `UserDTO`; the sections without an endpoint render `—` placeholders and disabled actions.
+ * edit shortcut for `user:update` holders, plus the `Perfil`, `Sesiones y seguridad` and `Estado
+ * de la cuenta` cards fed by `UserDTO`; the sections without an endpoint render `—` placeholders
+ * and disabled actions.
  */
 export function UsersDetailPage() {
   const { t } = useTranslation("users");
@@ -72,7 +73,7 @@ export function UsersDetailPage() {
             </div>
             <div className="flex min-w-0 flex-col gap-6">
               <AdminActionsCard user={user.data} />
-              <AccountStatusCard />
+              <AccountStatusCard user={user.data} />
               <ActivityCard />
             </div>
           </div>

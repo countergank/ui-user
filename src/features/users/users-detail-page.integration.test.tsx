@@ -36,6 +36,9 @@ const USER = {
   isActive: true,
   lockedUntil: null,
   failedLoginAttempts: 0,
+  emailVerified: true,
+  hasPendingEmailChange: false,
+  hasPendingPasswordReset: false,
 };
 
 const dateTimeFormatter = {
@@ -58,6 +61,12 @@ function formatDateTime(value: string): string {
 
 function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function accountStatusValue(term: string): string | null {
+  const row = screen.getByText(term).closest("div");
+
+  return row === null ? null : within(row).getByRole("definition").textContent;
 }
 
 const ADMIN_PROFILE = {
@@ -189,11 +198,51 @@ describe("user detail — loaded user", () => {
     expect(screen.getByText(tUsers("detail.status.inactive"))).toBeInTheDocument();
   });
 
+  it("renders the account status states from the user fields", async () => {
+    renderPage();
+    await screen.findByText("Ada Lovelace");
+
+    expect(accountStatusValue(tUsers("detail.accountStatus.verification"))).toBe(
+      tUsers("list.verification.verified"),
+    );
+    expect(accountStatusValue(tUsers("detail.accountStatus.pendingEmail"))).toBe(
+      tUsers("detail.accountStatus.no"),
+    );
+    expect(accountStatusValue(tUsers("detail.accountStatus.passwordReset"))).toBe(
+      tUsers("detail.accountStatus.no"),
+    );
+  });
+
+  it("renders unverified together with pending email change and password reset", async () => {
+    server.use(
+      http.get(USER_URL, () =>
+        HttpResponse.json({
+          ...USER,
+          emailVerified: false,
+          hasPendingEmailChange: true,
+          hasPendingPasswordReset: true,
+        }),
+      ),
+    );
+    renderPage();
+    await screen.findByText("Ada Lovelace");
+
+    expect(accountStatusValue(tUsers("detail.accountStatus.verification"))).toBe(
+      tUsers("list.verification.pending"),
+    );
+    expect(accountStatusValue(tUsers("detail.accountStatus.pendingEmail"))).toBe(
+      tUsers("detail.accountStatus.yes"),
+    );
+    expect(accountStatusValue(tUsers("detail.accountStatus.passwordReset"))).toBe(
+      tUsers("detail.accountStatus.yes"),
+    );
+  });
+
   it("renders the sections without an endpoint as placeholders and keeps the toggle wired (S4–S8)", async () => {
     renderPage();
     await screen.findByText("Ada Lovelace");
 
-    expect(screen.getAllByText("—")).toHaveLength(12);
+    expect(screen.getAllByText("—")).toHaveLength(8);
 
     const pending = tCommon("ui.list.pending");
     for (const key of [

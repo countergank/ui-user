@@ -34,6 +34,9 @@ const USER = {
   isActive: true,
   lockedUntil: null,
   failedLoginAttempts: 0,
+  emailVerified: true,
+  hasPendingEmailChange: false,
+  hasPendingPasswordReset: false,
 };
 
 let patchBody: unknown = null;

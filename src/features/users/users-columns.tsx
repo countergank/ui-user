@@ -75,7 +75,20 @@ export function useUsersColumns(
     {
       key: "verification",
       header: upper(t("list.columns.verification")),
-      cell: () => "—",
+      cell: (user) => {
+        const tone = user.emailVerified ? "text-success" : "text-warning";
+        const label = t(
+          user.emailVerified ? "list.verification.verified" : "list.verification.pending",
+        );
+
+        return (
+          <span className={`inline-flex items-center gap-1.5 text-sm ${tone}`}>
+            <span aria-hidden="true" className="h-[7px] w-[7px] rounded-full bg-current" />
+            {label}
+          </span>
+        );
+      },
+      sortKey: "emailVerified",
     },
     {
       key: "createdAt",
