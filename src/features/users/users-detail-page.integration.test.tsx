@@ -242,7 +242,7 @@ describe("user detail — loaded user", () => {
     renderPage();
     await screen.findByText("Ada Lovelace");
 
-    expect(screen.getAllByText("—")).toHaveLength(9);
+    expect(screen.getAllByText("—")).toHaveLength(8);
 
     const pending = tCommon("ui.list.pending");
     for (const key of [

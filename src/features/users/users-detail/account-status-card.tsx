@@ -2,7 +2,6 @@ import { useTranslation } from "react-i18next";
 
 import type { UserDTO } from "../types";
 import { FieldRow, SectionCard } from "./detail-section";
-import { NO_VALUE } from "./format";
 
 export function AccountStatusCard({ user }: { user: UserDTO }) {
   const { t } = useTranslation("users");
@@ -17,7 +16,7 @@ export function AccountStatusCard({ user }: { user: UserDTO }) {
     : t("detail.accountStatus.no");
 
   return (
-    <SectionCard title={t("detail.accountStatus.title")} meta={NO_VALUE}>
+    <SectionCard title={t("detail.accountStatus.title")}>
       <dl className="flex flex-col">
         <FieldRow term={t("detail.accountStatus.verification")}>{verification}</FieldRow>
         <FieldRow term={t("detail.accountStatus.pendingEmail")}>{pendingEmail}</FieldRow>
