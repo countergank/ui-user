@@ -12,3 +12,10 @@ export function login(credentials: LoginCredentials): Promise<AuthResponse> {
     body: credentials,
   });
 }
+
+export function requestPasswordReset(email: string): Promise<unknown> {
+  return httpClient.request<unknown>("/auth/forgot-password", {
+    method: "POST",
+    body: { email },
+  });
+}

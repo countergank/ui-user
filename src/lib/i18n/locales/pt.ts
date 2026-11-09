@@ -349,6 +349,22 @@ export const pt: {
         passwordRequired: "Informe sua senha.",
       },
     },
+    forgot: {
+      title: "Esqueceu sua senha?",
+      subtitle: "Informe seu e-mail e enviaremos um link para redefini-la.",
+      fields: {
+        email: "E-mail",
+      },
+      submit: "Enviar link",
+      success:
+        "Se o e-mail estiver registrado, você receberá em breve um link para redefinir a senha. Verifique sua caixa de entrada e o spam.",
+      backToLogin: "Voltar para o login",
+      errors: {
+        rateLimited: "Muitas tentativas. Aguarde um momento e tente novamente.",
+        emailRequired: "Informe seu e-mail.",
+        emailInvalid: "Informe um e-mail válido.",
+      },
+    },
   },
   console: {
     nav: {

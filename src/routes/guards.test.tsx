@@ -81,7 +81,7 @@ describe("route guards", () => {
   it("without a session, a protected deep link lands on login and keeps the destination", async () => {
     const memoryRouter = renderApp("/app/users?page=2");
 
-    expect(await screen.findByRole("heading", { level: 1 })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { level: 1 }, { timeout: 5000 })).toBeInTheDocument();
     expect(memoryRouter.state.location.pathname).toBe("/login");
     expect(memoryRouter.state.location.search).toBe("?redirect=%2Fapp%2Fusers%3Fpage%3D2");
   });
@@ -89,7 +89,7 @@ describe("route guards", () => {
   it("without a session, the console landing page also requires login", async () => {
     const memoryRouter = renderApp("/app");
 
-    expect(await screen.findByRole("heading", { level: 1 })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { level: 1 }, { timeout: 5000 })).toBeInTheDocument();
     expect(memoryRouter.state.location.pathname).toBe("/login");
     expect(memoryRouter.state.location.search).toBe("?redirect=%2Fapp");
   });

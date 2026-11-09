@@ -33,6 +33,11 @@ export const router = createBrowserRouter([
     errorElement: <RouteErrorBoundary />,
   },
   {
+    path: "/forgot-password",
+    lazy: () => import("./forgot-password-route"),
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
     ...consoleRoute,
     path: "/app",
     children: [

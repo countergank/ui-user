@@ -349,6 +349,22 @@ export const es: {
         passwordRequired: "Ingresá tu contraseña.",
       },
     },
+    forgot: {
+      title: "¿Olvidaste tu contraseña?",
+      subtitle: "Ingresá tu email y te enviaremos un enlace para restablecerla.",
+      fields: {
+        email: "Email",
+      },
+      submit: "Enviar enlace",
+      success:
+        "Si el email está registrado, vas a recibir en breve un enlace para restablecer la contraseña. Revisá tu bandeja de entrada y el spam.",
+      backToLogin: "Volver a iniciar sesión",
+      errors: {
+        rateLimited: "Demasiados intentos. Esperá un momento y volvé a intentarlo.",
+        emailRequired: "Ingresá tu email.",
+        emailInvalid: "Ingresá un email válido.",
+      },
+    },
   },
   console: {
     nav: {
