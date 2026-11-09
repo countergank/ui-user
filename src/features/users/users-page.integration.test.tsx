@@ -443,6 +443,9 @@ describe("users page — MSW", () => {
       expect(probe).toHaveTextContent("sortBy=emailVerified");
       expect(probe).toHaveTextContent("sortOrder=asc");
     });
+    await waitFor(() => {
+      expect(lastUrl?.searchParams.get("sortBy")).toBe("emailVerified");
+    });
   });
 
   it("refetches the current page from the refresh control", async () => {
