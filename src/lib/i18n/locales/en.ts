@@ -331,6 +331,22 @@ export const en = {
         passwordRequired: "Enter your password.",
       },
     },
+    forgot: {
+      title: "Forgot your password?",
+      subtitle: "Enter your email and we will send you a reset link.",
+      fields: {
+        email: "Email",
+      },
+      submit: "Send reset link",
+      success:
+        "If the email is registered, you will receive a reset link shortly. Check your inbox and spam folder.",
+      backToLogin: "Back to sign in",
+      errors: {
+        rateLimited: "Too many attempts. Wait a moment and try again.",
+        emailRequired: "Enter your email.",
+        emailInvalid: "Enter a valid email address.",
+      },
+    },
   },
   console: {
     nav: {

@@ -7,6 +7,7 @@ import { RequireAuth } from "@/features/authorization/components/require-auth";
 import { i18n } from "@/lib/i18n";
 
 import { Component as AboutRoute } from "./about-route";
+import { Component as ForgotPasswordRoute } from "./forgot-password-route";
 import { router } from "./index";
 import { Component as LandingRoute } from "./landing-route";
 import { Component as LoginRoute } from "./login-route";
@@ -16,6 +17,7 @@ describe("routes", () => {
     expect(router.routes.map((route) => route.path)).toEqual([
       "/",
       "/login",
+      "/forgot-password",
       "/app",
       "/forbidden",
       "/profile",
@@ -91,6 +93,20 @@ describe("routes", () => {
 
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       i18n.getFixedT(null, "auth")("login.title"),
+    );
+  });
+
+  it("renders the lazy forgot-password route component", () => {
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <MemoryRouter>
+          <ForgotPasswordRoute />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
+      i18n.getFixedT(null, "auth")("forgot.title"),
     );
   });
 
