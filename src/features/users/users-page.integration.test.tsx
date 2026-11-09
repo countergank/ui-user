@@ -427,6 +427,24 @@ describe("users page — MSW", () => {
     ).toBeInTheDocument();
   });
 
+  it("sorts the email verification column through the URL", async () => {
+    renderPage();
+    await expectRows();
+    const user = userEvent.setup();
+
+    await user.click(
+      screen.getByRole("button", {
+        name: `Sort by ${tUsers("list.columns.verification").toUpperCase()}`,
+      }),
+    );
+
+    const probe = screen.getByTestId("route-search");
+    await waitFor(() => {
+      expect(probe).toHaveTextContent("sortBy=emailVerified");
+      expect(probe).toHaveTextContent("sortOrder=asc");
+    });
+  });
+
   it("refetches the current page from the refresh control", async () => {
     const user = userEvent.setup();
     renderPage("/app/users?page=2");

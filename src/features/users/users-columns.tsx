@@ -88,6 +88,7 @@ export function useUsersColumns(
           </span>
         );
       },
+      sortKey: "emailVerified",
     },
     {
       key: "createdAt",

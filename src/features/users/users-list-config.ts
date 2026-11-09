@@ -9,6 +9,7 @@ export const USERS_LIST_PARAMS: ListParamsConfig = {
     "userName",
     "role",
     "isActive",
+    "emailVerified",
     "createdAt",
     "updatedAt",
   ],
