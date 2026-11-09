@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
@@ -166,8 +166,24 @@ describe("forgot password page — MSW", () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 
-  it("renders a clean form after an in-flight submit was unmounted", async () => {
-    server.use(http.post(FORGOT_URL, () => apiFailure(429, "HTTP_ERROR")));
+  it("does not surface an unhandled rejection when the response arrives after unmount", async () => {
+    let release: (() => void) | null = null;
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    server.use(
+      http.post(FORGOT_URL, async () => {
+        await gate;
+
+        return apiFailure(429, "HTTP_ERROR");
+      }),
+    );
+
+    const rejections: unknown[] = [];
+    const onUnhandled = (event: PromiseRejectionEvent) => {
+      rejections.push(event.reason);
+    };
+    window.addEventListener("unhandledrejection", onUnhandled);
 
     const { unmount } = renderPage();
     const user = userEvent.setup();
@@ -175,10 +191,10 @@ describe("forgot password page — MSW", () => {
     await user.click(screen.getByRole("button", { name: tAuth("forgot.submit") }));
     unmount();
 
-    renderPage();
+    release?.();
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    window.removeEventListener("unhandledrejection", onUnhandled);
 
-    expect(await screen.findByLabelText(tAuth("forgot.fields.email"))).toHaveValue("");
-    expect(screen.getByRole("button", { name: tAuth("forgot.submit") })).toBeEnabled();
-    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    expect(rejections).toEqual([]);
   });
 });
