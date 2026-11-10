@@ -246,12 +246,7 @@ describe("user detail — loaded user", () => {
     expect(screen.getAllByText("—")).toHaveLength(8);
 
     const pending = tCommon("ui.list.pending");
-    for (const key of [
-      "resetPassword",
-      "resendVerification",
-      "changeEmail",
-      "delete",
-    ] as const) {
+    for (const key of ["resetPassword", "resendVerification", "changeEmail", "delete"] as const) {
       const button = screen.getByRole("button", {
         name: new RegExp(`^${escapeRegExp(tUsers(`detail.adminActions.${key}`))} `),
       });

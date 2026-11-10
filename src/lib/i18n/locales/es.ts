@@ -494,7 +494,8 @@ export const es: {
     unlock: {
       action: "Desbloquear",
       confirmTitle: "Confirmar desbloqueo de cuenta",
-      confirmBody: "Esta acción restablecerá de inmediato el acceso de {{name}} tras los intentos fallidos de inicio de sesión.",
+      confirmBody:
+        "Esta acción restablecerá de inmediato el acceso de {{name}} tras los intentos fallidos de inicio de sesión.",
       success: "Cuenta desbloqueada.",
       lockedSince: "Bloqueada",
       attempts: "Intentos fallidos",

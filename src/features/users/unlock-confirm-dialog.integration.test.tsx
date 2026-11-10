@@ -150,16 +150,16 @@ describe("unlock confirm dialog — confirmation (S2, S7)", () => {
     expect(
       within(dialog).getByRole("button", { name: tUsers("unlock.action") }),
     ).toBeInTheDocument();
-    expect(
-      within(dialog).getByRole("button", { name: tUsers("edit.cancel") }),
-    ).toBeInTheDocument();
+    expect(within(dialog).getByRole("button", { name: tUsers("edit.cancel") })).toBeInTheDocument();
     expect(patchCount).toBe(0);
   });
 
   it("sends nothing while the dialog stays open", async () => {
     const { user } = await openDialog(buildUser());
 
-    await user.click(within(screen.getByRole("alertdialog")).getByRole("button", { name: tUsers("edit.cancel") }));
+    await user.click(
+      within(screen.getByRole("alertdialog")).getByRole("button", { name: tUsers("edit.cancel") }),
+    );
 
     await waitFor(() => {
       expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
@@ -173,7 +173,9 @@ describe("unlock confirm dialog — unlock PATCH (S1, S5)", () => {
     const { user } = await openDialog(buildUser());
 
     await user.click(
-      within(screen.getByRole("alertdialog")).getByRole("button", { name: tUsers("unlock.action") }),
+      within(screen.getByRole("alertdialog")).getByRole("button", {
+        name: tUsers("unlock.action"),
+      }),
     );
 
     await waitFor(() => {
@@ -197,7 +199,9 @@ describe("unlock confirm dialog — unlock PATCH (S1, S5)", () => {
 
     const { user } = await openDialog(buildUser());
     await user.click(
-      within(screen.getByRole("alertdialog")).getByRole("button", { name: tUsers("unlock.action") }),
+      within(screen.getByRole("alertdialog")).getByRole("button", {
+        name: tUsers("unlock.action"),
+      }),
     );
 
     await waitFor(() => {
@@ -220,7 +224,9 @@ describe("unlock confirm dialog — unlock PATCH (S1, S5)", () => {
 
     const { user } = await openDialog(buildUser());
     await user.click(
-      within(screen.getByRole("alertdialog")).getByRole("button", { name: tUsers("unlock.action") }),
+      within(screen.getByRole("alertdialog")).getByRole("button", {
+        name: tUsers("unlock.action"),
+      }),
     );
 
     await waitFor(() => {

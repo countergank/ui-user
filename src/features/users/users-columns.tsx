@@ -63,15 +63,13 @@ export function useUsersColumns(
         const label = locked
           ? t("list.status.blocked")
           : t(user.isActive ? "list.status.active" : "list.status.inactive");
-        const lockDetail = locked
-          ? `${t("unlock.lockedSince")}: ${formatDate(user.lockedUntil as string, i18n.language)} · ${t("unlock.attempts")}: ${user.failedLoginAttempts}`
-          : undefined;
+        const lockDetail =
+          locked && user.lockedUntil !== null
+            ? `${t("unlock.lockedSince")}: ${formatDate(user.lockedUntil, i18n.language)} · ${t("unlock.attempts")}: ${String(user.failedLoginAttempts)}`
+            : undefined;
 
         return (
-          <span
-            className={`inline-flex items-center gap-1.5 text-sm ${tone}`}
-            title={lockDetail}
-          >
+          <span className={`inline-flex items-center gap-1.5 text-sm ${tone}`} title={lockDetail}>
             <span aria-hidden="true" className="h-[7px] w-[7px] rounded-full bg-current" />
             {label}
           </span>
