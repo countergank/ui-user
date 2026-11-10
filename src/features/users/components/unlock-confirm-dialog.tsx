@@ -33,7 +33,7 @@ export function UnlockConfirmDialog({ user, open, onOpenChange }: UnlockConfirmD
   const unlock = useUnlockUser();
 
   const confirm = () => {
-    if (user === null) {
+    if (user === null || unlock.isPending) {
       return;
     }
 
@@ -71,6 +71,7 @@ export function UnlockConfirmDialog({ user, open, onOpenChange }: UnlockConfirmD
             {t("edit.cancel")}
           </AlertDialogCancel>
           <AlertDialogAction
+            disabled={unlock.isPending}
             onClick={(event) => {
               event.preventDefault();
               confirm();

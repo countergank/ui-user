@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { http, HttpResponse } from "msw";
+import { http, HttpResponse, delay } from "msw";
 import { setupServer } from "msw/node";
 import { useState } from "react";
 import { I18nextProvider } from "react-i18next";
@@ -169,6 +169,31 @@ describe("unlock confirm dialog — confirmation (S2, S7)", () => {
 });
 
 describe("unlock confirm dialog — unlock PATCH (S1, S5)", () => {
+  it("fires a single PATCH when the confirm button is clicked repeatedly", async () => {
+    server.use(
+      http.patch(UNLOCK_URL, async () => {
+        patchCount += 1;
+        await delay(300);
+
+        return HttpResponse.json({ message: "ok-unlocked", userId: "u1" });
+      }),
+    );
+
+    const { user } = await openDialog(buildUser());
+    const confirmButton = within(screen.getByRole("alertdialog")).getByRole("button", {
+      name: tUsers("unlock.action"),
+    });
+    await user.click(confirmButton);
+    if (!confirmButton.hasAttribute("disabled")) {
+      await user.click(confirmButton);
+    }
+
+    await waitFor(() => {
+      expect(patchCount).toBe(1);
+    });
+    expect(await screen.findByText("ok-unlocked")).toBeInTheDocument();
+  });
+
   it("PATCHes the unlock endpoint without a body, toasts the API message and closes", async () => {
     const { user } = await openDialog(buildUser());
 
