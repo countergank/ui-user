@@ -5,9 +5,11 @@ import { httpClient } from "@/lib/session/session";
 import {
   type CreateUserResponseDTO,
   type PaginatedUsers,
+  type UnlockUserResponseDTO,
   type UserDTO,
   createUserResponseSchema,
   paginatedUsersSchema,
+  unlockUserResponseSchema,
   userSchema,
 } from "./types";
 import type { UserRoleName } from "./types";
@@ -121,6 +123,20 @@ export async function updateUser(id: string, payload: UpdateUserPayload): Promis
   });
 
   return userSchema.parse(raw);
+}
+
+/**
+ * @param id - the user id; it is percent-encoded so a hostile id cannot change the path. The
+ * endpoint clears the lock server-side, so the client sends no body.
+ * @returns The validated `UnlockUserResponseDTO`; `message` is the API's already translated
+ * confirmation text, ready to show in the toast as-is.
+ */
+export async function unlockUser(id: string): Promise<UnlockUserResponseDTO> {
+  const raw = await httpClient.request<unknown>(`/admin/users/${encodeURIComponent(id)}/unlock`, {
+    method: "PATCH",
+  });
+
+  return unlockUserResponseSchema.parse(raw);
 }
 
 /**

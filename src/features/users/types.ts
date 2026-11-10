@@ -39,6 +39,12 @@ export const createUserResponseSchema = z.object({
   isActive: z.boolean(),
 });
 
+export const unlockUserResponseSchema = z.object({
+  message: z.string(),
+  userId: z.string(),
+});
+
 export type UserDTO = z.infer<typeof userSchema>;
 export type PaginatedUsers = z.infer<typeof paginatedUsersSchema>;
 export type CreateUserResponseDTO = z.infer<typeof createUserResponseSchema>;
+export type UnlockUserResponseDTO = z.infer<typeof unlockUserResponseSchema>;

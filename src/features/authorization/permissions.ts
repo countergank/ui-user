@@ -6,6 +6,7 @@ export const PERMISSIONS = {
   userRead: "user:read",
   userCreate: "user:create",
   userUpdate: "user:update",
+  userUnlock: "user:unlock",
   userDelete: "user:delete",
   roleRead: "role:read",
   permissionRead: "permission:read",
