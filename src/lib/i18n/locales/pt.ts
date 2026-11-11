@@ -365,6 +365,33 @@ export const pt: {
         emailInvalid: "Informe um e-mail válido.",
       },
     },
+    reset: {
+      title: "Redefinir senha",
+      subtitle: "Escolha uma nova senha para a sua conta.",
+      fields: {
+        password: "Nova senha",
+        confirm: "Confirmar senha",
+      },
+      passwordRules: {
+        label: "A senha deve:",
+        length: "Ter entre 8 e 64 caracteres",
+        lowercase: "Ter pelo menos uma letra minúscula",
+        uppercase: "Ter pelo menos uma letra maiúscula",
+        digit: "Ter pelo menos um número",
+        special: "Ter pelo menos um caractere especial",
+        unique: "Evitar caracteres repetidos seguidos e sequências comuns",
+      },
+      submit: "Redefinir senha",
+      success: "Sua senha foi redefinida. Agora você pode entrar com a nova.",
+      backToLogin: "Ir para o login",
+      requestNewLink: "Solicitar um novo link",
+      invalidTokenTitle: "Link inválido",
+      errors: {
+        invalidToken: "O link para redefinir a senha é inválido ou já expirou.",
+        expiredToken: "O link para redefinir a senha expirou. Solicite um novo.",
+        mismatch: "As senhas não coincidem.",
+      },
+    },
   },
   console: {
     nav: {

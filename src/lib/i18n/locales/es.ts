@@ -365,6 +365,33 @@ export const es: {
         emailInvalid: "Ingresá un email válido.",
       },
     },
+    reset: {
+      title: "Restablecer contraseña",
+      subtitle: "Elegí una nueva contraseña para tu cuenta.",
+      fields: {
+        password: "Nueva contraseña",
+        confirm: "Confirmar contraseña",
+      },
+      passwordRules: {
+        label: "La contraseña debe:",
+        length: "Tener entre 8 y 64 caracteres",
+        lowercase: "Tener al menos una letra minúscula",
+        uppercase: "Tener al menos una letra mayúscula",
+        digit: "Tener al menos un número",
+        special: "Tener al menos un carácter especial",
+        unique: "No repetir caracteres seguidos ni usar secuencias comunes",
+      },
+      submit: "Restablecer contraseña",
+      success: "Tu contraseña fue restablecida. Ya podés iniciar sesión con la nueva.",
+      backToLogin: "Ir a iniciar sesión",
+      requestNewLink: "Solicitar un nuevo enlace",
+      invalidTokenTitle: "Enlace inválido",
+      errors: {
+        invalidToken: "El enlace para restablecer la contraseña es inválido o ya expiró.",
+        expiredToken: "El enlace para restablecer la contraseña ya expiró. Solicitá uno nuevo.",
+        mismatch: "Las contraseñas no coinciden.",
+      },
+    },
   },
   console: {
     nav: {

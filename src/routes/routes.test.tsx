@@ -11,6 +11,7 @@ import { Component as ForgotPasswordRoute } from "./forgot-password-route";
 import { router } from "./index";
 import { Component as LandingRoute } from "./landing-route";
 import { Component as LoginRoute } from "./login-route";
+import { Component as ResetPasswordRoute } from "./reset-password-route";
 
 describe("routes", () => {
   it("registers the public layout for the informational pages, and login as a sibling", () => {
@@ -18,6 +19,7 @@ describe("routes", () => {
       "/",
       "/login",
       "/forgot-password",
+      "/reset-password",
       "/app",
       "/forbidden",
       "/profile",
@@ -93,6 +95,20 @@ describe("routes", () => {
 
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       i18n.getFixedT(null, "auth")("login.title"),
+    );
+  });
+
+  it("renders the lazy reset-password route component", () => {
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <MemoryRouter initialEntries={["/reset-password?token=tok"]}>
+          <ResetPasswordRoute />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
+      i18n.getFixedT(null, "auth")("reset.title"),
     );
   });
 
