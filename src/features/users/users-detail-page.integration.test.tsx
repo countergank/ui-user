@@ -20,6 +20,7 @@ import { UsersDetailPage } from "./users-detail-page";
 const USERS_URL = "https://test.invalid/admin/users";
 const USER_URL = `${USERS_URL}/u1`;
 const USER_ACTIVE_URL = `${USER_URL}/active`;
+const USER_UNLOCK_URL = `${USER_URL}/unlock`;
 
 const tUsers = i18n.getFixedT(null, "users");
 const tCommon = i18n.getFixedT(null, "common");
@@ -245,13 +246,7 @@ describe("user detail — loaded user", () => {
     expect(screen.getAllByText("—")).toHaveLength(8);
 
     const pending = tCommon("ui.list.pending");
-    for (const key of [
-      "unlock",
-      "resetPassword",
-      "resendVerification",
-      "changeEmail",
-      "delete",
-    ] as const) {
+    for (const key of ["resetPassword", "resendVerification", "changeEmail", "delete"] as const) {
       const button = screen.getByRole("button", {
         name: new RegExp(`^${escapeRegExp(tUsers(`detail.adminActions.${key}`))} `),
       });
@@ -323,6 +318,58 @@ describe("user detail — loaded user", () => {
         name: new RegExp(`^${escapeRegExp(tUsers("active.activate"))}`),
       }),
     ).toBeEnabled();
+  });
+
+  it("offers no unlock action for an unlocked user (S2)", async () => {
+    renderPage();
+    await screen.findByText("Ada Lovelace");
+
+    expect(
+      screen.queryByRole("button", {
+        name: new RegExp(`^${escapeRegExp(tUsers("detail.adminActions.unlock"))}`),
+      }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("unlocks a locked account from the detail with confirmation (S1, S2, S5)", async () => {
+    const LOCKED_USER = {
+      ...USER,
+      lockedUntil: new Date(Date.now() + 10 * 60_000).toISOString(),
+      failedLoginAttempts: 3,
+    };
+    let patchCount = 0;
+    let patchBodyText: string | null = null;
+    server.use(
+      http.get(USER_URL, () =>
+        HttpResponse.json(patchCount > 0 ? { ...LOCKED_USER, lockedUntil: null } : LOCKED_USER),
+      ),
+      http.patch(USER_UNLOCK_URL, async ({ request }) => {
+        patchCount += 1;
+        patchBodyText = await request.text();
+
+        return HttpResponse.json({ message: "ok-unlocked", userId: "u1" });
+      }),
+    );
+    const { client } = renderPage();
+    const user = userEvent.setup();
+    await screen.findByText("Ada Lovelace");
+
+    await user.click(
+      screen.getByRole("button", {
+        name: new RegExp(`^${escapeRegExp(tUsers("detail.adminActions.unlock"))}`),
+      }),
+    );
+    const dialog = screen.getByRole("alertdialog");
+    expect(dialog).toHaveTextContent(tUsers("unlock.confirmTitle"));
+
+    await user.click(within(dialog).getByRole("button", { name: tUsers("unlock.action") }));
+
+    expect(await screen.findByText("ok-unlocked")).toBeInTheDocument();
+    expect(patchCount).toBe(1);
+    expect(patchBodyText).toBe("");
+    await waitFor(() => {
+      expect(client.getQueryData(userQueryKey("u1"))).toMatchObject({ lockedUntil: null });
+    });
   });
 
   it("offers the edit link and the way back to the list (S5)", async () => {

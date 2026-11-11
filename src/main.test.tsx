@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { act, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 describe("main entry", () => {
@@ -10,8 +10,8 @@ describe("main entry", () => {
       "Real permissions, controlled sessions, everything audited.",
     );
 
-    await new Promise((resolve) => {
-      setTimeout(resolve, 0);
+    await act(async () => {
+      await Promise.resolve();
     });
   }, 20_000);
 });

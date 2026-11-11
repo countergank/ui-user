@@ -18,6 +18,7 @@ export function isLocked(user: UserDTO): boolean {
 
 export function useUsersColumns(
   onToggleActive?: (user: UserDTO) => void,
+  onUnlock?: (user: UserDTO) => void,
 ): DataTableColumn<UserDTO>[] {
   const { t, i18n } = useTranslation("users");
   const { t: tCommon } = useTranslation();
@@ -62,9 +63,13 @@ export function useUsersColumns(
         const label = locked
           ? t("list.status.blocked")
           : t(user.isActive ? "list.status.active" : "list.status.inactive");
+        const lockDetail =
+          locked && user.lockedUntil !== null
+            ? `${t("unlock.lockedSince")}: ${formatDate(user.lockedUntil, i18n.language)} · ${t("unlock.attempts")}: ${String(user.failedLoginAttempts)}`
+            : undefined;
 
         return (
-          <span className={`inline-flex items-center gap-1.5 text-sm ${tone}`}>
+          <span className={`inline-flex items-center gap-1.5 text-sm ${tone}`} title={lockDetail}>
             <span aria-hidden="true" className="h-[7px] w-[7px] rounded-full bg-current" />
             {label}
           </span>
@@ -137,17 +142,21 @@ export function useUsersColumns(
               <Power aria-hidden="true" />
             </Button>
             {isLocked(user) ? (
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="bg-canvas"
-                aria-label={t("list.actions.unlock")}
-                title={`${t("list.actions.unlock")} · ${tCommon("ui.list.pending")}`}
-                disabled
-              >
-                <LockOpen aria-hidden="true" />
-              </Button>
+              <Can permission={PERMISSIONS.userUnlock}>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="bg-canvas"
+                  aria-label={t("list.actions.unlock")}
+                  title={t("list.actions.unlock")}
+                  onClick={() => {
+                    onUnlock?.(user);
+                  }}
+                >
+                  <LockOpen aria-hidden="true" />
+                </Button>
+              </Can>
             ) : null}
           </Can>
           <Can permission={PERMISSIONS.userDelete}>

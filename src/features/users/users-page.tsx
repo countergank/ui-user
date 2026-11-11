@@ -14,6 +14,7 @@ import { Can } from "@/features/authorization/components/can";
 import { PERMISSIONS } from "@/features/authorization/permissions";
 
 import { ActiveConfirmDialog } from "./components/active-confirm-dialog";
+import { UnlockConfirmDialog } from "./components/unlock-confirm-dialog";
 import { useUsers } from "./hooks/use-users";
 import { RecentAuditCard } from "./recent-audit-card";
 import { RolesDistributionCard } from "./roles-distribution-card";
@@ -35,7 +36,8 @@ export function UsersPage() {
   const { t: tCommon } = useTranslation();
   const { params, setFilter, setSort, setPage, setLimit } = useListParams(USERS_LIST_PARAMS);
   const [activeTarget, setActiveTarget] = useState<UserDTO | null>(null);
-  const columns = useUsersColumns(setActiveTarget);
+  const [unlockTarget, setUnlockTarget] = useState<UserDTO | null>(null);
+  const columns = useUsersColumns(setActiveTarget, setUnlockTarget);
   const users = useUsers(params);
 
   const rows = users.data?.data ?? [];
@@ -163,6 +165,16 @@ export function UsersPage() {
         onOpenChange={(open) => {
           if (!open) {
             setActiveTarget(null);
+          }
+        }}
+      />
+
+      <UnlockConfirmDialog
+        user={unlockTarget}
+        open={unlockTarget !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setUnlockTarget(null);
           }
         }}
       />

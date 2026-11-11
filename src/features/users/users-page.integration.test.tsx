@@ -427,6 +427,20 @@ describe("users page — MSW", () => {
     ).toBeInTheDocument();
   });
 
+  it("shows the lock indicator with lockedUntil and failed attempts in the blocked row (54 S3)", async () => {
+    renderPage();
+    await expectRows();
+
+    const status = within(rowOf("Alan Turing")).getByText(
+      new RegExp(tUsers("list.status.blocked")),
+    );
+    const title = status.getAttribute("title") ?? "";
+
+    expect(title).toContain(tUsers("unlock.lockedSince"));
+    expect(title).toContain(tUsers("unlock.attempts"));
+    expect(title).toContain("5");
+  });
+
   it("sorts the email verification column through the URL", async () => {
     renderPage();
     await expectRows();

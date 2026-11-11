@@ -491,6 +491,15 @@ export const es: {
       success: "Estado del usuario actualizado.",
       selfBlocked: "No podés desactivar tu propio usuario.",
     },
+    unlock: {
+      action: "Desbloquear",
+      confirmTitle: "Confirmar desbloqueo de cuenta",
+      confirmBody:
+        "Esta acción restablecerá de inmediato el acceso de {{name}} tras los intentos fallidos de inicio de sesión.",
+      success: "Cuenta desbloqueada.",
+      lockedSince: "Bloqueada",
+      attempts: "Intentos fallidos",
+    },
     detail: {
       title: "Detalle de usuario",
       subtitle: "Ficha, permisos y acciones administrativas",

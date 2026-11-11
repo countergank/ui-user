@@ -473,6 +473,14 @@ export const en = {
       success: "User status updated.",
       selfBlocked: "You cannot deactivate your own user.",
     },
+    unlock: {
+      action: "Unlock",
+      confirmTitle: "Confirm account unlock",
+      confirmBody: "This will immediately restore {{name}}'s access after failed sign-in attempts.",
+      success: "Account unlocked.",
+      lockedSince: "Locked",
+      attempts: "Failed attempts",
+    },
     detail: {
       title: "User details",
       subtitle: "Profile, permissions and administrative actions",
