@@ -88,6 +88,8 @@ export const pt: {
         "UA-USR-002": "Esse usuário já foi excluído.",
         "UA-USR-003": "A senha atual está incorreta.",
         "UA-USR-004": "Esse e-mail já está registrado.",
+        "UA-USR-005": "Esse formato de arquivo não é permitido. Use uma imagem JPG, PNG ou WebP.",
+        "UA-USR-006": "O arquivo é grande demais. Ele deve ter 2 MB ou menos.",
         "UA-RBAC-001": "Este perfil está atribuído a um ou mais usuários e não pode ser removido.",
         "UA-AUTH-001": "Este e-mail ou nome de usuário já está em uso.",
         "UA-AUTH-002": "E-mail ou senha incorretos.",
@@ -756,6 +758,16 @@ export const pt: {
     },
     success: {
       updated: "Perfil atualizado",
+    },
+    photo: {
+      title: "Enviar foto de perfil",
+      description: "Sua nova foto aparece onde seu avatar for exibido.",
+      file: "Arquivo de foto",
+      hint: "JPG, PNG ou WebP, até 2 MB.",
+      selected: "Selecionado: {{name}}",
+      upload: "Enviar foto",
+      uploading: "Enviando…",
+      success: "Foto do perfil atualizada.",
     },
     errors: {
       saveFailure: "Não foi possível salvar o perfil. Tente novamente.",

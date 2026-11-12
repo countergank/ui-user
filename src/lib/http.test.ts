@@ -90,6 +90,19 @@ describe("http client", () => {
     expect(new Headers(init.headers).get("accept-language")).toBeNull();
   });
 
+  it("passes a FormData body through without forcing a content-type header", async () => {
+    const fetchImpl = fetchStub(200, { ok: true });
+    const client = createHttpClient({ baseUrl: BASE, fetchImpl });
+    const form = new FormData();
+    form.append("file", new File(["photo-bytes"], "me.png", { type: "image/png" }));
+
+    await client.request("users/profile/photo", { method: "POST", body: form });
+
+    const [, init] = fetchImpl.mock.calls[0] as [string, RequestInit];
+    expect(init.body).toBe(form);
+    expect(new Headers(init.headers).get("content-type")).toBeNull();
+  });
+
   it("maps the API error envelope onto AppError with its code and status", async () => {
     const fetchImpl = fetchStub(401, {
       statusCode: 401,

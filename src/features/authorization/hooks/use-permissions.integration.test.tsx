@@ -94,4 +94,20 @@ describe("usePermissions", () => {
     });
     expect(meRequests).toBe(0);
   });
+
+  it("syncs the avatar URL of the session user from /auth/me", async () => {
+    server.use(
+      http.get(ME_URL, () =>
+        HttpResponse.json({ ...USER_PROFILE, avatarUrl: "https://cdn.example/u1/avatar.png" }),
+      ),
+    );
+    startSession();
+    renderProbe();
+
+    await waitFor(() => {
+      expect(sessionStore.getState().user?.avatarUrl).toBe("https://cdn.example/u1/avatar.png");
+    });
+    expect(sessionStore.getState().user?.name).toBe("Ada");
+    expect(sessionStore.getState().accessToken).toBe("access-1");
+  });
 });

@@ -13,11 +13,13 @@ import { axe } from "vitest-axe";
 import { Toaster } from "@/components/ui/sonner";
 import { i18n } from "@/lib/i18n";
 import { initialSessionState, sessionStore } from "@/lib/session/session-store";
+import { selectFile } from "@/test/file-upload";
 
 import { PROFILE_QUERY_KEY } from "./hooks/use-profile";
 import { ProfilePage } from "./profile-page";
 
 const PROFILE_URL = "https://test.invalid/users/profile";
+const PHOTO_URL = "https://test.invalid/users/profile/photo";
 
 const t = i18n.getFixedT(null, "profile");
 const tCommon = i18n.getFixedT(null, "common");
@@ -30,6 +32,7 @@ const PROFILE = {
 
 let patchBody: unknown = null;
 let patchCount = 0;
+let photoCount = 0;
 
 const server = setupServer(
   http.get(PROFILE_URL, () => HttpResponse.json(PROFILE)),
@@ -38,6 +41,11 @@ const server = setupServer(
     patchBody = await request.json();
 
     return HttpResponse.json({ ...PROFILE, ...(patchBody as object) });
+  }),
+  http.post(PHOTO_URL, () => {
+    photoCount += 1;
+
+    return HttpResponse.json({ avatarUrl: "https://cdn.example/u1/avatar.png" });
   }),
 );
 
@@ -66,6 +74,7 @@ afterEach(() => {
   server.resetHandlers();
   patchBody = null;
   patchCount = 0;
+  photoCount = 0;
   sessionStore.setState(initialSessionState);
 });
 
@@ -306,7 +315,7 @@ describe("profile page — read-only email (S10)", () => {
 });
 
 describe("profile page — avatar (S15)", () => {
-  it("shows the session initials with the edit-photo button pending its backend endpoint", async () => {
+  it("shows the session initials with the edit-photo button", async () => {
     const { container } = renderPage();
     await waitForPrefill();
 
@@ -317,6 +326,137 @@ describe("profile page — avatar (S15)", () => {
 
     const avatar = container.querySelector('[data-testid="profile-avatar"]');
     expect(avatar?.contains(editButton)).toBe(true);
+  });
+});
+
+describe("profile page — profile photo", () => {
+  type UserEvent = Awaited<ReturnType<typeof userEvent.setup>>;
+
+  function pngFile(bytes: number): File {
+    return new File([new Uint8Array(bytes)], "me.png", { type: "image/png" });
+  }
+
+  async function openPhotoDialog(user: UserEvent) {
+    await user.click(screen.getByRole("button", { name: t("actions.changePhoto") }));
+
+    return screen.findByRole("dialog", { name: t("photo.title") });
+  }
+
+  it("opens the upload dialog from the pencil button and closes it with Escape without uploading", async () => {
+    renderPage();
+    const user = await waitForPrefill();
+
+    const dialog = await openPhotoDialog(user);
+    expect(dialog).toBeInTheDocument();
+
+    await user.keyboard("{Escape}");
+    await waitFor(() => {
+      expect(screen.queryByRole("dialog", { name: t("photo.title") })).not.toBeInTheDocument();
+    });
+    expect(photoCount).toBe(0);
+  });
+
+  it("uploads the photo, seeds the session avatar and closes with a toast", async () => {
+    renderPage();
+    const user = await waitForPrefill();
+    await openPhotoDialog(user);
+
+    selectFile(screen.getByLabelText(t("photo.file")), pngFile(10));
+    await user.click(screen.getByRole("button", { name: t("photo.upload") }));
+
+    await waitFor(() => {
+      expect(screen.queryByRole("dialog", { name: t("photo.title") })).not.toBeInTheDocument();
+    });
+    expect(sessionStore.getState().user?.avatarUrl).toBe("https://cdn.example/u1/avatar.png");
+    expect(sessionStore.getState().user?.name).toBe("Martina");
+    expect(screen.getByText(t("photo.success"))).toBeInTheDocument();
+    expect(screen.getByText("MC")).toBeInTheDocument();
+    expect(photoCount).toBe(1);
+  });
+
+  it("rejects an unsupported format with the typed error and without any upload", async () => {
+    renderPage();
+    const user = await waitForPrefill();
+    await openPhotoDialog(user);
+
+    const gif = new File([new Uint8Array(10)], "me.gif", { type: "image/gif" });
+    selectFile(screen.getByLabelText(t("photo.file")), gif);
+    await user.click(screen.getByRole("button", { name: t("photo.upload") }));
+
+    expect(await screen.findByTestId("profile-photo-error")).toHaveTextContent(
+      tCommon("error.ua.UA-USR-005"),
+    );
+    expect(photoCount).toBe(0);
+    expect(sessionStore.getState().user?.avatarUrl).toBeUndefined();
+  });
+
+  it("rejects a photo larger than 2 MB with the typed error and without any upload", async () => {
+    renderPage();
+    const user = await waitForPrefill();
+    await openPhotoDialog(user);
+
+    selectFile(screen.getByLabelText(t("photo.file")), pngFile(2 * 1024 * 1024 + 1));
+    await user.click(screen.getByRole("button", { name: t("photo.upload") }));
+
+    expect(await screen.findByTestId("profile-photo-error")).toHaveTextContent(
+      tCommon("error.ua.UA-USR-006"),
+    );
+    expect(photoCount).toBe(0);
+  });
+
+  it("surfaces a typed API rejection as an inline alert and keeps the dialog open", async () => {
+    server.use(
+      http.post(PHOTO_URL, () =>
+        HttpResponse.json(
+          { statusCode: 413, code: "UA-USR-006", message: "photo too large" },
+          { status: 413 },
+        ),
+      ),
+    );
+    renderPage();
+    const user = await waitForPrefill();
+    await openPhotoDialog(user);
+
+    selectFile(screen.getByLabelText(t("photo.file")), pngFile(10));
+    await user.click(screen.getByRole("button", { name: t("photo.upload") }));
+
+    expect(await screen.findByTestId("profile-photo-error")).toHaveTextContent(
+      tCommon("error.ua.UA-USR-006"),
+    );
+    expect(screen.getByRole("dialog", { name: t("photo.title") })).toBeInTheDocument();
+    expect(screen.getByRole("dialog", { name: t("photo.title") })).not.toHaveTextContent(
+      "photo too large",
+    );
+    expect(sessionStore.getState().user?.avatarUrl).toBeUndefined();
+  });
+
+  it("disables the upload button while the file is in flight", async () => {
+    server.use(
+      http.post(PHOTO_URL, async () => {
+        await delay(100);
+
+        return HttpResponse.json({ avatarUrl: "https://cdn.example/u1/avatar.png" });
+      }),
+    );
+    renderPage();
+    const user = await waitForPrefill();
+    await openPhotoDialog(user);
+
+    selectFile(screen.getByLabelText(t("photo.file")), pngFile(10));
+    await user.click(screen.getByRole("button", { name: t("photo.upload") }));
+
+    expect(screen.getByRole("button", { name: t("photo.uploading") })).toBeDisabled();
+    await waitFor(() => {
+      expect(screen.queryByRole("dialog", { name: t("photo.title") })).not.toBeInTheDocument();
+    });
+  });
+
+  it("has no axe violations with the dialog open", async () => {
+    renderPage();
+    const user = await waitForPrefill();
+    await openPhotoDialog(user);
+
+    expect(await axe(document.body)).toHaveNoViolations();
   });
 });
 

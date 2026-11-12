@@ -10,6 +10,7 @@ export const meResponseSchema = z.object({
   email: z.string().min(1),
   role: z.string().min(1),
   permissions: z.array(z.string()),
+  avatarUrl: z.string().nullish(),
 });
 
 export type MeResponse = z.infer<typeof meResponseSchema>;

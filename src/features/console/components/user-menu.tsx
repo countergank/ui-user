@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 
-import { Avatar } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { usePermissions } from "@/features/authorization/hooks/use-permissions";
+import { avatarSrcOf } from "@/lib/avatar";
 import { sessionManager } from "@/lib/session/session";
 import { selectSessionUser, useSession } from "@/lib/session/session-store";
 
@@ -32,6 +33,7 @@ export function UserMenu({ variant = "icon", ariaLabel }: UserMenuProps = {}) {
   const { role } = usePermissions();
   const navigate = useNavigate();
   const fullName = [user?.name, user?.lastName].filter(Boolean).join(" ");
+  const avatarSrc = avatarSrcOf(user?.avatarUrl);
 
   const signOut = (): void => {
     void sessionManager.logout();
@@ -48,9 +50,12 @@ export function UserMenu({ variant = "icon", ariaLabel }: UserMenuProps = {}) {
             className="flex w-full items-center gap-3 rounded-md px-2 py-2 text-left transition-colors hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-highlight"
           >
             <Avatar className="h-9 w-9 shrink-0">
-              <span className="flex h-full w-full items-center justify-center rounded-full bg-sidebar-accent text-[11px] font-bold text-sidebar-highlight">
+              {avatarSrc === undefined ? null : (
+                <AvatarImage src={avatarSrc} alt="" data-testid="avatar-image" />
+              )}
+              <AvatarFallback className="bg-sidebar-accent text-[11px] font-bold text-sidebar-highlight">
                 {initialsOf(user?.name, user?.lastName)}
-              </span>
+              </AvatarFallback>
             </Avatar>
             <span className="flex min-w-0 flex-col gap-px">
               <span className="truncate text-[12.5px] font-medium leading-tight text-sidebar-foreground">
@@ -73,9 +78,12 @@ export function UserMenu({ variant = "icon", ariaLabel }: UserMenuProps = {}) {
             title={ariaLabel ?? t("shell.userMenu")}
           >
             <Avatar className="h-8 w-8">
-              <span className="flex h-full w-full items-center justify-center rounded-full bg-avatar text-[11px] font-bold text-accent-foreground">
+              {avatarSrc === undefined ? null : (
+                <AvatarImage src={avatarSrc} alt="" data-testid="avatar-image" />
+              )}
+              <AvatarFallback className="bg-avatar text-[11px] font-bold text-accent-foreground">
                 {initialsOf(user?.name, user?.lastName)}
-              </span>
+              </AvatarFallback>
             </Avatar>
           </Button>
         )}
