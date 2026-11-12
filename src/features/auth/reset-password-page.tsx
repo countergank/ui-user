@@ -106,9 +106,7 @@ export function ResetPasswordPage() {
               {t("reset.invalidTokenTitle")}
             </h1>
             <p role="alert" className="mt-2 text-sm text-muted-foreground">
-              {token === null || errorKey !== null
-                ? t("reset.errors.invalidToken")
-                : t("reset.errors.expiredToken")}
+              {t("reset.errors.invalidToken")}
             </p>
           </CardHeader>
           <CardContent>

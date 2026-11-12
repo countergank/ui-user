@@ -5,35 +5,27 @@ const PASSWORD_SPECIAL = /[^a-zA-Z0-9]/;
 const CONSECUTIVE_REPEAT = /(.)\1/;
 const COMMON_SEQUENCES = ["123", "abc", "qwe", "asd", "zxc"];
 
-const passwordLengthOk = (value: string) => value.length >= 8 && value.length <= 64;
-const passwordCharacterRules = [
-  (value: string) => PASSWORD_LOWER.test(value),
-  (value: string) => PASSWORD_UPPER.test(value),
-  (value: string) => PASSWORD_DIGIT.test(value),
-  (value: string) => PASSWORD_SPECIAL.test(value),
-  (value: string) => !CONSECUTIVE_REPEAT.test(value),
-  (value: string) => !COMMON_SEQUENCES.some((sequence) => value.toLowerCase().includes(sequence)),
-];
-
-export const passwordRuleChecks = [passwordLengthOk, ...passwordCharacterRules];
-
 export type PasswordStrength = "weak" | "medium" | "strong";
 
 export type PasswordRuleId = "length" | "lowercase" | "uppercase" | "digit" | "special" | "unique";
 
-const RULE_IDS: PasswordRuleId[] = [
-  "length",
-  "lowercase",
-  "uppercase",
-  "digit",
-  "special",
-  "unique",
+export const passwordRuleEntries: { id: PasswordRuleId; check: (value: string) => boolean }[] = [
+  { id: "length", check: (value) => value.length >= 8 && value.length <= 64 },
+  { id: "lowercase", check: (value) => PASSWORD_LOWER.test(value) },
+  { id: "uppercase", check: (value) => PASSWORD_UPPER.test(value) },
+  { id: "digit", check: (value) => PASSWORD_DIGIT.test(value) },
+  { id: "special", check: (value) => PASSWORD_SPECIAL.test(value) },
+  {
+    id: "unique",
+    check: (value) =>
+      !CONSECUTIVE_REPEAT.test(value) &&
+      !COMMON_SEQUENCES.some((sequence) => value.toLowerCase().includes(sequence)),
+  },
 ];
 
-export const passwordRuleEntries = RULE_IDS.map((id, index) => ({
-  id,
-  check: passwordRuleChecks[index],
-}));
+const LENGTH_RULE = passwordRuleEntries.find(({ id }) => id === "length")?.check;
+
+export const passwordRuleChecks = passwordRuleEntries.map(({ check }) => check);
 
 /**
  * @param value - the candidate password, evaluated against the same rule set the api-user
@@ -56,7 +48,7 @@ export function passwordStrength(value: string): PasswordStrength {
   if (satisfied === passwordRuleChecks.length) {
     return "strong";
   }
-  if (passwordLengthOk(value) && satisfied >= 4) {
+  if (LENGTH_RULE?.(value) && satisfied >= 4) {
     return "medium";
   }
   return "weak";

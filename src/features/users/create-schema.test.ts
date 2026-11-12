@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import { i18n } from "@/lib/i18n";
 
-import { createUserFormSchema, passwordStrength } from "./create-schema";
+import { passwordStrength } from "@/lib/password-rules";
+
+import { createUserFormSchema } from "./create-schema";
 
 const t = i18n.getFixedT(null, "users");
 

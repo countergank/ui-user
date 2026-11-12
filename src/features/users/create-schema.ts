@@ -1,20 +1,11 @@
 import type { TFunction } from "i18next";
 import { z } from "zod";
 
-import { passwordRuleChecks, passwordStrength } from "@/lib/password-rules";
+import { passwordRuleChecks } from "@/lib/password-rules";
 
 import { USER_ROLES } from "./types";
 
 const EMAIL_SHAPE = z.string().email();
-
-/**
- * @param value - the candidate password, evaluated against the same rule set the create-user
- * schema enforces.
- * @returns `strong` when every schema rule is satisfied, `medium` when the length rule holds and
- * at least four rules are satisfied, `weak` otherwise. The indicator and the schema can never
- * drift because both derive from `passwordRuleChecks`.
- */
-export { passwordStrength };
 
 /**
  * @param t - translator bound to the `users` namespace, so every rule failure carries the
