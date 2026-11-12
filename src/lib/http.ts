@@ -28,6 +28,14 @@ export interface HttpClient {
 const FALLBACK_CODE = "HTTP_ERROR";
 const NETWORK_CODE = "NETWORK_ERROR";
 
+function toRequestBody(body: unknown): BodyInit | undefined {
+  if (body === undefined) {
+    return undefined;
+  }
+
+  return body instanceof FormData ? body : JSON.stringify(body);
+}
+
 function buildUrl(baseUrl: string, path: string): string {
   return `${baseUrl.replace(/\/+$/, "")}/${path.replace(/^\/+/, "")}`;
 }
@@ -77,7 +85,8 @@ export function createHttpClient(deps: HttpClientDeps = {}): HttpClient {
     alreadyRetried: boolean,
   ): Promise<T> => {
     const headers = new Headers(options.headers);
-    if (options.body !== undefined) {
+    const body = toRequestBody(options.body);
+    if (body !== undefined && !(body instanceof FormData)) {
       headers.set("content-type", "application/json");
     }
 
@@ -96,7 +105,7 @@ export function createHttpClient(deps: HttpClientDeps = {}): HttpClient {
       response = await fetchImpl(buildUrl(baseUrl, path), {
         ...options,
         headers,
-        body: options.body === undefined ? undefined : JSON.stringify(options.body),
+        body,
       });
     } catch {
       throw new AppError("Network request failed", { code: NETWORK_CODE });

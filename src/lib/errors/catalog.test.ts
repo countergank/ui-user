@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { i18n } from "../i18n";
-import { UA_ERROR_CODES, resolveApiErrorKey, uaErrorKey } from "./catalog";
+import { UA_ERROR_CODES, isUaErrorCode, resolveApiErrorKey, uaErrorKey } from "./catalog";
 
 describe("UA-* error catalog", () => {
   it.each(
@@ -32,6 +32,11 @@ describe("UA-* error catalog", () => {
     for (const code of UA_ERROR_CODES) {
       expect(code).toMatch(/^UA-[A-Z]{3,4}-\d{3}$/);
     }
+  });
+
+  it("knows the profile photo codes", () => {
+    expect(isUaErrorCode("UA-USR-005")).toBe(true);
+    expect(isUaErrorCode("UA-USR-006")).toBe(true);
   });
 
   it("maps a known code to its exact key", () => {

@@ -70,6 +70,8 @@ export const en = {
         "UA-USR-002": "That user was already deleted.",
         "UA-USR-003": "The current password is incorrect.",
         "UA-USR-004": "That email is already registered.",
+        "UA-USR-005": "That file format is not supported. Use a JPG, PNG or WebP image.",
+        "UA-USR-006": "The file is too large. It must be 2 MB or less.",
         "UA-RBAC-001": "This role is assigned to one or more users and cannot be removed.",
         "UA-AUTH-001": "That email or username is already taken.",
         "UA-AUTH-002": "Incorrect email or password.",
@@ -737,6 +739,16 @@ export const en = {
     },
     success: {
       updated: "Profile updated.",
+    },
+    photo: {
+      title: "Upload profile photo",
+      description: "Your new photo appears wherever your avatar is shown.",
+      file: "Photo file",
+      hint: "JPG, PNG or WebP, up to 2 MB.",
+      selected: "Selected: {{name}}",
+      upload: "Upload photo",
+      uploading: "Uploading…",
+      success: "Profile photo updated.",
     },
     errors: {
       saveFailure: "The profile could not be saved. Try again.",

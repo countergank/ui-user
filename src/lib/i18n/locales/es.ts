@@ -88,6 +88,8 @@ export const es: {
         "UA-USR-002": "Ese usuario ya fue eliminado.",
         "UA-USR-003": "La contraseña actual es incorrecta.",
         "UA-USR-004": "Ese email ya está registrado.",
+        "UA-USR-005": "Ese formato de archivo no está permitido. Usa una imagen JPG, PNG o WebP.",
+        "UA-USR-006": "El archivo pesa demasiado. Debe pesar 2 MB o menos.",
         "UA-RBAC-001": "Este rol está asignado a uno o más usuarios y no puede eliminarse.",
         "UA-AUTH-001": "Ese email o nombre de usuario ya está en uso.",
         "UA-AUTH-002": "Email o contraseña incorrectos.",
@@ -757,6 +759,16 @@ export const es: {
     },
     success: {
       updated: "Perfil actualizado",
+    },
+    photo: {
+      title: "Cargar foto de perfil",
+      description: "Tu nueva foto aparece donde se muestre tu avatar.",
+      file: "Archivo de foto",
+      hint: "JPG, PNG o WebP, hasta 2 MB.",
+      selected: "Seleccionado: {{name}}",
+      upload: "Subir foto",
+      uploading: "Subiendo…",
+      success: "Foto de perfil actualizada.",
     },
     errors: {
       saveFailure: "No se pudo guardar el perfil. Intentá de nuevo.",
