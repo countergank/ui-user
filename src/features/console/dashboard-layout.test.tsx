@@ -48,10 +48,11 @@ const tUsers = i18n.getFixedT(null, "users");
 interface RenderOptions {
   permissions?: string[];
   sidebarOpen?: boolean;
+  avatarUrl?: string;
 }
 
 function renderShell(initialPath = "/app", options: RenderOptions = {}) {
-  const { permissions = ["*"], sidebarOpen = true } = options;
+  const { permissions = ["*"], sidebarOpen = true, avatarUrl } = options;
 
   sessionStore.getState().startSession({
     user: {
@@ -60,6 +61,7 @@ function renderShell(initialPath = "/app", options: RenderOptions = {}) {
       userName: "ada",
       name: "Ada",
       lastName: "Lovelace",
+      avatarUrl,
     },
     accessToken: "access-1",
     refreshToken: "refresh-1",
@@ -343,6 +345,24 @@ describe("DashboardLayout sidebar identity (S1)", () => {
 
     expect(block).toHaveTextContent("Ada Lovelace");
     expect(block).toHaveTextContent("admin");
+  });
+
+  it("shows the session photo in the sidebar and the topbar user buttons", () => {
+    renderShell("/app", { avatarUrl: "/uploads/avatars/u1/avatar.png" });
+
+    const images = screen.getAllByTestId("avatar-image");
+    expect(images).toHaveLength(2);
+    for (const image of images) {
+      expect(image).toHaveAttribute("src", "https://test.invalid/uploads/avatars/u1/avatar.png");
+    }
+  });
+
+  it("keeps the initials fallback without a photo", () => {
+    renderShell("/app");
+
+    expect(screen.queryAllByTestId("avatar-image")).toHaveLength(0);
+    const block = screen.getByRole("button", { name: tConsole("shell.userMenu") });
+    expect(block).toHaveTextContent("AL");
   });
 });
 

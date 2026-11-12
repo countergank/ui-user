@@ -13,6 +13,7 @@ export interface SessionUser {
   userName: string;
   name: string;
   lastName: string;
+  avatarUrl?: string | null;
 }
 
 export type SessionStatus = "anonymous" | "authenticated" | "expired";
@@ -27,7 +28,9 @@ export interface SessionState {
 export interface SessionActions {
   startSession: (auth: { user: SessionUser; accessToken: string; refreshToken: string }) => void;
   rotateTokens: (tokens: { accessToken: string; refreshToken: string }) => void;
-  updateSessionUser: (profile: { name: string; lastName: string }) => void;
+  updateSessionUser: (
+    profile: Partial<Pick<SessionUser, "name" | "lastName" | "avatarUrl">>,
+  ) => void;
   markExpired: () => void;
   clearSession: () => void;
 }
@@ -47,6 +50,7 @@ const sessionUserSchema = z.object({
   userName: z.string(),
   name: z.string(),
   lastName: z.string(),
+  avatarUrl: z.string().nullish(),
 });
 
 const persistedSessionSchema = z.object({
@@ -89,11 +93,7 @@ export const sessionStore = createStore<SessionStore>()(
         set({ accessToken, refreshToken });
       },
       updateSessionUser: (profile) => {
-        set((state) =>
-          state.user === null
-            ? state
-            : { user: { ...state.user, name: profile.name, lastName: profile.lastName } },
-        );
+        set((state) => (state.user === null ? state : { user: { ...state.user, ...profile } }));
       },
       markExpired: () => {
         set({ status: "expired", user: null, accessToken: null, refreshToken: null });

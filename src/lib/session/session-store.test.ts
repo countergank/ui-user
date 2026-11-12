@@ -150,4 +150,33 @@ describe("session store", () => {
     expect(migratePersistedSession({}, 0)).toBeUndefined();
     expect(migratePersistedSession(null, 3)).toBeUndefined();
   });
+
+  it("updates the session user avatar URL without touching the tokens", () => {
+    sessionStore.getState().startSession(AUTH);
+
+    sessionStore.getState().updateSessionUser({ avatarUrl: "https://cdn.example/avatar.png" });
+
+    const state = sessionStore.getState();
+    expect(state.user?.avatarUrl).toBe("https://cdn.example/avatar.png");
+    expect(state.user?.name).toBe("Ada");
+    expect(state.accessToken).toBe("access-1");
+  });
+
+  it("keeps a persisted payload that carries an avatar URL", () => {
+    const migrated = migratePersistedSession(
+      { ...AUTH, user: { ...AUTH.user, avatarUrl: "https://cdn.example/avatar.png" } },
+      1,
+    );
+
+    expect(migrated?.user?.avatarUrl).toBe("https://cdn.example/avatar.png");
+  });
+
+  it("can clear the session avatar back to null", () => {
+    sessionStore.getState().startSession(AUTH);
+
+    sessionStore.getState().updateSessionUser({ avatarUrl: "https://cdn.example/avatar.png" });
+    sessionStore.getState().updateSessionUser({ avatarUrl: null });
+
+    expect(sessionStore.getState().user?.avatarUrl).toBeNull();
+  });
 });
