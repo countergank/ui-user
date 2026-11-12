@@ -4,7 +4,9 @@ import type { Control } from "react-hook-form";
 
 import { cn } from "@/lib/utils";
 
-import { type CreateUserInput, passwordStrength } from "./create-schema";
+import { passwordStrength } from "@/lib/password-rules";
+
+import type { CreateUserInput } from "./create-schema";
 
 const STRENGTH_BANDS = ["weak", "medium", "strong"] as const;
 

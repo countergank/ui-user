@@ -347,6 +347,33 @@ export const en = {
         emailInvalid: "Enter a valid email address.",
       },
     },
+    reset: {
+      title: "Reset password",
+      subtitle: "Choose a new password for your account.",
+      fields: {
+        password: "New password",
+        confirm: "Confirm password",
+      },
+      passwordRules: {
+        label: "The password must:",
+        length: "Be between 8 and 64 characters",
+        lowercase: "Contain at least one lowercase letter",
+        uppercase: "Contain at least one uppercase letter",
+        digit: "Contain at least one digit",
+        special: "Contain at least one special character",
+        unique: "Avoid consecutive repeated characters and common sequences",
+      },
+      submit: "Reset password",
+      success: "Your password has been reset. You can now sign in with the new one.",
+      backToLogin: "Go to sign in",
+      requestNewLink: "Request a new link",
+      invalidTokenTitle: "Invalid link",
+      errors: {
+        invalidToken: "The password reset link is invalid or has already expired.",
+        expiredToken: "The password reset link has expired. Request a new one.",
+        mismatch: "The passwords do not match.",
+      },
+    },
   },
   console: {
     nav: {

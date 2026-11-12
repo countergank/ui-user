@@ -19,3 +19,10 @@ export function requestPasswordReset(email: string): Promise<unknown> {
     body: { email },
   });
 }
+
+export function resetPassword(token: string, newPassword: string): Promise<unknown> {
+  return httpClient.request<unknown>("/auth/reset-password", {
+    method: "POST",
+    body: { token, newPassword },
+  });
+}
