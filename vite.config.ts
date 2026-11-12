@@ -23,6 +23,7 @@ export default defineConfig(({ mode }) => {
         "/admin": { target: apiTarget, changeOrigin: true },
         "/auth": { target: apiTarget, changeOrigin: true },
         "/email": { target: apiTarget, changeOrigin: true },
+        "/uploads": { target: apiTarget, changeOrigin: true },
         "/users": { target: apiTarget, changeOrigin: true },
         "/roles": { target: apiTarget, changeOrigin: true },
         "/permissions": { target: apiTarget, changeOrigin: true },
