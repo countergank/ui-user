@@ -374,9 +374,7 @@ describe("user detail — loaded user", () => {
     const { container } = renderPage();
     const user = userEvent.setup();
     await screen.findByText("Ada Lovelace");
-    expect(container.querySelector("img")?.getAttribute("src")).toBe(
-      "https://cdn.example/ada.png",
-    );
+    expect(container.querySelector("img")?.getAttribute("src")).toBe("https://cdn.example/ada.png");
 
     await user.click(
       screen.getByRole("button", {
