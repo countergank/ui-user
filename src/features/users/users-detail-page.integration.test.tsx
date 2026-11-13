@@ -79,10 +79,32 @@ const ADMIN_PROFILE = {
   permissions: ["*"],
 };
 
+const RealImage = window.Image;
+
+class LoadedAvatarImage {
+  complete = false;
+  naturalWidth = 0;
+  #listeners = new Set<(event: unknown) => void>();
+
+  addEventListener(_type: string, listener: (event: unknown) => void): void {
+    this.#listeners.add(listener);
+  }
+
+  removeEventListener(_type: string, listener: (event: unknown) => void): void {
+    this.#listeners.delete(listener);
+  }
+
+  set src(_value: string) {
+    this.complete = true;
+    this.naturalWidth = 64;
+  }
+}
+
 const server = setupServer(http.get(USER_URL, () => HttpResponse.json(USER)));
 
 beforeAll(() => {
   server.listen({ onUnhandledFrame: "error" });
+  window.Image = LoadedAvatarImage as unknown as typeof Image;
 });
 
 beforeEach(() => {
@@ -108,6 +130,7 @@ afterEach(() => {
 
 afterAll(() => {
   server.close();
+  window.Image = RealImage;
 });
 
 function renderPage() {
@@ -197,6 +220,26 @@ describe("user detail — loaded user", () => {
     expect(await screen.findByText(formatDateTime("2024-06-03T10:00:00.000Z"))).toBeInTheDocument();
     expect(screen.getByText("4")).toBeInTheDocument();
     expect(screen.getByText(tUsers("detail.status.inactive"))).toBeInTheDocument();
+  });
+
+  it("shows the header initials when the user has no photo (113 S3)", async () => {
+    const { container } = renderPage();
+    await screen.findByText("Ada Lovelace");
+
+    expect(container.querySelector("img")).toBeNull();
+    expect(screen.getByText("AL")).toBeInTheDocument();
+  });
+
+  it("renders the user photo in the header avatar when one exists (113 S3)", async () => {
+    server.use(
+      http.get(USER_URL, () =>
+        HttpResponse.json({ ...USER, avatarUrl: "https://cdn.example/ada.png" }),
+      ),
+    );
+    const { container } = renderPage();
+    await screen.findByText("Ada Lovelace");
+
+    expect(container.querySelector("img")?.getAttribute("src")).toBe("https://cdn.example/ada.png");
   });
 
   it("renders the account status states from the user fields", async () => {
@@ -306,6 +349,48 @@ describe("user detail — loaded user", () => {
     expect(patchBodyText).toBe("");
     await waitFor(() => {
       expect(client.getQueryData(userQueryKey("u1"))).toMatchObject({ isActive: false });
+    });
+  });
+
+  it("keeps the photo after the toggle active echo omits avatarUrl (113 S3)", async () => {
+    sessionStore.setState(initialSessionState);
+    sessionStore.getState().startSession({
+      user: {
+        id: "admin-9",
+        email: "root@example.com",
+        userName: "root",
+        name: "Root",
+        lastName: "Admin",
+      },
+      accessToken: "access-1",
+      refreshToken: "refresh-1",
+    });
+    server.use(
+      http.get(USER_URL, () =>
+        HttpResponse.json({ ...USER, avatarUrl: "https://cdn.example/ada.png" }),
+      ),
+      http.patch(USER_ACTIVE_URL, () => HttpResponse.json({ ...USER, isActive: false })),
+    );
+    const { container } = renderPage();
+    const user = userEvent.setup();
+    await screen.findByText("Ada Lovelace");
+    expect(container.querySelector("img")?.getAttribute("src")).toBe(
+      "https://cdn.example/ada.png",
+    );
+
+    await user.click(
+      screen.getByRole("button", {
+        name: new RegExp(`^${escapeRegExp(tUsers("detail.adminActions.deactivate"))}`),
+      }),
+    );
+    const dialog = screen.getByRole("alertdialog");
+    await user.click(within(dialog).getByRole("button", { name: tUsers("active.deactivate") }));
+
+    expect(await screen.findByText(tUsers("active.success"))).toBeInTheDocument();
+    await waitFor(() => {
+      expect(container.querySelector("img")?.getAttribute("src")).toBe(
+        "https://cdn.example/ada.png",
+      );
     });
   });
 
