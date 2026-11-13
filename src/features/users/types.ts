@@ -9,6 +9,7 @@ export const userSchema = z.object({
   lastName: z.string(),
   email: z.string(),
   userName: z.string(),
+  avatarUrl: z.string().nullish(),
   role: z.string(),
   createdAt: z.string(),
   updatedAt: z.string(),

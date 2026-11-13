@@ -28,6 +28,7 @@ const USERS = [
     lastName: "Lovelace",
     email: "ada@example.com",
     userName: "ada",
+    avatarUrl: "https://cdn.example/ada.png",
     role: "admin",
     createdAt: "2024-05-01T10:00:00.000Z",
     updatedAt: "2024-05-02T10:00:00.000Z",
@@ -60,6 +61,7 @@ const USERS = [
     lastName: "Turing",
     email: "alan@example.com",
     userName: "alan",
+    avatarUrl: "uploads/avatars/alan.png",
     role: "user",
     createdAt: "2024-05-04T10:00:00.000Z",
     updatedAt: "2024-05-04T10:00:00.000Z",
@@ -73,6 +75,27 @@ const USERS = [
 ];
 
 const PAGE = { data: USERS, total: 3, page: 1, limit: 20, totalPages: 1 };
+
+const RealImage = window.Image;
+
+class LoadedAvatarImage {
+  complete = false;
+  naturalWidth = 0;
+  #listeners = new Set<(event: unknown) => void>();
+
+  addEventListener(_type: string, listener: (event: unknown) => void): void {
+    this.#listeners.add(listener);
+  }
+
+  removeEventListener(_type: string, listener: (event: unknown) => void): void {
+    this.#listeners.delete(listener);
+  }
+
+  set src(_value: string) {
+    this.complete = true;
+    this.naturalWidth = 64;
+  }
+}
 
 const ADMIN_PROFILE = {
   id: "u1",
@@ -97,6 +120,7 @@ const server = setupServer(
 
 beforeAll(() => {
   server.listen({ onUnhandledFrame: "error" });
+  window.Image = LoadedAvatarImage as unknown as typeof Image;
   Element.prototype.hasPointerCapture = () => false;
   Element.prototype.setPointerCapture = vi.fn();
   Element.prototype.releasePointerCapture = vi.fn();
@@ -112,6 +136,7 @@ afterEach(() => {
 
 afterAll(() => {
   server.close();
+  window.Image = RealImage;
   (Element.prototype as Partial<Element>).hasPointerCapture = undefined;
   (Element.prototype as Partial<Element>).setPointerCapture = undefined;
   (Element.prototype as Partial<Element>).releasePointerCapture = undefined;
@@ -231,6 +256,21 @@ describe("users page — MSW", () => {
     expect(await screen.findByRole("option", { name: "user" })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "viewer" })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: tUsers("list.filters.roles") })).toBeInTheDocument();
+  });
+
+  it("shows the user photo in the column when one exists and initials otherwise (113 S1, S2)", async () => {
+    renderPage();
+    await expectRows();
+
+    const adaImg = rowOf("Ada Lovelace").querySelector("img");
+    expect(adaImg?.getAttribute("src")).toBe("https://cdn.example/ada.png");
+
+    const alanImg = rowOf("Alan Turing").querySelector("img");
+    expect(alanImg?.getAttribute("src")).toMatch(/\/+uploads\/avatars\/alan\.png$/);
+
+    const graceRow = rowOf("Grace Hopper");
+    expect(graceRow.querySelector("img")).toBeNull();
+    expect(within(graceRow).getByText("GH")).toBeInTheDocument();
   });
 
   it("paints consecutive avatars with different palette tones", async () => {

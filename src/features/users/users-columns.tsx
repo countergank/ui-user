@@ -1,8 +1,10 @@
 import type { DataTableColumn } from "@/components/data-list/data-table";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Can } from "@/features/authorization/components/can";
 import { PERMISSIONS } from "@/features/authorization/permissions";
+import { avatarSrcOf } from "@/lib/avatar";
 import { Eye, LockOpen, Pencil, Power, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -27,21 +29,26 @@ export function useUsersColumns(
     {
       key: "user",
       header: upper(t("list.columns.user")),
-      cell: (user) => (
-        <div className="flex items-center gap-2.5">
-          <span
-            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${avatarToneOf()}`}
-          >
-            {initialsOf(user.name, user.lastName)}
-          </span>
-          <span className="flex min-w-0 flex-col">
-            <span className="truncate text-sm font-medium">
-              {user.name} {user.lastName}
+      cell: (user) => {
+        const avatarSrc = avatarSrcOf(user.avatarUrl);
+
+        return (
+          <div className="flex items-center gap-2.5">
+            <Avatar size="sm" className={avatarToneOf()}>
+              {avatarSrc === undefined ? null : <AvatarImage src={avatarSrc} alt="" />}
+              <AvatarFallback className="bg-transparent text-[11px] font-bold text-inherit">
+                {initialsOf(user.name, user.lastName)}
+              </AvatarFallback>
+            </Avatar>
+            <span className="flex min-w-0 flex-col">
+              <span className="truncate text-sm font-medium">
+                {user.name} {user.lastName}
+              </span>
+              <span className="truncate text-xs text-muted-foreground">{user.email}</span>
             </span>
-            <span className="truncate text-xs text-muted-foreground">{user.email}</span>
-          </span>
-        </div>
-      ),
+          </div>
+        );
+      },
       sortKey: "name",
     },
     {

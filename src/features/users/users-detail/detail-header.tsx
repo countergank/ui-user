@@ -2,10 +2,11 @@ import { MoreHorizontal } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Can } from "@/features/authorization/components/can";
 import { PERMISSIONS } from "@/features/authorization/permissions";
+import { avatarSrcOf } from "@/lib/avatar";
 import { cn } from "@/lib/utils";
 
 import type { UserDTO } from "../types";
@@ -18,12 +19,14 @@ interface DetailHeaderProps {
 export function DetailHeader({ user }: DetailHeaderProps) {
   const { t } = useTranslation("users");
   const editPath = `/app/users/${encodeURIComponent(user.id)}/edit`;
+  const avatarSrc = avatarSrcOf(user.avatarUrl);
 
   return (
     <section className="flex flex-col gap-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex min-w-0 items-center gap-4">
           <Avatar size="lg" className="h-14 w-14">
+            {avatarSrc === undefined ? null : <AvatarImage src={avatarSrc} alt="" />}
             <AvatarFallback className="bg-primary font-mono text-base font-bold text-primary-foreground">
               {initialsOf(user.name, user.lastName)}
             </AvatarFallback>
