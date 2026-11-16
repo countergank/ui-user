@@ -91,3 +91,8 @@ Nota de slicing: el ciclo de corrección de contrato (L5) llegó con T1–T4 ya
   (12 archivos, 734 inserciones). Issue #116 creado por el 404 del link de
   confirmación y la discrepancia de ruta (`/confirm-email` vs
   `/confirm-email-change`), board Todo, Estimate 2.
+- L10 (usuario, verbatim): «si despues del commit y push aparecen hallazgos de reviews,
+  se revisa que se corrige de todo lo que surja y lo corregimos aca, no en otra rama
+  ni va a backlog ok?» → acuerdo: los hallazgos de review del PR #117 se corrigen en
+  esta misma rama `feature/57-solicitud-cambio-email`; nada va a backlog ni a otra
+  rama. PR #117 abierto a develop, board #57 In Review.
