@@ -376,6 +376,16 @@ export const en = {
         mismatch: "The passwords do not match.",
       },
     },
+    emailChange: {
+      title: "Confirm email change",
+      success:
+        "Your email has been changed. All your sessions were signed out; sign in with the new address.",
+      goToLogin: "Go to sign in",
+      invalidTokenTitle: "Invalid link",
+      errors: {
+        invalidToken: "The email confirmation link is invalid or has already expired.",
+      },
+    },
   },
   console: {
     nav: {

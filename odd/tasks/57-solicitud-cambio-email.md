@@ -102,3 +102,5 @@ Nota de slicing: el ciclo de corrección de contrato (L5) llegó con T1–T4 ya
   el timer disparaba post-teardown → `ReferenceError: window is not defined`.
   Carrera latente preexistente. Fix en `main.test.tsx` (settle de 120 ms dentro de
   `act`), verificado con 8/8 suites limpias. Commit a17de40.
+- L12 (usuario): «mergeado cerramos» → PR #117 mergeado a develop (2026-11-16),
+  issue #57 cerrado, board #57 Done. Feature cerrada.

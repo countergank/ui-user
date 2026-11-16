@@ -43,6 +43,11 @@ export const router = createBrowserRouter([
     errorElement: <RouteErrorBoundary />,
   },
   {
+    path: "/confirm-email",
+    lazy: () => import("./confirm-email-route"),
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
     ...consoleRoute,
     path: "/app",
     children: [
