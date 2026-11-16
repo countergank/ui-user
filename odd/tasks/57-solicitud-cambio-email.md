@@ -34,19 +34,25 @@ email vía `POST /users/change-email`.
 ## Tasks
 
 - T1 (S1,S4,S9) `src/features/profile/api.ts`: `requestEmailChange` POST
-  `/users/change-email` + test. ✔ (sin commit aún)
-- T2 (S8,S9) claves `profile.email.*` en `en.ts`/`es.ts`/`pt.ts` (paridad CI). ✔ (sin commit aún)
+  `/users/change-email` + test. ✔ commit: bae3415
+- T2 (S8,S9) claves `profile.email.*` en `en.ts`/`es.ts`/`pt.ts` (paridad CI). ✔ commit: bae3415
 - T3 (S3,S5,S7,S9) `email-change-card.tsx` + `email-change-errors.ts` +
-  `useRequestEmailChange` + test integración MSW/axe (6/6). ✔ (sin commit aún)
+  `useRequestEmailChange` + test integración MSW/axe (6/6). ✔ commit: bae3415
 - T4 (S3) montar la Card como segunda sección en `profile-page.tsx` + handler MSW +
-  aserción de página. ✔ (sin commit aún)
+  aserción de página. ✔ commit: bae3415
 - T5 (S1,S2,S9) `api.ts`: `requestEmailChangeCode` POST `/users/change-email/code` y
-  `requestEmailChange(email, code)` con cuerpo `{email, code}` + tests.
-- T6 (S8,S9) claves nuevas `profile.email.actions.sendCode`, `codeSent`,
-  `fields.code`, `errors.codeInvalid`, `errors.sameEmail`, `errors.sendCodeFailure`.
-- T7 (S2,S4,S9) Card a dos pasos (enviar código → email + código), errores de campo
-  `UA-COM-004` y `UA-AUTH-010`, validación mismo-email client-side + tests.
-- T8 (S3) `profile-page.tsx` pasa el email actual a la Card.
+  `requestEmailChange(email, code)` con cuerpo `{email, code}` + tests. ✔ commit: bae3415
+- T6 (S8,S9) claves nuevas `profile.email.fields.code`, `fields.codeHint`,
+  `actions.sendCode/sendingCode/resendCode`, `codeSent`, `errors.sameEmail`,
+  `errors.codeInvalid`, `errors.sendCodeFailure`. ✔ commit: bae3415
+- T7 (S2,S4,S9) Card a dos pasos (enviar código → email + código), mapper ampliado
+  (UA-COM-004→newEmail, UA-AUTH-010→code), mismo-email client-side + tests (8/8). ✔ commit: bae3415
+- T8 (S3) `profile-page.tsx` pasa el email actual a la Card. ✔ commit: bae3415
+
+Nota de slicing: el ciclo de corrección de contrato (L5) llegó con T1–T4 ya
+  terminados; al reimplementar la Card para el flujo real el conjunto quedó en un
+  solo commit de ~737 líneas porque reescribió los mismos archivos. El slice ya está
+  entregado; el próximo trabajo (issue #116) abre feature document nueva.
 
 ## Log
 
@@ -77,3 +83,11 @@ email vía `POST /users/change-email`.
   del boton de reenviar codigo» → campo `code` siempre visible (disabled hasta enviar
   el código, habilitado después) y botón enviar/reenviar código a `h-10 px-4`
   (altura del input). Tests ajustados (38/38 del feature, lint y typecheck OK).
+- L8 alineación vertical del ícono en los Alerts de éxito/código enviado: fila flex
+  `items-center` + `size-4` (el posicionamiento absoluto del Alert descentraba la
+  descripción sola). Tests 8/8, typecheck OK.
+- L9 (usuario): «ok vamos con esto» → commit autorizado: bae3415
+  `feat(profile): add the two-step email change request section (#57)`
+  (12 archivos, 734 inserciones). Issue #116 creado por el 404 del link de
+  confirmación y la discrepancia de ruta (`/confirm-email` vs
+  `/confirm-email-change`), board Todo, Estimate 2.
