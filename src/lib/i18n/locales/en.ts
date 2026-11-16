@@ -740,6 +740,32 @@ export const en = {
     success: {
       updated: "Profile updated.",
     },
+    email: {
+      title: "Change email",
+      description:
+        "The change only takes effect after you confirm it from the email we send to the new address.",
+      fields: {
+        newEmail: "New email",
+        code: "Code",
+        codeHint: "6-digit code sent to your current email address.",
+      },
+      actions: {
+        sendCode: "Send code",
+        sendingCode: "Sending code…",
+        resendCode: "Resend code",
+      },
+      codeSent:
+        "We sent a code to your current email address. Enter it below to confirm the change.",
+      submit: "Send confirmation",
+      successPending: "We sent a confirmation email. Check your inbox to complete the change.",
+      errors: {
+        invalid: "Enter a valid email address.",
+        taken: "This email is already in use.",
+        sameEmail: "This is already your email address. Enter a different one.",
+        codeInvalid: "The code is invalid or expired. Request a new one.",
+        sendCodeFailure: "The code could not be sent. Try again.",
+      },
+    },
     photo: {
       title: "Upload profile photo",
       description: "Your new photo appears wherever your avatar is shown.",

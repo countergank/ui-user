@@ -759,6 +759,33 @@ export const pt: {
     success: {
       updated: "Perfil atualizado",
     },
+    email: {
+      title: "Alterar e-mail",
+      description:
+        "A alteração só surte efeito quando você a confirma pelo e-mail que enviamos ao novo endereço.",
+      fields: {
+        newEmail: "Novo e-mail",
+        code: "Código",
+        codeHint: "Código de 6 dígitos enviado ao seu e-mail atual.",
+      },
+      actions: {
+        sendCode: "Enviar código",
+        sendingCode: "Enviando código…",
+        resendCode: "Reenviar código",
+      },
+      codeSent:
+        "Enviamos um código ao seu e-mail atual. Digite-o abaixo para confirmar a alteração.",
+      submit: "Enviar confirmação",
+      successPending:
+        "Enviamos um e-mail de confirmação. Verifique sua caixa de entrada para concluir a alteração.",
+      errors: {
+        invalid: "Informe um e-mail válido.",
+        taken: "Este e-mail já está em uso.",
+        sameEmail: "Este já é o seu e-mail. Informe um diferente.",
+        codeInvalid: "O código é inválido ou expirou. Solicite um novo.",
+        sendCodeFailure: "Não foi possível enviar o código. Tente novamente.",
+      },
+    },
     photo: {
       title: "Enviar foto de perfil",
       description: "Sua nova foto aparece onde seu avatar for exibido.",

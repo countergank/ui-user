@@ -4,6 +4,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
+import { EmailChangeCard } from "./email-change-card";
 import { useProfile } from "./hooks/use-profile";
 import { ProfileAvatar } from "./profile-avatar";
 import { ProfileForm } from "./profile-form";
@@ -55,6 +56,7 @@ export function ProfilePage() {
           ) : null}
         </CardContent>
       </Card>
+      <EmailChangeCard currentEmail={profile.data?.email ?? ""} />
     </div>
   );
 }

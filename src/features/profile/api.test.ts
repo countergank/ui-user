@@ -4,7 +4,7 @@ import { AppError } from "@/lib/errors";
 
 import { httpClient } from "@/lib/session/session";
 
-import { uploadProfilePhoto } from "./api";
+import { requestEmailChange, requestEmailChangeCode, uploadProfilePhoto } from "./api";
 
 const PHOTO_URL = "/users/profile/photo";
 
@@ -17,6 +17,36 @@ beforeEach(() => {
 function photoFile(bytes: number, type = "image/png"): File {
   return new File([new Uint8Array(bytes)], "me.png", { type });
 }
+
+describe("requestEmailChangeCode", () => {
+  it("posts on /users/change-email/code and resolves on 200", async () => {
+    requestSpy.mockResolvedValue({ message: "code sent" });
+
+    await requestEmailChangeCode();
+
+    expect(requestSpy).toHaveBeenCalledTimes(1);
+    const [path, options] = requestSpy.mock.calls[0] as [string, { method?: string }];
+    expect(path).toBe("/users/change-email/code");
+    expect(options.method).toBe("POST");
+  });
+});
+
+describe("requestEmailChange", () => {
+  it("posts the new email and the identity code on /users/change-email and resolves on 200", async () => {
+    requestSpy.mockResolvedValue({});
+
+    await requestEmailChange("nueva@countergank.com", "123456");
+
+    expect(requestSpy).toHaveBeenCalledTimes(1);
+    const [path, options] = requestSpy.mock.calls[0] as [
+      string,
+      { method?: string; body?: unknown },
+    ];
+    expect(path).toBe("/users/change-email");
+    expect(options.method).toBe("POST");
+    expect(options.body).toEqual({ email: "nueva@countergank.com", code: "123456" });
+  });
+});
 
 describe("uploadProfilePhoto", () => {
   it("posts the file as multipart form data on /users/profile/photo and returns the served avatar URL", async () => {
