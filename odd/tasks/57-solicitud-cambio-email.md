@@ -96,3 +96,9 @@ Nota de slicing: el ciclo de corrección de contrato (L5) llegó con T1–T4 ya
   ni va a backlog ok?» → acuerdo: los hallazgos de review del PR #117 se corrigen en
   esta misma rama `feature/57-solicitud-cambio-email`; nada va a backlog ni a otra
   rama. PR #117 abierto a develop, board #57 In Review.
+- L11 (usuario): «fijate que fallaron los checks, hay que corregirlos aca» →
+  quality-gates falló por unhandled error: `RouteAnnouncer` agenda
+  `setTimeout(…, 100)` al montar y `main.test.tsx` terminaba antes sin desmontar;
+  el timer disparaba post-teardown → `ReferenceError: window is not defined`.
+  Carrera latente preexistente. Fix en `main.test.tsx` (settle de 120 ms dentro de
+  `act`), verificado con 8/8 suites limpias. Commit a17de40.
