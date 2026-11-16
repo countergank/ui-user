@@ -35,6 +35,31 @@ export async function updateProfile(payload: UpdateProfilePayload): Promise<Prof
   return profileSchema.parse(raw);
 }
 
+/**
+ * Requests the 6-digit identity code sent to the current email address. The code
+ * proves the user keeps control of the current address and is required by
+ * `requestEmailChange`; it never travels in the HTTP response, only by email.
+ */
+export async function requestEmailChangeCode(): Promise<void> {
+  await httpClient.request<unknown>("/users/change-email/code", {
+    method: "POST",
+  });
+}
+
+/**
+ * @param email - the new address; the change only takes effect after the user confirms
+ * it from the email sent to that address (U15).
+ * @param code - the 6-digit identity code previously delivered to the current email
+ * address by `requestEmailChangeCode`; a wrong or expired code fails as
+ * `UA-AUTH-010` before the new email is even checked for duplicates.
+ */
+export async function requestEmailChange(email: string, code: string): Promise<void> {
+  await httpClient.request<unknown>("/users/change-email", {
+    method: "POST",
+    body: { email, code },
+  });
+}
+
 export const PROFILE_PHOTO_URL = "/users/profile/photo";
 
 const PROFILE_PHOTO_MAX_BYTES = 2 * 1024 * 1024;

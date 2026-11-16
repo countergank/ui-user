@@ -20,6 +20,7 @@ import { ProfilePage } from "./profile-page";
 
 const PROFILE_URL = "https://test.invalid/users/profile";
 const PHOTO_URL = "https://test.invalid/users/profile/photo";
+const CHANGE_EMAIL_URL = "https://test.invalid/users/change-email";
 
 const t = i18n.getFixedT(null, "profile");
 const tCommon = i18n.getFixedT(null, "common");
@@ -47,6 +48,7 @@ const server = setupServer(
 
     return HttpResponse.json({ avatarUrl: "https://cdn.example/u1/avatar.png" });
   }),
+  http.post(CHANGE_EMAIL_URL, () => new HttpResponse(null, { status: 200 })),
 );
 
 beforeAll(() => {
@@ -110,12 +112,14 @@ async function waitForPrefill() {
 }
 
 describe("profile page — prefill", () => {
-  it("renders the page header and the card title", async () => {
+  it("renders the page header, the card title and the change-email section", async () => {
     renderPage();
     await waitForPrefill();
 
     expect(screen.getByRole("heading", { level: 1, name: t("view.heading") })).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 2, name: t("view.title") })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 3, name: t("email.title") })).toBeInTheDocument();
+    expect(screen.getByText(t("email.description"))).toBeInTheDocument();
   });
 
   it("shows a loading status while the profile is in flight", async () => {

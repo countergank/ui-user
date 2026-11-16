@@ -3,7 +3,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { permissionsQueryKey } from "@/features/authorization/hooks/use-permissions";
 import { sessionStore } from "@/lib/session/session-store";
 
-import { fetchProfile, updateProfile, uploadProfilePhoto } from "../api";
+import {
+  fetchProfile,
+  requestEmailChange,
+  requestEmailChangeCode,
+  updateProfile,
+  uploadProfilePhoto,
+} from "../api";
 import type { UpdateProfilePayload } from "../api";
 import type { ProfileDTO } from "../types";
 
@@ -38,6 +44,29 @@ export function useUploadProfilePhoto() {
       void queryClient.invalidateQueries({ queryKey: PROFILE_QUERY_KEY });
       void queryClient.invalidateQueries({ queryKey: permissionsQueryKey });
     },
+  });
+}
+
+/**
+ * @returns The identity-code request mutation: asks the backend to email a 6-digit
+ * code to the current address. The code is required by the change request and never
+ * travels in the HTTP response.
+ */
+export function useRequestEmailChangeCode() {
+  return useMutation({
+    mutationFn: () => requestEmailChangeCode(),
+  });
+}
+
+/**
+ * @returns The change-email request mutation. The change itself only completes when the
+ * user confirms it from the email sent to the new address, so success here invalidates
+ * nothing: the profile keeps its current email until that confirmation lands.
+ */
+export function useRequestEmailChange() {
+  return useMutation({
+    mutationFn: ({ email, code }: { email: string; code: string }) =>
+      requestEmailChange(email, code),
   });
 }
 
