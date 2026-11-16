@@ -11,7 +11,9 @@ describe("main entry", () => {
     );
 
     await act(async () => {
-      await Promise.resolve();
+      await new Promise<void>((resolve) => {
+        setTimeout(resolve, 120);
+      });
     });
   }, 20_000);
 });
