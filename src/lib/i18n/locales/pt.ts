@@ -404,6 +404,19 @@ export const pt: {
         invalidToken: "O link de confirmação é inválido ou já expirou.",
       },
     },
+    emailRevert: {
+      title: "Reverter alteração de e-mail",
+      success:
+        "A alteração de e-mail foi revertida. Todas as suas sessões foram encerradas; entre com seu endereço anterior.",
+      goToLogin: "Ir para entrar",
+      invalidTokenTitle: "Link inválido",
+      windowExpiredTitle: "Janela de reversão expirada",
+      errors: {
+        invalidToken: "O link de reversão é inválido ou já foi usado.",
+        windowExpired:
+          "A janela de reversão de 72 horas expirou. A alteração de e-mail permanece; contate um administrador se precisar desfazê-la.",
+      },
+    },
   },
   console: {
     nav: {
