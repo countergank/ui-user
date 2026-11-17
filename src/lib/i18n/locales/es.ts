@@ -394,6 +394,16 @@ export const es: {
         mismatch: "Las contraseñas no coinciden.",
       },
     },
+    emailChange: {
+      title: "Confirmar cambio de correo electrónico",
+      success:
+        "Tu correo electrónico fue cambiado. Se cerraron todas tus sesiones; iniciá sesión con la nueva dirección.",
+      goToLogin: "Ir a iniciar sesión",
+      invalidTokenTitle: "Enlace inválido",
+      errors: {
+        invalidToken: "El enlace de confirmación es inválido o ya expiró.",
+      },
+    },
   },
   console: {
     nav: {

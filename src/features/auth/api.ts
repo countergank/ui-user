@@ -26,3 +26,15 @@ export function resetPassword(token: string, newPassword: string): Promise<unkno
     body: { token, newPassword },
   });
 }
+
+/**
+ * @param token - the confirmation token from the email link; applies the pending email
+ * change, invalidates every session of the account and opens the 72 h revert window.
+ * @returns Nothing meaningful; the change is complete when this resolves with 200.
+ */
+export function confirmEmailChange(token: string): Promise<unknown> {
+  return httpClient.request<unknown>("/auth/confirm-email-change", {
+    method: "POST",
+    body: { token },
+  });
+}

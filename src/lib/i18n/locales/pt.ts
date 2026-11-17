@@ -394,6 +394,16 @@ export const pt: {
         mismatch: "As senhas não coincidem.",
       },
     },
+    emailChange: {
+      title: "Confirmar alteração de e-mail",
+      success:
+        "Seu e-mail foi alterado. Todas as suas sessões foram encerradas; entre com o novo endereço.",
+      goToLogin: "Ir para entrar",
+      invalidTokenTitle: "Link inválido",
+      errors: {
+        invalidToken: "O link de confirmação é inválido ou já expirou.",
+      },
+    },
   },
   console: {
     nav: {

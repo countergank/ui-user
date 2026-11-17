@@ -20,6 +20,7 @@ describe("routes", () => {
       "/login",
       "/forgot-password",
       "/reset-password",
+      "/confirm-email",
       "/app",
       "/forbidden",
       "/profile",
