@@ -809,6 +809,31 @@ export const pt: {
         sendCodeFailure: "Não foi possível enviar o código. Tente novamente.",
       },
     },
+    password: {
+      title: "Alterar senha",
+      description: "Escolha uma nova senha para a sua conta.",
+      fields: {
+        current: "Senha atual",
+        new: "Nova senha",
+        confirm: "Confirmar senha",
+      },
+      rules: {
+        label: "A senha deve:",
+        length: "Ter entre 8 e 64 caracteres",
+        lowercase: "Ter pelo menos uma letra minúscula",
+        uppercase: "Ter pelo menos uma letra maiúscula",
+        digit: "Ter pelo menos um número",
+        special: "Ter pelo menos um caractere especial",
+        unique: "Evitar caracteres repetidos seguidos e sequências comuns",
+      },
+      submit: "Alterar senha",
+      success: "Senha alterada.",
+      errors: {
+        currentIncorrect: "A senha atual está incorreta.",
+        mismatch: "As senhas não coincidem.",
+        changeFailure: "Não foi possível alterar a senha. Tente novamente.",
+      },
+    },
     photo: {
       title: "Enviar foto de perfil",
       description: "Sua nova foto aparece onde seu avatar for exibido.",

@@ -789,6 +789,31 @@ export const en = {
         sendCodeFailure: "The code could not be sent. Try again.",
       },
     },
+    password: {
+      title: "Change password",
+      description: "Choose a new password for your account.",
+      fields: {
+        current: "Current password",
+        new: "New password",
+        confirm: "Confirm password",
+      },
+      rules: {
+        label: "The password must:",
+        length: "Be between 8 and 64 characters",
+        lowercase: "Contain at least one lowercase letter",
+        uppercase: "Contain at least one uppercase letter",
+        digit: "Contain at least one digit",
+        special: "Contain at least one special character",
+        unique: "Avoid consecutive repeated characters and common sequences",
+      },
+      submit: "Change password",
+      success: "Password updated.",
+      errors: {
+        currentIncorrect: "The current password is incorrect.",
+        mismatch: "The passwords do not match.",
+        changeFailure: "The password could not be changed. Try again.",
+      },
+    },
     photo: {
       title: "Upload profile photo",
       description: "Your new photo appears wherever your avatar is shown.",
