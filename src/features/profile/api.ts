@@ -60,6 +60,20 @@ export async function requestEmailChange(email: string, code: string): Promise<v
   });
 }
 
+/**
+ * @param currentPassword - the password the user signed in with, required by the backend
+ * to authorize the change.
+ * @param newPassword - the replacement password; the backend enforces the same rule set
+ * as `passwordRules`, so a client-side-valid password is also server-side-valid.
+ * @returns Nothing; the endpoint answers 200 with an empty body.
+ */
+export async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
+  await httpClient.request<unknown>("/users/change-password", {
+    method: "POST",
+    body: { currentPassword, newPassword },
+  });
+}
+
 export const PROFILE_PHOTO_URL = "/users/profile/photo";
 
 const PROFILE_PHOTO_MAX_BYTES = 2 * 1024 * 1024;

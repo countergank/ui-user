@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -137,7 +136,6 @@ export function ProfileForm({ profile }: { profile: ProfileDTO }) {
               readOnly
               disabled
             />
-            <Badge variant="secondary">{t("fields.readOnly")}</Badge>
           </div>
         </div>
 

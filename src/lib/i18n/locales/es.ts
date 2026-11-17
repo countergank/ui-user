@@ -810,6 +810,31 @@ export const es: {
         sendCodeFailure: "No se pudo enviar el código. Intentá de nuevo.",
       },
     },
+    password: {
+      title: "Cambiar contraseña",
+      description: "Elegí una nueva contraseña para tu cuenta.",
+      fields: {
+        current: "Contraseña actual",
+        new: "Nueva contraseña",
+        confirm: "Confirmar contraseña",
+      },
+      rules: {
+        label: "La contraseña debe:",
+        length: "Tener entre 8 y 64 caracteres",
+        lowercase: "Tener al menos una letra minúscula",
+        uppercase: "Tener al menos una letra mayúscula",
+        digit: "Tener al menos un número",
+        special: "Tener al menos un carácter especial",
+        unique: "No repetir caracteres seguidos ni usar secuencias comunes",
+      },
+      submit: "Cambiar contraseña",
+      success: "Contraseña actualizada.",
+      errors: {
+        currentIncorrect: "La contraseña actual es incorrecta.",
+        mismatch: "Las contraseñas no coinciden.",
+        changeFailure: "No se pudo cambiar la contraseña. Intentá de nuevo.",
+      },
+    },
     photo: {
       title: "Cargar foto de perfil",
       description: "Tu nueva foto aparece donde se muestre tu avatar.",

@@ -4,7 +4,12 @@ import { AppError } from "@/lib/errors";
 
 import { httpClient } from "@/lib/session/session";
 
-import { requestEmailChange, requestEmailChangeCode, uploadProfilePhoto } from "./api";
+import {
+  changePassword,
+  requestEmailChange,
+  requestEmailChangeCode,
+  uploadProfilePhoto,
+} from "./api";
 
 const PHOTO_URL = "/users/profile/photo";
 
@@ -45,6 +50,23 @@ describe("requestEmailChange", () => {
     expect(path).toBe("/users/change-email");
     expect(options.method).toBe("POST");
     expect(options.body).toEqual({ email: "nueva@countergank.com", code: "123456" });
+  });
+});
+
+describe("changePassword", () => {
+  it("posts the current and new passwords on /users/change-password and resolves on 200", async () => {
+    requestSpy.mockResolvedValue({});
+
+    await changePassword("ViejaS3gura!", "NuevaS3gura!");
+
+    expect(requestSpy).toHaveBeenCalledTimes(1);
+    const [path, options] = requestSpy.mock.calls[0] as [
+      string,
+      { method?: string; body?: unknown },
+    ];
+    expect(path).toBe("/users/change-password");
+    expect(options.method).toBe("POST");
+    expect(options.body).toEqual({ currentPassword: "ViejaS3gura!", newPassword: "NuevaS3gura!" });
   });
 });
 

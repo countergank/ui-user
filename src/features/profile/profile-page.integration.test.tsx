@@ -307,14 +307,13 @@ describe("profile page — save errors", () => {
 });
 
 describe("profile page — read-only email (S10)", () => {
-  it("renders the email as a read-only disabled field with the read-only pill", async () => {
+  it("renders the email as a read-only disabled field", async () => {
     renderPage();
     await waitForPrefill();
 
     const email = screen.getByLabelText(t("fields.email"));
     expect(email).toHaveAttribute("readonly");
     expect(email).toBeDisabled();
-    expect(screen.getByText(t("fields.readOnly"))).toBeInTheDocument();
   });
 });
 
