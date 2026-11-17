@@ -38,3 +38,15 @@ export function confirmEmailChange(token: string): Promise<unknown> {
     body: { token },
   });
 }
+
+/**
+ * @param token - the revert token from the notice that reaches the previous inbox;
+ * rolls the email change back inside the 72 h revert window.
+ * @returns Nothing meaningful; the change is reverted when this resolves with 200.
+ */
+export function revertEmailChange(token: string): Promise<unknown> {
+  return httpClient.request<unknown>("/auth/revert-email-change", {
+    method: "POST",
+    body: { token },
+  });
+}

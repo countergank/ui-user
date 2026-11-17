@@ -48,6 +48,11 @@ export const router = createBrowserRouter([
     errorElement: <RouteErrorBoundary />,
   },
   {
+    path: "/revert-email-change",
+    lazy: () => import("./revert-email-change-route"),
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
     ...consoleRoute,
     path: "/app",
     children: [

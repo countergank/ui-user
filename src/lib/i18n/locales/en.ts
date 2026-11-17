@@ -386,6 +386,19 @@ export const en = {
         invalidToken: "The email confirmation link is invalid or has already expired.",
       },
     },
+    emailRevert: {
+      title: "Revert email change",
+      success:
+        "Your email change was reverted. All your sessions were signed out; sign in with your previous address.",
+      goToLogin: "Go to sign in",
+      invalidTokenTitle: "Invalid link",
+      windowExpiredTitle: "Revert window expired",
+      errors: {
+        invalidToken: "The revert link is invalid or has already been used.",
+        windowExpired:
+          "The 72-hour revert window has expired. The email change stands; contact an administrator if you need it undone.",
+      },
+    },
   },
   console: {
     nav: {

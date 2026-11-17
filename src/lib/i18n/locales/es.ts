@@ -404,6 +404,19 @@ export const es: {
         invalidToken: "El enlace de confirmación es inválido o ya expiró.",
       },
     },
+    emailRevert: {
+      title: "Revertir cambio de correo electrónico",
+      success:
+        "El cambio de correo electrónico fue revertido. Se cerraron todas tus sesiones; iniciá sesión con tu dirección anterior.",
+      goToLogin: "Ir a iniciar sesión",
+      invalidTokenTitle: "Enlace inválido",
+      windowExpiredTitle: "Ventana de reversión expirada",
+      errors: {
+        invalidToken: "El enlace de reversión es inválido o ya fue usado.",
+        windowExpired:
+          "La ventana de reversión de 72 horas expiró. El cambio de correo electrónico se mantiene; contactá a un administrador si necesitás revertirlo.",
+      },
+    },
   },
   console: {
     nav: {
