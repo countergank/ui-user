@@ -7,6 +7,7 @@ export interface AuthResponse {
   user: SessionUser;
   accessToken: string;
   refreshToken: string;
+  sessionId?: string;
 }
 
 export interface SessionApi {
