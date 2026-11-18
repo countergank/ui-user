@@ -4,6 +4,7 @@ import {
   type EmailTranslationTree,
   type LandingTranslationTree,
   type ProfileTranslationTree,
+  type SessionsTranslationTree,
   type TranslationTree,
   type UsersTranslationTree,
   en,
@@ -25,6 +26,7 @@ export const namespaces = [
   "users",
   "email",
   "profile",
+  "sessions",
 ] as const;
 export type AppNamespace = (typeof namespaces)[number];
 
@@ -38,6 +40,7 @@ const bundles = { en, es, pt } satisfies Record<
     users: UsersTranslationTree;
     email: EmailTranslationTree;
     profile: ProfileTranslationTree;
+    sessions: SessionsTranslationTree;
   }
 >;
 

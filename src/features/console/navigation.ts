@@ -40,7 +40,6 @@ export const CONSOLE_NAV: readonly ConsoleNavItem[] = [
     to: "/app/sessions",
     labelKey: "nav.sessions",
     group: "management",
-    implemented: false,
   },
   {
     to: "/app/audit",
