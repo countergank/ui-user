@@ -35,8 +35,33 @@ let patchBody: unknown = null;
 let patchCount = 0;
 let photoCount = 0;
 
+const RealImage = window.Image;
+
+class LoadedAvatarImage {
+  complete = false;
+  naturalWidth = 0;
+  #listeners = new Set<(event: unknown) => void>();
+
+  addEventListener(_type: string, listener: (event: unknown) => void): void {
+    this.#listeners.add(listener);
+  }
+
+  removeEventListener(_type: string, listener: (event: unknown) => void): void {
+    this.#listeners.delete(listener);
+  }
+
+  set src(_value: string) {
+    this.complete = true;
+    this.naturalWidth = 64;
+  }
+}
+
 const server = setupServer(
-  http.get(PROFILE_URL, () => HttpResponse.json(PROFILE)),
+  http.get(PROFILE_URL, () =>
+    HttpResponse.json(
+      photoCount > 0 ? { ...PROFILE, avatarUrl: "https://cdn.example/u1/avatar.png" } : PROFILE,
+    ),
+  ),
   http.patch(PROFILE_URL, async ({ request }) => {
     patchCount += 1;
     patchBody = await request.json();
@@ -53,6 +78,7 @@ const server = setupServer(
 
 beforeAll(() => {
   server.listen({ onUnhandledFrame: "error" });
+  window.Image = LoadedAvatarImage as unknown as typeof Image;
 });
 
 beforeEach(() => {
@@ -82,6 +108,7 @@ afterEach(() => {
 
 afterAll(() => {
   server.close();
+  window.Image = RealImage;
 });
 
 function renderPage() {
@@ -330,6 +357,32 @@ describe("profile page — avatar (S15)", () => {
     const avatar = container.querySelector('[data-testid="profile-avatar"]');
     expect(avatar?.contains(editButton)).toBe(true);
   });
+
+  it("shows the profile photo, not the stale session one", async () => {
+    sessionStore.getState().updateSessionUser({ avatarUrl: "https://cdn.example/u1/stale.png" });
+    server.use(
+      http.get(PROFILE_URL, () =>
+        HttpResponse.json({ ...PROFILE, avatarUrl: "https://cdn.example/u1/fresh.png" }),
+      ),
+    );
+    renderPage();
+    await waitForPrefill();
+
+    expect(screen.getByTestId("profile-avatar-image")).toHaveAttribute(
+      "src",
+      "https://cdn.example/u1/fresh.png",
+    );
+  });
+
+  it("shows initials when the profile has no photo even if the session keeps a stale one", async () => {
+    sessionStore.getState().updateSessionUser({ avatarUrl: "https://cdn.example/u1/stale.png" });
+    server.use(http.get(PROFILE_URL, () => HttpResponse.json({ ...PROFILE, avatarUrl: null })));
+    renderPage();
+    await waitForPrefill();
+
+    expect(screen.queryByTestId("profile-avatar-image")).toBeNull();
+    expect(screen.getByText("MC")).toBeInTheDocument();
+  });
 });
 
 describe("profile page — profile photo", () => {
@@ -373,7 +426,10 @@ describe("profile page — profile photo", () => {
     expect(sessionStore.getState().user?.avatarUrl).toBe("https://cdn.example/u1/avatar.png");
     expect(sessionStore.getState().user?.name).toBe("Martina");
     expect(screen.getByText(t("photo.success"))).toBeInTheDocument();
-    expect(screen.getByText("MC")).toBeInTheDocument();
+    expect(screen.getByTestId("profile-avatar-image")).toHaveAttribute(
+      "src",
+      "https://cdn.example/u1/avatar.png",
+    );
     expect(photoCount).toBe(1);
   });
 

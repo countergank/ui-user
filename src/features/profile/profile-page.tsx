@@ -52,7 +52,7 @@ export function ProfilePage() {
             ) : null}
             {profile.data ? (
               <>
-                <ProfileAvatar />
+                <ProfileAvatar profile={profile.data} />
                 <ProfileForm profile={profile.data} />
               </>
             ) : null}

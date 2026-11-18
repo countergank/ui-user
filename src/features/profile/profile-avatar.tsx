@@ -4,9 +4,9 @@ import { useTranslation } from "react-i18next";
 
 import { Avatar, AvatarBadge, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { avatarSrcOf } from "@/lib/avatar";
-import { selectSessionUser, useSession } from "@/lib/session/session-store";
 
 import { ProfilePhotoDialog } from "./profile-photo-dialog";
+import type { ProfileDTO } from "./types";
 
 function initialsOf(name: string | undefined, lastName: string | undefined): string {
   const initials = `${name?.[0] ?? ""}${lastName?.[0] ?? ""}`.trim();
@@ -15,26 +15,26 @@ function initialsOf(name: string | undefined, lastName: string | undefined): str
 }
 
 /**
- * @returns The profile identity block: a 56px avatar showing the session photo when one exists
- * or the initials otherwise, with a pencil button that opens the photo upload dialog.
+ * @param profile - the freshly loaded profile from `GET /users/profile`.
+ * @returns The profile identity block: a 56px avatar showing the profile photo when one
+ * exists or the initials otherwise, with a pencil button that opens the photo upload dialog.
  */
-export function ProfileAvatar() {
+export function ProfileAvatar({ profile }: { profile: ProfileDTO }) {
   const { t } = useTranslation("profile");
-  const user = useSession(selectSessionUser);
   const [open, setOpen] = useState(false);
 
   return (
     <>
       <Avatar className="size-14" data-testid="profile-avatar">
-        {user?.avatarUrl === undefined || user.avatarUrl === null ? null : (
+        {profile.avatarUrl === undefined || profile.avatarUrl === null ? null : (
           <AvatarImage
-            src={avatarSrcOf(user.avatarUrl)}
+            src={avatarSrcOf(profile.avatarUrl)}
             alt=""
             data-testid="profile-avatar-image"
           />
         )}
         <AvatarFallback className="bg-primary text-[18px] font-bold text-primary-foreground">
-          {initialsOf(user?.name, user?.lastName)}
+          {initialsOf(profile.name, profile.lastName)}
         </AvatarFallback>
         <AvatarBadge className="size-5">
           <button
