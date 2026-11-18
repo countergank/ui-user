@@ -57,7 +57,11 @@ class LoadedAvatarImage {
 }
 
 const server = setupServer(
-  http.get(PROFILE_URL, () => HttpResponse.json(PROFILE)),
+  http.get(PROFILE_URL, () =>
+    HttpResponse.json(
+      photoCount > 0 ? { ...PROFILE, avatarUrl: "https://cdn.example/u1/avatar.png" } : PROFILE,
+    ),
+  ),
   http.patch(PROFILE_URL, async ({ request }) => {
     patchCount += 1;
     patchBody = await request.json();
@@ -74,6 +78,7 @@ const server = setupServer(
 
 beforeAll(() => {
   server.listen({ onUnhandledFrame: "error" });
+  window.Image = LoadedAvatarImage as unknown as typeof Image;
 });
 
 beforeEach(() => {
@@ -103,6 +108,7 @@ afterEach(() => {
 
 afterAll(() => {
   server.close();
+  window.Image = RealImage;
 });
 
 function renderPage() {
@@ -339,14 +345,6 @@ describe("profile page — read-only email (S10)", () => {
 });
 
 describe("profile page — avatar (S15)", () => {
-  beforeAll(() => {
-    window.Image = LoadedAvatarImage as unknown as typeof Image;
-  });
-
-  afterAll(() => {
-    window.Image = RealImage;
-  });
-
   it("shows the session initials with the edit-photo button", async () => {
     const { container } = renderPage();
     await waitForPrefill();
@@ -428,7 +426,10 @@ describe("profile page — profile photo", () => {
     expect(sessionStore.getState().user?.avatarUrl).toBe("https://cdn.example/u1/avatar.png");
     expect(sessionStore.getState().user?.name).toBe("Martina");
     expect(screen.getByText(t("photo.success"))).toBeInTheDocument();
-    expect(screen.getByText("MC")).toBeInTheDocument();
+    expect(screen.getByTestId("profile-avatar-image")).toHaveAttribute(
+      "src",
+      "https://cdn.example/u1/avatar.png",
+    );
     expect(photoCount).toBe(1);
   });
 
