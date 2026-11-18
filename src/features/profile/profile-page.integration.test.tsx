@@ -35,6 +35,27 @@ let patchBody: unknown = null;
 let patchCount = 0;
 let photoCount = 0;
 
+const RealImage = window.Image;
+
+class LoadedAvatarImage {
+  complete = false;
+  naturalWidth = 0;
+  #listeners = new Set<(event: unknown) => void>();
+
+  addEventListener(_type: string, listener: (event: unknown) => void): void {
+    this.#listeners.add(listener);
+  }
+
+  removeEventListener(_type: string, listener: (event: unknown) => void): void {
+    this.#listeners.delete(listener);
+  }
+
+  set src(_value: string) {
+    this.complete = true;
+    this.naturalWidth = 64;
+  }
+}
+
 const server = setupServer(
   http.get(PROFILE_URL, () => HttpResponse.json(PROFILE)),
   http.patch(PROFILE_URL, async ({ request }) => {
@@ -318,6 +339,14 @@ describe("profile page — read-only email (S10)", () => {
 });
 
 describe("profile page — avatar (S15)", () => {
+  beforeAll(() => {
+    window.Image = LoadedAvatarImage as unknown as typeof Image;
+  });
+
+  afterAll(() => {
+    window.Image = RealImage;
+  });
+
   it("shows the session initials with the edit-photo button", async () => {
     const { container } = renderPage();
     await waitForPrefill();
@@ -329,6 +358,32 @@ describe("profile page — avatar (S15)", () => {
 
     const avatar = container.querySelector('[data-testid="profile-avatar"]');
     expect(avatar?.contains(editButton)).toBe(true);
+  });
+
+  it("shows the profile photo, not the stale session one", async () => {
+    sessionStore.getState().updateSessionUser({ avatarUrl: "https://cdn.example/u1/stale.png" });
+    server.use(
+      http.get(PROFILE_URL, () =>
+        HttpResponse.json({ ...PROFILE, avatarUrl: "https://cdn.example/u1/fresh.png" }),
+      ),
+    );
+    renderPage();
+    await waitForPrefill();
+
+    expect(screen.getByTestId("profile-avatar-image")).toHaveAttribute(
+      "src",
+      "https://cdn.example/u1/fresh.png",
+    );
+  });
+
+  it("shows initials when the profile has no photo even if the session keeps a stale one", async () => {
+    sessionStore.getState().updateSessionUser({ avatarUrl: "https://cdn.example/u1/stale.png" });
+    server.use(http.get(PROFILE_URL, () => HttpResponse.json({ ...PROFILE, avatarUrl: null })));
+    renderPage();
+    await waitForPrefill();
+
+    expect(screen.queryByTestId("profile-avatar-image")).toBeNull();
+    expect(screen.getByText("MC")).toBeInTheDocument();
   });
 });
 
