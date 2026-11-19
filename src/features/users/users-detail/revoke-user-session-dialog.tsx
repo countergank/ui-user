@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
@@ -27,7 +28,8 @@ interface RevokeUserSessionDialogProps {
  * admin path.
  * @param session - the targeted session, or `null` while nothing is targeted.
  * @returns The `AlertDialog` confirmation for revoking one of the user's sessions from the
- * admin detail; confirming DELETEs it, toasts and closes on success only.
+ * admin detail; confirming DELETEs it, toasts and closes on success only, while a failure
+ * keeps the dialog open and announces the error inside it.
  */
 export function RevokeUserSessionDialog({
   userId,
@@ -37,12 +39,21 @@ export function RevokeUserSessionDialog({
 }: RevokeUserSessionDialogProps) {
   const { t } = useTranslation("users");
   const revoke = useRevokeUserSession();
+  const [error, setError] = useState(false);
+
+  const changeOpen = (next: boolean) => {
+    if (!next) {
+      setError(false);
+    }
+    onOpenChange(next);
+  };
 
   const confirm = () => {
     if (session === null || revoke.isPending) {
       return;
     }
 
+    setError(false);
     revoke.mutate(
       { id: userId, sessionId: session.id },
       {
@@ -51,7 +62,7 @@ export function RevokeUserSessionDialog({
           toast.success(t("detail.sessions.success.revoked"));
         },
         onError: () => {
-          onOpenChange(false);
+          setError(true);
           toast.error(t("detail.sessions.errors.revokeFailure"));
         },
       },
@@ -59,7 +70,7 @@ export function RevokeUserSessionDialog({
   };
 
   return (
-    <AlertDialog open={open && session !== null} onOpenChange={onOpenChange}>
+    <AlertDialog open={open && session !== null} onOpenChange={changeOpen}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{t("detail.sessions.confirm.revoke.title")}</AlertDialogTitle>
@@ -67,11 +78,16 @@ export function RevokeUserSessionDialog({
             {t("detail.sessions.confirm.revoke.description")}
           </AlertDialogDescription>
         </AlertDialogHeader>
+        {error ? (
+          <p role="alert" className="text-left text-sm text-destructive">
+            {t("detail.sessions.errors.revokeFailure")}
+          </p>
+        ) : null}
         <AlertDialogFooter>
           <AlertDialogCancel
             disabled={revoke.isPending}
             onClick={() => {
-              onOpenChange(false);
+              changeOpen(false);
             }}
           >
             {t("detail.sessions.actions.cancel")}

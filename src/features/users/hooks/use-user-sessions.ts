@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+import { AppError } from "@/lib/errors";
+
 import { fetchUserSessions, logoutAllUserSessions, revokeUserSession } from "../api";
 import { userQueryKey } from "./use-user";
 
@@ -7,18 +9,34 @@ export function userSessionsQueryKey(id: string) {
   return [...userQueryKey(id), "sessions"] as const;
 }
 
+function isClientError(error: unknown): boolean {
+  return (
+    error instanceof AppError &&
+    error.status !== undefined &&
+    error.status >= 400 &&
+    error.status <= 499
+  );
+}
+
+function retrySessionsFetch(failureCount: number, error: unknown): boolean {
+  return failureCount === 0 && !isClientError(error);
+}
+
 /**
  * @param id - the user id whose sessions the admin detail shows.
  * @param enabled - whether the caller holds `session:read`; the query stays idle without
  * it, so an unauthorized admin never triggers the request.
  * @returns The admin sessions query for one user, validated against `ActiveSessionDTO` by
- * the fetcher.
+ * the fetcher; the retry policy is pinned here so the error state of the card is never
+ * delayed beyond the app-wide client default: 4xx client errors fail without any retry,
+ * while 5xx and network failures retry exactly once.
  */
 export function useUserSessions(id: string, enabled: boolean) {
   return useQuery({
     queryKey: userSessionsQueryKey(id),
     queryFn: () => fetchUserSessions(id),
     enabled,
+    retry: retrySessionsFetch,
   });
 }
 

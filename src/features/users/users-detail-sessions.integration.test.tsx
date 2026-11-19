@@ -15,6 +15,7 @@ import { i18n } from "@/lib/i18n";
 import { initialSessionState, sessionStore } from "@/lib/session/session-store";
 
 import { UsersDetailPage } from "./users-detail-page";
+import { NO_VALUE } from "./users-detail/format";
 
 const USER_URL = "https://test.invalid/admin/users/u1";
 const SESSIONS_URL = `${USER_URL}/sessions`;
@@ -76,6 +77,10 @@ const dateTimeFormatter = {
 function formatDateTime(value: string): string {
   const date = new Date(value);
   return `${dateTimeFormatter.date.format(date)} · ${dateTimeFormatter.time.format(date)}`;
+}
+
+function activeDevicesRow(): HTMLElement {
+  return screen.getByText(tUsers("detail.sessions.activeDevices")).closest("div") as HTMLElement;
 }
 
 const ADMIN_PROFILE = {
@@ -190,6 +195,7 @@ describe("user detail — sessions and security", () => {
 
     await screen.findByText("Ada Lovelace");
     expect(await screen.findByText(tUsers("detail.sessions.loading"))).toBeInTheDocument();
+    expect(activeDevicesRow()).toHaveTextContent(NO_VALUE);
   });
 
   it("shows the empty state when the user has no sessions (125 S5)", async () => {
@@ -279,7 +285,7 @@ describe("user detail — sessions and security", () => {
     );
     renderPage();
 
-    const alert = await screen.findByRole("alert");
+    const alert = await screen.findByRole("alert", undefined, { timeout: 5000 });
     expect(alert).toHaveTextContent(tUsers("detail.sessions.forbidden"));
     expect(screen.queryByRole("table")).toBeNull();
   });
@@ -310,12 +316,20 @@ describe("user detail — sessions and security", () => {
     expect(screen.queryByRole("button", { name: tUsers("detail.sessions.closeAll") })).toBeNull();
   });
 
-  it("offers retry when the sessions fetch fails (125 S5)", async () => {
-    server.use(http.get(SESSIONS_URL, () => HttpResponse.json({}, { status: 500 })));
+  it("offers retry when the sessions fetch fails after one retry (125 S5, 134 review)", async () => {
+    let requests = 0;
+    server.use(
+      http.get(SESSIONS_URL, () => {
+        requests += 1;
+        return HttpResponse.json({}, { status: 500 });
+      }),
+    );
     renderPage();
 
-    const alert = await screen.findByRole("alert");
+    const alert = await screen.findByRole("alert", undefined, { timeout: 5000 });
     expect(alert).toHaveTextContent(tUsers("detail.sessions.error"));
+    expect(activeDevicesRow()).toHaveTextContent(NO_VALUE);
+    expect(requests).toBe(2);
 
     server.use(http.get(SESSIONS_URL, () => HttpResponse.json(SESSIONS)));
     const user = userEvent.setup();
@@ -324,7 +338,25 @@ describe("user detail — sessions and security", () => {
     expect(await screen.findByRole("table")).toBeInTheDocument();
   });
 
-  it("toasts and keeps the rows when the revoke fails (125 S2)", async () => {
+  it("does not retry a client error from the sessions fetch (134 review)", async () => {
+    let requests = 0;
+    server.use(
+      http.get(SESSIONS_URL, () => {
+        requests += 1;
+        return HttpResponse.json(
+          { statusCode: 403, code: "UA-SEC-002", message: "forbidden", traceId: "t-1" },
+          { status: 403 },
+        );
+      }),
+    );
+    renderPage();
+
+    const alert = await screen.findByRole("alert", undefined, { timeout: 5000 });
+    expect(alert).toHaveTextContent(tUsers("detail.sessions.forbidden"));
+    expect(requests).toBe(1);
+  });
+
+  it("keeps the dialog open with the error inside when the revoke fails (125 S2, 134 H4)", async () => {
     server.use(http.delete(REVOKE_URL, () => HttpResponse.json({}, { status: 500 })));
     const user = userEvent.setup();
     renderPage();
@@ -339,10 +371,64 @@ describe("user detail — sessions and security", () => {
       within(dialog).getByRole("button", { name: tUsers("detail.sessions.confirm.revoke.action") }),
     );
 
-    expect(
-      await screen.findByText(tUsers("detail.sessions.errors.revokeFailure")),
-    ).toBeInTheDocument();
-    expect(within(screen.getByRole("table")).getAllByRole("row")).toHaveLength(3);
+    const error = await within(dialog).findByRole("alert");
+    expect(error).toHaveTextContent(tUsers("detail.sessions.errors.revokeFailure"));
+
+    await user.click(
+      within(dialog).getByRole("button", { name: tUsers("detail.sessions.actions.cancel") }),
+    );
+    expect(within(await screen.findByRole("table")).getAllByRole("row")).toHaveLength(3);
+  });
+
+  it("keeps the dialog open with the error inside when the logout-all fails (125 S3, 134 H1)", async () => {
+    server.use(http.post(LOGOUT_ALL_URL, () => HttpResponse.json({}, { status: 500 })));
+    const user = userEvent.setup();
+    renderPage();
+
+    await screen.findByRole("table");
+    await user.click(screen.getByRole("button", { name: tUsers("detail.sessions.closeAll") }));
+
+    const dialog = screen.getByRole("alertdialog");
+    await user.click(
+      within(dialog).getByRole("button", {
+        name: tUsers("detail.sessions.confirm.closeAll.action"),
+      }),
+    );
+
+    const error = await within(dialog).findByRole("alert");
+    expect(error).toHaveTextContent(tUsers("detail.sessions.errors.closeAllFailure"));
+
+    await user.click(
+      within(dialog).getByRole("button", { name: tUsers("detail.sessions.actions.cancel") }),
+    );
+    expect(within(await screen.findByRole("table")).getAllByRole("row")).toHaveLength(3);
+  });
+
+  it("clears the close-all error when the dialog re-opens (134 review)", async () => {
+    server.use(http.post(LOGOUT_ALL_URL, () => HttpResponse.json({}, { status: 500 })));
+    const user = userEvent.setup();
+    renderPage();
+
+    await screen.findByRole("table");
+    await user.click(screen.getByRole("button", { name: tUsers("detail.sessions.closeAll") }));
+
+    const dialog = screen.getByRole("alertdialog");
+    await user.click(
+      within(dialog).getByRole("button", {
+        name: tUsers("detail.sessions.confirm.closeAll.action"),
+      }),
+    );
+    expect(await within(dialog).findByRole("alert")).toHaveTextContent(
+      tUsers("detail.sessions.errors.closeAllFailure"),
+    );
+
+    await user.click(
+      within(dialog).getByRole("button", { name: tUsers("detail.sessions.actions.cancel") }),
+    );
+    await user.click(screen.getByRole("button", { name: tUsers("detail.sessions.closeAll") }));
+
+    const reopenedDialog = screen.getByRole("alertdialog");
+    expect(within(reopenedDialog).queryByRole("alert")).toBeNull();
   });
 
   it("has no axe violations on the sessions table (125 S1–S5)", async () => {
