@@ -590,13 +590,56 @@ export const es: {
       },
       sessions: {
         title: "Sesiones y seguridad",
+        hint: "GET /admin/users/:id/sessions",
         lastAccess: "Último acceso",
         activeDevices: "Sesiones activas",
+        deviceCount_one: "{{count}} dispositivo",
+        deviceCount_other: "{{count}} dispositivos",
         lock: "Bloqueo",
-        noLock: "sin bloqueo (lockedUntil —)",
+        noLock: "sin bloqueo",
         failedAttempts: "Intentos fallidos",
+        loading: "Cargando sesiones…",
+        error: "No se pudieron cargar las sesiones.",
+        forbidden: "No tenés el permiso session:read para ver las sesiones de este usuario.",
+        empty: "Este usuario no tiene sesiones activas.",
+        listCaption: "Sesiones activas del usuario",
+        columns: {
+          device: "Dispositivo",
+          ip: "IP",
+          lastAccess: "Última actividad",
+          action: "Acción",
+        },
+        startedAt: "Iniciada el {{date}}",
+        expiresAt: "Vence el {{date}}",
+        actions: {
+          revoke: "Revocar",
+          revoking: "Revocando…",
+          cancel: "Cancelar",
+        },
+        confirm: {
+          revoke: {
+            title: "Revocar esta sesión",
+            description:
+              "El dispositivo revocado tendrá que iniciar sesión de nuevo para entrar a la cuenta de este usuario.",
+            action: "Revocar sesión",
+          },
+          closeAll: {
+            title: "Cerrar todas las sesiones",
+            description:
+              "Se invalida cada refresh token de este usuario; todos sus dispositivos tendrán que iniciar sesión de nuevo.",
+            action: "Cerrar todas",
+          },
+        },
+        success: {
+          revoked: "Sesión revocada.",
+          closedAll: "Se cerraron todas las sesiones.",
+        },
+        errors: {
+          revokeFailure: "No se pudo revocar la sesión. Intentá de nuevo.",
+          closeAllFailure: "No se pudieron cerrar las sesiones. Intentá de nuevo.",
+        },
         closeAll: "Cerrar todas las sesiones",
-        closeAllHint: "POST /auth/logout-all · invalida todos los refresh",
+        closeAllHint: "POST /admin/users/:id/logout-all · invalida todos los refresh",
       },
       adminActions: {
         title: "Acciones de administración",

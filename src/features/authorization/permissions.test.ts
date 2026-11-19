@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { hasPermission } from "./permissions";
+import { PERMISSIONS, hasPermission } from "./permissions";
 
 describe("hasPermission", () => {
   it("grants a permission the user holds", () => {
@@ -21,5 +21,10 @@ describe("hasPermission", () => {
 
   it("does not let one resource wildcard cover another resource", () => {
     expect(hasPermission(["role:*"], "user:read")).toBe(false);
+  });
+
+  it("grants the admin session permissions it defines", () => {
+    expect(hasPermission(["session:read", "session:revoke"], PERMISSIONS.sessionRead)).toBe(true);
+    expect(hasPermission(["session:read"], PERMISSIONS.sessionRevoke)).toBe(false);
   });
 });

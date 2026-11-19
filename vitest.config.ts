@@ -13,7 +13,11 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     globals: true,
-    setupFiles: ["./src/test/setup.ts"],
+    setupFiles: [
+      "./src/test/local-storage.ts",
+      "./src/test/abort-globals.ts",
+      "./src/test/setup.ts",
+    ],
     include: ["src/**/*.{test,spec}.{ts,tsx}"],
     testTimeout: 20_000,
     coverage: {
