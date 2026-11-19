@@ -829,6 +829,61 @@ export const en = {
       fieldRequired: "This field is required.",
     },
   },
+  sessions: {
+    view: {
+      heading: "My sessions",
+      subtitle: "Devices where your account is signed in. Close any you do not recognize.",
+      loading: "Loading sessions…",
+    },
+    list: {
+      title: "Active sessions",
+      hint: "GET /auth/sessions",
+      columns: {
+        device: "Device",
+        ip: "IP",
+        lastAccess: "Last activity",
+        action: "Action",
+      },
+      currentBadge: "This device",
+      currentHint: "The session you are signed in with right now.",
+      startedAt: "Started {{date}}",
+      expiresAt: "Expires {{date}}",
+      footer: "{{count}} active devices · revoking closes that session's refresh token",
+      empty: "There are no active sessions with your account.",
+    },
+    actions: {
+      revoke: "Sign out",
+      revoking: "Signing out…",
+      closeAll: "Sign out everywhere",
+      cancel: "Cancel",
+    },
+    confirm: {
+      revoke: {
+        title: "Sign out this session",
+        description: "The signed-out device will have to sign in again to reach your account.",
+        action: "Sign out",
+      },
+      current: {
+        title: "Sign out your current session",
+        description: "You will be signed out on this device and taken back to the sign-in screen.",
+        action: "Sign out",
+      },
+      closeAll: {
+        title: "Sign out everywhere",
+        description:
+          "You will be signed out on every device, including this one, and taken back to the sign-in screen.",
+        action: "Sign out everywhere",
+      },
+    },
+    success: {
+      revoked: "Session signed out",
+    },
+    errors: {
+      fetchFailure: "The sessions could not be loaded. Try again.",
+      revokeFailure: "The session could not be signed out. Try again.",
+      closeAllFailure: "The sessions could not be signed out. Try again.",
+    },
+  },
 };
 
 export type TranslationTree = typeof en.common;
@@ -844,3 +899,5 @@ export type UsersTranslationTree = typeof en.users;
 export type EmailTranslationTree = typeof en.email;
 
 export type ProfileTranslationTree = typeof en.profile;
+
+export type SessionsTranslationTree = typeof en.sessions;

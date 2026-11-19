@@ -43,6 +43,7 @@ describe("routes", () => {
       "users/new",
       "users/:id/edit",
       "users/:id",
+      "sessions",
       "settings/email-templates",
       "*",
     ]);

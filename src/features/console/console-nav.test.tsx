@@ -62,7 +62,9 @@ describe("ConsoleNav", () => {
   it("offers only the sections whose permission the user holds", () => {
     renderNav(["user:read"]);
 
-    expect(visibleSectionNames()).toEqual([t("nav.home"), t("nav.users")].sort());
+    expect(visibleSectionNames()).toEqual(
+      [t("nav.home"), t("nav.users"), t("nav.sessions")].sort(),
+    );
   });
 
   it("hides roles and audit from a user who only reads users", () => {
@@ -80,6 +82,7 @@ describe("ConsoleNav", () => {
         t("nav.home"),
         t("nav.users"),
         t("nav.roles"),
+        t("nav.sessions"),
         t("nav.audit"),
         t("nav.emailTemplates"),
         t("nav.parameters"),
@@ -95,10 +98,18 @@ describe("ConsoleNav pending sections (S6)", () => {
 
     const disabled = [...container.querySelectorAll('[aria-disabled="true"]')]
       .map((element) => element.textContent)
-      .find((text) => text.includes(t("nav.sessions")));
+      .find((text) => text.includes(t("nav.deliveries")));
 
-    expect(disabled).toContain(t("nav.sessions"));
+    expect(disabled).toContain(t("nav.deliveries"));
     expect(disabled).toContain(t("nav.pending"));
-    expect(screen.queryByRole("link", { name: new RegExp(t("nav.sessions")) })).toBeNull();
+    expect(screen.queryByRole("link", { name: new RegExp(t("nav.deliveries")) })).toBeNull();
+  });
+
+  it("links the sessions section now that the screen is implemented", () => {
+    renderNav([]);
+
+    const sessions = screen.getByRole("link", { name: t("nav.sessions") });
+    expect(sessions).toHaveAttribute("href", "/app/sessions");
+    expect(sessions).not.toHaveAttribute("aria-disabled", "true");
   });
 });

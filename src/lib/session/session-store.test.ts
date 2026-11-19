@@ -58,6 +58,29 @@ describe("session store", () => {
     expect(state.accessToken).toBe("access-1");
   });
 
+  it("persists the session id so the sessions screen can flag the current one", () => {
+    sessionStore.getState().startSession({ ...AUTH, sessionId: "session-1" });
+
+    expect(sessionStore.getState().sessionId).toBe("session-1");
+  });
+
+  it("keeps the session id across a token rotation and clears it with the session", () => {
+    sessionStore.getState().startSession({ ...AUTH, sessionId: "session-1" });
+    sessionStore.getState().rotateTokens({ accessToken: "access-2", refreshToken: "refresh-2" });
+
+    expect(sessionStore.getState().accessToken).toBe("access-2");
+    expect(sessionStore.getState().sessionId).toBe("session-1");
+
+    sessionStore.getState().clearSession();
+    expect(sessionStore.getState().sessionId).toBeNull();
+  });
+
+  it("accepts a login without a session id from an older backend", () => {
+    sessionStore.getState().startSession(AUTH);
+
+    expect(sessionStore.getState().sessionId).toBeNull();
+  });
+
   it("replaces both tokens when a refresh rotates them", () => {
     sessionStore.getState().startSession(AUTH);
     sessionStore.getState().rotateTokens({

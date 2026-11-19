@@ -4,6 +4,7 @@ import type {
   EmailTranslationTree,
   LandingTranslationTree,
   ProfileTranslationTree,
+  SessionsTranslationTree,
   TranslationTree,
   UsersTranslationTree,
 } from "./en";
@@ -16,6 +17,7 @@ export const pt: {
   users: UsersTranslationTree;
   email: EmailTranslationTree;
   profile: ProfileTranslationTree;
+  sessions: SessionsTranslationTree;
 } = {
   common: {
     meta: {
@@ -847,6 +849,63 @@ export const pt: {
     errors: {
       saveFailure: "Não foi possível salvar o perfil. Tente novamente.",
       fieldRequired: "Este campo é obrigatório.",
+    },
+  },
+  sessions: {
+    view: {
+      heading: "Minhas sessões",
+      subtitle: "Dispositivos onde sua conta está conectada. Feche os que não reconhecer.",
+      loading: "Carregando sessões…",
+    },
+    list: {
+      title: "Sessões ativas",
+      hint: "GET /auth/sessions",
+      columns: {
+        device: "Dispositivo",
+        ip: "IP",
+        lastAccess: "Última atividade",
+        action: "Ação",
+      },
+      currentBadge: "Este dispositivo",
+      currentHint: "A sessão com a qual você está conectado agora.",
+      startedAt: "Iniciada em {{date}}",
+      expiresAt: "Expira em {{date}}",
+      footer: "{{count}} dispositivos ativos · revogar encerra o refresh token dessa sessão",
+      empty: "Não há sessões ativas com sua conta.",
+    },
+    actions: {
+      revoke: "Encerrar sessão",
+      revoking: "Encerrando…",
+      closeAll: "Encerrar todas",
+      cancel: "Cancelar",
+    },
+    confirm: {
+      revoke: {
+        title: "Encerrar esta sessão",
+        description:
+          "O dispositivo encerrado terá que iniciar sessão novamente para acessar sua conta.",
+        action: "Encerrar sessão",
+      },
+      current: {
+        title: "Encerrar sua sessão atual",
+        description:
+          "Você será desconectado neste dispositivo e voltará à tela de início de sessão.",
+        action: "Encerrar sessão",
+      },
+      closeAll: {
+        title: "Encerrar todas as sessões",
+        description:
+          "Você será desconectado em todos os dispositivos, incluindo este, e voltará à tela de início de sessão.",
+        action: "Encerrar todas",
+      },
+    },
+    success: {
+      revoked: "Sessão encerrada",
+    },
+    errors: {
+      fetchFailure: "Não foi possível carregar as sessões. Tente novamente.",
+      revokeFailure: "Não foi possível encerrar a sessão. Tente novamente.",
+      closeAllFailure: "Não foi possível encerrar todas as sessões. Tente novamente.",
     },
   },
 };

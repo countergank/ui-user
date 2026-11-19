@@ -61,6 +61,7 @@ export const router = createBrowserRouter([
       { path: "users/new", lazy: () => import("./users-create-route") },
       { path: "users/:id/edit", lazy: () => import("./users-edit-route") },
       { path: "users/:id", lazy: () => import("./users-detail-route") },
+      { path: "sessions", lazy: () => import("./sessions-route") },
       { path: "settings/email-templates", lazy: () => import("./email-templates-route") },
       {
         path: "*",

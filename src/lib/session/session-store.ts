@@ -23,10 +23,16 @@ export interface SessionState {
   user: SessionUser | null;
   accessToken: string | null;
   refreshToken: string | null;
+  sessionId: string | null;
 }
 
 export interface SessionActions {
-  startSession: (auth: { user: SessionUser; accessToken: string; refreshToken: string }) => void;
+  startSession: (auth: {
+    user: SessionUser;
+    accessToken: string;
+    refreshToken: string;
+    sessionId?: string;
+  }) => void;
   rotateTokens: (tokens: { accessToken: string; refreshToken: string }) => void;
   updateSessionUser: (
     profile: Partial<Pick<SessionUser, "name" | "lastName" | "avatarUrl">>,
@@ -42,6 +48,7 @@ export const initialSessionState: SessionState = {
   user: null,
   accessToken: null,
   refreshToken: null,
+  sessionId: null,
 };
 
 const sessionUserSchema = z.object({
@@ -79,15 +86,21 @@ export function migratePersistedSession(
     return undefined;
   }
 
-  return { status: "authenticated", ...parsed.data };
+  return { status: "authenticated", sessionId: null, ...parsed.data };
 }
 
 export const sessionStore = createStore<SessionStore>()(
   persist<SessionStore, [], [], SessionState>(
     (set) => ({
       ...initialSessionState,
-      startSession: ({ user, accessToken, refreshToken }) => {
-        set({ status: "authenticated", user, accessToken, refreshToken });
+      startSession: ({ user, accessToken, refreshToken, sessionId }) => {
+        set({
+          status: "authenticated",
+          user,
+          accessToken,
+          refreshToken,
+          sessionId: sessionId ?? null,
+        });
       },
       rotateTokens: ({ accessToken, refreshToken }) => {
         set({ accessToken, refreshToken });
@@ -96,7 +109,13 @@ export const sessionStore = createStore<SessionStore>()(
         set((state) => (state.user === null ? state : { user: { ...state.user, ...profile } }));
       },
       markExpired: () => {
-        set({ status: "expired", user: null, accessToken: null, refreshToken: null });
+        set({
+          status: "expired",
+          user: null,
+          accessToken: null,
+          refreshToken: null,
+          sessionId: null,
+        });
       },
       clearSession: () => {
         set({ ...initialSessionState });
@@ -112,6 +131,7 @@ export const sessionStore = createStore<SessionStore>()(
         user: state.user,
         accessToken: state.accessToken,
         refreshToken: state.refreshToken,
+        sessionId: state.sessionId,
       }),
       migrate: (persisted, version) =>
         migratePersistedSession(persisted, version) ?? initialSessionState,

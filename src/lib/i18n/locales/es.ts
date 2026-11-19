@@ -4,6 +4,7 @@ import type {
   EmailTranslationTree,
   LandingTranslationTree,
   ProfileTranslationTree,
+  SessionsTranslationTree,
   TranslationTree,
   UsersTranslationTree,
 } from "./en";
@@ -16,6 +17,7 @@ export const es: {
   users: UsersTranslationTree;
   email: EmailTranslationTree;
   profile: ProfileTranslationTree;
+  sessions: SessionsTranslationTree;
 } = {
   common: {
     meta: {
@@ -848,6 +850,63 @@ export const es: {
     errors: {
       saveFailure: "No se pudo guardar el perfil. Intentá de nuevo.",
       fieldRequired: "Este campo es obligatorio.",
+    },
+  },
+  sessions: {
+    view: {
+      heading: "Mis sesiones",
+      subtitle: "Dispositivos donde tu cuenta está conectada. Cerrá los que no reconozcas.",
+      loading: "Cargando sesiones…",
+    },
+    list: {
+      title: "Sesiones activas",
+      hint: "GET /auth/sessions",
+      columns: {
+        device: "Dispositivo",
+        ip: "IP",
+        lastAccess: "Última actividad",
+        action: "Acción",
+      },
+      currentBadge: "Este dispositivo",
+      currentHint: "Sesión con la que estás conectado ahora.",
+      startedAt: "Iniciada el {{date}}",
+      expiresAt: "Vence el {{date}}",
+      footer: "{{count}} dispositivos activos · revocar cierra el refresh token de esa sesión",
+      empty: "No hay sesiones activas con tu cuenta.",
+    },
+    actions: {
+      revoke: "Cerrar sesión",
+      revoking: "Cerrando…",
+      closeAll: "Cerrar todas",
+      cancel: "Cancelar",
+    },
+    confirm: {
+      revoke: {
+        title: "Cerrar esta sesión",
+        description:
+          "El dispositivo cerrado tendrá que iniciar sesión de nuevo para entrar a tu cuenta.",
+        action: "Cerrar sesión",
+      },
+      current: {
+        title: "Cerrar tu sesión actual",
+        description:
+          "Vas a salir de tu cuenta en este dispositivo y volverás a la pantalla de inicio de sesión.",
+        action: "Cerrar sesión",
+      },
+      closeAll: {
+        title: "Cerrar todas las sesiones",
+        description:
+          "Vas a salir de tu cuenta en todos los dispositivos, incluida esta sesión, y volverás a la pantalla de inicio de sesión.",
+        action: "Cerrar todas",
+      },
+    },
+    success: {
+      revoked: "Sesión cerrada",
+    },
+    errors: {
+      fetchFailure: "No se pudieron cargar las sesiones. Intentá de nuevo.",
+      revokeFailure: "No se pudo cerrar la sesión. Intentá de nuevo.",
+      closeAllFailure: "No se pudieron cerrar todas las sesiones. Intentá de nuevo.",
     },
   },
 };
