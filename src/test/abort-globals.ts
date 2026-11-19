@@ -16,8 +16,12 @@ function nodeSignalPassesRequestAcceptance(signal: AbortSignal): boolean {
   try {
     new Request("http://localhost:3000/abort-globals", { signal });
     return true;
-  } catch {
-    return false;
+  } catch (error) {
+    if (error instanceof TypeError) {
+      return false;
+    }
+
+    throw error;
   }
 }
 

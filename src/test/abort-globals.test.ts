@@ -46,6 +46,67 @@ describe("abort globals stay compatible with undici", () => {
     expect(rejection).toMatchObject({ name: "AbortError" });
   });
 
+  it("surfaces an unexpected Request failure from the compatibility probe", async () => {
+    const nodeController = createNodeAbortController();
+    expect(nodeController).toBeDefined();
+
+    const nodeSignalPrototype = Object.getPrototypeOf(nodeController?.signal) as {
+      constructor: typeof globalThis.AbortSignal;
+    };
+    const nodeAbortSignal = nodeSignalPrototype.constructor;
+
+    class RejectingRequest {
+      readonly signal: AbortSignal | null;
+
+      constructor(_input: string, init?: { signal?: AbortSignal | null }) {
+        this.signal = init?.signal ?? null;
+
+        const prototype =
+          this.signal === null
+            ? null
+            : (Object.getPrototypeOf(this.signal) as { constructor: unknown } | null);
+        if (prototype?.constructor === nodeAbortSignal) {
+          throw new RangeError("unexpected probe failure");
+        }
+      }
+    }
+
+    class StubAbortController {
+      readonly signal = {} as AbortSignal;
+    }
+
+    class StubAbortSignal {
+      readonly stub = true;
+    }
+
+    const realRequest = globalThis.Request;
+    const realController = globalThis.AbortController;
+    const realSignal = globalThis.AbortSignal;
+
+    Object.defineProperty(globalThis, "Request", { value: RejectingRequest, configurable: true });
+    Object.defineProperty(globalThis, "AbortController", {
+      value: StubAbortController,
+      configurable: true,
+    });
+    Object.defineProperty(globalThis, "AbortSignal", {
+      value: StubAbortSignal,
+      configurable: true,
+    });
+
+    try {
+      vi.resetModules();
+      await expect(import("./abort-globals")).rejects.toThrow("unexpected probe failure");
+    } finally {
+      Object.defineProperty(globalThis, "Request", { value: realRequest, configurable: true });
+      Object.defineProperty(globalThis, "AbortController", {
+        value: realController,
+        configurable: true,
+      });
+      Object.defineProperty(globalThis, "AbortSignal", { value: realSignal, configurable: true });
+      vi.resetModules();
+    }
+  });
+
   it("keeps the current classes when the node signal fails the Request acceptance", async () => {
     const nodeController = createNodeAbortController();
     expect(nodeController).toBeDefined();
