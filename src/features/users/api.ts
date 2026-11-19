@@ -1,4 +1,7 @@
+import { z } from "zod";
+
 import type { ListParams, SortOrder } from "@/components/data-list/params";
+import { type ActiveSessionDTO, activeSessionSchema } from "@/features/sessions/types";
 
 import { httpClient } from "@/lib/session/session";
 
@@ -137,6 +140,40 @@ export async function unlockUser(id: string): Promise<UnlockUserResponseDTO> {
   });
 
   return unlockUserResponseSchema.parse(raw);
+}
+
+/**
+ * @param id - the user id; it is percent-encoded so a hostile id cannot change the path.
+ * @returns The user's active sessions, each validated against the `ActiveSessionDTO`
+ * contract so a drift fails at the fetcher and not in the table.
+ */
+export async function fetchUserSessions(id: string): Promise<ActiveSessionDTO[]> {
+  const raw = await httpClient.request<unknown>(`/admin/users/${encodeURIComponent(id)}/sessions`);
+
+  return z.array(activeSessionSchema).parse(raw);
+}
+
+/**
+ * @param id - the user id; it is percent-encoded so a hostile id cannot change the path.
+ * @param sessionId - the session to revoke, as listed by `fetchUserSessions`. The endpoint
+ * answers `{message}` with 200 — not 204 — so there is no body to validate.
+ */
+export async function revokeUserSession(id: string, sessionId: string): Promise<void> {
+  await httpClient.request<unknown>(
+    `/admin/users/${encodeURIComponent(id)}/sessions/${encodeURIComponent(sessionId)}`,
+    { method: "DELETE" },
+  );
+}
+
+/**
+ * @param id - the user id; it is percent-encoded so a hostile id cannot change the path. The
+ * endpoint invalidates every refresh token of that user server-side, so the client sends no
+ * body; it answers `{message}` with 200 — not 204 — so there is no body to validate.
+ */
+export async function logoutAllUserSessions(id: string): Promise<void> {
+  await httpClient.request<unknown>(`/admin/users/${encodeURIComponent(id)}/logout-all`, {
+    method: "POST",
+  });
 }
 
 /**

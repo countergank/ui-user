@@ -21,6 +21,7 @@ const USERS_URL = "https://test.invalid/admin/users";
 const USER_URL = `${USERS_URL}/u1`;
 const USER_ACTIVE_URL = `${USER_URL}/active`;
 const USER_UNLOCK_URL = `${USER_URL}/unlock`;
+const SESSIONS_URL = `${USER_URL}/sessions`;
 
 const tUsers = i18n.getFixedT(null, "users");
 const tCommon = i18n.getFixedT(null, "common");
@@ -41,6 +42,25 @@ const USER = {
   hasPendingEmailChange: false,
   hasPendingPasswordReset: false,
 };
+
+const SESSIONS = [
+  {
+    id: "s1",
+    device: "Chrome on Windows",
+    ip: "190.12.4.7",
+    issuedAt: "2024-06-01T10:00:00.000Z",
+    lastAccessAt: "2024-06-02T16:41:00.000Z",
+    expiresAt: "2024-07-01T10:00:00.000Z",
+  },
+  {
+    id: "s2",
+    device: "Safari on iPhone",
+    ip: "190.12.4.8",
+    issuedAt: "2024-06-01T12:00:00.000Z",
+    lastAccessAt: "2024-06-01T12:05:00.000Z",
+    expiresAt: "2024-07-01T12:00:00.000Z",
+  },
+];
 
 const dateTimeFormatter = {
   date: new Intl.DateTimeFormat(i18n.language, {
@@ -100,7 +120,10 @@ class LoadedAvatarImage {
   }
 }
 
-const server = setupServer(http.get(USER_URL, () => HttpResponse.json(USER)));
+const server = setupServer(
+  http.get(USER_URL, () => HttpResponse.json(USER)),
+  http.get(SESSIONS_URL, () => HttpResponse.json(SESSIONS)),
+);
 
 beforeAll(() => {
   server.listen({ onUnhandledFrame: "error" });
@@ -282,11 +305,12 @@ describe("user detail — loaded user", () => {
     );
   });
 
-  it("renders the sections without an endpoint as placeholders and keeps the toggle wired (S4–S8)", async () => {
+  it("renders the remaining placeholders and keeps the toggle wired (S4–S8)", async () => {
     renderPage();
     await screen.findByText("Ada Lovelace");
+    await screen.findByText(tUsers("detail.sessions.deviceCount", { count: 2 }));
 
-    expect(screen.getAllByText("—")).toHaveLength(8);
+    expect(screen.getAllByText("—")).toHaveLength(5);
 
     const pending = tCommon("ui.list.pending");
     for (const key of ["resetPassword", "resendVerification", "changeEmail", "delete"] as const) {
@@ -300,7 +324,7 @@ describe("user detail — loaded user", () => {
       name: new RegExp(`^${escapeRegExp(tUsers("detail.adminActions.deactivate"))}`),
     });
     expect(toggle).toBeEnabled();
-    expect(screen.getByRole("button", { name: tUsers("detail.sessions.closeAll") })).toBeDisabled();
+    expect(screen.getByRole("button", { name: tUsers("detail.sessions.closeAll") })).toBeEnabled();
     expect(screen.getByRole("button", { name: tUsers("detail.activity.viewAll") })).toBeDisabled();
   });
 

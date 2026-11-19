@@ -569,13 +569,56 @@ export const en = {
       },
       sessions: {
         title: "Sessions and security",
+        hint: "GET /admin/users/:id/sessions",
         lastAccess: "Last access",
         activeDevices: "Active sessions",
+        deviceCount_one: "{{count}} device",
+        deviceCount_other: "{{count}} devices",
         lock: "Lock",
-        noLock: "no lock (lockedUntil —)",
+        noLock: "no lock",
         failedAttempts: "Failed attempts",
+        loading: "Loading sessions…",
+        error: "The sessions could not be loaded.",
+        forbidden: "You lack the session:read permission to see this user's sessions.",
+        empty: "This user has no active sessions.",
+        listCaption: "Active sessions of the user",
+        columns: {
+          device: "Device",
+          ip: "IP",
+          lastAccess: "Last activity",
+          action: "Action",
+        },
+        startedAt: "Started {{date}}",
+        expiresAt: "Expires {{date}}",
+        actions: {
+          revoke: "Revoke",
+          revoking: "Revoking…",
+          cancel: "Cancel",
+        },
+        confirm: {
+          revoke: {
+            title: "Revoke this session",
+            description:
+              "The revoked device will have to sign in again to access this user's account.",
+            action: "Revoke session",
+          },
+          closeAll: {
+            title: "Close all sessions",
+            description:
+              "Every refresh token of this user is invalidated; all their devices will have to sign in again.",
+            action: "Close all",
+          },
+        },
+        success: {
+          revoked: "Session revoked.",
+          closedAll: "All sessions closed.",
+        },
+        errors: {
+          revokeFailure: "The session could not be revoked. Try again.",
+          closeAllFailure: "The sessions could not be closed. Try again.",
+        },
         closeAll: "Close all sessions",
-        closeAllHint: "POST /auth/logout-all · invalidates every refresh token",
+        closeAllHint: "POST /admin/users/:id/logout-all · invalidates every refresh token",
       },
       adminActions: {
         title: "Administrative actions",

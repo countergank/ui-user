@@ -590,13 +590,56 @@ export const pt: {
       },
       sessions: {
         title: "Sessões e segurança",
+        hint: "GET /admin/users/:id/sessions",
         lastAccess: "Último acesso",
         activeDevices: "Sessões ativas",
+        deviceCount_one: "{{count}} dispositivo",
+        deviceCount_other: "{{count}} dispositivos",
         lock: "Bloqueio",
-        noLock: "sem bloqueio (lockedUntil —)",
+        noLock: "sem bloqueio",
         failedAttempts: "Tentativas malsucedidas",
+        loading: "Carregando sessões…",
+        error: "Não foi possível carregar as sessões.",
+        forbidden: "Você não tem a permissão session:read para ver as sessões deste usuário.",
+        empty: "Este usuário não tem sessões ativas.",
+        listCaption: "Sessões ativas do usuário",
+        columns: {
+          device: "Dispositivo",
+          ip: "IP",
+          lastAccess: "Última atividade",
+          action: "Ação",
+        },
+        startedAt: "Iniciada em {{date}}",
+        expiresAt: "Expira em {{date}}",
+        actions: {
+          revoke: "Revogar",
+          revoking: "Revogando…",
+          cancel: "Cancelar",
+        },
+        confirm: {
+          revoke: {
+            title: "Revogar esta sessão",
+            description:
+              "O dispositivo revogado terá de iniciar sessão novamente para acessar a conta deste usuário.",
+            action: "Revogar sessão",
+          },
+          closeAll: {
+            title: "Encerrar todas as sessões",
+            description:
+              "Cada refresh token deste usuário é invalidado; todos os dispositivos dele terão de iniciar sessão novamente.",
+            action: "Encerrar todas",
+          },
+        },
+        success: {
+          revoked: "Sessão revogada.",
+          closedAll: "Todas as sessões foram encerradas.",
+        },
+        errors: {
+          revokeFailure: "Não foi possível revogar a sessão. Tente novamente.",
+          closeAllFailure: "Não foi possível encerrar as sessões. Tente novamente.",
+        },
         closeAll: "Encerrar todas as sessões",
-        closeAllHint: "POST /auth/logout-all · invalida todos os refresh",
+        closeAllHint: "POST /admin/users/:id/logout-all · invalida todos os refresh",
       },
       adminActions: {
         title: "Ações administrativas",

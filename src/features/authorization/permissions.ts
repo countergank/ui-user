@@ -8,6 +8,8 @@ export const PERMISSIONS = {
   userUpdate: "user:update",
   userUnlock: "user:unlock",
   userDelete: "user:delete",
+  sessionRead: "session:read",
+  sessionRevoke: "session:revoke",
   roleRead: "role:read",
   permissionRead: "permission:read",
   auditRead: "audit:read",
