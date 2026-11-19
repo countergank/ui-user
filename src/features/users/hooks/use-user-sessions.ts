@@ -12,13 +12,15 @@ export function userSessionsQueryKey(id: string) {
  * @param enabled - whether the caller holds `session:read`; the query stays idle without
  * it, so an unauthorized admin never triggers the request.
  * @returns The admin sessions query for one user, validated against `ActiveSessionDTO` by
- * the fetcher.
+ * the fetcher; the single retry is pinned here so the error state of the card is never
+ * delayed beyond the app-wide client default.
  */
 export function useUserSessions(id: string, enabled: boolean) {
   return useQuery({
     queryKey: userSessionsQueryKey(id),
     queryFn: () => fetchUserSessions(id),
     enabled,
+    retry: 1,
   });
 }
 

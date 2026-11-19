@@ -35,6 +35,7 @@ export function SessionsCard({ user }: SessionsCardProps) {
   const logoutAll = useLogoutAllUserSessions();
   const [revokeTarget, setRevokeTarget] = useState<ActiveSessionDTO | null>(null);
   const [closeAllOpen, setCloseAllOpen] = useState(false);
+  const [closeAllError, setCloseAllError] = useState(false);
 
   const language = i18n.language;
   const activeSessions = sessions.data ?? [];
@@ -59,7 +60,9 @@ export function SessionsCard({ user }: SessionsCardProps) {
             : `${formatDateTime(latest.lastAccessAt, language)} · ${latest.ip ?? NO_VALUE}`}
         </FieldRow>
         <FieldRow term={t("detail.sessions.activeDevices")}>
-          {t("detail.sessions.deviceCount", { count: activeSessions.length })}
+          {sessions.isPending || sessions.isError
+            ? NO_VALUE
+            : t("detail.sessions.deviceCount", { count: activeSessions.length })}
         </FieldRow>
         <FieldRow term={t("detail.sessions.lock")}>
           {user.lockedUntil === null
@@ -98,6 +101,7 @@ export function SessionsCard({ user }: SessionsCardProps) {
           <Button
             type="button"
             onClick={() => {
+              setCloseAllError(false);
               setCloseAllOpen(true);
             }}
           >
@@ -119,16 +123,22 @@ export function SessionsCard({ user }: SessionsCardProps) {
       <CloseAllUserSessionsDialog
         open={closeAllOpen}
         pending={logoutAll.isPending}
-        onOpenChange={setCloseAllOpen}
+        error={closeAllError}
+        onOpenChange={(open) => {
+          setCloseAllOpen(open);
+          setCloseAllError(false);
+        }}
         onConfirm={() => {
           logoutAll.mutate(
             { id: user.id },
             {
               onSuccess: () => {
                 setCloseAllOpen(false);
+                setCloseAllError(false);
                 toast.success(t("detail.sessions.success.closedAll"));
               },
               onError: () => {
+                setCloseAllError(true);
                 toast.error(t("detail.sessions.errors.closeAllFailure"));
               },
             },
