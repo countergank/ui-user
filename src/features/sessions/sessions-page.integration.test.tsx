@@ -234,9 +234,47 @@ describe("sessions page — revoke (S3)", () => {
     expect(deleteTarget).toBe("session-2");
     expect(sessionStore.getState().status).toBe("authenticated");
   });
+
+  it("keeps the row and surfaces the failure when the revoke rejects", async () => {
+    server.use(
+      http.delete(`${SESSIONS_URL}/:sessionId`, ({ params }) => {
+        deleteCount += 1;
+        deleteTarget = String(params.sessionId);
+
+        return HttpResponse.json({}, { status: 500 });
+      }),
+    );
+    renderPage();
+    await waitForSessions();
+    const user = userEvent.setup();
+
+    await user.click(
+      within(rowOf(OTHER_SESSION.device)).getByRole("button", { name: t("actions.revoke") }),
+    );
+    await user.click(screen.getByRole("button", { name: t("confirm.revoke.action") }));
+
+    expect(await screen.findByText(t("errors.revokeFailure"))).toBeInTheDocument();
+    expect(screen.getByText(OTHER_SESSION.device)).toBeInTheDocument();
+    expect(deleteCount).toBe(1);
+    expect(sessionStore.getState().status).toBe("authenticated");
+  });
 });
 
 describe("sessions page — close all (S4)", () => {
+  it("closes every session after confirming and signs the user out", async () => {
+    renderPage();
+    await waitForSessions();
+    const user = userEvent.setup();
+
+    await user.click(screen.getByRole("button", { name: t("actions.closeAll") }));
+    await user.click(screen.getByRole("button", { name: t("confirm.closeAll.action") }));
+
+    await waitFor(() => {
+      expect(sessionStore.getState().status).toBe("anonymous");
+    });
+    expect(logoutAllCount).toBe(1);
+  });
+
   it("asks for confirmation before closing every session and cancels without posting", async () => {
     renderPage();
     await waitForSessions();

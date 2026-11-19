@@ -32,7 +32,7 @@ export function RevokeSessionDialog({ session, open, onOpenChange }: RevokeSessi
   const revoke = useRevokeSession();
 
   const confirm = () => {
-    if (session === null) {
+    if (session === null || revoke.isPending) {
       return;
     }
 
@@ -56,6 +56,7 @@ export function RevokeSessionDialog({ session, open, onOpenChange }: RevokeSessi
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel
+            disabled={revoke.isPending}
             onClick={() => {
               onOpenChange(false);
             }}
@@ -63,12 +64,13 @@ export function RevokeSessionDialog({ session, open, onOpenChange }: RevokeSessi
             {t("actions.cancel")}
           </AlertDialogCancel>
           <AlertDialogAction
+            disabled={revoke.isPending}
             onClick={(event) => {
               event.preventDefault();
               confirm();
             }}
           >
-            {t("confirm.revoke.action")}
+            {revoke.isPending ? t("actions.revoking") : t("confirm.revoke.action")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
