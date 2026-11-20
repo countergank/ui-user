@@ -77,9 +77,17 @@ describe("params — parse", () => {
   });
 
   it("ignores parameters the list does not declare", () => {
-    const search = new URLSearchParams("token=evil&limit=5000&email=x@y.z");
+    const search = new URLSearchParams("token=evil&email=x@y.z");
 
     expect(parseListParams(search, CONFIG)).toEqual(defaultListParams(CONFIG));
+  });
+
+  it("parses a declared limit from the URL and falls back on invalid values (136 S1)", () => {
+    expect(parseListParams(new URLSearchParams("limit=5"), CONFIG).limit).toBe(5);
+    expect(parseListParams(new URLSearchParams("limit=0"), CONFIG).limit).toBe(CONFIG.limit);
+    expect(parseListParams(new URLSearchParams("limit=abc"), CONFIG).limit).toBe(CONFIG.limit);
+    expect(parseListParams(new URLSearchParams("limit=2.5"), CONFIG).limit).toBe(CONFIG.limit);
+    expect(parseListParams(new URLSearchParams(""), CONFIG).limit).toBe(CONFIG.limit);
   });
 });
 

@@ -41,6 +41,16 @@ function parsePage(raw: string | null): number {
   return Number.isSafeInteger(page) && page >= 1 ? page : 1;
 }
 
+function parseLimit(raw: string | null, fallback: number): number {
+  if (raw === null) {
+    return fallback;
+  }
+
+  const limit = Number(raw);
+
+  return Number.isSafeInteger(limit) && limit >= 1 ? limit : fallback;
+}
+
 function parseFilters(search: URLSearchParams, config: ListParamsConfig): Record<string, string> {
   const filters: Record<string, string> = {};
 
@@ -67,7 +77,7 @@ export function parseListParams(search: URLSearchParams, config: ListParamsConfi
     sortBy: config.sortFields.includes(sortBy) ? sortBy : config.defaultSortBy,
     sortOrder: sortOrder === "asc" || sortOrder === "desc" ? sortOrder : config.defaultSortOrder,
     page: parsePage(search.get("page")),
-    limit: config.limit,
+    limit: parseLimit(search.get("limit"), config.limit),
     filters: parseFilters(search, config),
   };
 }

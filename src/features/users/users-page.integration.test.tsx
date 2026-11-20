@@ -286,7 +286,7 @@ describe("users page — MSW", () => {
     expect(tones.every((tone) => /avatar-\d-bg/.test(tone))).toBe(true);
   });
 
-  it("changes the page size from the toolbar and goes back to the first page", async () => {
+  it("changes the page size from the toolbar, goes back to the first page and refetches with the new limit (136 S2, S3)", async () => {
     renderPage("/app/users?page=2");
     await expectRows();
     const user = userEvent.setup();
@@ -301,6 +301,19 @@ describe("users page — MSW", () => {
       expect(probe).toHaveTextContent("limit=5");
     });
     expect(probe).not.toHaveTextContent("page=");
+    await waitFor(() => {
+      expect(lastUrl?.searchParams.get("limit")).toBe("5");
+      expect(lastUrl?.searchParams.get("page")).toBe("1");
+    });
+    expect(screen.getByRole("combobox", { name: tUsers("list.pageSize") })).toHaveTextContent("5");
+  });
+
+  it("keeps the page usable with an invalid limit in the URL (136 S5)", async () => {
+    renderPage("/app/users?limit=abc");
+    await expectRows();
+
+    expect(lastUrl?.searchParams.get("limit")).toBe("20");
+    expect(screen.getByRole("combobox", { name: tUsers("list.pageSize") })).toHaveTextContent("20");
   });
 
   it("shows the page size selector and the summary once", async () => {
