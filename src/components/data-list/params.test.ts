@@ -77,9 +77,29 @@ describe("params — parse", () => {
   });
 
   it("ignores parameters the list does not declare", () => {
-    const search = new URLSearchParams("token=evil&limit=5000&email=x@y.z");
+    const search = new URLSearchParams("token=evil&email=x@y.z");
 
     expect(parseListParams(search, CONFIG)).toEqual(defaultListParams(CONFIG));
+  });
+
+  it("parses a declared limit from the URL and falls back on invalid values (136 S1)", () => {
+    expect(parseListParams(new URLSearchParams("limit=5"), CONFIG).limit).toBe(5);
+    expect(parseListParams(new URLSearchParams("limit=0"), CONFIG).limit).toBe(CONFIG.limit);
+    expect(parseListParams(new URLSearchParams("limit=abc"), CONFIG).limit).toBe(CONFIG.limit);
+    expect(parseListParams(new URLSearchParams("limit=2.5"), CONFIG).limit).toBe(CONFIG.limit);
+    expect(parseListParams(new URLSearchParams(""), CONFIG).limit).toBe(CONFIG.limit);
+  });
+
+  it("accepts only strict decimal limit forms (R3-lenient-numeric-forms)", () => {
+    for (const raw of ["5e1", "0x5", "+5", " 5", "5.0"]) {
+      expect(parseListParams(new URLSearchParams(`limit=${raw}`), CONFIG).limit).toBe(CONFIG.limit);
+    }
+  });
+
+  it("falls back when the limit exceeds the API maximum of 100 (R3-no-upper-bound-on-limit)", () => {
+    expect(parseListParams(new URLSearchParams("limit=101"), CONFIG).limit).toBe(CONFIG.limit);
+    expect(parseListParams(new URLSearchParams("limit=999999"), CONFIG).limit).toBe(CONFIG.limit);
+    expect(parseListParams(new URLSearchParams("limit=100"), CONFIG).limit).toBe(100);
   });
 });
 
