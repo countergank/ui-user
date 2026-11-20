@@ -8,6 +8,8 @@ import { createUserFormSchema } from "./create-schema";
 
 const t = i18n.getFixedT(null, "users");
 
+const ROLES = ["admin", "user", "viewer"];
+
 const VALID = {
   name: "Ada",
   lastName: "Lovelace",
@@ -19,14 +21,14 @@ const VALID = {
 };
 
 function errorsFor(values: Record<string, unknown>) {
-  const result = createUserFormSchema(t).safeParse(values);
+  const result = createUserFormSchema(t, ROLES).safeParse(values);
 
   return result.success ? {} : result.error.flatten().fieldErrors;
 }
 
 describe("create user schema", () => {
   it("accepts a valid payload and trims the text fields", () => {
-    const result = createUserFormSchema(t).safeParse({
+    const result = createUserFormSchema(t, ROLES).safeParse({
       ...VALID,
       name: "  Ada  ",
       email: " ada@example.com ",
@@ -59,7 +61,7 @@ describe("create user schema", () => {
     const { role, ...withoutRole } = VALID;
     void role;
 
-    const result = createUserFormSchema(t).safeParse(withoutRole);
+    const result = createUserFormSchema(t, ROLES).safeParse(withoutRole);
 
     expect(result.success).toBe(true);
     if (!result.success) {
@@ -68,8 +70,25 @@ describe("create user schema", () => {
     expect(result.data.role).toBe("user");
   });
 
-  it("rejects a role outside the API enum", () => {
-    expect(createUserFormSchema(t).safeParse({ ...VALID, role: "owner" }).success).toBe(false);
+  it("rejects a role outside the given catalog", () => {
+    expect(createUserFormSchema(t, ROLES).safeParse({ ...VALID, role: "owner" }).success).toBe(
+      false,
+    );
+  });
+
+  it("accepts any role from the dynamic catalog (128 S5)", () => {
+    expect(
+      createUserFormSchema(t, ["admin", "user", "moderator"]).safeParse({
+        ...VALID,
+        role: "moderator",
+      }).success,
+    ).toBe(true);
+  });
+
+  it("rejects a role the dynamic catalog does not serve (128 S5)", () => {
+    expect(
+      createUserFormSchema(t, ["admin", "user"]).safeParse({ ...VALID, role: "viewer" }).success,
+    ).toBe(false);
   });
 
   it.each([
@@ -91,14 +110,14 @@ describe("create user schema", () => {
 
   it("accepts any non-alphanumeric character as the required special character", () => {
     expect(
-      createUserFormSchema(t).safeParse({
+      createUserFormSchema(t, ROLES).safeParse({
         ...VALID,
         password: "Nx9mKpwx#",
         confirmPassword: "Nx9mKpwx#",
       }).success,
     ).toBe(true);
     expect(
-      createUserFormSchema(t).safeParse({
+      createUserFormSchema(t, ROLES).safeParse({
         ...VALID,
         password: "Nx9mKpwxñ",
         confirmPassword: "Nx9mKpwxñ",
@@ -113,11 +132,11 @@ describe("create user schema", () => {
   });
 
   it("accepts passwords at both length boundaries", () => {
-    expect(createUserFormSchema(t).safeParse({ ...VALID, password: "Nx9!mKp2" }).success).toBe(
-      true,
-    );
     expect(
-      createUserFormSchema(t).safeParse({
+      createUserFormSchema(t, ROLES).safeParse({ ...VALID, password: "Nx9!mKp2" }).success,
+    ).toBe(true);
+    expect(
+      createUserFormSchema(t, ROLES).safeParse({
         ...VALID,
         password: "Nx9!mKp2".repeat(8),
         confirmPassword: "Nx9!mKp2".repeat(8),
@@ -127,7 +146,7 @@ describe("create user schema", () => {
 
   it("accepts a payload whose confirmation matches the password", () => {
     expect(
-      createUserFormSchema(t).safeParse({ ...VALID, confirmPassword: "Nx9!mKp2" }).success,
+      createUserFormSchema(t, ROLES).safeParse({ ...VALID, confirmPassword: "Nx9!mKp2" }).success,
     ).toBe(true);
   });
 

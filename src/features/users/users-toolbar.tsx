@@ -8,14 +8,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { USER_ROLES } from "./types";
-
 const ALL_ROLES = "__all__";
 
 const PAGE_SIZES = [5, 10, 20, 50] as const;
 
 interface UsersToolbarProps {
   role: string | undefined;
+  roles: string[];
   onRoleChange: (role: string | null) => void;
   limit: number;
   onLimitChange: (limit: number) => void;
@@ -26,12 +25,19 @@ interface UsersToolbarProps {
  * over the page size on the right.
  *
  * @param role - the role filter in the URL, or undefined for every role.
+ * @param roles - the role catalog from `GET /roles`, already carrying its fallback.
  * @param onRoleChange - applies a role filter, or clears it with null.
  * @param page - the current page, shown next to the page size.
  * @param limit - the page size.
  * @returns The toolbar row.
  */
-export function UsersToolbar({ role, onRoleChange, limit, onLimitChange }: UsersToolbarProps) {
+export function UsersToolbar({
+  role,
+  roles,
+  onRoleChange,
+  limit,
+  onLimitChange,
+}: UsersToolbarProps) {
   const { t } = useTranslation("users");
 
   return (
@@ -52,7 +58,7 @@ export function UsersToolbar({ role, onRoleChange, limit, onLimitChange }: Users
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={ALL_ROLES}>{t("list.filters.roles")}</SelectItem>
-            {USER_ROLES.map((option) => (
+            {roles.map((option) => (
               <SelectItem key={option} value={option}>
                 {option}
               </SelectItem>

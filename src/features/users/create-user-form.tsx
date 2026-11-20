@@ -23,13 +23,15 @@ import { UserFormField, userControlClass } from "./components/user-form-field";
 import { type CreateUserInput, type CreateUserValues, createUserFormSchema } from "./create-schema";
 import { resolveCreateUserError } from "./create-user-errors";
 import { useCreateUser } from "./hooks/use-create-user";
+import { useRolesCatalog } from "./hooks/use-roles";
 import { PasswordStrengthIndicator } from "./password-strength";
-import { USER_ROLES } from "./types";
 
 export function CreateUserForm() {
   const { t } = useTranslation("users");
   const { t: tCommon } = useTranslation();
-  const schema = useMemo(() => createUserFormSchema(t), [t]);
+  const rolesCatalog = useRolesCatalog();
+  const roles = rolesCatalog.roles;
+  const schema = useMemo(() => createUserFormSchema(t, roles), [t, roles]);
   const navigate = useNavigate();
   const createMutation = useCreateUser();
   const [formError, setFormError] = useState<string | null>(null);
@@ -199,7 +201,7 @@ export function CreateUserForm() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {USER_ROLES.map((role) => (
+                    {roles.map((role) => (
                       <SelectItem key={role} value={role}>
                         {role}
                       </SelectItem>

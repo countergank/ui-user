@@ -22,9 +22,9 @@ import type { UpdateUserPayload } from "./api";
 import { UserFormField, userControlClass } from "./components/user-form-field";
 import { resolveCreateUserError } from "./create-user-errors";
 import { type EditUserInput, type EditUserValues, editUserFormSchema } from "./edit-schema";
+import { useRolesCatalog } from "./hooks/use-roles";
 import { useUpdateUser } from "./hooks/use-update-user";
-import { USER_ROLES } from "./types";
-import type { UserDTO, UserRoleName } from "./types";
+import type { UserDTO } from "./types";
 
 const EDITABLE_FIELDS = ["name", "lastName", "email", "userName", "role"] as const;
 
@@ -37,7 +37,12 @@ const EDITABLE_FIELDS = ["name", "lastName", "email", "userName", "role"] as con
 export function EditUserForm({ user }: { user: UserDTO }) {
   const { t } = useTranslation("users");
   const { t: tCommon } = useTranslation();
-  const schema = useMemo(() => editUserFormSchema(t), [t]);
+  const rolesCatalog = useRolesCatalog();
+  const roles = useMemo(
+    () => Array.from(new Set([...rolesCatalog.roles, user.role])),
+    [rolesCatalog.roles, user.role],
+  );
+  const schema = useMemo(() => editUserFormSchema(t, roles), [t, roles]);
   const navigate = useNavigate();
   const updateMutation = useUpdateUser(user.id);
   const [formError, setFormError] = useState<string | null>(null);
@@ -49,7 +54,7 @@ export function EditUserForm({ user }: { user: UserDTO }) {
       lastName: user.lastName,
       email: user.email,
       userName: user.userName,
-      role: user.role as UserRoleName,
+      role: user.role,
     }),
     [user],
   );
@@ -192,7 +197,7 @@ export function EditUserForm({ user }: { user: UserDTO }) {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {USER_ROLES.map((role) => (
+                    {roles.map((role) => (
                       <SelectItem key={role} value={role}>
                         {role}
                       </SelectItem>

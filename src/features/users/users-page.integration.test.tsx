@@ -18,6 +18,19 @@ import { initialSessionState, sessionStore } from "@/lib/session/session-store";
 import { UsersPage } from "./users-page";
 
 const USERS_URL = "https://test.invalid/admin/users";
+const ROLES_URL = "https://test.invalid/roles";
+
+const ROLES_CATALOG = {
+  data: [
+    { _id: "r1", name: "admin", description: "Admin" },
+    { _id: "r2", name: "user", description: "User" },
+    { _id: "r3", name: "moderator", description: "Moderator" },
+  ],
+  total: 3,
+  page: 1,
+  limit: 100,
+  totalPages: 1,
+};
 
 const tUsers = i18n.getFixedT(null, "users");
 
@@ -116,6 +129,7 @@ const server = setupServer(
 
     return HttpResponse.json(PAGE);
   }),
+  http.get(ROLES_URL, () => HttpResponse.json(ROLES_CATALOG)),
 );
 
 beforeAll(() => {
@@ -244,7 +258,7 @@ describe("users page — MSW", () => {
     });
   });
 
-  it("offers every API role in the selector and reflects the active one (S3)", async () => {
+  it("offers the roles from GET /roles in the selector and reflects the active one (S1)", async () => {
     renderPage("/app/users?role=admin");
     await expectRows();
     const user = userEvent.setup();
@@ -254,8 +268,21 @@ describe("users page — MSW", () => {
 
     await user.click(trigger);
     expect(await screen.findByRole("option", { name: "user" })).toBeInTheDocument();
-    expect(screen.getByRole("option", { name: "viewer" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "moderator" })).toBeInTheDocument();
+    expect(screen.queryByRole("option", { name: "viewer" })).not.toBeInTheDocument();
     expect(screen.getByRole("option", { name: tUsers("list.filters.roles") })).toBeInTheDocument();
+  });
+
+  it("falls back to the typed role catalog when GET /roles fails (S3)", async () => {
+    server.use(http.get(ROLES_URL, () => HttpResponse.json({}, { status: 500 })));
+    renderPage();
+    await expectRows();
+    const user = userEvent.setup();
+
+    await user.click(screen.getByRole("combobox", { name: tUsers("list.filters.role") }));
+    expect(await screen.findByRole("option", { name: "admin" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "user" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "viewer" })).toBeInTheDocument();
   });
 
   it("shows the user photo in the column when one exists and initials otherwise (113 S1, S2)", async () => {

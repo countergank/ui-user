@@ -18,6 +18,19 @@ import { UsersEditPage } from "./users-edit-page";
 
 const USERS_URL = "https://test.invalid/admin/users";
 const USER_URL = `${USERS_URL}/u1`;
+const ROLES_URL = "https://test.invalid/roles";
+
+const ROLES_CATALOG = {
+  data: [
+    { _id: "r1", name: "admin", description: "Admin" },
+    { _id: "r2", name: "user", description: "User" },
+    { _id: "r4", name: "moderator", description: "Moderator" },
+  ],
+  total: 3,
+  page: 1,
+  limit: 100,
+  totalPages: 1,
+};
 
 const tUsers = i18n.getFixedT(null, "users");
 const tCommon = i18n.getFixedT(null, "common");
@@ -43,6 +56,7 @@ let patchBody: unknown = null;
 let patchCount = 0;
 
 const server = setupServer(
+  http.get(ROLES_URL, () => HttpResponse.json(ROLES_CATALOG)),
   http.get(USER_URL, () => HttpResponse.json(USER)),
   http.patch(USER_URL, async ({ request }) => {
     patchCount += 1;
@@ -267,6 +281,31 @@ describe("edit user form — role impact", () => {
     await user.click(await screen.findByRole("option", { name: "admin" }));
 
     expect(await screen.findByText(tUsers("edit.roleImpact"))).toBeInTheDocument();
+  });
+
+  it("offers the roles from GET /roles in the selector (128 S2)", async () => {
+    renderPage();
+    await waitForPrefill();
+
+    const user = userEvent.setup();
+    await user.click(screen.getByRole("combobox", { name: tUsers("edit.fields.role") }));
+
+    expect(await screen.findByRole("option", { name: "moderator" })).toBeInTheDocument();
+    expect(screen.queryByRole("option", { name: "viewer" })).not.toBeInTheDocument();
+  });
+
+  it("keeps a non-fallback role valid on prefill when the catalog fails (128 S3)", async () => {
+    server.use(http.get(ROLES_URL, () => HttpResponse.json({}, { status: 500 })));
+    server.use(http.get(USER_URL, () => HttpResponse.json({ ...USER, role: "moderator" })));
+    renderPage();
+    const user = await waitForPrefill();
+
+    const name = screen.getByLabelText(tUsers("edit.fields.name"));
+    await user.type(name, " King");
+    await user.click(screen.getByRole("button", { name: tUsers("edit.submit") }));
+
+    expect(await screen.findByText("users-list")).toBeInTheDocument();
+    expect(patchBody).toEqual({ name: "Ada King" });
   });
 });
 
