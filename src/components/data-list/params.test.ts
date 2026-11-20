@@ -89,6 +89,18 @@ describe("params — parse", () => {
     expect(parseListParams(new URLSearchParams("limit=2.5"), CONFIG).limit).toBe(CONFIG.limit);
     expect(parseListParams(new URLSearchParams(""), CONFIG).limit).toBe(CONFIG.limit);
   });
+
+  it("accepts only strict decimal limit forms (R3-lenient-numeric-forms)", () => {
+    for (const raw of ["5e1", "0x5", "+5", " 5", "5.0"]) {
+      expect(parseListParams(new URLSearchParams(`limit=${raw}`), CONFIG).limit).toBe(CONFIG.limit);
+    }
+  });
+
+  it("falls back when the limit exceeds the API maximum of 100 (R3-no-upper-bound-on-limit)", () => {
+    expect(parseListParams(new URLSearchParams("limit=101"), CONFIG).limit).toBe(CONFIG.limit);
+    expect(parseListParams(new URLSearchParams("limit=999999"), CONFIG).limit).toBe(CONFIG.limit);
+    expect(parseListParams(new URLSearchParams("limit=100"), CONFIG).limit).toBe(100);
+  });
 });
 
 describe("params — serialize", () => {

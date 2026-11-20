@@ -41,14 +41,16 @@ function parsePage(raw: string | null): number {
   return Number.isSafeInteger(page) && page >= 1 ? page : 1;
 }
 
+const MAX_LIMIT = 100;
+
 function parseLimit(raw: string | null, fallback: number): number {
-  if (raw === null) {
+  if (raw === null || !/^\d+$/.test(raw)) {
     return fallback;
   }
 
   const limit = Number(raw);
 
-  return Number.isSafeInteger(limit) && limit >= 1 ? limit : fallback;
+  return Number.isSafeInteger(limit) && limit >= 1 && limit <= MAX_LIMIT ? limit : fallback;
 }
 
 function parseFilters(search: URLSearchParams, config: ListParamsConfig): Record<string, string> {

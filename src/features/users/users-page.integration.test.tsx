@@ -305,7 +305,9 @@ describe("users page — MSW", () => {
       expect(lastUrl?.searchParams.get("limit")).toBe("5");
       expect(lastUrl?.searchParams.get("page")).toBe("1");
     });
-    expect(screen.getByRole("combobox", { name: tUsers("list.pageSize") })).toHaveTextContent("5");
+    expect(screen.getByRole("combobox", { name: tUsers("list.pageSize") }).textContent.trim()).toBe(
+      `5 / ${tUsers("list.pageShort")}`,
+    );
   });
 
   it("keeps the page usable with an invalid limit in the URL (136 S5)", async () => {

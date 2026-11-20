@@ -152,6 +152,20 @@ describe("email templates page — MSW", () => {
     expect(lastUrl?.searchParams.get("active")).toBeNull();
   });
 
+  it("serves the page size from the URL in the outgoing request (136 S4)", async () => {
+    renderPage("/app/settings/email-templates?limit=5");
+    await expectRows();
+
+    expect(lastUrl?.searchParams.get("limit")).toBe("5");
+  });
+
+  it("falls back to the default limit when the URL value is out of range (136 S1)", async () => {
+    renderPage("/app/settings/email-templates?limit=500");
+    await expectRows();
+
+    expect(lastUrl?.searchParams.get("limit")).toBe("20");
+  });
+
   it("reflects the tri-state active filter through the URL and the request (S1)", async () => {
     renderPage("/app/settings/email-templates?active=false");
     await expectRows();
