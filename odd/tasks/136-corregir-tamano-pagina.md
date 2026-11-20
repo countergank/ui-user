@@ -14,8 +14,8 @@ Contexto del issue (verbatim): "Cambiar la cantidad de elementos por página en 
 
 ## Tasks
 
-- T1 (S1, S2, S3, S5) — Fix en `parseListParams` (`parseLimit` con validación de entero seguro ≥ 1) + tests de request saliente y límite inválido. `src/components/data-list/params.ts`, `params.test.ts`, `users-page.integration.test.tsx`. commit: —
-- T2 (S4) — Check diferencial de `email-templates` contra el código base: 11 casos de URL comparados entre base (`origin/develop`) y fix; solo difieren los 3 casos que #136 pide (URL con `limit` válido → request con ese `limit`); detectó y corrigió el truncado de `limit=2.5`→2. commit: —
+- T1 (S1, S2, S3, S5) — Fix en `parseListParams` (`parseLimit` con validación de entero seguro ≥ 1) + tests de request saliente y límite inválido. `src/components/data-list/params.ts`, `params.test.ts`, `users-page.integration.test.tsx`. commit: 7271d6f
+- T2 (S4) — Check diferencial de `email-templates` contra el código base: 11 casos de URL comparados entre base (`origin/develop`) y fix; solo difieren los 3 casos que #136 pide (URL con `limit` válido → request con ese `limit`); detectó y corrigió el truncado de `limit=2.5`→2. commit: 7271d6f
 
 ## Log
 
