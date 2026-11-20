@@ -16,6 +16,19 @@ import { USERS_QUERY_KEY } from "./hooks/use-users";
 import { UsersCreatePage } from "./users-create-page";
 
 const USERS_URL = "https://test.invalid/admin/users";
+const ROLES_URL = "https://test.invalid/roles";
+
+const ROLES_CATALOG = {
+  data: [
+    { _id: "r1", name: "admin", description: "Admin" },
+    { _id: "r2", name: "user", description: "User" },
+    { _id: "r4", name: "moderator", description: "Moderator" },
+  ],
+  total: 3,
+  page: 1,
+  limit: 100,
+  totalPages: 1,
+};
 
 const tUsers = i18n.getFixedT(null, "users");
 const tCommon = i18n.getFixedT(null, "common");
@@ -35,6 +48,7 @@ let requestCount = 0;
 let lastBody: unknown = null;
 
 const server = setupServer(
+  http.get(ROLES_URL, () => HttpResponse.json(ROLES_CATALOG)),
   http.post(USERS_URL, async ({ request }) => {
     requestCount += 1;
     lastBody = await request.json();
@@ -197,6 +211,38 @@ describe("create user form — MSW", () => {
     expect(await screen.findByText("users-list")).toBeInTheDocument();
 
     expect(lastBody).toMatchObject({ role: "admin" });
+  });
+
+  it("offers the roles from GET /roles in the selector (128 S2)", async () => {
+    renderForm();
+
+    const user = userEvent.setup();
+    await user.click(screen.getByRole("combobox", { name: tUsers("create.fields.role") }));
+
+    expect(await screen.findByRole("option", { name: "moderator" })).toBeInTheDocument();
+    expect(screen.queryByRole("option", { name: "viewer" })).not.toBeInTheDocument();
+  });
+
+  it("posts a role that only exists in the dynamic catalog (128 S2, S5)", async () => {
+    renderForm();
+
+    const user = await fillForm({ role: "moderator" });
+    await user.click(screen.getByRole("button", { name: tUsers("create.submit") }));
+
+    expect(await screen.findByText("users-list")).toBeInTheDocument();
+
+    expect(lastBody).toMatchObject({ role: "moderator" });
+  });
+
+  it("falls back to the typed role catalog when GET /roles fails (128 S3)", async () => {
+    server.use(http.get(ROLES_URL, () => HttpResponse.json({}, { status: 500 })));
+    renderForm();
+
+    const user = userEvent.setup();
+    await user.click(screen.getByRole("combobox", { name: tUsers("create.fields.role") }));
+
+    expect(await screen.findByRole("option", { name: "admin" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "viewer" })).toBeInTheDocument();
   });
 
   it("maps UA-COM-004 onto the email field only", async () => {

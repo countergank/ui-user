@@ -15,7 +15,6 @@ import {
   unlockUserResponseSchema,
   userSchema,
 } from "./types";
-import type { UserRoleName } from "./types";
 
 export interface CreateUserPayload {
   name: string;
@@ -23,7 +22,7 @@ export interface CreateUserPayload {
   email: string;
   userName: string;
   password: string;
-  role: UserRoleName;
+  role: string;
 }
 
 export interface UpdateUserPayload {
@@ -31,7 +30,7 @@ export interface UpdateUserPayload {
   lastName?: string;
   email?: string;
   userName?: string;
-  role?: UserRoleName;
+  role?: string;
 }
 
 export interface UsersQuery {

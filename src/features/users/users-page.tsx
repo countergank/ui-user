@@ -15,6 +15,7 @@ import { PERMISSIONS } from "@/features/authorization/permissions";
 
 import { ActiveConfirmDialog } from "./components/active-confirm-dialog";
 import { UnlockConfirmDialog } from "./components/unlock-confirm-dialog";
+import { useRolesCatalog } from "./hooks/use-roles";
 import { useUsers } from "./hooks/use-users";
 import { RecentAuditCard } from "./recent-audit-card";
 import { RolesDistributionCard } from "./roles-distribution-card";
@@ -39,6 +40,7 @@ export function UsersPage() {
   const [unlockTarget, setUnlockTarget] = useState<UserDTO | null>(null);
   const columns = useUsersColumns(setActiveTarget, setUnlockTarget);
   const users = useUsers(params);
+  const rolesCatalog = useRolesCatalog();
 
   const rows = users.data?.data ?? [];
   const total = users.data?.total ?? 0;
@@ -113,6 +115,7 @@ export function UsersPage() {
                 <div className="px-4">
                   <UsersToolbar
                     role={params.filters.role}
+                    roles={rolesCatalog.roles}
                     onRoleChange={(role) => {
                       setFilter("role", role);
                     }}

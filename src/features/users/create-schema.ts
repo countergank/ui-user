@@ -3,18 +3,19 @@ import { z } from "zod";
 
 import { passwordRuleChecks } from "@/lib/password-rules";
 
-import { USER_ROLES } from "./types";
-
 const EMAIL_SHAPE = z.string().email();
 
 /**
  * @param t - translator bound to the `users` namespace, so every rule failure carries the
  * localized message instead of a literal.
+ * @param roles - the role catalog from `GET /roles`; a role outside it fails with the localized
+ * required message, so a drift between the catalog and the form fails on submit.
  * @returns A zod schema mirroring the api-user `POST /admin/users` contract: non-empty
  * identity fields, a valid email, the full password rule set, a confirmation that must match the
- * password (reported on the confirm field only) and the API role enum with the `user` default.
+ * password (reported on the confirm field only) and a role from the dynamic catalog with the
+ * `user` default.
  */
-export function createUserFormSchema(t: TFunction<"users">) {
+export function createUserFormSchema(t: TFunction<"users">, roles: string[]) {
   const required = t("create.errors.fieldRequired");
   const weakPassword = t("create.errors.weakPassword");
   const passwordMismatch = t("create.errors.passwordMismatch");
@@ -48,7 +49,10 @@ export function createUserFormSchema(t: TFunction<"users">) {
         .refine((value) => value !== "", required),
       password,
       confirmPassword: z.string(),
-      role: z.enum(USER_ROLES).default("user"),
+      role: z
+        .string()
+        .refine((value) => roles.includes(value), required)
+        .default("user"),
     })
     .superRefine((values, ctx) => {
       if (values.confirmPassword !== values.password) {
