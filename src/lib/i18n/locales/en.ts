@@ -563,9 +563,11 @@ export const en = {
       },
       permissions: {
         title: "Effective permissions",
-        direct: "Direct:",
-        groupUser: "USER",
-        groupSystem: "SYSTEM",
+        count_one: "{{count}} permission",
+        count_other: "{{count}} permissions",
+        empty: "This user has no effective permissions.",
+        all: "All permissions",
+        resourceWildcard: "All {{resource}} permissions",
       },
       sessions: {
         title: "Sessions and security",

@@ -584,9 +584,11 @@ export const es: {
       },
       permissions: {
         title: "Permisos efectivos",
-        direct: "Directos:",
-        groupUser: "USER",
-        groupSystem: "SYSTEM",
+        count_one: "{{count}} permiso",
+        count_other: "{{count}} permisos",
+        empty: "Este usuario no tiene permisos efectivos.",
+        all: "Todos los permisos",
+        resourceWildcard: "Todos los permisos de {{resource}}",
       },
       sessions: {
         title: "Sesiones y seguridad",

@@ -68,7 +68,7 @@ export function UsersDetailPage() {
           <div className="grid gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,3fr)]">
             <div className="flex min-w-0 flex-col gap-6">
               <ProfileCard user={user.data} />
-              <PermissionsCard />
+              <PermissionsCard user={user.data} />
               <SessionsCard user={user.data} />
             </div>
             <div className="flex min-w-0 flex-col gap-6">
