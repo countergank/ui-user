@@ -364,6 +364,33 @@ describe("user detail — loaded user", () => {
     expect(screen.queryByText("user:*")).toBeNull();
   });
 
+  it("does not request the permission catalog without permission:read (126 S6)", async () => {
+    let catalogRequests = 0;
+    server.use(
+      http.get(PERMISSIONS_CATALOG_URL, () => {
+        catalogRequests += 1;
+        return HttpResponse.json(PERMISSIONS_CATALOG);
+      }),
+    );
+    const { client } = renderPage();
+    client.setQueryData(permissionsQueryKey, {
+      ...ADMIN_PROFILE,
+      permissions: ["user:read"],
+    });
+    await screen.findByText("Ada Lovelace");
+
+    expect(await screen.findByText("user:read")).toBeInTheDocument();
+    expect(catalogRequests).toBe(0);
+  });
+
+  it("reports all permissions in the meta for the full wildcard instead of a count (126 S6)", async () => {
+    server.use(http.get(USER_URL, () => HttpResponse.json({ ...USER, permissions: ["*"] })));
+    renderPage();
+
+    expect(await screen.findByText(tUsers("detail.permissions.all"))).toBeInTheDocument();
+    expect(screen.queryByText(tUsers("detail.permissions.count", { count: 1 }))).toBeNull();
+  });
+
   it("renders the remaining placeholders and keeps the toggle wired (S4–S8)", async () => {
     renderPage();
     await screen.findByText("Ada Lovelace");
