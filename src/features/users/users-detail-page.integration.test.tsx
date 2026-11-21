@@ -22,6 +22,7 @@ const USER_URL = `${USERS_URL}/u1`;
 const USER_ACTIVE_URL = `${USER_URL}/active`;
 const USER_UNLOCK_URL = `${USER_URL}/unlock`;
 const SESSIONS_URL = `${USER_URL}/sessions`;
+const PERMISSIONS_CATALOG_URL = "https://test.invalid/permissions";
 
 const tUsers = i18n.getFixedT(null, "users");
 const tCommon = i18n.getFixedT(null, "common");
@@ -41,6 +42,18 @@ const USER = {
   emailVerified: true,
   hasPendingEmailChange: false,
   hasPendingPasswordReset: false,
+  permissions: ["user:read", "role:read"],
+};
+
+const PERMISSIONS_CATALOG = {
+  data: [
+    { name: "user:read", description: "Read users" },
+    { name: "role:read", description: "Read roles" },
+  ],
+  total: 2,
+  page: 1,
+  limit: 100,
+  totalPages: 1,
 };
 
 const SESSIONS = [
@@ -123,6 +136,7 @@ class LoadedAvatarImage {
 const server = setupServer(
   http.get(USER_URL, () => HttpResponse.json(USER)),
   http.get(SESSIONS_URL, () => HttpResponse.json(SESSIONS)),
+  http.get(PERMISSIONS_CATALOG_URL, () => HttpResponse.json(PERMISSIONS_CATALOG)),
 );
 
 beforeAll(() => {
@@ -305,12 +319,57 @@ describe("user detail — loaded user", () => {
     );
   });
 
+  it("renders the effective permissions with readable labels (126 S1, S3)", async () => {
+    renderPage();
+
+    expect(await screen.findByText("Read users")).toBeInTheDocument();
+    expect(screen.getByText("Read roles")).toBeInTheDocument();
+    expect(screen.getByTitle("user:read")).toBeInTheDocument();
+    expect(screen.getByTitle("role:read")).toBeInTheDocument();
+    expect(screen.queryByText("user:read")).toBeNull();
+  });
+
+  it("falls back to the raw permission codes when the catalog is unavailable (126 S3)", async () => {
+    server.use(http.get(PERMISSIONS_CATALOG_URL, () => HttpResponse.json({}, { status: 403 })));
+    renderPage();
+
+    expect(await screen.findByText("user:read")).toBeInTheDocument();
+    expect(screen.getByText("role:read")).toBeInTheDocument();
+    expect(screen.queryByText("Read users")).toBeNull();
+  });
+
+  it("shows the empty state for a user without permissions (126 S4)", async () => {
+    server.use(http.get(USER_URL, () => HttpResponse.json({ ...USER, permissions: [] })));
+    renderPage();
+
+    expect(await screen.findByText(tUsers("detail.permissions.empty"))).toBeInTheDocument();
+    expect(screen.queryByText("user:read")).toBeNull();
+  });
+
+  it("renders the full wildcard as a single all-permissions row (126 S5)", async () => {
+    server.use(http.get(USER_URL, () => HttpResponse.json({ ...USER, permissions: ["*"] })));
+    renderPage();
+
+    expect(await screen.findByText(tUsers("detail.permissions.all"))).toBeInTheDocument();
+    expect(screen.queryByText("*")).toBeNull();
+  });
+
+  it("renders a readable label for resource wildcards without a catalog entry (126 S5)", async () => {
+    server.use(http.get(USER_URL, () => HttpResponse.json({ ...USER, permissions: ["user:*"] })));
+    renderPage();
+
+    expect(
+      await screen.findByText(tUsers("detail.permissions.resourceWildcard", { resource: "user" })),
+    ).toBeInTheDocument();
+    expect(screen.queryByText("user:*")).toBeNull();
+  });
+
   it("renders the remaining placeholders and keeps the toggle wired (S4–S8)", async () => {
     renderPage();
     await screen.findByText("Ada Lovelace");
     await screen.findByText(tUsers("detail.sessions.deviceCount", { count: 2 }));
 
-    expect(screen.getAllByText("—")).toHaveLength(5);
+    expect(screen.getAllByText("—")).toHaveLength(1);
 
     const pending = tCommon("ui.list.pending");
     for (const key of ["resetPassword", "resendVerification", "changeEmail", "delete"] as const) {
