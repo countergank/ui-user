@@ -8,6 +8,7 @@
 
 COMPOSE := docker compose
 INFISICAL := $(shell which infisical 2>/dev/null)
+INFISICAL_ENV ?= dev
 
 .PHONY: help setup install dev build build-staging preview typecheck lint format test test-coverage test-e2e ci docker-build docker-up docker-down docker-logs docker-status docker-redeploy infisical-login infisical-init
 
@@ -31,9 +32,9 @@ dev: ## Start the Vite development server (with Infisical if available)
 		pnpm dev; \
 	fi
 
-build: ## Type-check and bundle the app into dist/ (with Infisical if available)
+build: ## Type-check and bundle into dist/ (Infisical env INFISICAL_ENV, default dev)
 	@if [ -n "$(INFISICAL)" ]; then \
-		infisical run --env dev -- pnpm build; \
+		infisical run --env $(INFISICAL_ENV) -- pnpm build; \
 	else \
 		echo "Warning: infisical not found, falling back to pnpm build"; \
 		pnpm build; \
@@ -78,9 +79,9 @@ ci: ## CI gate: lint + typecheck + tests with coverage + build
 docker-build: ## Build the Docker image
 	$(COMPOSE) build
 
-docker-up: ## Start the container (build + background, with Infisical env if available)
+docker-up: ## Start the container (build + background, Infisical env INFISICAL_ENV, default dev)
 	@if [ -n "$(INFISICAL)" ]; then \
-		infisical run --env dev -- $(COMPOSE) up --build -d; \
+		infisical run --env $(INFISICAL_ENV) -- $(COMPOSE) up --build -d; \
 	else \
 		echo "Warning: infisical not found, using local VITE_API_BASE_URL"; \
 		$(COMPOSE) up --build -d; \

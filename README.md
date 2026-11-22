@@ -82,16 +82,18 @@ Environment variables and secrets are managed with **Infisical Cloud** (project 
 environments: `dev`, `staging`, `prod`). Run `make dev` / `make build`
 (or `infisical run --env dev -- pnpm dev`) to inject the variables from the `dev` environment.
 
-Setup (once per machine):
+Setup:
 
 ```bash
 make infisical-login      # infisical login (opens the browser)
-make infisical-init       # infisical init: links the repo to the ui-user project
 ```
 
-`infisical init` writes `.infisical.yaml` (project id + default environment, no secrets) at
-the repo root, which is how `infisical run` resolves the project; it is committed to the
-repository. If the Infisical CLI
+`infisical run` resolves the project from `.infisical.yaml`, which is committed at the repo
+root with the `ui-user` project id. Run `make infisical-init` (interactive `infisical init`)
+only if that file is missing or points at the wrong project. The committed config sets no
+default environment, so every `infisical run` passes `--env` explicitly (`dev`, `staging`,
+`prod`). For non-dev builds use `make build INFISICAL_ENV=prod` (or `staging`), which mirrors
+the old `doppler run --config prd` flow. If the Infisical CLI
 is not installed, `make dev` / `make build` fall back to reading `import.meta.env` from
 `.env.local`. All Vite-exposed variables MUST use the `VITE_` prefix to reach
 `import.meta.env.VITE_*`:

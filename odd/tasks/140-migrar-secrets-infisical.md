@@ -5,7 +5,7 @@ Board: ui-user (Project #6) · Estimate 3 · Branch `feature/140-migrar-secrets-
 
 ## Specs
 
-- S1: "Proyecto creado en Infisical Cloud con entornos (development, production) y todas las variables de los `.env.example`."
+- S1: "Proyecto creado en Infisical Cloud con entornos (development, production) y todas las variables de los `.env.example`." — slugs reales del proyecto: `dev`, `staging`, `prod`.
 - S2: "El dev local levanta con `infisical run` sin `.env` manual."
 - S3: "El build/runtime consume las variables desde Infisical sin Doppler."
 - S4: "Los workflows de GitHub Actions obtienen sus credenciales sin Doppler."
@@ -33,3 +33,4 @@ Board: ui-user (Project #6) · Estimate 3 · Branch `feature/140-migrar-secrets-
 - L8: .env.example editado por el humano; grep final de residuos: 0 hits en archivos activos. S2 verificado funcionalmente por el humano (`make dev` levanta con infisical run).
 - L9: Corrección de raíz: el CLI no resuelve el proyecto por directorio — requiere `infisical init`, que escribe `.infisical.yaml` (solo project id, commiteado). Agregado target `infisical-init` al Makefile y doc corregida. Error de documentación inicial: asumí `.infisical.json`; el archivo real es `.infisical.yaml`.
 - L10: Commit autorizado y ejecutado: 82ff63c `chore(infra): migrar gestión de entorno de Doppler a Infisical Cloud` (9 archivos, 98+/67-). El humano stageó .env.example manualmente (guard del harness bloquea hasta el git add del path).
+- L11: Review nativo (RDD): linaje review-f3ff378bf39753f3, tier high (shell en ci.yml), lentes readability+reliability, budget de corrección 83. Cerró en estado `escalated` (causa unknown_causality, hallazgo R2-001 CRITICAL, acción del maintainer informativa). Hallazgos: R2-001/R3-build-env-pin (make build/docker-up hardcodean --env dev; el flujo Doppler viejo permitía elegir config), R2-002/R2-003 (doc de infisical-init inexacta), R2-004 (spec S1 dice development/production pero los slugs reales son dev/staging/prod), R3-unverified-targets (build-staging/docker-up sin verificación funcional), R3-infisical-default-env (sin default env en .infisical.yaml), R3-fallback-hint (.env.example perdió instrucciones de copia del fallback).
