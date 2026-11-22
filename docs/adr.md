@@ -35,7 +35,7 @@ configs at the repo root:
 | ADR-8 | Tooling gate + single final PR delivery |
 | ADR-9 | CI-gated merge acceptance + branch protection |
 | ADR-10 | Zustand for client/UI state |
-| ADR-11 | Typed, fail-fast env handling via Doppler/Vite |
+| ADR-11 | Typed, fail-fast env handling via Infisical/Vite |
 | ADR-12 | Supported languages `en|es|pt` + mandatory key parity |
 
 ## ADR-1: Feature-based (screaming) source layout
@@ -200,7 +200,7 @@ hook — the boundary is documented in [component-patterns.md](component-pattern
 teams must resist dragging server cache into the store. Cherry-picking Zustand for
 `useState`-sized local state is actively discouraged (CSM-11).
 
-## ADR-11: Typed, fail-fast env handling via Doppler/Vite
+## ADR-11: Typed, fail-fast env handling via Infisical/Vite
 
 **Context**: the template documented the `VITE_` prefix convention (`.env.example`, README) but
 did not consume env vars in code, and `src/vite-env.d.ts` only referenced `vite/client` — no
@@ -208,8 +208,8 @@ typing for `ImportMetaEnv`. Secrets were also manual. This left every future app
 single typed gateway, so a missing variable would silently surface as a runtime-only bug (e.g.
 `undefined` reaching an API call).
 
-**Decision**: secrets and config come from **Doppler** (project `frontend-standard-project`,
-configs `dev`/`dev_personal`/`stg`/`prd`) and are injected at build time via `doppler run`
+**Decision**: secrets and config come from **Infisical Cloud** (project `ui-user`, environments
+`dev`/`staging`/`prod`) and are injected at build time via `infisical run`
 (`make dev`/`make build`). Vite bakes `VITE_*` into the bundle, so env is **build-time
 immutable** — the environment is derived from `import.meta.env.MODE`, never duplicated as an
 extra variable (ADR-11). All typed reads go through a single module
@@ -217,7 +217,7 @@ extra variable (ADR-11). All typed reads go through a single module
 testable `resolveMode`/`requireEnv`/`resolveEnv`. A missing required `VITE_*` throws an
 `AppError` with code `ENV_MISSING` **at import** (fail-fast), never later. `ImportMetaEnv` in
 `src/vite-env.d.ts` is the single typed source of truth, kept in sync with `.env.example` and
-Doppler. `src/test/setup` and `.env.test` keep a stable placeholder (`https://test.invalid`) so
+Infisical. `src/test/setup` and `.env.test` keep a stable placeholder (`https://test.invalid`) so
 tests stay deterministic and never hit a real host.
 
 **Consequences**: a loud, typed startup error for misconfiguration instead of a silent
@@ -225,7 +225,7 @@ runtime 404; one gateway that is trivially unit-testable; env files stay out of 
 (`.env*` gitignored). Costs: because VITE vars are baked at build time, the running nginx
 container cannot override them — changing an env requires a rebuild for the target mode, and
 the Docker build stage must receive the env (see `Makefile`/compose). Teams must keep
-`ImportMetaEnv`, `.env.example`, and Doppler in sync manually.
+`ImportMetaEnv`, `.env.example`, and Infisical in sync manually.
 
 ## ADR-12: Supported languages and mandatory key parity
 
