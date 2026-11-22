@@ -42,7 +42,7 @@ pnpm preview          # serve the production build locally
 > `http://localhost:3000` (override with `VITE_API_PROXY_TARGET`). The browser only ever talks to
 > its own origin, so CORS stays out of the dev loop, and no port can collide: a fixed port fails
 > loudly instead of drifting onto the API's. Builds are unaffected: they keep the absolute URL from
-> Doppler or the build args. The `dev` script assigns that variable inline, so it needs a POSIX shell
+> Infisical or the build args. The `dev` script assigns that variable inline, so it needs a POSIX shell
 > (Linux, macOS or WSL) — the same assumption the Makefile targets and the husky hooks already make.
 
 Run the full local gate before pushing:
@@ -78,28 +78,31 @@ make docker-status    # show container status
 
 ## Environment variables
 
-Secrets are managed with **Doppler**. Run `make dev` / `make build` (or `doppler run -- pnpm dev`)
-to inject secrets from the active config. The project is linked to the `ui-user`
-Doppler project (configs: `dev`, `dev_personal`, `stg`, `prd`).
+Environment variables and secrets are managed with **Infisical Cloud** (project `ui-user`,
+environments: `dev`, `staging`, `prod`). Run `make dev` / `make build`
+(or `infisical run --env dev -- pnpm dev`) to inject the variables from the `dev` environment.
 
 Setup (once per machine):
 
 ```bash
-doppler login
-make doppler-setup        # links project + config
+make infisical-login      # infisical login (opens the browser)
+make infisical-init       # infisical init: links the repo to the ui-user project
 ```
 
-If the Doppler CLI is not installed, `make dev` / `make build` fall back to reading
-`import.meta.env` from `.env.local`. All Vite-exposed variables MUST use the `VITE_` prefix to
-reach `import.meta.env.VITE_*`:
+`infisical init` writes `.infisical.yaml` (project id + default environment, no secrets) at
+the repo root, which is how `infisical run` resolves the project; it is committed to the
+repository. If the Infisical CLI
+is not installed, `make dev` / `make build` fall back to reading `import.meta.env` from
+`.env.local`. All Vite-exposed variables MUST use the `VITE_` prefix to reach
+`import.meta.env.VITE_*`:
 
-- `VITE_API_BASE_URL` — base URL of the backend API the SPA talks to (set per config in Doppler).
+- `VITE_API_BASE_URL` — base URL of the backend API the SPA talks to (set per environment in Infisical).
 
 The template reads env vars through the typed gateway `src/lib/env.ts` (ADR-11): the home
 page renders a visible `AppEnvBadge` with the resolved `envMode`/`env.apiBaseUrl` as a working
 example of how apps built from this template should consume env. Build for staging with
-`make build-staging` (or `pnpm build:staging`), which uses the Doppler `stg` config and
-`vite build --mode staging`. `.env.test` holds stable, non-environment-specific values for
+`make build-staging` (or `pnpm build:staging`), which uses the Infisical `staging` environment
+and `vite build --mode staging`. `.env.test` holds stable, non-environment-specific values for
 Vitest.
 
 ## Consuming this template (bootstrap a new app)
@@ -110,8 +113,8 @@ Vitest.
    nav in `src/public-layout.tsx` (public site) and the console shell in
    `src/features/console/dashboard-layout.tsx`.
 3. **Install** — `pnpm install`.
-4. **Configure env** — `doppler setup` in the new repo, set `VITE_API_BASE_URL` per config,
-   then read it through `src/lib/env.ts` from your API client layer.
+4. **Configure env** — create the app's project in Infisical, set `VITE_API_BASE_URL` per
+   environment, then read it through `src/lib/env.ts` from your API client layer.
 5. **Add a feature** — create `src/features/<feature>/` following
    `docs/component-patterns.md` (container + presentational + `api.ts`).
 6. **Keep the governance layer** — `AGENTS.md`, `docs/`, `skills-lock.json`,

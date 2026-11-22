@@ -3,7 +3,7 @@ FROM node:22-alpine AS build
 WORKDIR /app
 
 # Environment baked into the bundle at build time (ADR-11). These are build-args so
-# the correct mode's values can be supplied per environment (e.g. `doppler run` /
+# the correct mode's values can be supplied per environment (e.g. `infisical run` /
 # `docker compose build --build-arg VITE_API_BASE_URL=...`). They are NOT used at runtime.
 #
 # VITE_MODE drives `vite build --mode` (dev / staging / production) and therefore the

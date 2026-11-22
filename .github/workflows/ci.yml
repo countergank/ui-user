@@ -71,7 +71,7 @@ jobs:
     needs: quality-gates
     # The Playwright webServer runs `pnpm build && pnpm preview`; env.ts fails fast
     # when VITE_API_BASE_URL is missing (ADR-11), so the preview needs a dummy value.
-    # Real secrets come from Doppler in deployed environments, not from CI previews.
+    # Real variables come from Infisical in deployed environments, not from CI previews.
     env:
       VITE_API_BASE_URL: https://ci.invalid
     steps:

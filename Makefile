@@ -7,9 +7,9 @@
 # invokes the canonical pnpm script it mirrors.
 
 COMPOSE := docker compose
-DOPPLER := $(shell which doppler 2>/dev/null)
+INFISICAL := $(shell which infisical 2>/dev/null)
 
-.PHONY: help setup install dev build build-staging preview typecheck lint format test test-coverage test-e2e ci docker-build docker-up docker-down docker-logs docker-status docker-redeploy doppler-setup doppler-secrets
+.PHONY: help setup install dev build build-staging preview typecheck lint format test test-coverage test-e2e ci docker-build docker-up docker-down docker-logs docker-status docker-redeploy infisical-login infisical-init
 
 help: ## Show this help message
 	@echo "Usage: make [target]"
@@ -23,27 +23,27 @@ install: ## Install dependencies (pnpm install)
 setup: ## Install dependencies (alias for install)
 	pnpm install
 
-dev: ## Start the Vite development server (with Doppler if available)
-	@if [ -n "$(DOPPLER)" ]; then \
-		doppler run -- pnpm dev; \
+dev: ## Start the Vite development server (with Infisical if available)
+	@if [ -n "$(INFISICAL)" ]; then \
+		infisical run --env dev -- pnpm dev; \
 	else \
-		echo "Warning: doppler not found, falling back to pnpm dev"; \
+		echo "Warning: infisical not found, falling back to pnpm dev"; \
 		pnpm dev; \
 	fi
 
-build: ## Type-check and bundle the app into dist/ (with Doppler if available)
-	@if [ -n "$(DOPPLER)" ]; then \
-		doppler run -- pnpm build; \
+build: ## Type-check and bundle the app into dist/ (with Infisical if available)
+	@if [ -n "$(INFISICAL)" ]; then \
+		infisical run --env dev -- pnpm build; \
 	else \
-		echo "Warning: doppler not found, falling back to pnpm build"; \
+		echo "Warning: infisical not found, falling back to pnpm build"; \
 		pnpm build; \
 	fi
 
-build-staging: ## Build for staging (--mode staging + Doppler stg config)
-	@if [ -n "$(DOPPLER)" ]; then \
-		doppler run --config stg -- pnpm build:staging; \
+build-staging: ## Build for staging (--mode staging + Infisical staging env)
+	@if [ -n "$(INFISICAL)" ]; then \
+		infisical run --env staging -- pnpm build:staging; \
 	else \
-		echo "Warning: doppler not found, using local env + --mode staging"; \
+		echo "Warning: infisical not found, using local env + --mode staging"; \
 		pnpm build:staging; \
 	fi
 
@@ -78,11 +78,11 @@ ci: ## CI gate: lint + typecheck + tests with coverage + build
 docker-build: ## Build the Docker image
 	$(COMPOSE) build
 
-docker-up: ## Start the container (build + background, with Doppler env if available)
-	@if [ -n "$(DOPPLER)" ]; then \
-		doppler run -- $(COMPOSE) up --build -d; \
+docker-up: ## Start the container (build + background, with Infisical env if available)
+	@if [ -n "$(INFISICAL)" ]; then \
+		infisical run --env dev -- $(COMPOSE) up --build -d; \
 	else \
-		echo "Warning: doppler not found, using local VITE_API_BASE_URL"; \
+		echo "Warning: infisical not found, using local VITE_API_BASE_URL"; \
 		$(COMPOSE) up --build -d; \
 	fi
 
@@ -98,8 +98,8 @@ docker-status: ## Show container status
 docker-redeploy: ## Rebuild and restart in one command
 	$(COMPOSE) up --build -d
 
-doppler-setup: ## Link local project to Doppler (interactive)
-	doppler setup --project ui-user --no-interactive
+infisical-login: ## Log in to Infisical Cloud (interactive)
+	infisical login
 
-doppler-secrets: ## Show secrets for the current Doppler config
-	doppler secrets
+infisical-init: ## Link local project to Infisical (interactive; writes .infisical.yaml)
+	infisical init

@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
       # VITE_* is baked into the bundle at build time (ADR-11), so the env is passed
       # as build-args, NOT as a runtime env. Supply them per environment via
-      # `doppler run -- docker compose build --build-arg VITE_API_BASE_URL=...` or
+      # `infisical run --env <env> -- docker compose build --build-arg VITE_API_BASE_URL=...` or
       # export VITE_API_BASE_URL/VITE_MODE before `docker compose up --build`.
       args:
         VITE_API_BASE_URL: ${VITE_API_BASE_URL:-}
