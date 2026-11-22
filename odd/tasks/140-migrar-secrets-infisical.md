@@ -16,10 +16,10 @@ Board: ui-user (Project #6) · Estimate 3 · Branch `feature/140-migrar-secrets-
 | ID | Specs | Ruta | Commit |
 |----|------|------|--------|
 | T1 | S1 | Infra fuera del repo: crear proyecto+entornos en Infisical Cloud y migrar variables (manual, requiere humano con cuenta) | — |
-| T2 | S2, S5 | `Makefile` + `README.md`: reemplazar `doppler run` por `infisical run` (targets `dev`, `build`, `build-staging`, `docker-up`; eliminar `doppler-setup`/`doppler-secrets`; nueva doc de setup con Infisical) | |
-| T3 | S3, S5 | `docker-compose.yml` + `Dockerfile` + `docs/adr.md` (ADR-11): runtime/build sin Doppler (build-args se mantienen, se documenta fuente Infisical) | |
-| T4 | S4, S5 | `.github/workflows/ci.yml`: comentarios Doppler → Infisical (CI ya usa env dummy `https://ci.invalid`, sin consumo real de Doppler) | |
-| T5 | S5 | Barrido final: grep Doppler sin residuos en archivos activos (excluye openspec/archive, odd/, CHANGELOG históricos) — .env.example entregado al humano (harness bloquea el path) | |
+| T2 | S2, S5 | `Makefile` + `README.md`: reemplazar `doppler run` por `infisical run` (targets `dev`, `build`, `build-staging`, `docker-up`; eliminar `doppler-setup`/`doppler-secrets`; nueva doc de setup con Infisical) | 82ff63c |
+| T3 | S3, S5 | `docker-compose.yml` + `Dockerfile` + `docs/adr.md` (ADR-11): runtime/build sin Doppler (build-args se mantienen, se documenta fuente Infisical) | 82ff63c |
+| T4 | S4, S5 | `.github/workflows/ci.yml`: comentarios Doppler → Infisical (CI ya usa env dummy `https://ci.invalid`, sin consumo real de Doppler) | 82ff63c |
+| T5 | S5 | Barrido final: grep Doppler sin residuos en archivos activos (excluye openspec/archive, odd/, CHANGELOG históricos) — .env.example editado por el humano | 82ff63c |
 
 ## Log
 
@@ -32,3 +32,4 @@ Board: ui-user (Project #6) · Estimate 3 · Branch `feature/140-migrar-secrets-
 - L7: T5 bloqueado solo por .env.example: la política del harness bloquea leer/editar paths .env* (hard block, la autorización humana no lo levanta). Bloque de reemplazo entregado. openspec/changes/cou-251-zustand/proposal.md queda fuera de alcance (artefacto histórico de cambio cerrado).
 - L8: .env.example editado por el humano; grep final de residuos: 0 hits en archivos activos. S2 verificado funcionalmente por el humano (`make dev` levanta con infisical run).
 - L9: Corrección de raíz: el CLI no resuelve el proyecto por directorio — requiere `infisical init`, que escribe `.infisical.yaml` (solo project id, commiteado). Agregado target `infisical-init` al Makefile y doc corregida. Error de documentación inicial: asumí `.infisical.json`; el archivo real es `.infisical.yaml`.
+- L10: Commit autorizado y ejecutado: 82ff63c `chore(infra): migrar gestión de entorno de Doppler a Infisical Cloud` (9 archivos, 98+/67-). El humano stageó .env.example manualmente (guard del harness bloquea hasta el git add del path).
