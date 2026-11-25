@@ -18,13 +18,15 @@ Non-goals (del issue): cambios en api-user; eliminar usuario (es #53 y queda des
 
 ## Tasks
 
-- T1 · S1 · API `resetPassword` + hook + confirm dialog + wiring en `admin-actions-card.tsx` + i18n (es/en/pt) + tests · done (sin commit aún)
-- T2 · S2 · API `resendVerification` + hook + confirm dialog + wiring + i18n + tests · done (sin commit aún)
-- T3 · S3 · API `requestEmailChange`/`cancelEmailChange` + hooks + email-change dialog (input validado, estado pendiente, cancelación) + wiring + i18n + tests · done (sin commit aún)
-- T4 · S4 · Fila "eliminar usuario" deshabilitada remitiendo a #53 (sin duplicar) · done (sin commit aún)
-- T5 · S5 · Errores 4xx visibles por acción (cubiertos en T1–T3; verificación final) · done: suite 1071/1071, lint, typecheck, build y coverage 97.9/94.04 (sin commit aún)
-- T6 · S6 · Deshabilitar reenvío de verificación para email ya verificado + tooltip + i18n + tests · done: tests de página 30/30 (sin commit aún)
-- T7 · S7 · Toast de error con mensaje real del AppError en los 4 diálogos nuevos + tests · done: suite 1073/1073, lint, typecheck, build (sin commit aún)
+- T1 · S1 · API `resetPassword` + hook + confirm dialog + wiring en `admin-actions-card.tsx` + i18n (es/en/pt) + tests · commit 113b581
+- T2 · S2 · API `resendVerification` + hook + confirm dialog + wiring + i18n + tests · commit 113b581
+- T3 · S3 · API `requestEmailChange`/`cancelEmailChange` + hooks + email-change dialog (input validado, estado pendiente, cancelación) + wiring + i18n + tests · commit 113b581
+- T4 · S4 · Fila "eliminar usuario" deshabilitada remitiendo a #53 (sin duplicar) · commit 113b581
+- T5 · S5 · Errores 4xx visibles por acción (cubiertos en T1–T3; verificación final) · commit 113b581
+- T6 · S6 · Deshabilitar reenvío de verificación para email ya verificado + tooltip + i18n + tests · commit 113b581
+- T7 · S7 · Toast de error con mensaje real del AppError en los 4 diálogos nuevos + tests · commit 113b581
+
+Entrega como commit único (1765 líneas autorizadas por el usuario): los archivos de las siete tareas se intercalan (card, locales y tests de página tocan todas las acciones a la vez), por lo que partir por tarea exigiría staging parcial artificial. Slice boundary registrado aquí; el feature cierra con este commit.
 
 ## Log
 
@@ -33,3 +35,4 @@ Non-goals (del issue): cambios en api-user; eliminar usuario (es #53 y queda des
 - L3: Verificación final (T5): `pnpm test` 1071/1071 · `pnpm lint` limpio · `pnpm typecheck` limpio · `pnpm build` ok · `pnpm test:coverage` 97.9% líneas / 94.04% branches (floor 80). Errores 4xx cubiertos por test por acción: reset 403, resend 409, change-email 409, cancel 409.
 - L4: Reporte del usuario: "me muestra ocurrio un error ineesperado" al reenviar verificación a countergank.ti@gmail.com. Diagnóstico: el backend rechaza con 400 `VALIDATION_ERROR` ("Email already verified", `user.service.ts:656`) cuando la cuenta no tiene `emailVerificationToken` (== `emailVerified: true`), y la UI descartaba el mensaje real mostrando el genérico. Decisión del usuario: "dale vamos con ambos" — implementar prevención (S6) y mensaje real (S7).
 - L5: Verificación final (T6–T7): `pnpm test` 1073/1073 · `pnpm lint` limpio · `pnpm typecheck` limpio · `pnpm build` ok. S6 cubierto con tests de página para verificado (deshabilitada + tooltip) y no verificado (habilitada); S7 cubierto con tests que exigen el mensaje del backend en los 4 diálogos.
+- L6: Commit autorizado por el usuario ("vamos") y ejecutado: `113b581` feat(users): enable admin actions in user detail — 18 archivos, +1731/−34. PUSH y PR quedan como decisión pendiente del usuario.
