@@ -554,6 +554,33 @@ export const es: {
       lockedSince: "Bloqueada",
       attempts: "Intentos fallidos",
     },
+    resetPassword: {
+      action: "Restablecer contraseña",
+      confirmTitle: "Confirmar restablecimiento de contraseña",
+      confirmBody:
+        "Se enviará a {{name}} un enlace para restablecer la contraseña por email; la actual sigue vigente hasta que se use.",
+      success: "Restablecimiento de contraseña enviado.",
+    },
+    resendVerification: {
+      action: "Reenviar verificación",
+      confirmTitle: "Confirmar reenvío de verificación",
+      confirmBody: "Se enviará a {{name}} ({{email}}) un nuevo email de verificación de cuenta.",
+      success: "Email de verificación reenviado.",
+    },
+    changeEmail: {
+      action: "Cambiar email",
+      confirmTitle: "Cambiar el email de la cuenta",
+      confirmBody:
+        "El nuevo email reemplazará a {{email}} recién cuando la persona lo confirme desde su bandeja; hasta entonces el actual sigue vigente.",
+      label: "Nuevo email",
+      fieldRequired: "Ingresá el nuevo email.",
+      emailInvalid: "El email no tiene un formato válido.",
+      success: "Cambio de email solicitado.",
+      pendingTitle: "Cambio pendiente de confirmación",
+      pendingBody: "Este usuario tiene un cambio de email pendiente de confirmación por email.",
+      cancelPending: "Cancelar cambio pendiente",
+      cancelSuccess: "Cambio de email pendiente cancelado.",
+    },
     detail: {
       title: "Detalle de usuario",
       subtitle: "Ficha, permisos y acciones administrativas",
@@ -649,8 +676,10 @@ export const es: {
         deactivate: "Desactivar usuario",
         resetPassword: "Restablecer contraseña",
         resendVerification: "Reenviar verificación",
+        resendVerificationDisabled: "El email ya está verificado",
         changeEmail: "Cambiar email (2 pasos)",
         delete: "Eliminar usuario",
+        deletePending: "La eliminación de usuario se implementa en el issue #53",
       },
       accountStatus: {
         title: "Estado de la cuenta",

@@ -6,13 +6,17 @@ import { type ActiveSessionDTO, activeSessionSchema } from "@/features/sessions/
 import { httpClient } from "@/lib/session/session";
 
 import {
+  type CancelEmailChangeResponseDTO,
   type CreateUserResponseDTO,
   type PaginatedUsers,
   type UnlockUserResponseDTO,
+  type UserActionResponseDTO,
   type UserDTO,
+  cancelEmailChangeResponseSchema,
   createUserResponseSchema,
   paginatedUsersSchema,
   unlockUserResponseSchema,
+  userActionResponseSchema,
   userSchema,
 } from "./types";
 
@@ -173,6 +177,70 @@ export async function logoutAllUserSessions(id: string): Promise<void> {
   await httpClient.request<unknown>(`/admin/users/${encodeURIComponent(id)}/logout-all`, {
     method: "POST",
   });
+}
+
+/**
+ * @param id - the user id; it is percent-encoded so a hostile id cannot change the path. The
+ * endpoint mails the reset link server-side, so the client sends no body.
+ * @returns The validated `UserActionResponseDTO`; `message` is the API's already translated
+ * confirmation text, ready to show in the toast as-is.
+ */
+export async function resetUserPassword(id: string): Promise<UserActionResponseDTO> {
+  const raw = await httpClient.request<unknown>(
+    `/admin/users/${encodeURIComponent(id)}/reset-password`,
+    { method: "POST" },
+  );
+
+  return userActionResponseSchema.parse(raw);
+}
+
+/**
+ * @param id - the user id; it is percent-encoded so a hostile id cannot change the path.
+ * @param email - the destination address; it becomes the body of the admin-requested email
+ * change, which the target user still has to confirm from their inbox.
+ * @returns The validated `UserActionResponseDTO`; `message` is the API's already translated
+ * confirmation text, ready to show in the toast as-is.
+ */
+export async function requestUserEmailChange(
+  id: string,
+  email: string,
+): Promise<UserActionResponseDTO> {
+  const raw = await httpClient.request<unknown>(
+    `/admin/users/${encodeURIComponent(id)}/change-email`,
+    { method: "POST", body: { email } },
+  );
+
+  return userActionResponseSchema.parse(raw);
+}
+
+/**
+ * @param id - the user id; it is percent-encoded so a hostile id cannot change the path. The
+ * endpoint drops the pending email change server-side, so the client sends no body.
+ * @returns The validated `CancelEmailChangeResponseDTO`; `message` is the API's already
+ * translated confirmation text, ready to show in the toast as-is.
+ */
+export async function cancelUserEmailChange(id: string): Promise<CancelEmailChangeResponseDTO> {
+  const raw = await httpClient.request<unknown>(
+    `/admin/users/${encodeURIComponent(id)}/change-email`,
+    { method: "DELETE" },
+  );
+
+  return cancelEmailChangeResponseSchema.parse(raw);
+}
+
+/**
+ * @param id - the user id; it is percent-encoded so a hostile id cannot change the path. The
+ * endpoint re-sends the verification email server-side, so the client sends no body.
+ * @returns The validated `UserActionResponseDTO`; `message` is the API's already translated
+ * confirmation text, ready to show in the toast as-is.
+ */
+export async function resendUserVerification(id: string): Promise<UserActionResponseDTO> {
+  const raw = await httpClient.request<unknown>(
+    `/admin/users/${encodeURIComponent(id)}/resend-verification`,
+    { method: "POST" },
+  );
+
+  return userActionResponseSchema.parse(raw);
 }
 
 /**

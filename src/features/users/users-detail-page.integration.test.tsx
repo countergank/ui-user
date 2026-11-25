@@ -21,6 +21,9 @@ const USERS_URL = "https://test.invalid/admin/users";
 const USER_URL = `${USERS_URL}/u1`;
 const USER_ACTIVE_URL = `${USER_URL}/active`;
 const USER_UNLOCK_URL = `${USER_URL}/unlock`;
+const USER_RESET_PASSWORD_URL = `${USER_URL}/reset-password`;
+const USER_RESEND_VERIFICATION_URL = `${USER_URL}/resend-verification`;
+const USER_CHANGE_EMAIL_URL = `${USER_URL}/change-email`;
 const SESSIONS_URL = `${USER_URL}/sessions`;
 const PERMISSIONS_CATALOG_URL = "https://test.invalid/permissions";
 
@@ -392,20 +395,33 @@ describe("user detail — loaded user", () => {
   });
 
   it("renders the remaining placeholders and keeps the toggle wired (S4–S8)", async () => {
+    server.use(http.get(USER_URL, () => HttpResponse.json({ ...USER, emailVerified: false })));
     renderPage();
     await screen.findByText("Ada Lovelace");
     await screen.findByText(tUsers("detail.sessions.deviceCount", { count: 2 }));
 
     expect(screen.getAllByText("—")).toHaveLength(1);
 
-    const pending = tCommon("ui.list.pending");
-    for (const key of ["resetPassword", "resendVerification", "changeEmail", "delete"] as const) {
-      const button = screen.getByRole("button", {
-        name: new RegExp(`^${escapeRegExp(tUsers(`detail.adminActions.${key}`))} `),
-      });
-      expect(button).toBeDisabled();
-      expect(button).toHaveAttribute("title", expect.stringContaining(pending));
-    }
+    const deleteButton = screen.getByRole("button", {
+      name: new RegExp(`^${escapeRegExp(tUsers("detail.adminActions.delete"))} `),
+    });
+    expect(deleteButton).toBeDisabled();
+    expect(deleteButton).toHaveAttribute("title", tUsers("detail.adminActions.deletePending"));
+    expect(
+      screen.getByRole("button", {
+        name: new RegExp(`^${escapeRegExp(tUsers("detail.adminActions.resetPassword"))} `),
+      }),
+    ).toBeEnabled();
+    expect(
+      screen.getByRole("button", {
+        name: new RegExp(`^${escapeRegExp(tUsers("detail.adminActions.resendVerification"))} `),
+      }),
+    ).toBeEnabled();
+    expect(
+      screen.getByRole("button", {
+        name: new RegExp(`^${escapeRegExp(tUsers("detail.adminActions.changeEmail"))} `),
+      }),
+    ).toBeEnabled();
     const toggle = screen.getByRole("button", {
       name: new RegExp(`^${escapeRegExp(tUsers("detail.adminActions.deactivate"))}`),
     });
@@ -563,6 +579,118 @@ describe("user detail — loaded user", () => {
     await waitFor(() => {
       expect(client.getQueryData(userQueryKey("u1"))).toMatchObject({ lockedUntil: null });
     });
+  });
+
+  it("resets the password from the detail with confirmation (127 S1, S5)", async () => {
+    let postCount = 0;
+    server.use(
+      http.get(USER_URL, () =>
+        HttpResponse.json(postCount > 0 ? { ...USER, hasPendingPasswordReset: true } : USER),
+      ),
+      http.post(USER_RESET_PASSWORD_URL, () => {
+        postCount += 1;
+
+        return HttpResponse.json({ message: "ok-reset", userId: "u1" });
+      }),
+    );
+    const { client } = renderPage();
+    const user = userEvent.setup();
+    await screen.findByText("Ada Lovelace");
+
+    await user.click(
+      screen.getByRole("button", {
+        name: new RegExp(`^${escapeRegExp(tUsers("detail.adminActions.resetPassword"))} `),
+      }),
+    );
+    const dialog = screen.getByRole("alertdialog");
+    expect(dialog).toHaveTextContent(tUsers("resetPassword.confirmTitle"));
+
+    await user.click(within(dialog).getByRole("button", { name: tUsers("resetPassword.action") }));
+
+    expect(await screen.findByText("ok-reset")).toBeInTheDocument();
+    expect(postCount).toBe(1);
+    await waitFor(() => {
+      expect(client.getQueryData(userQueryKey("u1"))).toMatchObject({
+        hasPendingPasswordReset: true,
+      });
+    });
+  });
+
+  it("disables the resend-verification row for an already verified user (127 S6)", async () => {
+    renderPage();
+    await screen.findByText("Ada Lovelace");
+
+    expect(
+      screen.getByRole("button", {
+        name: new RegExp(`^${escapeRegExp(tUsers("detail.adminActions.resendVerification"))} `),
+      }),
+    ).toBeDisabled();
+  });
+
+  it("keeps the resend-verification row enabled for an unverified user (127 S6)", async () => {
+    server.use(http.get(USER_URL, () => HttpResponse.json({ ...USER, emailVerified: false })));
+    renderPage();
+    await screen.findByText("Ada Lovelace");
+
+    expect(
+      screen.getByRole("button", {
+        name: new RegExp(`^${escapeRegExp(tUsers("detail.adminActions.resendVerification"))} `),
+      }),
+    ).toBeEnabled();
+  });
+
+  it("resends the verification email from the detail with confirmation (127 S2, S5)", async () => {
+    server.use(
+      http.get(USER_URL, () => HttpResponse.json({ ...USER, emailVerified: false })),
+      http.post(USER_RESEND_VERIFICATION_URL, () =>
+        HttpResponse.json({ message: "ok-resent", userId: "u1" }),
+      ),
+    );
+    renderPage();
+    const user = userEvent.setup();
+    await screen.findByText("Ada Lovelace");
+
+    await user.click(
+      screen.getByRole("button", {
+        name: new RegExp(`^${escapeRegExp(tUsers("detail.adminActions.resendVerification"))} `),
+      }),
+    );
+    const dialog = screen.getByRole("alertdialog");
+    expect(dialog).toHaveTextContent(tUsers("resendVerification.confirmTitle"));
+    expect(dialog).toHaveTextContent("ada@example.com");
+
+    await user.click(
+      within(dialog).getByRole("button", { name: tUsers("resendVerification.action") }),
+    );
+
+    expect(await screen.findByText("ok-resent")).toBeInTheDocument();
+  });
+
+  it("requests an email change from the detail and offers the pending cancel (127 S3, S5)", async () => {
+    server.use(
+      http.get(USER_URL, () => HttpResponse.json({ ...USER, hasPendingEmailChange: true })),
+      http.post(USER_CHANGE_EMAIL_URL, () =>
+        HttpResponse.json({ message: "ok-change-email", userId: "u1" }),
+      ),
+      http.delete(USER_CHANGE_EMAIL_URL, () => HttpResponse.json({ message: "ok-cancel-email" })),
+    );
+    renderPage();
+    const user = userEvent.setup();
+    await screen.findByText("Ada Lovelace");
+
+    await user.click(
+      screen.getByRole("button", {
+        name: new RegExp(`^${escapeRegExp(tUsers("detail.adminActions.changeEmail"))} `),
+      }),
+    );
+    const dialog = screen.getByRole("alertdialog");
+    expect(dialog).toHaveTextContent(tUsers("changeEmail.confirmTitle"));
+    expect(dialog).toHaveTextContent(tUsers("changeEmail.pendingTitle"));
+
+    await user.type(screen.getByLabelText(tUsers("changeEmail.label")), "newada@example.com");
+    await user.click(within(dialog).getByRole("button", { name: tUsers("changeEmail.action") }));
+
+    expect(await screen.findByText("ok-change-email")).toBeInTheDocument();
   });
 
   it("offers the edit link and the way back to the list (S5)", async () => {

@@ -554,6 +554,33 @@ export const pt: {
       lockedSince: "Bloqueada",
       attempts: "Tentativas malsucedidas",
     },
+    resetPassword: {
+      action: "Redefinir senha",
+      confirmTitle: "Confirmar redefinição de senha",
+      confirmBody:
+        "{{name}} receberá um email com um link para redefinir a senha; a atual permanece válida até que seja usada.",
+      success: "Redefinição de senha enviada.",
+    },
+    resendVerification: {
+      action: "Reenviar verificação",
+      confirmTitle: "Confirmar reenvio de verificação",
+      confirmBody: "{{name}} ({{email}}) receberá um novo email de verificação de conta.",
+      success: "Email de verificação reenviado.",
+    },
+    changeEmail: {
+      action: "Alterar email",
+      confirmTitle: "Alterar o email da conta",
+      confirmBody:
+        "O novo email substituirá {{email}} somente quando a pessoa o confirmar na sua caixa de entrada; até lá, o atual permanece válido.",
+      label: "Novo email",
+      fieldRequired: "Informe o novo email.",
+      emailInvalid: "O email não tem um formato válido.",
+      success: "Alteração de email solicitada.",
+      pendingTitle: "Alteração pendente de confirmação",
+      pendingBody: "Este usuário tem uma alteração de email pendente de confirmação por email.",
+      cancelPending: "Cancelar alteração pendente",
+      cancelSuccess: "Alteração de email pendente cancelada.",
+    },
     detail: {
       title: "Detalhe do usuário",
       subtitle: "Ficha, permissões e ações administrativas",
@@ -649,8 +676,10 @@ export const pt: {
         deactivate: "Desativar usuário",
         resetPassword: "Redefinir senha",
         resendVerification: "Reenviar verificação",
+        resendVerificationDisabled: "O email já está verificado",
         changeEmail: "Alterar email (2 passos)",
         delete: "Excluir usuário",
+        deletePending: "A exclusão de usuário é tratada no issue #53",
       },
       accountStatus: {
         title: "Estado da conta",
