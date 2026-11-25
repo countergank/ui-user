@@ -533,6 +533,33 @@ export const en = {
       lockedSince: "Locked",
       attempts: "Failed attempts",
     },
+    resetPassword: {
+      action: "Reset password",
+      confirmTitle: "Confirm password reset",
+      confirmBody:
+        "{{name}} will receive an email with a password reset link; the current password stays valid until it is used.",
+      success: "Password reset sent.",
+    },
+    resendVerification: {
+      action: "Resend verification",
+      confirmTitle: "Confirm verification resend",
+      confirmBody: "{{name}} ({{email}}) will receive a new account verification email.",
+      success: "Verification email resent.",
+    },
+    changeEmail: {
+      action: "Change email",
+      confirmTitle: "Change the account email",
+      confirmBody:
+        "The new email replaces {{email}} only after the person confirms it from their inbox; until then the current one stays valid.",
+      label: "New email",
+      fieldRequired: "Enter the new email.",
+      emailInvalid: "The email is not a valid address.",
+      success: "Email change requested.",
+      pendingTitle: "Change pending confirmation",
+      pendingBody: "This user has an email change pending confirmation by email.",
+      cancelPending: "Cancel pending change",
+      cancelSuccess: "Pending email change cancelled.",
+    },
     detail: {
       title: "User details",
       subtitle: "Profile, permissions and administrative actions",
@@ -628,8 +655,10 @@ export const en = {
         deactivate: "Deactivate user",
         resetPassword: "Reset password",
         resendVerification: "Resend verification",
+        resendVerificationDisabled: "The email is already verified",
         changeEmail: "Change email (2 steps)",
         delete: "Delete user",
+        deletePending: "User deletion is tracked by issue #53",
       },
       accountStatus: {
         title: "Account status",
