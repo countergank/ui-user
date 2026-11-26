@@ -1,0 +1,44 @@
+# 53 — Construir la eliminación de usuario
+
+Feature: eliminar usuarios vía `DELETE /admin/users/:id` desde el listado y el detalle,
+con confirmación fuerte y protección de autoeliminación. Issue: countergank/ui-user#53.
+Branch: `feature/53-eliminar-usuario` (base `origin/develop`).
+
+## Specs
+
+- S1: "Confirmación fuerte: el botón se habilita solo cuando el texto coincide." — la confirmación exige escribir el email o el userName del usuario, en un `AlertDialog` destructivo con `Input`; el botón de confirmar permanece deshabilitado hasta que el texto coincida.
+- S2: "No se puede eliminar el propio usuario."
+- S3: "Si se elimina el usuario de la sesión activa, se cierra sesión."
+- S4: "Errores 403 y 404 manejados con copy propio."
+- S5: "Test con MSW y test axe."
+- S6: "Claves presentes en los tres idiomas." — namespace `users`: `users.delete.action`, `users.delete.confirmTitle`, `users.delete.confirmBody`, `users.delete.confirmPhrase`, `users.delete.success`, `users.delete.selfBlocked`.
+- S7: "Acción desde el listado y desde el detalle." — la fila "Eliminar usuario" que #127 dejó deshabilitada remitiendo a #53 pasa a ejecutar el borrado real.
+- S8: "agreguemosle la posibilidad de copiar inline al nombre o al email del usuario con un simple click para confirmarlo een el modal dee eliminacion" + "no hace falta volver a eescribirlos, en el mismo texto podria estar si ntener que volver reescribir los datos" — el email y el userName mostrados en el diálogo de eliminación son clickeables: un click en el valor mismo completa el campo de confirmación y habilita el botón, sin portapapeles ni re-tipeo.
+
+Non-goals (del issue): cambios en api-user; el contrato `DELETE /admin/users/:id` ya existe.
+
+## Tasks
+
+- T1 · S1,S7 · API `deleteUser` + hook `useDeleteUser` con invalidación del listado y remoción del cache de detalle · commit —
+- T2 · S1 · `DeleteUserDialog`: `AlertDialog` destructivo con `Input` de confirmación (email o userName, trim + case-insensitive), botón deshabilitado hasta coincidencia · commit —
+- T3 · S2 · Protección de autoeliminación (`users.delete.selfBlocked`) en `users-columns.tsx` y `admin-actions-card.tsx` · commit —
+- T4 · S3 · Logout local (`clearSession` + `queryClient.clear()` + navigate `/login`) cuando el usuario eliminado es el de la sesión · commit —
+- T5 · S4 · Errores 403 y 404 con copy propio (`delete.errors.notFound` / `delete.errors.forbidden`) · commit —
+- T6 · S6 · Claves i18n `users.delete.*` en es/en/pt; `detail.adminActions.deletePending` eliminada · commit —
+- T7 · S5,S7 · Wiring en listado (`onDelete` en columns + diálogo en page) y detalle (fila habilitada + navigate al listado), tests MSW + axe · commit —
+- T8 · S8 · Email y userName clickeables en el diálogo de eliminación: un click completa la confirmación · commit —
+
+## Log
+
+- L1: "Usa la skill kickoff"
+- L2: Kickoff de #53. Elección por continuidad: #127 (último cerrado) nombra a #53 como follow-up ("Eliminar usuario: es #53"). Decisión del usuario: issue #53, Estimate 3 (escala 1–5, comparable #127→3), y el registro L9 pendiente de `odd/tasks/127-habilitar-acciones-admin.md` viaja en esta rama ("Viaja con la rama"). Board: In Progress. Rama creada `--no-track` desde `origin/develop`.
+- L3: Mapa de exploración (gentle-ai-explore): listado — botón delete ya existe deshabilitado en `users-columns.tsx:142-152` dentro de `<Can permission={PERMISSIONS.userDelete}>`, wiring via `useState<UserDTO|null>` + diálogos al pie (`users-page.tsx:23-26,135-149`); detalle — fila deshabilitada en `admin-actions-card.tsx:96-102` con clave `detail.adminActions.deletePending`, test que la pinea en `users-detail-page.integration.test.tsx:409`; API — patrón `api.ts` (DELETE sin body tipo `revokeUserSession:107`), client `src/lib/http.ts` (AppError con `message` traducido, 401 retry); hooks — patrón `use-reset-user-password.ts:7-17` con invalidación `USERS_QUERY_KEY` + `userQueryKey(id)`; sesión — `selectSessionUser` y precedente de self-guard en `active-confirm-dialog.tsx:20,34-40` (`user.id === sessionUser?.id`), logout local `sessions-page.tsx:33-37` (`clearSession` + `queryClient.clear()` + navigate /login); i18n — bloques sibling en `es.ts:540-568`, `UserDTO` tiene `email` y `userName`; no existe precedente de diálogo con confirmación tipada (se construye nuevo sobre `AlertDialog`); tests — `use-unlock-user.integration.test.tsx` (patrón MSW+spy invalidación), páginas con axe en `:749-753`/`:564-568`.
+- L4: Contrato del DELETE confirmado contra api-user (lectura autorizada): `user.controller.ts:159-172` — `@Delete(':id')` con `@RequirePermissions('user:delete')`, respuesta `{message, userId}` (encaja `userActionResponseSchema`); `user.service.ts:596-609` — 404 `USER_NOT_FOUND`, soft-delete idempotente. Errores posibles del AC: 404 (USER_NOT_FOUND) y 403 (permiso).
+- L5: Implementación completa TDD: T1 RED→GREEN 5/5 (`use-delete-user.integration.test.tsx`), T2–T7 RED→GREEN 12/12 (`delete-user-dialog.integration.test.tsx`, incluye S3 logout y axe), listado 31/31 (self-guard S2 + flujo de borrado S1/S7 con refresh de filas), detalle 31/31 (placeholder → selfBlocked, flujo completo con navigate al listado). Archivos nuevos: `components/delete-user-dialog.tsx`, `hooks/use-delete-user.ts`, `use-delete-user.integration.test.tsx`, `delete-user-dialog.integration.test.tsx`. Modificados: `api.ts`, `users-columns.tsx`, `users-page.tsx`, `admin-actions-card.tsx`, `users-page.integration.test.tsx`, `users-detail-page.integration.test.tsx`, locales es/en/pt. Warning preexistente de MSW (`GET /auth/me` sin handler, 40 ocurrencias en base) verificado con stash: no es de este cambio.
+- L6: Verificación final: `pnpm lint` limpio (tras `biome check --write`, 6 fixes de formato) · `pnpm typecheck` limpio · `pnpm test:coverage` 1093/1093 (122 archivos) · coverage 97.92% líneas / 93.91% branches (floor 80) · `pnpm build` ok (warning preexistente de chunk >500kB en index, no bloqueante). `make ci` exit 0.
+- L7: Requisito nuevo del usuario, verbatim: "agreguemosle la posibilidad de copiar inline al nombre o al email del usuario con un simple click para confirmarlo een el modal dee eliminacion". Se agrega S8 y se reabre el trabajo con T8; el commit de todo el feature queda pendiente de autorización.
+- L8: Corrección del requisito S8, verbatim: "no hace falta volver a eescribirlos, en el mismo texto podria estar si ntener que volver reescribir los datos". El click va sobre el texto mismo (email o userName) y completa el input de confirmación directamente; se descarta el enfoque de portapapeles.
+- L9: Implementación S8 (TDD): 4 tests RED→GREEN en `delete-user-dialog.integration.test.tsx` (16/16). El email y el userName del diálogo son botones clickeables (subrayado punteado + hint `delete.clickHint`) que completan el input y habilitan el confirm; claves `delete.useEmail`/`useUserName`/`clickHint` en es/en/pt. Verificación final: lint ✓ (1 fix biome) · typecheck ✓ · 1097/1097 tests (122 archivos) · coverage 97.93% líneas / 93.93% branches · build ✓.
+- L10: Corrección de copy del usuario ("aparece dos veces tanto el email como el usuario?"): el `confirmBody` ya no interpola email/userName; quedan una sola vez, como valores clickeables. 78/78 tests de las suites afectadas, lint y typecheck limpios.
+- L11: Autorización del usuario, verbatim: "Perfecto chat! vamos con commit push y PR, si salen hallazgos los resolvemos y volvermos a commitear y push". Mensaje autorizado: `feat(users): delete user with strong confirmation`.
+

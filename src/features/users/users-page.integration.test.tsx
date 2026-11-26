@@ -605,6 +605,65 @@ function rowOf(text: string): HTMLElement {
   return row;
 }
 
+describe("users page — delete (53)", () => {
+  it("keeps the session's own row delete disabled and the other rows enabled (S2)", async () => {
+    renderPage();
+    await expectRows();
+
+    const selfButton = within(rowOf("Ada Lovelace")).getByRole("button", {
+      name: tUsers("list.actions.delete"),
+    });
+    expect(selfButton).toBeDisabled();
+    expect(selfButton).toHaveAttribute("title", tUsers("delete.selfBlocked"));
+    expect(
+      within(rowOf("Grace Hopper")).getByRole("button", {
+        name: tUsers("list.actions.delete"),
+      }),
+    ).toBeEnabled();
+    expect(
+      within(rowOf("Alan Turing")).getByRole("button", {
+        name: tUsers("list.actions.delete"),
+      }),
+    ).toBeEnabled();
+  });
+
+  it("confirms with the typed phrase, DELETEs and refreshes the rows (S1, S7)", async () => {
+    let deleteCount = 0;
+    let deleted = false;
+    server.use(
+      http.delete(`${USERS_URL}/u2`, () => {
+        deleteCount += 1;
+        deleted = true;
+
+        return HttpResponse.json({ message: "ok-deleted", userId: "u2" });
+      }),
+      http.get(USERS_URL, () =>
+        HttpResponse.json(deleted ? { ...PAGE, data: [USERS[0], USERS[2]], total: 2 } : PAGE),
+      ),
+    );
+    renderPage();
+    await expectRows();
+    const user = userEvent.setup();
+
+    await user.click(
+      within(rowOf("Grace Hopper")).getByRole("button", { name: tUsers("list.actions.delete") }),
+    );
+
+    const dialog = screen.getByRole("alertdialog");
+    expect(dialog).toHaveTextContent(tUsers("delete.confirmTitle"));
+    expect(within(dialog).getByRole("button", { name: tUsers("delete.action") })).toBeDisabled();
+
+    await user.type(within(dialog).getByRole("textbox"), "grace@example.com");
+    await user.click(within(dialog).getByRole("button", { name: tUsers("delete.action") }));
+
+    expect(deleteCount).toBe(1);
+    expect(await screen.findByText("ok-deleted")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText("Grace Hopper")).not.toBeInTheDocument();
+    });
+  });
+});
+
 describe("users page — active toggle (COU-293)", () => {
   it("confirms and PATCHes the toggle endpoint from the row action (S1, S7, S9)", async () => {
     let patchCount = 0;

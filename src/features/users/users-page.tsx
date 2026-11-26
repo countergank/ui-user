@@ -14,6 +14,7 @@ import { Can } from "@/features/authorization/components/can";
 import { PERMISSIONS } from "@/features/authorization/permissions";
 
 import { ActiveConfirmDialog } from "./components/active-confirm-dialog";
+import { DeleteUserDialog } from "./components/delete-user-dialog";
 import { UnlockConfirmDialog } from "./components/unlock-confirm-dialog";
 import { useRolesCatalog } from "./hooks/use-roles";
 import { useUsers } from "./hooks/use-users";
@@ -38,7 +39,8 @@ export function UsersPage() {
   const { params, setFilter, setSort, setPage, setLimit } = useListParams(USERS_LIST_PARAMS);
   const [activeTarget, setActiveTarget] = useState<UserDTO | null>(null);
   const [unlockTarget, setUnlockTarget] = useState<UserDTO | null>(null);
-  const columns = useUsersColumns(setActiveTarget, setUnlockTarget);
+  const [deleteTarget, setDeleteTarget] = useState<UserDTO | null>(null);
+  const columns = useUsersColumns(setActiveTarget, setUnlockTarget, setDeleteTarget);
   const users = useUsers(params);
   const rolesCatalog = useRolesCatalog();
 
@@ -178,6 +180,16 @@ export function UsersPage() {
         onOpenChange={(open) => {
           if (!open) {
             setUnlockTarget(null);
+          }
+        }}
+      />
+
+      <DeleteUserDialog
+        user={deleteTarget}
+        open={deleteTarget !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setDeleteTarget(null);
           }
         }}
       />

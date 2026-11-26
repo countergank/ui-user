@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { Can } from "@/features/authorization/components/can";
 import { PERMISSIONS } from "@/features/authorization/permissions";
+import { selectSessionUser, useSession } from "@/lib/session/session-store";
 
 import { ActiveConfirmDialog } from "../components/active-confirm-dialog";
 import { ChangeEmailDialog } from "../components/change-email-dialog";
+import { DeleteUserDialog } from "../components/delete-user-dialog";
 import { ResendVerificationConfirmDialog } from "../components/resend-verification-confirm-dialog";
 import { ResetPasswordConfirmDialog } from "../components/reset-password-confirm-dialog";
 import { UnlockConfirmDialog } from "../components/unlock-confirm-dialog";
@@ -23,16 +26,20 @@ interface AdminActionsCardProps {
  * the shared `AlertDialog` confirmation (COU-293 S1, S5), the unlock row appears only while the
  * account is locked and opens its own confirmation (54 S1, S2), the reset-password row opens its
  * own confirmation (127 S1), the resend-verification row opens its own confirmation (127 S2),
- * the change-email row opens the email-change dialog (127 S3), and the actions without an
- * endpoint stay disabled placeholders.
+ * the change-email row opens the email-change dialog (127 S3), and the delete row opens the
+ * strong-confirmation delete dialog (53 S1, S7), disabled on the session's own account (53 S2).
  */
 export function AdminActionsCard({ user }: AdminActionsCardProps) {
   const { t } = useTranslation("users");
+  const navigate = useNavigate();
+  const sessionUser = useSession(selectSessionUser);
   const [confirming, setConfirming] = useState(false);
   const [confirmingUnlock, setConfirmingUnlock] = useState(false);
   const [confirmingReset, setConfirmingReset] = useState(false);
   const [confirmingResend, setConfirmingResend] = useState(false);
   const [changingEmail, setChangingEmail] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const blocksSelf = user.id === sessionUser?.id;
 
   return (
     <SectionCard title={t("detail.adminActions.title")}>
@@ -103,9 +110,12 @@ export function AdminActionsCard({ user }: AdminActionsCardProps) {
         <Button
           type="button"
           variant="ghost"
-          disabled
-          title={t("detail.adminActions.deletePending")}
+          disabled={blocksSelf}
+          title={blocksSelf ? t("delete.selfBlocked") : undefined}
           className="w-full justify-between rounded-none border-b border-panel-border text-destructive"
+          onClick={() => {
+            setDeleting(true);
+          }}
         >
           {t("detail.adminActions.delete")}
           <span className="font-mono text-[10px] text-panel-subtle">DELETE</span>
@@ -124,6 +134,14 @@ export function AdminActionsCard({ user }: AdminActionsCardProps) {
         onOpenChange={setConfirmingResend}
       />
       <ChangeEmailDialog user={user} open={changingEmail} onOpenChange={setChangingEmail} />
+      <DeleteUserDialog
+        user={user}
+        open={deleting}
+        onOpenChange={setDeleting}
+        onDeleted={() => {
+          void navigate("/app/users", { replace: true });
+        }}
+      />
     </SectionCard>
   );
 }

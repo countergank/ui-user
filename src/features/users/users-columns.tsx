@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Can } from "@/features/authorization/components/can";
 import { PERMISSIONS } from "@/features/authorization/permissions";
 import { avatarSrcOf } from "@/lib/avatar";
+import { selectSessionUser, useSession } from "@/lib/session/session-store";
 import { Eye, LockOpen, Pencil, Power, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -21,9 +22,10 @@ export function isLocked(user: UserDTO): boolean {
 export function useUsersColumns(
   onToggleActive?: (user: UserDTO) => void,
   onUnlock?: (user: UserDTO) => void,
+  onDelete?: (user: UserDTO) => void,
 ): DataTableColumn<UserDTO>[] {
   const { t, i18n } = useTranslation("users");
-  const { t: tCommon } = useTranslation();
+  const sessionUser = useSession(selectSessionUser);
 
   return [
     {
@@ -171,10 +173,17 @@ export function useUsersColumns(
               type="button"
               variant="ghost"
               size="icon"
-              className="bg-canvas"
+              className="bg-canvas text-destructive"
               aria-label={t("list.actions.delete")}
-              title={`${t("list.actions.delete")} · ${tCommon("ui.list.pending")}`}
-              disabled
+              title={
+                user.id === sessionUser?.id ? t("delete.selfBlocked") : t("list.actions.delete")
+              }
+              disabled={user.id === sessionUser?.id}
+              onClick={() => {
+                if (user.id !== sessionUser?.id) {
+                  onDelete?.(user);
+                }
+              }}
             >
               <Trash2 aria-hidden="true" />
             </Button>

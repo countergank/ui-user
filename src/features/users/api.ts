@@ -117,6 +117,20 @@ export async function fetchUser(id: string): Promise<UserDTO> {
 }
 
 /**
+ * @param id - the user id; it is percent-encoded so a hostile id cannot change the path. The
+ * endpoint soft-deletes the user server-side, so the client sends no body.
+ * @returns The validated `UserActionResponseDTO`; `message` is the API's already translated
+ * confirmation text, ready to show in the toast as-is.
+ */
+export async function deleteUser(id: string): Promise<UserActionResponseDTO> {
+  const raw = await httpClient.request<unknown>(`/admin/users/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+  });
+
+  return userActionResponseSchema.parse(raw);
+}
+
+/**
  * @param id - the user id; it is percent-encoded so a hostile id cannot change the path.
  * @param payload - the `UpdateUserDTO`: every field is optional and only the changed ones travel.
  * There is no `password` here; password changes are a separate action.
