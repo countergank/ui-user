@@ -28,6 +28,8 @@ Non-goals (del issue): cambios en api-user; el contrato `DELETE /admin/users/:id
 - T7 · S5,S7 · Wiring en listado (`onDelete` en columns + diálogo en page) y detalle (fila habilitada + navigate al listado), tests MSW + axe · commit —
 - T8 · S8 · Email y userName clickeables en el diálogo de eliminación: un click completa la confirmación · commit —
 
+Entrega como commit único (834cc71, +1070/−13): diálogo, hook, api, wiring de páginas, locales y tests se intercalan (los tests de página ejercitan todas las acciones junta), por lo que partir por tarea exigiría staging parcial artificial. Slice boundary registrado aquí; el feature cierra con este commit.
+
 ## Log
 
 - L1: "Usa la skill kickoff"
@@ -41,4 +43,7 @@ Non-goals (del issue): cambios en api-user; el contrato `DELETE /admin/users/:id
 - L9: Implementación S8 (TDD): 4 tests RED→GREEN en `delete-user-dialog.integration.test.tsx` (16/16). El email y el userName del diálogo son botones clickeables (subrayado punteado + hint `delete.clickHint`) que completan el input y habilitan el confirm; claves `delete.useEmail`/`useUserName`/`clickHint` en es/en/pt. Verificación final: lint ✓ (1 fix biome) · typecheck ✓ · 1097/1097 tests (122 archivos) · coverage 97.93% líneas / 93.93% branches · build ✓.
 - L10: Corrección de copy del usuario ("aparece dos veces tanto el email como el usuario?"): el `confirmBody` ya no interpola email/userName; quedan una sola vez, como valores clickeables. 78/78 tests de las suites afectadas, lint y typecheck limpios.
 - L11: Autorización del usuario, verbatim: "Perfecto chat! vamos con commit push y PR, si salen hallazgos los resolvemos y volvermos a commitear y push". Mensaje autorizado: `feat(users): delete user with strong confirmation`.
+- L12: Commit ejecutado: `834cc71` feat(users): delete user with strong confirmation — 15 archivos, +1070/−13, slice único registrado arriba. Assess nativo sobre el rango cometido: riesgo alto (ítem 1, acción destructiva) pero reviewDue false (bajo presupuesto); plan con verificador independiente.
+- L13: Verificación independiente (gentle-ai-verify, scratch aislado): S1–S8 PASS con evidencia path:line, 5/5 risk checks (encoding de id hostil, invalidación de caches, imposible disparar DELETE sin confirmación coincidente ni doble submit bajo latencia, logout triple en self-delete), 83/83 tests enfocados, 123 archivos/1115 tests en scratch (1097 repo + 18 probes). Advisories no bloqueantes: fila delete del detalle sin `<Can userDelete>` (preexistente en develop, servidor refuerza con 403), ruido MSW `/auth/me` preexistente, S3 inalcanzable por diseño (defense in depth).
+- L14: Push ejecutado (`feature/53-eliminar-usuario` → origin). PR #148 abierto contra develop ("feat(users): delete user with strong confirmation", Refs #53); board movido a In Review y verificado. Disposición del usuario ante hallazgos: "si salen hallazgos los resolvemos y volvermos a commitear y push".
 
