@@ -173,9 +173,9 @@ afterAll(() => {
   window.Image = RealImage;
 });
 
-function renderPage() {
+function renderPage(permissions: string[] = ["*"]) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  client.setQueryData(permissionsQueryKey, ADMIN_PROFILE);
+  client.setQueryData(permissionsQueryKey, { ...ADMIN_PROFILE, permissions });
 
   const view = render(
     <QueryClientProvider client={client}>
@@ -428,6 +428,17 @@ describe("user detail — loaded user", () => {
     expect(toggle).toBeEnabled();
     expect(screen.getByRole("button", { name: tUsers("detail.sessions.closeAll") })).toBeEnabled();
     expect(screen.getByRole("button", { name: tUsers("detail.activity.viewAll") })).toBeDisabled();
+  });
+
+  it("hides the delete row from a session without userDelete (53)", async () => {
+    renderPage(["user:read"]);
+    await screen.findByText("Ada Lovelace");
+
+    expect(
+      screen.queryByRole("button", {
+        name: new RegExp(`^${escapeRegExp(tUsers("detail.adminActions.delete"))} `),
+      }),
+    ).not.toBeInTheDocument();
   });
 
   it("deletes the user from the detail and returns to the list (53 S1, S7)", async () => {

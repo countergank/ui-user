@@ -7,7 +7,17 @@ import { useState } from "react";
 import { I18nextProvider } from "react-i18next";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { toast } from "sonner";
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  type MockInstance,
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import { axe } from "vitest-axe";
 
 import { Toaster } from "@/components/ui/sonner";
@@ -15,6 +25,7 @@ import { i18n } from "@/lib/i18n";
 import { initialSessionState, sessionStore } from "@/lib/session/session-store";
 
 import { DeleteUserDialog } from "./components/delete-user-dialog";
+import { USERS_QUERY_KEY } from "./hooks/use-users";
 import type { UserDTO } from "./types";
 
 const USERS_URL = "https://test.invalid/admin/users";
@@ -44,6 +55,7 @@ function buildUser(overrides: Partial<UserDTO> = {}): UserDTO {
 }
 
 let deleteCount = 0;
+let invalidateSpy: MockInstance;
 
 const server = setupServer(
   http.delete(DELETE_URL, () => {
@@ -123,6 +135,7 @@ function renderHost(initialUser: UserDTO, onDeleted?: (id: string) => void) {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
   });
+  invalidateSpy = vi.spyOn(client, "invalidateQueries");
 
   render(
     <QueryClientProvider client={client}>
@@ -231,9 +244,10 @@ describe("delete user dialog — DELETE (S1, S5)", () => {
     await user.type(within(dialog).getByRole("textbox"), "ada@example.com");
     const confirmButton = within(dialog).getByRole("button", { name: tUsers("delete.action") });
     await user.click(confirmButton);
-    if (!confirmButton.hasAttribute("disabled")) {
-      await user.click(confirmButton);
-    }
+    await waitFor(() => {
+      expect(confirmButton).toBeDisabled();
+    });
+    await user.click(confirmButton);
 
     await waitFor(() => {
       expect(deleteCount).toBe(1);
@@ -287,6 +301,12 @@ describe("delete user dialog — DELETE (S1, S5)", () => {
     });
     expect(await screen.findByText(tUsers("delete.errors.notFound"))).toBeInTheDocument();
     expect(screen.getByRole("alertdialog")).toBeInTheDocument();
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: USERS_QUERY_KEY });
+
+    await user.type(within(dialog).getByRole("textbox"), "x");
+    await waitFor(() => {
+      expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    });
   });
 
   it("keeps the dialog open and shows the 403 copy when the permission is missing", async () => {

@@ -26,8 +26,9 @@ interface AdminActionsCardProps {
  * the shared `AlertDialog` confirmation (COU-293 S1, S5), the unlock row appears only while the
  * account is locked and opens its own confirmation (54 S1, S2), the reset-password row opens its
  * own confirmation (127 S1), the resend-verification row opens its own confirmation (127 S2),
- * the change-email row opens the email-change dialog (127 S3), and the delete row opens the
- * strong-confirmation delete dialog (53 S1, S7), disabled on the session's own account (53 S2).
+ * the change-email row opens the email-change dialog (127 S3), and the delete row appears only
+ * with the userDelete permission and opens the strong-confirmation delete dialog (53 S1, S7),
+ * disabled on the session's own account (53 S2).
  */
 export function AdminActionsCard({ user }: AdminActionsCardProps) {
   const { t } = useTranslation("users");
@@ -107,19 +108,21 @@ export function AdminActionsCard({ user }: AdminActionsCardProps) {
           {t("detail.adminActions.changeEmail")}
           <span className="font-mono text-[10px] text-panel-subtle">POST</span>
         </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          disabled={blocksSelf}
-          title={blocksSelf ? t("delete.selfBlocked") : undefined}
-          className="w-full justify-between rounded-none border-b border-panel-border text-destructive"
-          onClick={() => {
-            setDeleting(true);
-          }}
-        >
-          {t("detail.adminActions.delete")}
-          <span className="font-mono text-[10px] text-panel-subtle">DELETE</span>
-        </Button>
+        <Can permission={PERMISSIONS.userDelete}>
+          <Button
+            type="button"
+            variant="ghost"
+            disabled={blocksSelf}
+            title={blocksSelf ? t("delete.selfBlocked") : undefined}
+            className="w-full justify-between rounded-none border-b border-panel-border text-destructive"
+            onClick={() => {
+              setDeleting(true);
+            }}
+          >
+            {t("detail.adminActions.delete")}
+            <span className="font-mono text-[10px] text-panel-subtle">DELETE</span>
+          </Button>
+        </Can>
       </div>
       <ActiveConfirmDialog user={user} open={confirming} onOpenChange={setConfirming} />
       <UnlockConfirmDialog user={user} open={confirmingUnlock} onOpenChange={setConfirmingUnlock} />

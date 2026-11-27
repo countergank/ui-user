@@ -22,6 +22,7 @@ import { AppError } from "@/lib/errors";
 import { selectSessionUser, sessionStore, useSession } from "@/lib/session/session-store";
 
 import { useDeleteUser } from "../hooks/use-delete-user";
+import { USERS_QUERY_KEY } from "../hooks/use-users";
 import type { UserDTO } from "../types";
 
 interface DeleteUserDialogProps {
@@ -39,7 +40,8 @@ interface DeleteUserDialogProps {
  * path ends the session locally instead (53 S3).
  * @returns The destructive `AlertDialog` for user deletion (53 S1). The confirm button stays
  * disabled until the typed text matches, DELETEs the endpoint once, toasts the API's already
- * translated message and closes; 403 and 404 surface their own copy (53 S4). Deleting the
+ * translated message and closes; 403 and 404 surface their own copy, and a 404 also invalidates
+ * the users list because the target may already be gone elsewhere (53 S4). Deleting the
  * session's own user clears the session and redirects to /login (53 S3); callers gate the
  * entry points on the session account (53 S2).
  */
@@ -99,6 +101,7 @@ export function DeleteUserDialog({ user, open, onOpenChange, onDeleted }: Delete
         onError: (mutationError) => {
           if (mutationError instanceof AppError && mutationError.status === 404) {
             setError(t("delete.errors.notFound"));
+            void queryClient.invalidateQueries({ queryKey: USERS_QUERY_KEY });
             return;
           }
           if (mutationError instanceof AppError && mutationError.status === 403) {
@@ -160,6 +163,7 @@ export function DeleteUserDialog({ user, open, onOpenChange, onDeleted }: Delete
             value={confirmation}
             onChange={(event) => {
               setConfirmation(event.target.value);
+              setError(null);
             }}
             aria-invalid={error !== null}
           />
