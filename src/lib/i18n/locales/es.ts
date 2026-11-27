@@ -567,6 +567,22 @@ export const es: {
       confirmBody: "Se enviará a {{name}} ({{email}}) un nuevo email de verificación de cuenta.",
       success: "Email de verificación reenviado.",
     },
+    delete: {
+      action: "Eliminar usuario",
+      confirmTitle: "Eliminar este usuario",
+      confirmBody:
+        "Esta acción es irreversible: se elimina la cuenta de {{name}} y no se puede deshacer. Para confirmar, escribí su email o su nombre de usuario.",
+      confirmPhrase: "Email o nombre de usuario del usuario",
+      useEmail: "Usar este email para confirmar",
+      useUserName: "Usar este nombre de usuario para confirmar",
+      clickHint: "Tocá el email o el usuario para completar la confirmación.",
+      success: "Usuario eliminado.",
+      selfBlocked: "No podés eliminar tu propio usuario.",
+      errors: {
+        notFound: "Este usuario no existe o ya fue eliminado.",
+        forbidden: "No tenés el permiso user:delete para eliminar usuarios.",
+      },
+    },
     changeEmail: {
       action: "Cambiar email",
       confirmTitle: "Cambiar el email de la cuenta",
@@ -679,7 +695,6 @@ export const es: {
         resendVerificationDisabled: "El email ya está verificado",
         changeEmail: "Cambiar email (2 pasos)",
         delete: "Eliminar usuario",
-        deletePending: "La eliminación de usuario se implementa en el issue #53",
       },
       accountStatus: {
         title: "Estado de la cuenta",

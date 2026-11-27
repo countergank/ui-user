@@ -173,9 +173,9 @@ afterAll(() => {
   window.Image = RealImage;
 });
 
-function renderPage() {
+function renderPage(permissions: string[] = ["*"]) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  client.setQueryData(permissionsQueryKey, ADMIN_PROFILE);
+  client.setQueryData(permissionsQueryKey, { ...ADMIN_PROFILE, permissions });
 
   const view = render(
     <QueryClientProvider client={client}>
@@ -406,7 +406,7 @@ describe("user detail — loaded user", () => {
       name: new RegExp(`^${escapeRegExp(tUsers("detail.adminActions.delete"))} `),
     });
     expect(deleteButton).toBeDisabled();
-    expect(deleteButton).toHaveAttribute("title", tUsers("detail.adminActions.deletePending"));
+    expect(deleteButton).toHaveAttribute("title", tUsers("delete.selfBlocked"));
     expect(
       screen.getByRole("button", {
         name: new RegExp(`^${escapeRegExp(tUsers("detail.adminActions.resetPassword"))} `),
@@ -428,6 +428,60 @@ describe("user detail — loaded user", () => {
     expect(toggle).toBeEnabled();
     expect(screen.getByRole("button", { name: tUsers("detail.sessions.closeAll") })).toBeEnabled();
     expect(screen.getByRole("button", { name: tUsers("detail.activity.viewAll") })).toBeDisabled();
+  });
+
+  it("hides the delete row from a session without userDelete (53)", async () => {
+    renderPage(["user:read"]);
+    await screen.findByText("Ada Lovelace");
+
+    expect(
+      screen.queryByRole("button", {
+        name: new RegExp(`^${escapeRegExp(tUsers("detail.adminActions.delete"))} `),
+      }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("deletes the user from the detail and returns to the list (53 S1, S7)", async () => {
+    sessionStore.setState(initialSessionState);
+    sessionStore.getState().startSession({
+      user: {
+        id: "admin-9",
+        email: "root@example.com",
+        userName: "root",
+        name: "Root",
+        lastName: "Admin",
+      },
+      accessToken: "access-1",
+      refreshToken: "refresh-1",
+    });
+    let deleteCount = 0;
+    server.use(
+      http.delete(USER_URL, () => {
+        deleteCount += 1;
+
+        return HttpResponse.json({ message: "ok-deleted", userId: "u1" });
+      }),
+    );
+    renderPage();
+    const user = userEvent.setup();
+    const deleteButton = await screen.findByRole("button", {
+      name: new RegExp(`^${escapeRegExp(tUsers("detail.adminActions.delete"))} `),
+    });
+    expect(deleteButton).toBeEnabled();
+
+    await user.click(deleteButton);
+    const dialog = screen.getByRole("alertdialog");
+    expect(dialog).toHaveTextContent(tUsers("delete.confirmTitle"));
+    expect(within(dialog).getByRole("button", { name: tUsers("delete.action") })).toBeDisabled();
+
+    await user.type(within(dialog).getByRole("textbox"), "ada@example.com");
+    await user.click(within(dialog).getByRole("button", { name: tUsers("delete.action") }));
+
+    expect(deleteCount).toBe(1);
+    expect(await screen.findByText("ok-deleted")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText("users-list")).toBeInTheDocument();
+    });
   });
 
   it("opens the confirmation and toggles the active flag from the detail (COU-293 S1, S7, S9)", async () => {

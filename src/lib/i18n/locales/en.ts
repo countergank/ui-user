@@ -546,6 +546,22 @@ export const en = {
       confirmBody: "{{name}} ({{email}}) will receive a new account verification email.",
       success: "Verification email resent.",
     },
+    delete: {
+      action: "Delete user",
+      confirmTitle: "Delete this user",
+      confirmBody:
+        "This action is irreversible: {{name}}'s account is deleted and cannot be restored. To confirm, type their email or username.",
+      confirmPhrase: "User's email or username",
+      useEmail: "Use this email to confirm",
+      useUserName: "Use this username to confirm",
+      clickHint: "Tap the email or the username to fill the confirmation.",
+      success: "User deleted.",
+      selfBlocked: "You cannot delete your own user.",
+      errors: {
+        notFound: "This user does not exist or was already deleted.",
+        forbidden: "You lack the user:delete permission to delete users.",
+      },
+    },
     changeEmail: {
       action: "Change email",
       confirmTitle: "Change the account email",
@@ -658,7 +674,6 @@ export const en = {
         resendVerificationDisabled: "The email is already verified",
         changeEmail: "Change email (2 steps)",
         delete: "Delete user",
-        deletePending: "User deletion is tracked by issue #53",
       },
       accountStatus: {
         title: "Account status",

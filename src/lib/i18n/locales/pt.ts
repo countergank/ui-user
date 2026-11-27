@@ -567,6 +567,22 @@ export const pt: {
       confirmBody: "{{name}} ({{email}}) receberá um novo email de verificação de conta.",
       success: "Email de verificação reenviado.",
     },
+    delete: {
+      action: "Excluir usuário",
+      confirmTitle: "Excluir este usuário",
+      confirmBody:
+        "Esta ação é irreversível: a conta de {{name}} é excluída e não pode ser restaurada. Para confirmar, digite o email ou o nome de usuário dele.",
+      confirmPhrase: "Email ou nome de usuário do usuário",
+      useEmail: "Usar este email para confirmar",
+      useUserName: "Usar este nome de usuário para confirmar",
+      clickHint: "Toque no email ou no usuário para preencher a confirmação.",
+      success: "Usuário excluído.",
+      selfBlocked: "Você não pode excluir o seu próprio usuário.",
+      errors: {
+        notFound: "Este usuário não existe ou já foi excluído.",
+        forbidden: "Você não tem a permissão user:delete para excluir usuários.",
+      },
+    },
     changeEmail: {
       action: "Alterar email",
       confirmTitle: "Alterar o email da conta",
@@ -679,7 +695,6 @@ export const pt: {
         resendVerificationDisabled: "O email já está verificado",
         changeEmail: "Alterar email (2 passos)",
         delete: "Excluir usuário",
-        deletePending: "A exclusão de usuário é tratada no issue #53",
       },
       accountStatus: {
         title: "Estado da conta",
