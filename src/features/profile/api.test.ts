@@ -1,11 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { ZodError } from "zod";
 
 import { AppError } from "@/lib/errors";
 
 import { httpClient } from "@/lib/session/session";
 
 import {
+  activateTwoFactor,
   changePassword,
+  enrollTwoFactor,
   requestEmailChange,
   requestEmailChangeCode,
   uploadProfilePhoto,
@@ -67,6 +70,74 @@ describe("changePassword", () => {
     expect(path).toBe("/users/change-password");
     expect(options.method).toBe("POST");
     expect(options.body).toEqual({ currentPassword: "ViejaS3gura!", newPassword: "NuevaS3gura!" });
+  });
+});
+
+describe("enrollTwoFactor", () => {
+  it("posts on /auth/2fa/enroll and returns the secret with the otpauth URL", async () => {
+    requestSpy.mockResolvedValue({ secret: "JBSWY3DPEHPK3PXP", otpauthUrl: "otpauth://totp/u1" });
+
+    const result = await enrollTwoFactor();
+
+    expect(result).toEqual({ secret: "JBSWY3DPEHPK3PXP", otpauthUrl: "otpauth://totp/u1" });
+    expect(requestSpy).toHaveBeenCalledTimes(1);
+    const [path, options] = requestSpy.mock.calls[0] as [
+      string,
+      { method?: string; body?: unknown },
+    ];
+    expect(path).toBe("/auth/2fa/enroll");
+    expect(options.method).toBe("POST");
+    expect(options.body).toBeUndefined();
+  });
+
+  it("rejects a response that drifts from the enrollment contract", async () => {
+    requestSpy.mockResolvedValue({ secret: "JBSWY3DPEHPK3PXP" });
+
+    const error = await enrollTwoFactor().catch((thrown: unknown) => thrown);
+
+    expect(error).toBeInstanceOf(ZodError);
+  });
+});
+
+describe("activateTwoFactor", () => {
+  it("posts the code on /auth/2fa/activate and returns the activation flag", async () => {
+    requestSpy.mockResolvedValue({ twoFactorEnabled: true });
+
+    const result = await activateTwoFactor("123456");
+
+    expect(result).toEqual({ twoFactorEnabled: true });
+    expect(requestSpy).toHaveBeenCalledTimes(1);
+    const [path, options] = requestSpy.mock.calls[0] as [
+      string,
+      { method?: string; body?: unknown },
+    ];
+    expect(path).toBe("/auth/2fa/activate");
+    expect(options.method).toBe("POST");
+    expect(options.body).toEqual({ code: "123456" });
+  });
+
+  it("rejects an empty code before any network traffic", async () => {
+    const error = await activateTwoFactor("").catch((thrown: unknown) => thrown);
+
+    expect(error).toBeInstanceOf(AppError);
+    expect((error as AppError).code).toBe("UA-AUTH-013");
+    expect(requestSpy).not.toHaveBeenCalled();
+  });
+
+  it("rejects a non-6-digit code before any network traffic", async () => {
+    const error = await activateTwoFactor("12a456").catch((thrown: unknown) => thrown);
+
+    expect(error).toBeInstanceOf(AppError);
+    expect((error as AppError).code).toBe("UA-AUTH-013");
+    expect(requestSpy).not.toHaveBeenCalled();
+  });
+
+  it("rejects a response that drifts from the activation contract", async () => {
+    requestSpy.mockResolvedValue({});
+
+    const error = await activateTwoFactor("123456").catch((thrown: unknown) => thrown);
+
+    expect(error).toBeInstanceOf(ZodError);
   });
 });
 

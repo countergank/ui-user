@@ -74,6 +74,12 @@ const server = setupServer(
     return HttpResponse.json({ avatarUrl: "https://cdn.example/u1/avatar.png" });
   }),
   http.post(CHANGE_EMAIL_URL, () => new HttpResponse(null, { status: 200 })),
+  http.post("https://test.invalid/auth/2fa/enroll", () =>
+    HttpResponse.json({
+      secret: "JBSWY3DPEHPK3PXP",
+      otpauthUrl: "otpauth://totp/Countergank:mcabrera?secret=JBSWY3DPEHPK3PXP",
+    }),
+  ),
 );
 
 beforeAll(() => {
@@ -147,6 +153,20 @@ describe("profile page — prefill", () => {
     expect(screen.getByRole("heading", { level: 2, name: t("view.title") })).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 3, name: t("email.title") })).toBeInTheDocument();
     expect(screen.getByText(t("email.description"))).toBeInTheDocument();
+  });
+
+  it("renders the two-factor section in the left column below the personal data", async () => {
+    renderPage();
+    await waitForPrefill();
+
+    const personalColumn = screen
+      .getByRole("heading", { name: t("view.title") })
+      .closest(".flex.min-w-0.flex-col");
+    const twoFactorColumn = screen
+      .getByRole("heading", { level: 3, name: t("twoFactor.title") })
+      .closest(".flex.min-w-0.flex-col");
+    expect(twoFactorColumn).not.toBeNull();
+    expect(twoFactorColumn).toBe(personalColumn);
   });
 
   it("shows a loading status while the profile is in flight", async () => {

@@ -11,6 +11,21 @@ export interface UpdateProfilePayload {
   lastName?: string;
 }
 
+export type TwoFactorEnrollmentDTO = z.infer<typeof twoFactorEnrollmentSchema>;
+
+export type TwoFactorActivationDTO = z.infer<typeof twoFactorActivationSchema>;
+
+const TWO_FACTOR_CODE_PATTERN = /^\d{6}$/;
+
+const twoFactorEnrollmentSchema = z.object({
+  secret: z.string().min(1),
+  otpauthUrl: z.string().min(1),
+});
+
+const twoFactorActivationSchema = z.object({
+  twoFactorEnabled: z.boolean(),
+});
+
 /**
  * @returns The validated profile of the signed-in user, so a contract drift on the
  * `{ name, lastName, email }` shape fails here and not in the form.
@@ -72,6 +87,39 @@ export async function changePassword(currentPassword: string, newPassword: strin
     method: "POST",
     body: { currentPassword, newPassword },
   });
+}
+
+/**
+ * @returns The pending TOTP enrollment: the base32 `secret`, shown once and replaced by a
+ * re-enroll, plus the `otpauthUrl` the QR code renders for the authenticator app.
+ */
+export async function enrollTwoFactor(): Promise<TwoFactorEnrollmentDTO> {
+  const raw = await httpClient.request<unknown>("/auth/2fa/enroll", {
+    method: "POST",
+  });
+
+  return twoFactorEnrollmentSchema.parse(raw);
+}
+
+/**
+ * @param code - the 6-digit code the user's authenticator app currently shows; anything else
+ * is rejected as `UA-AUTH-013` before any network traffic, mirroring the server contract.
+ * @returns The activation echo from the API: `twoFactorEnabled` turned on.
+ */
+export async function activateTwoFactor(code: string): Promise<TwoFactorActivationDTO> {
+  if (!TWO_FACTOR_CODE_PATTERN.test(code)) {
+    throw new AppError("The two-factor activation code must be exactly 6 digits.", {
+      code: "UA-AUTH-013",
+      status: 401,
+    });
+  }
+
+  const raw = await httpClient.request<unknown>("/auth/2fa/activate", {
+    method: "POST",
+    body: { code },
+  });
+
+  return twoFactorActivationSchema.parse(raw);
 }
 
 export const PROFILE_PHOTO_URL = "/users/profile/photo";

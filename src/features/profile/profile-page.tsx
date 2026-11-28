@@ -9,6 +9,7 @@ import { useProfile } from "./hooks/use-profile";
 import { PasswordChangeCard } from "./password-change-card";
 import { ProfileAvatar } from "./profile-avatar";
 import { ProfileForm } from "./profile-form";
+import { TwoFactorCard } from "./two-factor-card";
 
 /**
  * @returns The `/profile` screen: preloaded current profile in a personal-data card, a
@@ -26,38 +27,41 @@ export function ProfilePage() {
         <p className="text-[13px] text-muted-foreground">{t("view.subtitle")}</p>
       </header>
       <div className="grid w-full items-start gap-6 lg:grid-cols-2">
-        <Card className="w-full border-panel-border bg-panel text-panel-foreground">
-          <CardHeader>
-            <h2 className="font-semibold leading-none tracking-tight">{t("view.title")}</h2>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-6">
-            {profile.isPending ? (
-              // biome-ignore lint/a11y/useSemanticElements: intentional status live region, not an <output>
-              <p role="status">{t("view.loading")}</p>
-            ) : null}
-            {profile.isError ? (
-              <Alert variant="destructive">
-                <AlertDescription>{tCommon("error.genericMessage")}</AlertDescription>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    void profile.refetch();
-                  }}
-                >
-                  {tCommon("error.retry")}
-                </Button>
-              </Alert>
-            ) : null}
-            {profile.data ? (
-              <>
-                <ProfileAvatar profile={profile.data} />
-                <ProfileForm profile={profile.data} />
-              </>
-            ) : null}
-          </CardContent>
-        </Card>
+        <div className="flex min-w-0 flex-col gap-6">
+          <Card className="w-full border-panel-border bg-panel text-panel-foreground">
+            <CardHeader>
+              <h2 className="font-semibold leading-none tracking-tight">{t("view.title")}</h2>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-6">
+              {profile.isPending ? (
+                // biome-ignore lint/a11y/useSemanticElements: intentional status live region, not an <output>
+                <p role="status">{t("view.loading")}</p>
+              ) : null}
+              {profile.isError ? (
+                <Alert variant="destructive">
+                  <AlertDescription>{tCommon("error.genericMessage")}</AlertDescription>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      void profile.refetch();
+                    }}
+                  >
+                    {tCommon("error.retry")}
+                  </Button>
+                </Alert>
+              ) : null}
+              {profile.data ? (
+                <>
+                  <ProfileAvatar profile={profile.data} />
+                  <ProfileForm profile={profile.data} />
+                </>
+              ) : null}
+            </CardContent>
+          </Card>
+          <TwoFactorCard />
+        </div>
         <div className="flex min-w-0 flex-col gap-6">
           <EmailChangeCard currentEmail={profile.data?.email ?? ""} />
           <PasswordChangeCard />
