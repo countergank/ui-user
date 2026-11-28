@@ -940,7 +940,6 @@ export const pt: {
     twoFactor: {
       title: "Autenticação de dois fatores",
       actions: {
-        enroll: "Configurar segundo fator",
         enrolling: "Configurando…",
         retry: "Tentar novamente",
         continue: "Continuar",
@@ -970,7 +969,6 @@ export const pt: {
       reenrollHint: "Inicie o registro novamente para obter um código novo.",
       errors: {
         codeInvalid: "Digite o código de 6 dígitos do seu app.",
-        enrollFailure: "Não foi possível iniciar o registro. Tente novamente.",
       },
     },
     errors: {

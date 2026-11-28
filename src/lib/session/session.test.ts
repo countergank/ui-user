@@ -103,7 +103,7 @@ describe("session composition root", () => {
   it("refreshes once on 401 and retries with the rotated token", async () => {
     sessionStore.getState().startSession(AUTH);
     const fetchImpl = fetchSequence(
-      response(401, { statusCode: 401, code: "UA-AUTH-009", message: "expired" }),
+      response(401, { statusCode: 401, code: "UA-SEC-001", message: "expired" }),
       response(200, ROTATED),
       response(200, { id: "u1" }),
     );
@@ -123,14 +123,14 @@ describe("session composition root", () => {
 
   it("surfaces the API error when there is no session left to refresh", async () => {
     const fetchImpl = fetchSequence(
-      response(401, { statusCode: 401, code: "UA-AUTH-009", message: "no session" }),
+      response(401, { statusCode: 401, code: "UA-SEC-001", message: "no session" }),
     );
     const { httpClient } = createSessionRuntime(fetchImpl);
 
     const error = await httpClient.request("/auth/me").catch((caught: unknown) => caught);
 
     expect(error).toBeInstanceOf(AppError);
-    expect((error as AppError).code).toBe("UA-AUTH-009");
+    expect((error as AppError).code).toBe("UA-SEC-001");
     expect(fetchImpl.mock.calls).toHaveLength(1);
   });
 });

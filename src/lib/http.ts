@@ -27,6 +27,7 @@ export interface HttpClient {
 
 const FALLBACK_CODE = "HTTP_ERROR";
 const NETWORK_CODE = "NETWORK_ERROR";
+const EXPIRED_TOKEN_CODE = "UA-SEC-001";
 
 function toRequestBody(body: unknown): BodyInit | undefined {
   if (body === undefined) {
@@ -123,7 +124,13 @@ export function createHttpClient(deps: HttpClientDeps = {}): HttpClient {
 
     const error = await toAppError(response);
 
-    if (response.status === 401 && !alreadyRetried && deps.onUnauthorized !== undefined) {
+    // Only a guard rejection (expired access token) means "renew and retry"; business 401s
+    // such as an invalid two-factor code must reach the caller untouched.
+    const expiredToken =
+      response.status === 401 &&
+      (error.code === FALLBACK_CODE || error.code === EXPIRED_TOKEN_CODE);
+
+    if (expiredToken && !alreadyRetried && deps.onUnauthorized !== undefined) {
       const renewed = await deps.onUnauthorized().catch(() => false);
       if (renewed) {
         return execute<T>(path, options, true);

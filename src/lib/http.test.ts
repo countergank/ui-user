@@ -157,7 +157,7 @@ describe("http client", () => {
 
   it("retries exactly once after the 401 hook renews the session", async () => {
     const answers = [
-      response(401, { statusCode: 401, code: "UA-AUTH-009", message: "expired" }),
+      response(401, { statusCode: 401, code: "UA-SEC-001", message: "expired" }),
       response(200, { id: "u1" }),
     ];
     const fetchImpl = vi.fn(() => {
@@ -177,10 +177,59 @@ describe("http client", () => {
     expect(fetchImpl).toHaveBeenCalledTimes(2);
   });
 
+  it("does not refresh on a business 401 like an invalid two-factor code", async () => {
+    const fetchImpl = fetchStub(401, {
+      statusCode: 401,
+      code: "UA-AUTH-013",
+      message: "Invalid two-factor code",
+    });
+    const onUnauthorized = vi.fn(() => Promise.resolve(true));
+
+    const error = await createHttpClient({ baseUrl: BASE, fetchImpl, onUnauthorized })
+      .request("auth/2fa/activate", { method: "POST", body: { code: "000000" } })
+      .catch((e: unknown) => e);
+
+    expect((error as AppError).code).toBe("UA-AUTH-013");
+    expect(onUnauthorized).not.toHaveBeenCalled();
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not refresh on other business 401 codes", async () => {
+    for (const code of ["UA-AUTH-002", "UA-AUTH-004", "UA-AUTH-009", "UA-AUTH-010"]) {
+      const fetchImpl = fetchStub(401, { statusCode: 401, code, message: "business" });
+      const onUnauthorized = vi.fn(() => Promise.resolve(true));
+
+      const error = await createHttpClient({ baseUrl: BASE, fetchImpl, onUnauthorized })
+        .request("auth/login", { method: "POST", body: {} })
+        .catch((e: unknown) => e);
+
+      expect((error as AppError).code).toBe(code);
+      expect(onUnauthorized).not.toHaveBeenCalled();
+    }
+  });
+
+  it("retries a codeless 401 once, for gateways that answer without an envelope", async () => {
+    const answers = [response(401, {}), response(200, { id: "u1" })];
+    const fetchImpl = vi.fn(() => {
+      const next = answers.shift();
+      if (next === undefined) {
+        throw new Error("the stub ran out of responses");
+      }
+      return Promise.resolve(next);
+    }) as unknown as typeof fetch;
+    const onUnauthorized = vi.fn(() => Promise.resolve(true));
+
+    const client = createHttpClient({ baseUrl: BASE, fetchImpl, onUnauthorized });
+    const result = await client.request("auth/me");
+
+    expect(result).toEqual({ id: "u1" });
+    expect(onUnauthorized).toHaveBeenCalledTimes(1);
+  });
+
   it("does not retry when the 401 hook reports the session is gone", async () => {
     const fetchImpl = fetchStub(401, {
       statusCode: 401,
-      code: "UA-AUTH-009",
+      code: "UA-SEC-001",
       message: "gone",
     });
     const onUnauthorized = vi.fn(() => Promise.resolve(false));
@@ -189,7 +238,7 @@ describe("http client", () => {
       .request("auth/me")
       .catch((e: unknown) => e);
 
-    expect((error as AppError).code).toBe("UA-AUTH-009");
+    expect((error as AppError).code).toBe("UA-SEC-001");
     expect(onUnauthorized).toHaveBeenCalledTimes(1);
     expect(fetchImpl).toHaveBeenCalledTimes(1);
   });

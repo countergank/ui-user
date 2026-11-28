@@ -941,7 +941,6 @@ export const es: {
     twoFactor: {
       title: "Autenticación de dos factores",
       actions: {
-        enroll: "Configurar segundo factor",
         enrolling: "Configurando…",
         retry: "Reintentar",
         continue: "Continuar",
@@ -971,7 +970,6 @@ export const es: {
       reenrollHint: "Iniciá el enrolamiento de nuevo para obtener un código nuevo.",
       errors: {
         codeInvalid: "Ingresá el código de 6 dígitos de tu app.",
-        enrollFailure: "No se pudo iniciar el enrolamiento. Intentá de nuevo.",
       },
     },
     errors: {

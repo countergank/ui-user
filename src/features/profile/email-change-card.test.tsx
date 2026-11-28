@@ -206,7 +206,7 @@ describe("EmailChangeCard", () => {
     await user.click(screen.getByRole("button", { name: t("email.submit") }));
 
     expect(await screen.findByText(t("email.errors.codeInvalid"))).toBeInTheDocument();
-    expect(changeEmailCount).toBe(2);
+    expect(changeEmailCount).toBe(1);
   });
 
   it("keeps submit disabled until the code was requested", async () => {

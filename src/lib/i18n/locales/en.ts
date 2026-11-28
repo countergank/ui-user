@@ -918,7 +918,6 @@ export const en = {
     twoFactor: {
       title: "Two-factor authentication",
       actions: {
-        enroll: "Set up second factor",
         enrolling: "Setting up…",
         retry: "Retry",
         continue: "Continue",
@@ -948,7 +947,6 @@ export const en = {
       reenrollHint: "Start the enrollment again to get a new code.",
       errors: {
         codeInvalid: "Enter the 6-digit code from your app.",
-        enrollFailure: "The enrollment could not be started. Try again.",
       },
     },
     errors: {
