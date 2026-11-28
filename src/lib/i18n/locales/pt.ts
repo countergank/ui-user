@@ -107,6 +107,7 @@ export const pt: {
         "UA-AUTH-011": "O prazo para reverter a troca de e-mail expirou.",
         "UA-AUTH-012": "Não há um registro de segundo fator pendente.",
         "UA-AUTH-013": "O código de segundo fator é inválido.",
+        "UA-AUTH-014": "Seu desafio de segundo fator expirou. Entre novamente.",
         "UA-SEC-001": "Sua sessão é inválida ou expirou. Entre novamente.",
         "UA-SEC-002": "Você não tem permissão para fazer isso.",
         "UA-EML-001": "Já existe um modelo com esse slug.",
@@ -353,6 +354,20 @@ export const pt: {
         emailRequired: "Informe seu e-mail.",
         emailInvalid: "Informe um e-mail válido.",
         passwordRequired: "Informe sua senha.",
+      },
+    },
+    challenge: {
+      title: "Verificação de segundo fator",
+      subtitle: "Informe o código de 6 dígitos do seu app autenticador.",
+      fields: {
+        code: "Código de verificação",
+      },
+      codeHint: "O código é renovado a cada 30 segundos. O desafio expira em 5 minutos.",
+      submit: "Verificar e entrar",
+      expiredNotice: "Sua sessão de verificação expirou. Entre novamente com sua senha.",
+      errors: {
+        codeRequired: "Informe o código de verificação.",
+        codeInvalid: "Informe o código de 6 dígitos do seu app autenticador.",
       },
     },
     forgot: {

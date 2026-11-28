@@ -39,13 +39,13 @@ function apiFailure(status: number, code: string): Response {
   return jsonResponse(status, { statusCode: status, code, message: code });
 }
 
-function renderForm() {
+function renderForm(onTwoFactorChallenge: (token: string, destination: string) => void = vi.fn()) {
   const client = new QueryClient({ defaultOptions: { mutations: { retry: false } } });
 
   return render(
     <QueryClientProvider client={client}>
       <MemoryRouter>
-        <LoginForm />
+        <LoginForm onTwoFactorChallenge={onTwoFactorChallenge} />
       </MemoryRouter>
     </QueryClientProvider>,
   );
@@ -216,6 +216,22 @@ describe("login form — success", () => {
     expect(sessionStore.getState().user).toEqual(AUTH.user);
     expect(sessionStore.getState().accessToken).toBe("access-1");
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
+  it("hands a pending challenge to the page without storing a session", async () => {
+    fetchMock.mockResolvedValue(
+      jsonResponse(200, { twoFactorRequired: true, challengeToken: "tok-1" }),
+    );
+    const onTwoFactorChallenge = vi.fn();
+    renderForm(onTwoFactorChallenge);
+
+    await fillAndSubmit();
+
+    await waitFor(() => {
+      expect(onTwoFactorChallenge).toHaveBeenCalledWith("tok-1", "/app");
+    });
+    expect(sessionStore.getState().status).toBe("anonymous");
+    expect(sessionStore.getState().accessToken).toBeNull();
   });
 
   it("posts the credentials to /auth/login", async () => {

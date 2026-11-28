@@ -14,8 +14,10 @@ import { expectNoAuthoredInlineStyles } from "@/test/inline-styles";
 import { LoginPage } from "./login-page";
 
 const tAuth = i18n.getFixedT(null, "auth");
+const tCommon = i18n.getFixedT(null, "common");
 
 const LOGIN_URL = "https://test.invalid/auth/login";
+const CHALLENGE_URL = "https://test.invalid/auth/2fa/challenge";
 
 const AUTH = {
   user: {
@@ -155,5 +157,73 @@ describe("login page — MSW", () => {
     await screen.findByRole("alert");
 
     expect(await axe(container)).toHaveNoViolations();
+  });
+});
+
+describe("login page — two-factor challenge", () => {
+  function pendingChallenge() {
+    return HttpResponse.json({ twoFactorRequired: true, challengeToken: "tok-1" });
+  }
+
+  async function submitChallengeCode(code = "482913") {
+    const user = userEvent.setup();
+    await user.type(await screen.findByLabelText(tAuth("challenge.fields.code")), code);
+    await user.click(screen.getByRole("button", { name: tAuth("challenge.submit") }));
+  }
+
+  it("completes the session through the challenge step", async () => {
+    let received: unknown = null;
+    server.use(
+      http.post(LOGIN_URL, () => pendingChallenge()),
+      http.post(CHALLENGE_URL, async ({ request }) => {
+        received = await request.json();
+        return HttpResponse.json(AUTH);
+      }),
+    );
+
+    renderPage();
+    await submitCredentials();
+
+    expect(sessionStore.getState().status).toBe("anonymous");
+    await submitChallengeCode("482913");
+
+    await waitFor(() => {
+      expect(sessionStore.getState().status).toBe("authenticated");
+    });
+    expect(received).toEqual({ challengeToken: "tok-1", code: "482913" });
+    expect(sessionStore.getState().user).toEqual(AUTH.user);
+  });
+
+  it("shows the invalid-code message and keeps the input enabled for a retry", async () => {
+    server.use(
+      http.post(LOGIN_URL, () => pendingChallenge()),
+      http.post(CHALLENGE_URL, () => apiFailure(401, "UA-AUTH-013")),
+    );
+
+    renderPage();
+    await submitCredentials();
+    await submitChallengeCode("000000");
+
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent(tCommon("error.ua.UA-AUTH-013"));
+    expect(screen.getByLabelText(tAuth("challenge.fields.code"))).toBeEnabled();
+    expect(screen.getByRole("button", { name: tAuth("challenge.submit") })).toBeEnabled();
+    expect(sessionStore.getState().status).toBe("anonymous");
+  });
+
+  it("returns to the login screen with the re-authentication notice on UA-AUTH-014", async () => {
+    server.use(
+      http.post(LOGIN_URL, () => pendingChallenge()),
+      http.post(CHALLENGE_URL, () => apiFailure(401, "UA-AUTH-014")),
+    );
+
+    renderPage();
+    await submitCredentials();
+    await submitChallengeCode("000000");
+
+    expect(await screen.findByText(tAuth("challenge.expiredNotice"))).toBeInTheDocument();
+    expect(screen.getByLabelText(tAuth("login.fields.email"))).toBeInTheDocument();
+    expect(screen.queryByLabelText(tAuth("challenge.fields.code"))).not.toBeInTheDocument();
+    expect(sessionStore.getState().status).toBe("anonymous");
   });
 });

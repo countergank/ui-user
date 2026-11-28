@@ -2,13 +2,15 @@ import { useMutation } from "@tanstack/react-query";
 
 import { sessionStore } from "@/lib/session/session-store";
 
-import { login } from "../api";
+import { isTwoFactorChallenge, login } from "../api";
 
 export function useLogin() {
   return useMutation({
     mutationFn: login,
-    onSuccess: (auth) => {
-      sessionStore.getState().startSession(auth);
+    onSuccess: (response) => {
+      if (!isTwoFactorChallenge(response)) {
+        sessionStore.getState().startSession(response);
+      }
     },
   });
 }
