@@ -325,6 +325,25 @@ acceptable while the project has no users. Costs: one more layout to keep access
 independently cacheable and shareable, the console is unambiguously private, and a future move to
 two deployables (static marketing + SPA console) is an infrastructure change rather than a rewrite.
 
+## ADR-14: QR rendering for TOTP enrollment via react-qr-code
+
+**Context**: issue #143 delivers TOTP enrollment in the profile: `POST /auth/2fa/enroll`
+returns `{ secret, otpauthUrl }` and the screen must render a scannable QR from the
+`otpauth://` URL. The repo had no QR dependency, and the stack policy (AGENTS.md) requires an
+ADR for dependency changes. Candidates: `react-qr-code`, `qrcode.react` and the low-level
+`qrcode` generator.
+
+**Decision**: add **`react-qr-code`** (`^2.2.0`). It renders an SVG from a `value` prop with
+zero transitive dependencies and no canvas, which fits the Vite 6 + React 19 bundle and the
+a11y baseline (an `aria-hidden` SVG inside a labelled container); `qrcode.react` was rejected
+as heavier with a redundant canvas mode, and raw `qrcode` because it only produces data URLs
+and would need our own wrapper. The user approved the choice in the #143 session.
+
+**Consequences**: `package.json` gains one runtime dependency (~5 kB gzip) with no maintainers
+beyond the package itself; the enrollment screen owns the `<QRCode>` usage inside a
+`role="img"` labelled container so screen readers get the description, not the SVG. The
+secret remains available as the manual path (S2), so the QR is never the only way to enroll.
+
 ## Adding a new ADR
 
 Append a numbered ADR with the same **Context → Decision → Consequences** shape. Keep it

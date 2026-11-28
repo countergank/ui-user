@@ -4,6 +4,8 @@ import { permissionsQueryKey } from "@/features/authorization/hooks/use-permissi
 import { sessionStore } from "@/lib/session/session-store";
 
 import {
+  activateTwoFactor,
+  enrollTwoFactor,
   fetchProfile,
   requestEmailChange,
   requestEmailChangeCode,
@@ -23,6 +25,28 @@ export function useProfile() {
   return useQuery({
     queryKey: PROFILE_QUERY_KEY,
     queryFn: fetchProfile,
+  });
+}
+
+/**
+ * @returns The TOTP enrollment mutation: asks the backend for a pending enrollment and
+ * holds the one-time `secret` with its `otpauthUrl`. A re-enroll replaces the pending
+ * secret server-side, so success here always supersedes any previous enrollment.
+ */
+export function useEnrollTwoFactor() {
+  return useMutation({
+    mutationFn: () => enrollTwoFactor(),
+  });
+}
+
+/**
+ * @returns The TOTP activation mutation: confirms the pending enrollment with the 6-digit
+ * code from the authenticator app. The session user carries no two-factor flag yet, so
+ * success only drives the card's activated state.
+ */
+export function useActivateTwoFactor() {
+  return useMutation({
+    mutationFn: (code: string) => activateTwoFactor(code),
   });
 }
 
