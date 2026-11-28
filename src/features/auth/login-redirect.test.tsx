@@ -47,7 +47,7 @@ function renderLogin(entry: string) {
     <QueryClientProvider client={client}>
       <MemoryRouter initialEntries={[entry]}>
         <Routes>
-          <Route path="/login" element={<LoginForm />} />
+          <Route path="/login" element={<LoginForm onTwoFactorChallenge={vi.fn()} />} />
           <Route path="*" element={<LocationProbe />} />
         </Routes>
       </MemoryRouter>

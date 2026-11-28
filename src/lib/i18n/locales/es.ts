@@ -107,6 +107,7 @@ export const es: {
         "UA-AUTH-011": "El plazo para revertir el cambio de email expiró.",
         "UA-AUTH-012": "No hay un enrolamiento de segundo factor pendiente.",
         "UA-AUTH-013": "El código de segundo factor no es válido.",
+        "UA-AUTH-014": "Tu challenge de segundo factor expiró. Iniciá sesión de nuevo.",
         "UA-SEC-001": "Tu sesión no es válida o expiró. Iniciá sesión de nuevo.",
         "UA-SEC-002": "No tenés permiso para hacer esto.",
         "UA-EML-001": "Ya existe una plantilla con ese slug.",
@@ -353,6 +354,20 @@ export const es: {
         emailRequired: "Ingresá tu email.",
         emailInvalid: "Ingresá un email válido.",
         passwordRequired: "Ingresá tu contraseña.",
+      },
+    },
+    challenge: {
+      title: "Verificación de segundo factor",
+      subtitle: "Ingresá el código de 6 dígitos de tu app autenticadora.",
+      fields: {
+        code: "Código de verificación",
+      },
+      codeHint: "El código se renueva cada 30 segundos. El challenge expira a los 5 minutos.",
+      submit: "Verificar e iniciar sesión",
+      expiredNotice: "Tu sesión de verificación expiró. Iniciá sesión de nuevo con tu contraseña.",
+      errors: {
+        codeRequired: "Ingresá el código de verificación.",
+        codeInvalid: "Ingresá el código de 6 dígitos de tu app autenticadora.",
       },
     },
     forgot: {

@@ -19,12 +19,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+import { isTwoFactorChallenge } from "./api";
 import { useLogin } from "./hooks/use-login";
 import { resolveLoginError } from "./login-errors";
 import { type LoginValues, createLoginSchema } from "./login-schema";
 import { resolveRedirectTarget } from "./safe-redirect";
 
-export function LoginForm() {
+export interface LoginFormProps {
+  onTwoFactorChallenge: (challengeToken: string, destination: string) => void;
+}
+
+export function LoginForm({ onTwoFactorChallenge }: LoginFormProps) {
   const { t } = useTranslation("auth");
   const { t: tCommon } = useTranslation();
   const schema = useMemo(() => createLoginSchema(t), [t]);
@@ -57,7 +62,12 @@ export function LoginForm() {
     const destination = resolveRedirectTarget(searchParams);
 
     loginMutation.mutate(values, {
-      onSuccess: () => {
+      onSuccess: (response) => {
+        if (isTwoFactorChallenge(response)) {
+          onTwoFactorChallenge(response.challengeToken, destination);
+          return;
+        }
+
         void navigate(destination, { replace: true });
       },
     });

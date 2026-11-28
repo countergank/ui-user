@@ -87,6 +87,7 @@ export const en = {
         "UA-AUTH-011": "The window to revert the email change has expired.",
         "UA-AUTH-012": "There is no pending two-factor enrollment.",
         "UA-AUTH-013": "The two-factor code is invalid.",
+        "UA-AUTH-014": "Your two-factor challenge has expired. Please sign in again.",
         "UA-SEC-001": "Your session is invalid or expired. Sign in again.",
         "UA-SEC-002": "You do not have permission to do this.",
         "UA-EML-001": "A template with that slug already exists.",
@@ -333,6 +334,21 @@ export const en = {
         emailRequired: "Enter your email.",
         emailInvalid: "Enter a valid email address.",
         passwordRequired: "Enter your password.",
+      },
+    },
+    challenge: {
+      title: "Two-factor verification",
+      subtitle: "Enter the 6-digit code from your authenticator app.",
+      fields: {
+        code: "Verification code",
+      },
+      codeHint: "The code refreshes every 30 seconds. The challenge expires after 5 minutes.",
+      submit: "Verify and sign in",
+      expiredNotice:
+        "Your verification code session expired. Please sign in with your password again.",
+      errors: {
+        codeRequired: "Enter the verification code.",
+        codeInvalid: "Enter the 6-digit code from your authenticator app.",
       },
     },
     forgot: {

@@ -27,6 +27,7 @@ export const UA_ERROR_CODES = [
   "UA-AUTH-011",
   "UA-AUTH-012",
   "UA-AUTH-013",
+  "UA-AUTH-014",
   "UA-SEC-001",
   "UA-SEC-002",
   "UA-EML-001",
